@@ -1,0 +1,67 @@
+scheme:
+  id: cdh-domain
+  title: Climate Data Hub Domain Vocabulary
+  description: >
+    Controlled vocabulary of high-level CDH domains used for catalog browse,
+    filter, and group-by. The first concept on a record is treated as the
+    primary domain and drives STAC sub-catalog placement. Subsequent concepts
+    enable cross-cutting search.
+  source_scheme:
+    id: cdh-domain
+    uri: https://cgiar.org/cdh/vocab/domain
+    title: CDH Domain Vocabulary
+
+# Domain concepts are CDH-internal browse categories and do not require an
+# external ontology mapping. Add a concept here before using it in a record.
+
+concepts:
+  - id: agriculture
+    label: Agriculture
+    description: >
+      Crop and livestock production, agronomy, food systems, and agricultural
+      land use.
+
+  - id: agricultural-production
+    label: Agricultural production
+    description: >
+      Production-focused agriculture: yields, harvested area, livestock
+      numbers, and related production statistics.
+
+  - id: climate
+    label: Climate
+    description: >
+      Observed, reanalysis, projection, and scenario-based climate data
+      including temperature, precipitation, and other climate variables.
+
+  - id: adaptation
+    label: Adaptation
+    description: >
+      Climate-change adaptation: vulnerability, exposure, risk assessment,
+      and adaptation planning resources.
+
+  - id: mitigation
+    label: Mitigation
+    description: >
+      Climate-change mitigation: emissions, carbon stocks, sequestration,
+      and mitigation pathways.
+
+  - id: water
+    label: Water
+    description: >
+      Hydrology, water resources, irrigation, and water-related hazards.
+
+  - id: biodiversity
+    label: Biodiversity
+    description: >
+      Species, ecosystems, habitat, and biodiversity indicators.
+
+  - id: land
+    label: Land
+    description: >
+      Land cover, land use, soil, and land-degradation resources.
+
+  - id: socioeconomic
+    label: Socioeconomic
+    description: >
+      Population, livelihoods, poverty, food security, and socioeconomic
+      indicators relevant to CGIAR research.

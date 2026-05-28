@@ -1,0 +1,72 @@
+scheme:
+  id: cdh-agrovoc-hazards
+  title: Climate Data Hub Hazard Vocabulary
+  description: >
+    Controlled vocabulary of climate-related hazards used by the Climate Data
+    Hub for metadata validation, filtering, and catalog rendering. Each
+    concept is a friendly Hub name; where applicable, it carries an AGROVOC
+    code and URI.
+  source_scheme:
+    id: agrovoc
+    uri: https://agrovoc.fao.org/
+    title: AGROVOC
+
+# AGROVOC code/uri left null for entries that still need lookup.
+# Populate by searching AGROVOC for the closest concept and recording its
+# code (e.g., c_12345) and full URI.
+
+concepts:
+  - id: drought
+    label: Drought
+    code: null
+    uri: null
+
+  - id: heat-stress
+    label: Heat stress
+    code: null
+    uri: null
+
+  - id: cold-stress
+    label: Cold stress
+    code: null
+    uri: null
+
+  - id: flooding
+    label: Flooding
+    code: null
+    uri: null
+
+  - id: extreme-precipitation
+    label: Extreme precipitation
+    code: null
+    uri: null
+
+  - id: tropical-cyclone
+    label: Tropical cyclone
+    code: null
+    uri: null
+
+  - id: wildfire
+    label: Wildfire
+    code: null
+    uri: null
+
+  - id: sea-level-rise
+    label: Sea level rise
+    code: null
+    uri: null
+
+  - id: salinization
+    label: Salinization
+    code: null
+    uri: null
+
+  - id: pest-outbreak
+    label: Pest outbreak
+    code: null
+    uri: null
+
+  - id: disease-outbreak
+    label: Disease outbreak
+    code: null
+    uri: null
