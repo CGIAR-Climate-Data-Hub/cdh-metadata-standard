@@ -1,0 +1,670 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cgiar.org/cdh/schemas/metadata-input.schema.json",
+  "title": "Climate Data Hub Metadata Input Schema",
+  "description": "JSON Schema for validating CDH metadata input YAML records before serialization to STAC or OGC API Records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "cdh_schema_version",
+    "encoding",
+    "id",
+    "title",
+    "description",
+    "license",
+    "resource_type",
+    "keywords",
+    "license_holder",
+    "contact",
+    "citation",
+    "created",
+    "updated",
+    "cdh",
+    "data"
+  ],
+  "properties": {
+    "cdh_schema_version": {
+      "type": "string"
+    },
+    "encoding": {
+      "oneOf": [
+        { "const": "" },
+        { "enum": ["stac", "ogc-records"] }
+      ]
+    },
+    "id": {
+      "$ref": "#/definitions/id"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "license": {
+      "type": "string"
+    },
+    "resource_type": {
+      "oneOf": [
+        { "const": "" },
+        {
+          "enum": [
+            "dataset",
+            "document",
+            "model",
+            "notebook",
+            "code",
+            "service",
+            "dashboard",
+            "api",
+            "method",
+            "knowledge-product"
+          ]
+        }
+      ]
+    },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "note": {
+      "$ref": "#/definitions/nullableString"
+    },
+    "license_holder": {
+      "type": "string"
+    },
+    "contact": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/contact" }
+    },
+    "citation": {
+      "type": "string"
+    },
+    "doi": {
+      "$ref": "#/definitions/nullableString"
+    },
+    "related_publications": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/publication" }
+    },
+    "created": {
+      "$ref": "#/definitions/dateOrBlank"
+    },
+    "updated": {
+      "$ref": "#/definitions/dateOrBlank"
+    },
+    "version": {
+      "$ref": "#/definitions/nullableString"
+    },
+    "previous_version": {
+      "$ref": "#/definitions/nullableString"
+    },
+    "funding": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/nameUrl" }
+    },
+    "spatial": {
+      "$ref": "#/definitions/spatial"
+    },
+    "temporal": {
+      "$ref": "#/definitions/temporal"
+    },
+    "dimensions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/dimension" }
+    },
+    "variables": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/variable" }
+    },
+    "classes": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/classSet" }
+    },
+    "geography": {
+      "$ref": "#/definitions/geography"
+    },
+    "themes": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/theme" }
+    },
+    "cdh": {
+      "$ref": "#/definitions/cdh"
+    },
+    "processing": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/processingStep" }
+    },
+    "data": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/dataAsset" }
+    },
+    "additional_assets": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/additionalAsset" }
+    },
+    "additional_links": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/link" }
+    }
+  },
+  "definitions": {
+    "nullableString": {
+      "type": ["string", "null"]
+    },
+    "id": {
+      "oneOf": [
+        { "const": "" },
+        {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        }
+      ]
+    },
+    "dateOrBlank": {
+      "anyOf": [
+        { "const": "" },
+        { "type": "null" },
+        { "type": "string", "format": "date" },
+        { "type": "string", "format": "date-time" }
+      ]
+    },
+    "numberOrStringOrNull": {
+      "anyOf": [
+        { "type": "number" },
+        { "type": "string" },
+        { "type": "null" }
+      ]
+    },
+    "mediaType": {
+      "oneOf": [
+        { "const": "" },
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+(\\s*;\\s*[^;=]+=[^;]+)*$"
+        }
+      ]
+    },
+    "contact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role"],
+      "properties": {
+        "name": { "type": "string" },
+        "role": {
+          "oneOf": [
+            { "const": "" },
+            { "enum": ["licensor", "producer", "processor", "host"] }
+          ]
+        },
+        "email": {
+          "oneOf": [
+            { "const": "" },
+            { "type": "string", "format": "email" }
+          ]
+        },
+        "organization": { "type": "string" },
+        "url": {
+          "$ref": "#/definitions/nullableString"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 }
+            }
+          },
+          "then": {
+            "type": "object",
+            "required": ["organization"],
+            "properties": {
+              "organization": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      ],
+      "anyOf": [
+        {
+          "type": "object",
+          "required": ["organization"],
+          "properties": {
+            "organization": { "type": "string", "minLength": 1 }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["name", "organization"],
+          "properties": {
+            "name": { "const": "" },
+            "organization": { "const": "" }
+          }
+        }
+      ]
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "citation": { "type": "string" },
+        "doi": { "$ref": "#/definitions/nullableString" }
+      }
+    },
+    "nameUrl": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "url": { "$ref": "#/definitions/nullableString" }
+      }
+    },
+    "spatial": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "bbox": {
+          "oneOf": [
+            {
+              "type": "array",
+              "maxItems": 0
+            },
+            {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 4,
+              "items": { "type": "number" }
+            }
+          ]
+        },
+        "geography": { "$ref": "#/definitions/nullableString" },
+        "crs": { "$ref": "#/definitions/nullableString" },
+        "resolution": { "$ref": "#/definitions/resolution" }
+      }
+    },
+    "temporal": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "start_date": { "$ref": "#/definitions/dateOrBlank" },
+        "end_date": { "$ref": "#/definitions/dateOrBlank" },
+        "resolution": { "$ref": "#/definitions/resolution" }
+      }
+    },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "value": { "$ref": "#/definitions/numberOrStringOrNull" },
+        "unit": { "$ref": "#/definitions/nullableString" },
+        "label": { "$ref": "#/definitions/nullableString" },
+        "aggregation": { "$ref": "#/definitions/nullableString" }
+      }
+    },
+    "dimension": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "description": { "type": "string" },
+        "values": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "type": "string" },
+              { "type": "number" },
+              { "type": "boolean" },
+              { "type": "null" }
+            ]
+          }
+        },
+        "reference_system": { "$ref": "#/definitions/nullableString" }
+      }
+    },
+    "variable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "dimensions": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "description": { "type": "string" },
+        "data_type": { "$ref": "#/definitions/nullableString" },
+        "unit": { "$ref": "#/definitions/nullableString" },
+        "note": { "$ref": "#/definitions/nullableString" },
+        "aggregation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": { "$ref": "#/definitions/nullableString" },
+            "weight_by": { "$ref": "#/definitions/nullableString" },
+            "notes": { "$ref": "#/definitions/nullableString" }
+          }
+        }
+      }
+    },
+    "classSet": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "variable": { "type": "string" },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "anyOf": [
+                  { "type": "string" },
+                  { "type": "number" },
+                  { "type": "boolean" },
+                  { "type": "null" }
+                ]
+              },
+              "label": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "geography": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "column": { "$ref": "#/definitions/nullableString" },
+        "spatial_join": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source_key": { "$ref": "#/definitions/nullableString" },
+            "target": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "id": { "$ref": "#/definitions/nullableString" },
+                "url": { "$ref": "#/definitions/nullableString" },
+                "key": { "$ref": "#/definitions/nullableString" }
+              }
+            },
+            "note": { "$ref": "#/definitions/nullableString" }
+          }
+        }
+      }
+    },
+    "theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scheme": { "$ref": "#/definitions/nullableString" },
+        "concepts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "url": { "$ref": "#/definitions/nullableString" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "cdh": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "use_cases": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "not_recommended_for": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "use": { "type": "string" },
+              "reason": { "type": "string" },
+              "use_instead": { "$ref": "#/definitions/nullableString" }
+            }
+          }
+        },
+        "domain": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "agriculture",
+              "agricultural-production",
+              "climate",
+              "adaptation",
+              "mitigation",
+              "water",
+              "biodiversity",
+              "land",
+              "socioeconomic"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "climate": { "$ref": "#/definitions/climate" },
+        "commodities": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "arabica-coffee",
+              "banana",
+              "barley",
+              "bean",
+              "cassava",
+              "chickpea",
+              "citrus",
+              "cocoa",
+              "coconut",
+              "cotton",
+              "cowpea",
+              "groundnut",
+              "lentil",
+              "maize",
+              "oil-palm",
+              "onion",
+              "other-cereals",
+              "other-fibre-crops",
+              "other-oil-crops",
+              "other-pulses",
+              "other-roots",
+              "other-tropical-fruit",
+              "other-vegetables",
+              "pearl-millet",
+              "pigeon-pea",
+              "plantain",
+              "potato",
+              "rapeseed",
+              "rest-of-crops",
+              "rice",
+              "robusta-coffee",
+              "rubber",
+              "sesame",
+              "small-millet",
+              "sorghum",
+              "soybean",
+              "sugarbeet",
+              "sugarcane",
+              "sunflower",
+              "sweet-potatoes",
+              "tea",
+              "temperate-fruit",
+              "tobacco",
+              "tomato",
+              "wheat",
+              "yams"
+            ]
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "climate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mip_era": {
+          "oneOf": [
+            { "const": "" },
+            { "enum": ["CMIP5", "CMIP6"] }
+          ]
+        },
+        "scenarios": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "models": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "hazards": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "drought",
+              "heat-stress",
+              "cold-stress",
+              "flooding",
+              "extreme-precipitation",
+              "tropical-cyclone",
+              "wildfire",
+              "sea-level-rise",
+              "salinization",
+              "pest-outbreak",
+              "disease-outbreak"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "baseline": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "start_date": { "$ref": "#/definitions/dateOrBlank" },
+            "end_date": { "$ref": "#/definitions/dateOrBlank" }
+          }
+        },
+        "bias_adjustment": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": { "$ref": "#/definitions/nullableString" },
+            "reference_dataset": { "$ref": "#/definitions/nullableString" }
+          }
+        },
+        "downscaling": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "method": { "$ref": "#/definitions/nullableString" },
+            "resolution": { "$ref": "#/definitions/numberOrStringOrNull" }
+          }
+        }
+      }
+    },
+    "processingStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/definitions/nullableString" },
+        "description": { "$ref": "#/definitions/nullableString" },
+        "code": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "url": { "$ref": "#/definitions/nullableString" },
+            "version": { "$ref": "#/definitions/nullableString" }
+          }
+        },
+        "date": { "$ref": "#/definitions/dateOrBlank" },
+        "derived_from": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "url": { "$ref": "#/definitions/nullableString" },
+              "title": { "$ref": "#/definitions/nullableString" }
+            }
+          }
+        }
+      }
+    },
+    "dataAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "url": { "$ref": "#/definitions/nullableString" },
+        "processing_steps": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "description": { "type": "string" },
+        "nodata": {
+          "anyOf": [
+            { "type": "string" },
+            { "type": "number" },
+            { "type": "null" }
+          ]
+        },
+        "media_type": { "$ref": "#/definitions/mediaType" },
+        "file_size": {
+          "anyOf": [
+            { "type": "string" },
+            { "type": "integer", "minimum": 0 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "additionalAsset": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "url": { "$ref": "#/definitions/nullableString" },
+        "description": { "type": "string" },
+        "media_type": { "$ref": "#/definitions/mediaType" },
+        "roles": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "file_size": {
+          "anyOf": [
+            { "type": "string" },
+            { "type": "integer", "minimum": 0 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "link": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string" },
+        "rel": { "type": "string" },
+        "url": { "$ref": "#/definitions/nullableString" },
+        "description": { "type": "string" }
+      }
+    }
+  }
+}

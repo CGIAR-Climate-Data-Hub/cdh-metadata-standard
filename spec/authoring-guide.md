@@ -1,0 +1,422 @@
+# CDH Metadata Authoring Guide
+
+This guide is for people filling out metadata records. It explains what to write
+first, what can wait, and where optional detail belongs.
+
+The formal standard is `core-standard.md`. The template to fill in is
+`standard.yaml`, which points YAML-aware editors to
+`schemas/metadata-input.schema.json` for field validation.
+
+## The Short Version
+
+Start with enough metadata for someone to find, understand, cite, and access the
+resource without opening the files.
+
+Fill these first:
+
+- `id`
+- `title`
+- `description`
+- `resource_type`
+- `encoding`
+- `cdh.domain`
+- `keywords`
+- `license`
+- `license_holder`
+- `contact`
+- `citation`
+- `created`
+- `updated`
+- `data`
+
+Then add only the sections that apply to the resource.
+
+Optional and conditional sections are useful, but they should not make every
+record feel complicated. If a field does not apply, leave it out.
+
+## What Good Metadata Should Answer
+
+A useful record lets a person or an automated tool answer:
+
+- What is this resource?
+- What can it be used for?
+- Who produced or maintains it?
+- How should it be cited?
+- What license applies?
+- Where can the data, code, or documentation be found?
+- What geography and time period does it cover?
+- What variables, units, dimensions, or classes does it contain?
+- What sources and processing created it?
+- What limitations or caveats matter?
+
+## Minimum Record
+
+Use this as the first pass.
+
+```yaml
+id: ""
+title: ""
+description: ""
+resource_type: ""
+encoding: ""
+keywords: []
+license: ""
+license_holder: ""
+contact:
+  - organization: ""
+    role: ""
+    email: ""
+    url: ""
+citation: ""
+created: # may be filled during CDH review
+updated: # may be filled during CDH review
+cdh:
+  domain: []
+data:
+  - name: ""
+    url: ""
+    description: ""
+    media_type: ""
+```
+
+## Required Fields
+
+### `id`
+
+A short, stable, URL-safe identifier.
+
+Use lowercase words with hyphens:
+
+```yaml
+id: banana-climate-risk-admin2
+```
+
+### `title`
+
+A concise human-readable name.
+
+```yaml
+title: Banana Climate Risk Indicators
+```
+
+### `description`
+
+One short paragraph explaining what the resource is and what it can be used for.
+Mention geography, time period, variables, scenarios, hazards, or commodities
+when they matter.
+
+Do not rely on the description for filterable facts. Put those facts in the
+structured fields too.
+
+### `resource_type`
+
+What kind of thing the record describes.
+
+Common values:
+
+- `dataset`
+- `document`
+- `model`
+- `notebook`
+- `code`
+- `service`
+- `dashboard`
+- `api`
+- `method`
+- `knowledge-product`
+
+### `encoding`
+
+Choose where the record will be serialized.
+
+- Use `stac` for spatial, temporal, gridded, raster, vector, tabular, and
+  data-cube resources.
+- Use `ogc-records` for documents, code, models, notebooks, dashboards,
+  services, APIs, methods, and other non-spatial resources.
+
+### `cdh.domain`
+
+The main CDH category used for browsing, filtering, and catalog placement.
+
+Use values from `vocab/domain.yaml`. Put the primary domain first.
+
+```yaml
+cdh:
+  domain: [agriculture, climate]
+```
+
+### `keywords`
+
+Free-text search terms. Use words people are likely to search for.
+
+Do not repeat values that already have a structured field. Use `keywords` for
+extra search phrases, aliases, method names, acronyms, and user-facing terms
+that are not already captured elsewhere.
+
+Put these in structured fields instead:
+
+| If the term is a...                        | Put it in...          |
+| ------------------------------------------ | --------------------- |
+| place, country, region, or named geography | `spatial.geography`   |
+| crop, livestock type, or commodity         | `cdh.commodities`     |
+| climate hazard                             | `cdh.climate.hazards` |
+| time period or temporal resolution         | `temporal.*`          |
+
+```yaml
+keywords:
+  - zonal statistics
+  - weighted mean
+  - climate risk screening
+  - growing season
+```
+
+### `license`, `license_holder`, `contact`, and `citation`
+
+These make the record reusable and citable.
+
+Prefer SPDX license identifiers such as `CC-BY-4.0`, `CC0-1.0`, or `MIT`.
+
+For `contact`, use either an organization contact or a person contact.
+
+Organization contact:
+
+```yaml
+contact:
+  - organization: Alliance of Bioversity International and CIAT
+    role: producer
+    url: https://alliancebioversityciat.org/
+```
+
+Person contact:
+
+```yaml
+contact:
+  - name: Jane Doe
+    organization: Alliance of Bioversity International and CIAT
+    role: processor
+    email: jane.doe@example.org
+```
+
+If `name` is used, include `organization` too. `organization` on its own is OK.
+Use only official STAC provider roles: `licensor`, `producer`, `processor`, or
+`host`.
+
+### `created` and `updated`
+
+These timestamps are required in serialized records. In draft authoring files,
+they may be left blank when CDH review manages metadata timestamps.
+
+### `data`
+
+At least one link to the resource, access page, service, or instructions.
+
+```yaml
+data:
+  - name: primary-data
+    url: https://example.org/data.parquet
+    description: Primary Parquet table
+    media_type: application/vnd.apache.parquet
+```
+
+If you know the media type or file size, provide it. If either value is
+missing, the CDH review process may add it when it can be determined from the
+asset URL, file extension, or inspectable metadata. Serialized records must
+contain the required values, whether supplied by the contributor or added during
+CDH review. This is not guaranteed for extensionless URLs, signed URLs, APIs,
+landing pages, directories, object-store prefixes, ambiguous formats, Zarr
+stores, or other multi-file resources.
+
+## Add These Only When They Apply
+
+### Spatial
+
+Use `spatial` when the resource has geographic coverage or geospatial assets.
+
+Common fields:
+
+- `spatial.bbox`
+- `spatial.geography`
+- `spatial.crs`
+- `spatial.resolution`
+
+If `spatial.bbox` or `spatial.crs` is omitted for a geospatial STAC record, the
+CDH review process may add it when it can be determined from the asset URL,
+file extension, or inspectable metadata. Serialized records must contain the
+required values, whether supplied by the contributor or added during CDH review.
+Provide these fields when you know them, especially for multi-asset records or
+when the first asset is not representative.
+
+### Temporal
+
+Use `temporal` when the resource has a time period, forecast period, projection
+period, or recurring observations.
+
+Common fields:
+
+- `temporal.start_date`
+- `temporal.end_date`
+- `temporal.resolution`
+
+### Variables
+
+Use `variables` when the resource has measurements, bands, columns, indicators,
+or other named data values.
+
+```yaml
+variables:
+  - name: heat_stress_days
+    dimensions: [time, scenario]
+    description: >
+      Number of days during the growing period when daily maximum temperature
+      exceeded the heat stress threshold. Higher values indicate greater heat
+      hazard.
+    data_type: float32
+    unit: day
+    note: >
+      This indicator describes temperature stress only and does not represent
+      full crop impact.
+```
+
+For each variable:
+
+- Use `description` for what the variable measures.
+- Include the normal reading guidance in `description` when direction matters.
+- Use `note` for variable-specific limitations, caveats, or warnings.
+- Use the record-level `note` for dataset-wide limitations.
+
+For inspectable files, the CDH review process may add technical details such as
+column names, data types, bands, nodata values, or dimensions when they can be
+determined from the asset URL, file extension, or inspectable metadata. Review
+cannot reliably determine what a variable means, what unit should be used, how
+values should be interpreted, or what caveats matter.
+
+### Dimensions
+
+Use `dimensions` when variables depend on axes such as time, scenario, model,
+crop, technology, band, or geography.
+
+Define coded values. If a code is not obvious, explain it in the dimension
+description, point to a controlled vocabulary, or link a sidecar code list.
+
+### Classes
+
+Use `classes` for categorical values, class maps, bitfields, or classified
+rasters.
+
+For long class lists, link a sidecar file instead of putting everything in the
+record.
+
+### Processing
+
+Use `processing` for derived products, generated datasets, or resources where
+source data and methods matter.
+
+Keep it concise. A single `source` step is enough for simple records.
+
+```yaml
+processing:
+  - id: source
+    description: >
+      Daily climate data were aggregated to GAUL admin2 zones and summarized as
+      baseline and future-period indicators.
+    code:
+      url: https://github.com/example-org/climate-risk-pipeline
+      version: 0f3ac9d
+    date: 2026-04-21
+    derived_from:
+      - title: NEX-GDDP-CMIP6
+        url: https://example.org/nex-gddp-cmip6
+```
+
+### Climate Fields
+
+Use `cdh.climate` fields only when the resource is climate-related and the field
+applies.
+
+Common examples:
+
+- `cdh.climate.hazards`
+- `cdh.climate.scenarios`
+- `cdh.climate.models`
+- `cdh.climate.mip_era`
+- `cdh.climate.baseline`
+- `cdh.climate.bias_adjustment`
+- `cdh.climate.downscaling`
+
+### Commodities
+
+Use `cdh.commodities` for agriculture, food-systems, livestock, and crop
+resources.
+
+Use values from `vocab/commodity.yaml`.
+
+### Themes
+
+Most authors can skip `themes`.
+
+The encoder usually creates themes from `cdh.domain`, `cdh.commodities`, and
+`cdh.climate.hazards`. Add manual themes only when you need extra ontology links
+and can provide real scheme and concept URLs.
+
+### Additional Assets and Links
+
+Use these for supporting files, documentation, previews, schemas, QA/QC output,
+code lists, alternate formats, or services.
+
+For `additional_assets`, provide `media_type` and `file_size` when known. If
+either value is missing, the CDH review process may add it when it can be
+determined from the asset URL, file extension, or inspectable metadata.
+Serialized records must contain the required values, whether supplied by the
+contributor or added during CDH review.
+
+## What Review Cannot Decide
+
+The CDH review process may help fill technical facts from inspectable assets,
+but authors must provide the curatorial facts:
+
+- `title`
+- `description`
+- `license`
+- `citation`
+- `cdh.domain`
+- `cdh.commodities`
+- `cdh.climate.*`
+- variable meaning, units, reading guidance, and caveats
+- whether a record should be published
+
+## What To Leave Out
+
+Leave a field out when:
+
+- It does not apply to the resource.
+- The value would only repeat another field.
+- The information is unknown and not required.
+- The detail belongs in a sidecar file because it is long, nested, or likely to
+  change.
+
+Avoid inventing new fields. If an important fact has no place in the template,
+first check the formal standard, then consider whether it belongs in
+`additional_links`, `additional_assets`, a sidecar file, or a proposed
+`cgiar-cdh:*` field.
+
+## Practical Authoring Order
+
+1. Fill the minimum record.
+2. Add `spatial` and `temporal` if relevant.
+3. Add `variables`, and include units and reading guidance.
+4. Add `dimensions` or `classes` only if they are needed to understand values.
+5. Add `processing` for derived products.
+6. Add climate, commodity, and use-case fields when they improve discovery.
+7. Add sidecars or extra links for long supporting detail.
+8. Review the record using the checklist in `core-standard.md`.
+
+## Quick Review
+
+Before publishing, check:
+
+- The title and description are understandable without opening the data.
+- Search and filter facts are in structured fields, not only prose.
+- Variables have units and plain-language meaning.
+- Important caveats are in `note`.
+- Data, code, documentation, citation, and license links are stable.
+- Optional fields are omitted when they do not apply.

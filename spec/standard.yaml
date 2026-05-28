@@ -1,0 +1,211 @@
+# yaml-language-server: $schema=./schemas/metadata-input.schema.json
+cdh_schema_version: "1.0"
+
+# Encoding (required) — selects the serialization profile.
+# One of: stac | ogc-records
+encoding: ""
+
+# Core Metadata (required)
+id: ""
+title: ""
+description: >
+  ""
+license: ""
+# Resource type — one of: dataset | document | model | notebook | code |
+#                         service | dashboard | api | method | knowledge-product
+resource_type: ""
+# Free-text search phrases only. Do not duplicate structured values such as
+# spatial.geography, cdh.commodities, cdh.climate.hazards, cdh.domain, or
+# variables[]. Use keywords for aliases, acronyms, methods, and extra user
+# search terms.
+keywords: []
+note: > # Optional
+  ""
+
+# Contact Metadata (required)
+license_holder: ""
+contact:
+  # Use organization alone for organization-level contacts. If name is used,
+  # organization is also required.
+  - name: "" # optional when organization is present; required for person-level contacts
+    role: "" # one of: licensor | producer | processor | host
+    email: ""
+    organization: "" # required when name is present; may be used on its own
+    url: ""
+
+# Citation Metadata
+citation: "" # required
+doi: "" # conditional - if doi exists
+related_publications: # optional
+  - citation: ""
+    doi: ""
+
+# metadata tracking (required/auto-populated)
+# May be left blank in draft authoring files when CDH review manages metadata
+# timestamps. Serialized records must include both.
+created:
+updated:
+
+# Version (conditional - if version exists already, or multiple versions are expected)
+version: ""
+previous_version: ""
+
+# Funding (optional)
+funding:
+  - name: ""
+    url: ""
+
+# Spatial (conditional - if data has a spatial aspect/will be in STAC)
+spatial:
+  bbox: []
+  geography: ""
+  crs: ""
+  resolution:
+    value:
+    unit: ""
+    label: ""
+    aggregation: ""
+
+# Temporal (conditional - if data has a temporal aspect/will be in STAC)
+temporal:
+  start_date: ""
+  end_date: ""
+  resolution:
+    value:
+    unit: ""
+    label: ""
+    aggregation: ""
+
+# Data fields/Attributes (required)
+
+dimensions:
+  - name: ""
+    type: ""
+    description: ""
+    values: []
+    reference_system: "" # conditional, if a controlled vocabulary exists or key/value descriptions are needed
+
+variables:
+  - name: ""
+    dimensions: []
+    # Put the stable definition here. Add the normal reading rule here too when
+    # direction matters.
+    description: ""
+    data_type: ""
+    unit: ""
+    # Put variable-specific limitations, caveats, or warnings here. Dataset-wide
+    # limitations belong in the record-level `note` field.
+    note: >
+      ""
+    # aggregation:
+    #   method: "weighted_mean"
+    #   weight_by: "harvested_area"
+    #   notes: "Cannot be summed or simply averaged across cells. Must be weighted by harvested area to get a meaningful regional value."
+
+classes: # conditional, if classification scheme exists - must map to a listed variable
+  - variable: ""
+    values:
+      - value:
+        label: ""
+        description: ""
+
+geography:
+  column: "" # conditional - if spatial vector with a geometry column exists
+  spatial_join:
+    source_key: "gaul_uid"
+    target:
+      id: ""
+      url: ""
+      key: ""
+    note: ""
+
+# Themes (optional) — ontology-linked classification block. Largely
+# auto-populated by the encoder from `cdh.domain`, `cdh.commodities`, and
+# `cdh.climate.hazards` using the files in `vocab/`. User-added entries
+# MUST provide a valid scheme URL and per-concept URIs + descriptions.
+# Filter / group-by in the website is driven by `cdh.domain`, not `themes`.
+themes:
+  - scheme: ""
+    concepts:
+      - id: ""
+        title: ""
+        url: ""
+        description: ""
+
+# Additional felds for searching and filtering
+cdh:
+  use_cases: []
+  not_recommended_for:
+    - use: ""
+      reason: ""
+      use_instead: null
+  # Domain — CDH-controlled vocabulary (vocab/domain.yaml). Multi-valued
+  # and ordered: first entry is the primary domain and drives STAC
+  # sub-catalog placement; subsequent entries are secondary.
+  # Required. Powers website filter and group-by.
+  domain: []
+  climate:
+    mip_era: ""
+    scenarios: []
+    models: # Do we need an ensemble field to indicate this is a multi-model ensemble?
+      - ""
+    hazards: []
+    baseline:
+      start_date: ""
+      end_date: ""
+    bias_adjustment:
+      method: null
+      reference_dataset: null
+    downscaling:
+      method: null
+      resolution: null
+  commodities: []
+
+# Data provenance / processing
+# - `processing[]` is an ordered list of steps. The first step SHOULD use
+#   `id: source` and describes the original generation of the data.
+# - `derived_from[]` entries are always external URLs (matches STAC
+#   `links[rel=derived_from]`). Step-to-step ordering comes from array
+#   order here, and per-asset chains come from `data[].processing_steps[]`.
+processing:
+  - id:
+    description:
+    code:
+      url:
+      version:
+    date:
+    derived_from:
+      - url: ""
+        title: ""
+
+# Data Urls (required)
+data:
+  - name: ""
+    url: ""
+    processing_steps: [] # conditional, if processing metadata exists / steps are needed
+    description: ""
+    nodata: ""
+    # Provide when known. If missing, CDH review may add it when it can be
+    # determined from the asset URL, file extension, or inspectable metadata.
+    media_type: ""
+    # Provide when known. If missing, CDH review may add it when it can be
+    # determined from the asset URL, file extension, or inspectable metadata.
+    file_size: ""
+
+additional_assets: # recommended
+  - name: ""
+    url: ""
+    description: ""
+    # Provide when known. If missing, CDH review may add it when it can be
+    # determined from the asset URL, file extension, or inspectable metadata.
+    media_type: ""
+    roles: []
+    # Provide when known. If missing, CDH review may add it when it can be
+    # determined from the asset URL, file extension, or inspectable metadata.
+    file_size: ""
+
+additional_links:
+  - name: ""
+    rel: ""
+    url: ""
+    description: ""
