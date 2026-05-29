@@ -4,17 +4,16 @@ This repository defines the Climate Data Hub metadata standard and input
 template. The goal is lightweight, searchable, AI-readable metadata that can be
 validated and serialized to STAC or OGC API Records.
 
-> [!NOTE]
-> This standard is still a draft. Breaking changes are expected while it is
-> being tested and refined.
+> \[!NOTE] This standard is still a draft. Breaking changes are expected while
+> it is being tested and refined.
 
 ## Start Here
 
 - [Authoring guide](./spec/authoring-guide.md) - how to fill out metadata
   without getting overwhelmed by optional fields.
 - [YAML template](./spec/standard.yaml) - the metadata input template.
-- [Metadata input schema](./spec/schemas/metadata-input.schema.json) -
-  validates the YAML structure and controlled values.
+- [Metadata input schema](./spec/schemas/metadata-input.schema.json) - validates
+  the YAML structure and controlled values.
 - [Core standard](./spec/core-standard.md) - formal field definitions and
   validation expectations.
 
@@ -39,11 +38,28 @@ Vocabulary files are validated against
 After editing a vocabulary, regenerate the schema fragments:
 
 ```sh
-just schemas
+npm run gen-schemas
 ```
 
-Or run the generator directly:
+## Versioning
+
+The CDH metadata standard, schemas, controlled vocabularies, and the
+`cgiar-cdh` STAC extension are versioned together. A single git tag
+(`v<MAJOR>.<MINOR>.<PATCH>`) covers all of them. `cdh_schema_version`
+in input YAML records matches the same tag.
+
+## Validation
+
+All validation runs through `npm`:
 
 ```sh
-python scripts/generate-vocab-schemas.py
+npm install        # one-time, installs dev tooling
+npm test           # markdown lint + schema/vocab/yaml validation
+npm run check      # schemas + vocabs + compile + yaml (skips markdown)
 ```
+
+Individual targets: `check-schemas`, `check-vocabs`, `compile-schemas`,
+`check-yaml`, `check-markdown`, `gen-schemas`.
+
+The validation scripts use bare ESM imports, so `node` is the supported runtime
+today but they should also run under Deno.
