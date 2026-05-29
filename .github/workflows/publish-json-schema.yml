@@ -1,0 +1,82 @@
+name: Publish JSON Schemas
+
+# On a published release, copy the schemas, the controlled vocabularies, and
+# any STAC extension definitions into a versioned directory on the gh-pages
+# branch. The resulting layout for tag <TAG> is:
+#
+#   <TAG>/
+#     schemas/
+#       metadata-input.schema.json
+#       vocab/<name>.schema.json        # generated enum fragments
+#       vocab/vocabulary.schema.json    # vocab meta-schema
+#     extensions/
+#       <ext-name>/schema.json          # CDH STAC extensions, when present
+#     vocab/
+#       <name>.json                     # source vocabulary concept lists
+#
+# Public URL pattern (assuming GitHub Pages on this repo):
+#   https://<owner>.github.io/<repo>/<TAG>/schemas/metadata-input.schema.json
+#   https://<owner>.github.io/<repo>/<TAG>/vocab/domain.json
+#   https://<owner>.github.io/<repo>/<TAG>/extensions/cgiar-cdh/schema.json
+#
+# The CDH STAC extension does NOT carry its own inner version segment. The
+# standard, schemas, vocabularies, and extension are released together under
+# a single tag (see VERSIONING in core-standard.md).
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install tooling
+        run: npm ci
+
+      # Gate the publish on validation — never publish a broken schema graph.
+      - name: Validate before publishing
+        run: npm run check
+
+      - name: Assemble publish directory
+        run: |
+          set -euo pipefail
+
+          mirror() {
+            # mirror <pattern-source> <target>
+            # Copies every matching file under <pattern-source>, preserving
+            # directory structure, into <target>.
+            local src="$1" dest="$2"
+            [ -d "$src" ] || return 0
+            mkdir -p "$dest"
+            # cp -R copies the directory's *contents*; trailing /. is important.
+            cp -R "$src/." "$dest/"
+          }
+
+          # JSON Schemas (input schema + vocab fragments + vocab meta-schema)
+          mirror spec/schemas publish/schemas
+
+          # STAC extensions (and any other schema groups under spec/extensions/)
+          mirror spec/extensions publish/extensions
+
+          # Source controlled vocabularies (the concept lists themselves)
+          mkdir -p publish/vocab
+          find vocab -maxdepth 1 -type f -name '*.json' -exec cp {} publish/vocab/ \;
+
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v3.9.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: publish
+          destination_dir: ${{ github.event.release.tag_name }}
+          keep_files: true
