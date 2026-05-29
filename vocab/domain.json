@@ -1,0 +1,78 @@
+{
+  "$schema": "../spec/schemas/vocab/vocabulary.schema.json",
+  "scheme": {
+    "id": "cdh-domain",
+    "title": "Climate Data Hub Domain Vocabulary",
+    "description": "Controlled vocabulary of high-level CDH domains used for catalog browse, filter, and group-by. The first concept on a record is treated as the primary domain and drives STAC sub-catalog placement. Subsequent concepts enable cross-cutting search.\n",
+    "source_scheme": {
+      "id": "cdh-domain",
+      "uri": "https://cgiar.org/cdh/vocab/domain",
+      "title": "CDH Domain Vocabulary"
+    }
+  },
+  "concepts": [
+    {
+      "id": "agriculture",
+      "label": "Agriculture",
+      "description": "Crop and livestock production, agronomy, food systems, and agricultural land use.\n",
+      "code": null,
+      "uri": null
+    },
+    {
+      "id": "agricultural-production",
+      "label": "Agricultural production",
+      "description": "Production-focused agriculture: yields, harvested area, livestock numbers, and related production statistics.\n",
+      "code": null,
+      "uri": null
+    },
+    {
+      "id": "climate",
+      "label": "Climate",
+      "description": "Observed, reanalysis, projection, and scenario-based climate data including temperature, precipitation, and other climate variables.\n",
+      "code": null,
+      "uri": null
+    },
+    {
+      "id": "adaptation",
+      "label": "Adaptation",
+      "description": "Climate-change adaptation: vulnerability, exposure, risk assessment, and adaptation planning resources.\n",
+      "code": null,
+      "uri": null
+    },
+    {
+      "id": "mitigation",
+      "label": "Mitigation",
+      "description": "Climate-change mitigation: emissions, carbon stocks, sequestration, and mitigation pathways.\n",
+      "code": null,
+      "uri": null
+    },
+    {
+      "id": "water",
+      "label": "Water",
+      "description": "Hydrology, water resources, irrigation, and water-related hazards.\n",
+      "code": null,
+      "uri": null
+    },
+    {
+      "id": "biodiversity",
+      "label": "Biodiversity",
+      "description": "Species, ecosystems, habitat, and biodiversity indicators.\n",
+      "code": null,
+      "uri": null
+    },
+    {
+      "id": "land",
+      "label": "Land",
+      "description": "Land cover, land use, soil, and land-degradation resources.\n",
+      "code": null,
+      "uri": null
+    },
+    {
+      "id": "socioeconomic",
+      "label": "Socioeconomic",
+      "description": "Population, livelihoods, poverty, food security, and socioeconomic indicators relevant to CGIAR research.\n",
+      "code": null,
+      "uri": null
+    }
+  ]
+}

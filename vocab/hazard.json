@@ -1,0 +1,92 @@
+{
+  "$schema": "../spec/schemas/vocab/vocabulary.schema.json",
+  "scheme": {
+    "id": "cdh-agrovoc-hazards",
+    "title": "Climate Data Hub Hazard Vocabulary",
+    "description": "Controlled vocabulary of climate-related hazards used by the Climate Data Hub for metadata validation, filtering, and catalog rendering. Each concept is a friendly Hub name; where applicable, it carries an AGROVOC code and URI.\n",
+    "source_scheme": {
+      "id": "agrovoc",
+      "uri": "https://agrovoc.fao.org/",
+      "title": "AGROVOC"
+    }
+  },
+  "concepts": [
+    {
+      "id": "drought",
+      "label": "Drought",
+      "code": null,
+      "uri": null,
+      "description": "Extended period of unusually low water availability or precipitation deficit affecting agricultural, ecological, or water-resource systems."
+    },
+    {
+      "id": "heat-stress",
+      "label": "Heat stress",
+      "code": null,
+      "uri": null,
+      "description": "Conditions where high temperature creates stress for crops, livestock, people, or ecosystems."
+    },
+    {
+      "id": "cold-stress",
+      "label": "Cold stress",
+      "code": null,
+      "uri": null,
+      "description": "Conditions where low temperature creates stress for crops, livestock, people, or ecosystems."
+    },
+    {
+      "id": "flooding",
+      "label": "Flooding",
+      "code": null,
+      "uri": null,
+      "description": "Temporary inundation of normally dry land from rainfall, river overflow, coastal water, or drainage failure."
+    },
+    {
+      "id": "extreme-precipitation",
+      "label": "Extreme precipitation",
+      "code": null,
+      "uri": null,
+      "description": "Rainfall or snowfall events with unusually high intensity or accumulation."
+    },
+    {
+      "id": "tropical-cyclone",
+      "label": "Tropical cyclone",
+      "code": null,
+      "uri": null,
+      "description": "Storm system with strong winds and heavy precipitation, including tropical storms, hurricanes, cyclones, and typhoons."
+    },
+    {
+      "id": "wildfire",
+      "label": "Wildfire",
+      "code": null,
+      "uri": null,
+      "description": "Uncontrolled fire in vegetation or agricultural landscapes with potential impacts on people, ecosystems, and assets."
+    },
+    {
+      "id": "sea-level-rise",
+      "label": "Sea level rise",
+      "code": null,
+      "uri": null,
+      "description": "Increase in mean sea level that can affect coastal exposure, salinity, flooding, and erosion."
+    },
+    {
+      "id": "salinization",
+      "label": "Salinization",
+      "code": null,
+      "uri": null,
+      "description": "Accumulation of salts in soil or water that can affect agricultural productivity, ecosystems, or water suitability."
+    },
+    {
+      "id": "pest-outbreak",
+      "label": "Pest outbreak",
+      "code": null,
+      "uri": null,
+      "description": "Increase or spread of pest populations that can damage crops, livestock, forests, or stored products."
+    },
+    {
+      "id": "disease-outbreak",
+      "label": "Disease outbreak",
+      "code": null,
+      "uri": null,
+      "description": "Increase or spread of disease affecting crops, livestock, people, or ecosystems."
+    }
+  ]
+}

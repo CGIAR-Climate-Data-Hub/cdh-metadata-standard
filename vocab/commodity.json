@@ -1,0 +1,332 @@
+{
+  "$schema": "../spec/schemas/vocab/vocabulary.schema.json",
+  "scheme": {
+    "id": "cdh-agrovoc-commodities",
+    "title": "Climate Data Hub Commodity Vocabulary",
+    "description": "Controlled vocabulary of commodities used by the Climate Data Hub for metadata validation, filtering, and catalog rendering. Each concept is a friendly Hub name; where applicable, it carries an AGROVOC code and URI.",
+    "source_scheme": {
+      "id": "agrovoc",
+      "uri": "https://agrovoc.fao.org/",
+      "title": "AGROVOC"
+    }
+  },
+  "concepts": [
+    {
+      "id": "arabica-coffee",
+      "label": "Arabica coffee",
+      "code": "c_566",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_566"
+    },
+    {
+      "id": "banana",
+      "label": "Banana",
+      "code": "c_806",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_806"
+    },
+    {
+      "id": "barley",
+      "label": "Barley",
+      "code": null,
+      "uri": null,
+      "description": "Barley commodity or crop category."
+    },
+    {
+      "id": "bean",
+      "label": "Bean",
+      "code": null,
+      "uri": null,
+      "description": "Bean commodity or crop category."
+    },
+    {
+      "id": "cassava",
+      "label": "Cassava",
+      "code": "c_9649",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_9649"
+    },
+    {
+      "id": "chickpea",
+      "label": "Chickpea",
+      "code": null,
+      "uri": null,
+      "description": "Chickpea commodity or crop category."
+    },
+    {
+      "id": "citrus",
+      "label": "Citrus",
+      "code": null,
+      "uri": null,
+      "description": "Citrus commodity or crop category."
+    },
+    {
+      "id": "cocoa",
+      "label": "Cocoa",
+      "code": null,
+      "uri": null,
+      "description": "Cocoa commodity or crop category."
+    },
+    {
+      "id": "coconut",
+      "label": "Coconut",
+      "code": null,
+      "uri": null,
+      "description": "Coconut commodity or crop category."
+    },
+    {
+      "id": "cotton",
+      "label": "Cotton",
+      "code": null,
+      "uri": null,
+      "description": "Cotton commodity or crop category."
+    },
+    {
+      "id": "cowpea",
+      "label": "Cowpea",
+      "code": null,
+      "uri": null,
+      "description": "Cowpea commodity or crop category."
+    },
+    {
+      "id": "groundnut",
+      "label": "Groundnut",
+      "code": null,
+      "uri": null,
+      "description": "Groundnut commodity or crop category."
+    },
+    {
+      "id": "lentil",
+      "label": "Lentil",
+      "code": null,
+      "uri": null,
+      "description": "Lentil commodity or crop category."
+    },
+    {
+      "id": "maize",
+      "label": "Maize",
+      "code": null,
+      "uri": null,
+      "description": "Maize commodity or crop category."
+    },
+    {
+      "id": "oil-palm",
+      "label": "Oil palm",
+      "code": null,
+      "uri": null,
+      "description": "Oil palm commodity or crop category."
+    },
+    {
+      "id": "onion",
+      "label": "Onion",
+      "code": null,
+      "uri": null,
+      "description": "Onion commodity or crop category."
+    },
+    {
+      "id": "other-cereals",
+      "label": "Other cereals",
+      "code": null,
+      "uri": null,
+      "description": "Cereal commodities not represented by a more specific CDH commodity concept."
+    },
+    {
+      "id": "other-fibre-crops",
+      "label": "Other fibre crops",
+      "code": null,
+      "uri": null,
+      "description": "Fibre crop commodities not represented by a more specific CDH commodity concept."
+    },
+    {
+      "id": "other-oil-crops",
+      "label": "Other oil crops",
+      "code": null,
+      "uri": null,
+      "description": "Oil crop commodities not represented by a more specific CDH commodity concept."
+    },
+    {
+      "id": "other-pulses",
+      "label": "Other pulses",
+      "code": null,
+      "uri": null,
+      "description": "Pulse commodities not represented by a more specific CDH commodity concept."
+    },
+    {
+      "id": "other-roots",
+      "label": "Other roots",
+      "code": null,
+      "uri": null,
+      "description": "Root and tuber commodities not represented by a more specific CDH commodity concept."
+    },
+    {
+      "id": "other-tropical-fruit",
+      "label": "Other tropical fruit",
+      "code": null,
+      "uri": null,
+      "description": "Tropical fruit commodities not represented by a more specific CDH commodity concept."
+    },
+    {
+      "id": "other-vegetables",
+      "label": "Other vegetables",
+      "code": null,
+      "uri": null,
+      "description": "Vegetable commodities not represented by a more specific CDH commodity concept."
+    },
+    {
+      "id": "pearl-millet",
+      "label": "Pearl millet",
+      "code": null,
+      "uri": null,
+      "description": "Pearl millet commodity or crop category."
+    },
+    {
+      "id": "pigeon-pea",
+      "label": "Pigeon pea",
+      "code": null,
+      "uri": null,
+      "description": "Pigeon pea commodity or crop category."
+    },
+    {
+      "id": "plantain",
+      "label": "Plantain",
+      "code": null,
+      "uri": null,
+      "description": "Plantain commodity or crop category."
+    },
+    {
+      "id": "potato",
+      "label": "Potato",
+      "code": null,
+      "uri": null,
+      "description": "Potato commodity or crop category."
+    },
+    {
+      "id": "rapeseed",
+      "label": "Rapeseed",
+      "code": null,
+      "uri": null,
+      "description": "Rapeseed commodity or crop category."
+    },
+    {
+      "id": "rest-of-crops",
+      "label": "Rest of crops",
+      "code": null,
+      "uri": null,
+      "description": "Crop commodities not represented by a more specific CDH commodity concept."
+    },
+    {
+      "id": "rice",
+      "label": "Rice",
+      "code": null,
+      "uri": null,
+      "description": "Rice commodity or crop category."
+    },
+    {
+      "id": "robusta-coffee",
+      "label": "Robusta coffee",
+      "code": "c_6626",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_6626"
+    },
+    {
+      "id": "rubber",
+      "label": "Rubber",
+      "code": null,
+      "uri": null,
+      "description": "Rubber commodity or crop category."
+    },
+    {
+      "id": "sesame",
+      "label": "Sesame seed",
+      "code": null,
+      "uri": null,
+      "description": "Sesame seed commodity or crop category."
+    },
+    {
+      "id": "small-millet",
+      "label": "Small millet",
+      "code": null,
+      "uri": null,
+      "description": "Small millet commodity or crop category."
+    },
+    {
+      "id": "sorghum",
+      "label": "Sorghum",
+      "code": null,
+      "uri": null,
+      "description": "Sorghum commodity or crop category."
+    },
+    {
+      "id": "soybean",
+      "label": "Soybean",
+      "code": null,
+      "uri": null,
+      "description": "Soybean commodity or crop category."
+    },
+    {
+      "id": "sugarbeet",
+      "label": "Sugarbeet",
+      "code": null,
+      "uri": null,
+      "description": "Sugarbeet commodity or crop category."
+    },
+    {
+      "id": "sugarcane",
+      "label": "Sugarcane",
+      "code": null,
+      "uri": null,
+      "description": "Sugarcane commodity or crop category."
+    },
+    {
+      "id": "sunflower",
+      "label": "Sunflower",
+      "code": null,
+      "uri": null,
+      "description": "Sunflower commodity or crop category."
+    },
+    {
+      "id": "sweet-potatoes",
+      "label": "Sweet potatoes",
+      "code": "c_14729",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_14729"
+    },
+    {
+      "id": "tea",
+      "label": "Tea",
+      "code": null,
+      "uri": null,
+      "description": "Tea commodity or crop category."
+    },
+    {
+      "id": "temperate-fruit",
+      "label": "Temperate fruit",
+      "code": null,
+      "uri": null,
+      "description": "Temperate fruit commodity or crop category."
+    },
+    {
+      "id": "tobacco",
+      "label": "Tobacco",
+      "code": null,
+      "uri": null,
+      "description": "Tobacco commodity or crop category."
+    },
+    {
+      "id": "tomato",
+      "label": "Tomato",
+      "code": null,
+      "uri": null,
+      "description": "Tomato commodity or crop category."
+    },
+    {
+      "id": "wheat",
+      "label": "Wheat",
+      "code": null,
+      "uri": null,
+      "description": "Wheat commodity or crop category."
+    },
+    {
+      "id": "yams",
+      "label": "Yams",
+      "code": null,
+      "uri": null,
+      "description": "Yams commodity or crop category."
+    }
+  ]
+}

@@ -29,6 +29,21 @@ validated and serialized to STAC or OGC API Records.
 
 Controlled vocabularies live in [vocab/](./vocab):
 
-- [domain.yaml](./vocab/domain.yaml)
-- [commodity.yaml](./vocab/commodity.yaml)
-- [hazard.yaml](./vocab/hazard.yaml)
+- [domain.json](./vocab/domain.json)
+- [commodity.json](./vocab/commodity.json)
+- [hazard.json](./vocab/hazard.json)
+
+Vocabulary files are validated against
+[spec/schemas/vocab/vocabulary.schema.json](./spec/schemas/vocab/vocabulary.schema.json).
+
+After editing a vocabulary, regenerate the schema fragments:
+
+```sh
+just schemas
+```
+
+Or run the generator directly:
+
+```sh
+python scripts/generate-vocab-schemas.py
+```
