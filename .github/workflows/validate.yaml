@@ -1,0 +1,36 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # Internal checks: schema regeneration, vocab validation, schema compilation,
+  # markdown lint. These only make sense inside the standard repo.
+  internal:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run check-schemas
+      - run: npm run check-vocabs
+      - run: npm run compile-schemas
+      - run: npm run check-markdown
+
+  # Validate this repo's own YAML records (spec/standard.yaml + examples/)
+  # via the reusable workflow, so the reusable surface is exercised on every
+  # push to main.
+  records:
+    uses: ./.github/workflows/validate-records.yaml
+    with:
+      path: spec/standard.yaml
+      tooling-repository: ${{ github.repository }}
+      tooling-ref: ${{ github.sha }}
