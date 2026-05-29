@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cgiar.org/cdh/schemas/vocab/vocabulary.schema.json",
   "title": "CDH Vocabulary File Schema",
   "description": "Validates the JSON source files in vocab/.",
@@ -16,7 +16,7 @@
       "required": ["id", "title", "description", "source_scheme"],
       "properties": {
         "id": {
-          "$ref": "#/definitions/id"
+          "$ref": "#/$defs/id"
         },
         "title": {
           "type": "string",
@@ -32,7 +32,7 @@
           "required": ["id", "uri", "title"],
           "properties": {
             "id": {
-              "$ref": "#/definitions/id"
+              "$ref": "#/$defs/id"
             },
             "uri": {
               "type": "string",
@@ -76,7 +76,7 @@
         ],
         "properties": {
           "id": {
-            "$ref": "#/definitions/id"
+            "$ref": "#/$defs/id"
           },
           "label": {
             "type": "string",
@@ -110,7 +110,7 @@
       }
     }
   },
-  "definitions": {
+  "$defs": {
     "id": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]*$"
