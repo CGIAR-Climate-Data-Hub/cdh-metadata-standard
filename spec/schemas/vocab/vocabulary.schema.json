@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cgiar.org/cdh/schemas/vocab/vocabulary.schema.json",
+  "title": "CDH Vocabulary File Schema",
+  "description": "Validates the JSON source files in vocab/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["scheme", "concepts"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "scheme": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "description", "source_scheme"],
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_scheme": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["id", "uri", "title"],
+          "properties": {
+            "id": {
+              "$ref": "#/definitions/id"
+            },
+            "uri": {
+              "type": "string",
+              "format": "uri"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "concepts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "code", "uri"],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "uri": {
+                  "const": null
+                }
+              },
+              "required": ["uri"]
+            },
+            "then": {
+              "required": ["description"],
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/definitions/id"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string"
+          },
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "uri": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "format": "uri"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    }
+  }
+}
