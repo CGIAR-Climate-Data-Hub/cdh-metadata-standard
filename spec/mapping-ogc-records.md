@@ -67,7 +67,8 @@ identical to the STAC profile.
 | `created` / `updated`          | `properties.created` / `properties.updated`                                         |
 | `keywords`                     | `properties.keywords`                                                               |
 | `cdh.domain[]`                 | `properties["cgiar-cdh:domain"]`; also expanded into `properties.themes` under the CDH domain scheme. First entry is the primary domain. |
-| `themes[]` (optional)          | `properties.themes` — auto-populated by the encoder from `cdh.domain`, `cdh.commodities`, `cdh.climate.hazards`. Author-added entries require resolvable `scheme` URI + per-concept `url` + `description`. |
+| `keywords[]` (linked items)    | Each linked-keyword entry (`{ term, scheme, uri }`) is also emitted as a `properties.themes` concept, grouped by `scheme`. Plain-string keywords are emitted only into `properties.keywords`. |
+| `properties.themes`            | Encoder output only — populated from `cdh.domain`, `cdh.commodities`, `cdh.climate.hazards`, and any linked-keyword entries. Not an author-facing input field. |
 | `license`                      | `properties.license`                                                                |
 | `license_holder`               | `properties.contacts[]` with `roles: [licensor]`                                    |
 | `contact[]`                    | `properties.contacts[]`                                                             |

@@ -138,7 +138,7 @@ Choose where the record will be serialized.
 
 The main CDH category used for browsing, filtering, and catalog placement.
 
-Use values from `vocab/domain.yaml`. Put the primary domain first.
+Use values from `vocab/domain.json`. Put the primary domain first.
 
 ```yaml
 cdh:
@@ -238,6 +238,31 @@ Common fields:
 - `spatial.geography`
 - `spatial.crs`
 - `spatial.resolution`
+
+`spatial.bbox` is a list of bounding boxes in WGS84 (EPSG:4326). Order is
+SW-corner-first, then NE-corner, **axis-interleaved**:
+
+- 2D: `[west, south, east, north]` = `[xmin, ymin, xmax, ymax]`
+- 3D: `[west, south, min_z, east, north, max_z]` (elevation in metres)
+
+The first entry is the overall extent; only add more entries if the union
+would otherwise leave a large uncovered area (e.g., Germany + Chile).
+
+When converting from common tools, watch the axis order — STAC interleaves
+axes, several tools do not:
+
+| From                                | Output order                  | CDH bbox                         |
+| ----------------------------------- | ----------------------------- | -------------------------------- |
+| R `terra::ext(r)`                   | `xmin, xmax, ymin, ymax`      | `[xmin, ymin, xmax, ymax]`       |
+| R `sf::st_bbox(x)`                  | `xmin, ymin, xmax, ymax`      | `[xmin, ymin, xmax, ymax]`       |
+| Python `rasterio.bounds`            | `left, bottom, right, top`    | `[left, bottom, right, top]`     |
+| GDAL `gdalinfo` corners             | `ulx, uly, lrx, lry`          | `[ulx, lry, lrx, uly]`           |
+
+```yaml
+spatial:
+  bbox:
+    - [-180.0, -90.0, 180.0, 90.0]   # whole Earth
+```
 
 If `spatial.bbox` or `spatial.crs` is omitted for a geospatial STAC record, the
 CDH review process may add it when it can be determined from the asset URL,
@@ -348,15 +373,27 @@ Common examples:
 Use `cdh.commodities` for agriculture, food-systems, livestock, and crop
 resources.
 
-Use values from `vocab/commodity.yaml`.
+Use values from `vocab/commodity.json`.
 
-### Themes
+### Linking keywords to an ontology
 
-Most authors can skip `themes`.
+There is no author-facing `themes` field. The encoder builds the
+serialized themes block from `cdh.domain`, `cdh.commodities`, and
+`cdh.climate.hazards`, plus any linked entries in `keywords`.
 
-The encoder usually creates themes from `cdh.domain`, `cdh.commodities`, and
-`cdh.climate.hazards`. Add manual themes only when you need extra ontology links
-and can provide real scheme and concept URLs.
+To attach an external ontology link (AGROVOC, GEMET, etc.) to a keyword,
+use the object form:
+
+```yaml
+keywords:
+  - term: Food security
+    scheme: https://www.eionet.europa.eu/gemet/
+    uri: https://www.eionet.europa.eu/gemet/en/concept/1838
+    description: Availability of food and access to it.
+```
+
+Plain-string keywords stay full-text-only. Both forms can be mixed in the
+same list.
 
 ### Additional Assets and Links
 

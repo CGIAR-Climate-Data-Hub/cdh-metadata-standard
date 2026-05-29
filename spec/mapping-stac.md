@@ -75,7 +75,8 @@ searchable structured facts.
 | `previous_version`               | `links[rel=predecessor-version]`; mark prior record `deprecated: true`         |
 | `funding[]`                      | `cgiar-cdh:funding`                                                            |
 | `cdh.domain[]`                   | `cgiar-cdh:domain` on the Collection; also expanded into Themes Extension `themes[]` under the CDH domain scheme. First entry drives sub-catalog placement. |
-| `themes[]` (optional)            | Themes Extension `themes[]` — auto-populated by the encoder from `cdh.domain`, `cdh.commodities`, `cdh.climate.hazards`. Author-added entries require resolvable `scheme` URI + per-concept `url` + `description`. |
+| `keywords[]` (linked items)      | Each linked-keyword entry (`{ term, scheme, uri }`) is also emitted as a Themes Extension `themes[]` concept, grouped by `scheme`. Plain-string keywords are emitted only into STAC `keywords`. |
+| Themes Extension `themes[]`      | Encoder output only — populated from `cdh.domain`, `cdh.commodities`, `cdh.climate.hazards`, and any linked-keyword entries. Not an author-facing input field. |
 
 ### 4.2 Resource type
 
