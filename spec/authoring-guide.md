@@ -14,20 +14,20 @@ resource without opening the files.
 
 Fill these first:
 
-- `id`
-- `title`
-- `description`
-- `resource_type`
-- `encoding`
-- `cdh.domain`
-- `keywords`
-- `license`
-- `license_holder`
-- `contact`
-- `citation`
-- `created`
-- `updated`
-- `data`
+* `id`
+* `title`
+* `description`
+* `resource_type`
+* `encoding`
+* `cdh.domain`
+* `keywords`
+* `license`
+* `license_holder`
+* `contact`
+* `citation`
+* `created`
+* `updated`
+* `data`
 
 Then add only the sections that apply to the resource.
 
@@ -38,16 +38,16 @@ record feel complicated. If a field does not apply, leave it out.
 
 A useful record lets a person or an automated tool answer:
 
-- What is this resource?
-- What can it be used for?
-- Who produced or maintains it?
-- How should it be cited?
-- What license applies?
-- Where can the data, code, or documentation be found?
-- What geography and time period does it cover?
-- What variables, units, dimensions, or classes does it contain?
-- What sources and processing created it?
-- What limitations or caveats matter?
+* What is this resource?
+* What can it be used for?
+* Who produced or maintains it?
+* How should it be cited?
+* What license applies?
+* Where can the data, code, or documentation be found?
+* What geography and time period does it cover?
+* What variables, units, dimensions, or classes does it contain?
+* What sources and processing created it?
+* What limitations or caveats matter?
 
 ## Minimum Record
 
@@ -114,24 +114,24 @@ What kind of thing the record describes.
 
 Common values:
 
-- `dataset`
-- `document`
-- `model`
-- `notebook`
-- `code`
-- `service`
-- `dashboard`
-- `api`
-- `method`
-- `knowledge-product`
+* `dataset`
+* `document`
+* `model`
+* `notebook`
+* `code`
+* `service`
+* `dashboard`
+* `api`
+* `method`
+* `knowledge-product`
 
 ### `encoding`
 
 Choose where the record will be serialized.
 
-- Use `stac` for spatial, temporal, gridded, raster, vector, tabular, and
+* Use `stac` for spatial, temporal, gridded, raster, vector, tabular, and
   data-cube resources.
-- Use `ogc-records` for documents, code, models, notebooks, dashboards,
+* Use `ogc-records` for documents, code, models, notebooks, dashboards,
   services, APIs, methods, and other non-spatial resources.
 
 ### `cdh.domain`
@@ -218,13 +218,13 @@ data:
     media_type: application/vnd.apache.parquet
 ```
 
-If you know the media type or file size, provide it. If either value is
-missing, the CDH review process may add it when it can be determined from the
-asset URL, file extension, or inspectable metadata. Serialized records must
-contain the required values, whether supplied by the contributor or added during
-CDH review. This is not guaranteed for extensionless URLs, signed URLs, APIs,
-landing pages, directories, object-store prefixes, ambiguous formats, Zarr
-stores, or other multi-file resources.
+If you know the media type or file size, provide it. If either value is missing,
+the CDH review process may add it when it can be determined from the asset URL,
+file extension, or inspectable metadata. Serialized records must contain the
+required values, whether supplied by the contributor or added during CDH review.
+This is not guaranteed for extensionless URLs, signed URLs, APIs, landing pages,
+directories, object-store prefixes, ambiguous formats, Zarr stores, or other
+multi-file resources.
 
 ## Add These Only When They Apply
 
@@ -234,42 +234,42 @@ Use `spatial` when the resource has geographic coverage or geospatial assets.
 
 Common fields:
 
-- `spatial.bbox`
-- `spatial.geography`
-- `spatial.crs`
-- `spatial.resolution`
+* `spatial.bbox`
+* `spatial.geography`
+* `spatial.crs`
+* `spatial.resolution`
 
 `spatial.bbox` is a list of bounding boxes in WGS84 (EPSG:4326). Order is
 SW-corner-first, then NE-corner, **axis-interleaved**:
 
-- 2D: `[west, south, east, north]` = `[xmin, ymin, xmax, ymax]`
-- 3D: `[west, south, min_z, east, north, max_z]` (elevation in metres)
+* 2D: `[west, south, east, north]` = `[xmin, ymin, xmax, ymax]`
+* 3D: `[west, south, min_z, east, north, max_z]` (elevation in metres)
 
-The first entry is the overall extent; only add more entries if the union
-would otherwise leave a large uncovered area (e.g., Germany + Chile).
+The first entry is the overall extent; only add more entries if the union would
+otherwise leave a large uncovered area (e.g., Germany + Chile).
 
-When converting from common tools, watch the axis order — STAC interleaves
-axes, several tools do not:
+When converting from common tools, watch the axis order — STAC interleaves axes,
+several tools do not:
 
-| From                                | Output order                  | CDH bbox                         |
-| ----------------------------------- | ----------------------------- | -------------------------------- |
-| R `terra::ext(r)`                   | `xmin, xmax, ymin, ymax`      | `[xmin, ymin, xmax, ymax]`       |
-| R `sf::st_bbox(x)`                  | `xmin, ymin, xmax, ymax`      | `[xmin, ymin, xmax, ymax]`       |
-| Python `rasterio.bounds`            | `left, bottom, right, top`    | `[left, bottom, right, top]`     |
-| GDAL `gdalinfo` corners             | `ulx, uly, lrx, lry`          | `[ulx, lry, lrx, uly]`           |
+| From                     | Output order               | CDH bbox                     |
+| ------------------------ | -------------------------- | ---------------------------- |
+| R `terra::ext(r)`        | `xmin, xmax, ymin, ymax`   | `[xmin, ymin, xmax, ymax]`   |
+| R `sf::st_bbox(x)`       | `xmin, ymin, xmax, ymax`   | `[xmin, ymin, xmax, ymax]`   |
+| Python `rasterio.bounds` | `left, bottom, right, top` | `[left, bottom, right, top]` |
+| GDAL `gdalinfo` corners  | `ulx, uly, lrx, lry`       | `[ulx, lry, lrx, uly]`       |
 
 ```yaml
 spatial:
   bbox:
-    - [-180.0, -90.0, 180.0, 90.0]   # whole Earth
+    - [-180.0, -90.0, 180.0, 90.0] # whole Earth
 ```
 
 If `spatial.bbox` or `spatial.crs` is omitted for a geospatial STAC record, the
-CDH review process may add it when it can be determined from the asset URL,
-file extension, or inspectable metadata. Serialized records must contain the
-required values, whether supplied by the contributor or added during CDH review.
-Provide these fields when you know them, especially for multi-asset records or
-when the first asset is not representative.
+CDH review process may add it when it can be determined from the asset URL, file
+extension, or inspectable metadata. Serialized records must contain the required
+values, whether supplied by the contributor or added during CDH review. Provide
+these fields when you know them, especially for multi-asset records or when the
+first asset is not representative.
 
 ### Temporal
 
@@ -278,9 +278,9 @@ period, or recurring observations.
 
 Common fields:
 
-- `temporal.start_date`
-- `temporal.end_date`
-- `temporal.resolution`
+* `temporal.start_date`
+* `temporal.end_date`
+* `temporal.resolution`
 
 ### Variables
 
@@ -304,10 +304,10 @@ variables:
 
 For each variable:
 
-- Use `description` for what the variable measures.
-- Include the normal reading guidance in `description` when direction matters.
-- Use `note` for variable-specific limitations, caveats, or warnings.
-- Use the record-level `note` for dataset-wide limitations.
+* Use `description` for what the variable measures.
+* Include the normal reading guidance in `description` when direction matters.
+* Use `note` for variable-specific limitations, caveats, or warnings.
+* Use the record-level `note` for dataset-wide limitations.
 
 For inspectable files, the CDH review process may add technical details such as
 column names, data types, bands, nodata values, or dimensions when they can be
@@ -360,13 +360,13 @@ applies.
 
 Common examples:
 
-- `cdh.climate.hazards`
-- `cdh.climate.scenarios`
-- `cdh.climate.models`
-- `cdh.climate.mip_era`
-- `cdh.climate.baseline`
-- `cdh.climate.bias_adjustment`
-- `cdh.climate.downscaling`
+* `cdh.climate.hazards`
+* `cdh.climate.scenarios`
+* `cdh.climate.models`
+* `cdh.climate.mip_era`
+* `cdh.climate.baseline`
+* `cdh.climate.bias_adjustment`
+* `cdh.climate.downscaling`
 
 ### Commodities
 
@@ -377,12 +377,12 @@ Use values from `vocab/commodity.json`.
 
 ### Linking keywords to an ontology
 
-There is no author-facing `themes` field. The encoder builds the
-serialized themes block from `cdh.domain`, `cdh.commodities`, and
-`cdh.climate.hazards`, plus any linked entries in `keywords`.
+There is no author-facing `themes` field. The encoder builds the serialized
+themes block from `cdh.domain`, `cdh.commodities`, and `cdh.climate.hazards`,
+plus any linked entries in `keywords`.
 
-To attach an external ontology link (AGROVOC, GEMET, etc.) to a keyword,
-use the object form:
+To attach an external ontology link (AGROVOC, GEMET, etc.) to a keyword, use the
+object form:
 
 ```yaml
 keywords:
@@ -392,8 +392,8 @@ keywords:
     description: Availability of food and access to it.
 ```
 
-Plain-string keywords stay full-text-only. Both forms can be mixed in the
-same list.
+Plain-string keywords stay full-text-only. Both forms can be mixed in the same
+list.
 
 ### Additional Assets and Links
 
@@ -411,24 +411,24 @@ contributor or added during CDH review.
 The CDH review process may help fill technical facts from inspectable assets,
 but authors must provide the curatorial facts:
 
-- `title`
-- `description`
-- `license`
-- `citation`
-- `cdh.domain`
-- `cdh.commodities`
-- `cdh.climate.*`
-- variable meaning, units, reading guidance, and caveats
-- whether a record should be published
+* `title`
+* `description`
+* `license`
+* `citation`
+* `cdh.domain`
+* `cdh.commodities`
+* `cdh.climate.*`
+* variable meaning, units, reading guidance, and caveats
+* whether a record should be published
 
 ## What To Leave Out
 
 Leave a field out when:
 
-- It does not apply to the resource.
-- The value would only repeat another field.
-- The information is unknown and not required.
-- The detail belongs in a sidecar file because it is long, nested, or likely to
+* It does not apply to the resource.
+* The value would only repeat another field.
+* The information is unknown and not required.
+* The detail belongs in a sidecar file because it is long, nested, or likely to
   change.
 
 Avoid inventing new fields. If an important fact has no place in the template,
@@ -451,9 +451,9 @@ first check the formal standard, then consider whether it belongs in
 
 Before publishing, check:
 
-- The title and description are understandable without opening the data.
-- Search and filter facts are in structured fields, not only prose.
-- Variables have units and plain-language meaning.
-- Important caveats are in `note`.
-- Data, code, documentation, citation, and license links are stable.
-- Optional fields are omitted when they do not apply.
+* The title and description are understandable without opening the data.
+* Search and filter facts are in structured fields, not only prose.
+* Variables have units and plain-language meaning.
+* Important caveats are in `note`.
+* Data, code, documentation, citation, and license links are stable.
+* Optional fields are omitted when they do not apply.
