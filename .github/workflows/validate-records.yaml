@@ -41,10 +41,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out caller repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Check out CDH tooling
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ${{ inputs.tooling-repository }}
           ref: ${{ inputs.tooling-ref }}
@@ -52,7 +52,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: _cdh-tooling/package-lock.json
 
