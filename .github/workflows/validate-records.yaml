@@ -27,8 +27,8 @@ on:
       tooling-repository:
         description: |
           GitHub repo providing the schemas + validator. Override when calling
-          from a fork of this repo (set to ${{ github.repository }}) so the
-          fork's CI tests its own changes instead of upstream.
+           from a fork of this repo (set it to the fork's own github.repository)
+           so the fork's CI tests its own changes instead of upstream.
         required: false
         default: CGIAR-Climate-Data-Hub/metadata
         type: string
