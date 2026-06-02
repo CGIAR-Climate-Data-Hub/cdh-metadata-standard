@@ -14,20 +14,20 @@ resource without opening the files.
 
 Fill these first:
 
-* `id`
-* `title`
-* `description`
-* `resource_type`
-* `encoding`
-* `cdh.domain`
-* `keywords`
-* `license`
-* `license_holder`
-* `contact`
-* `citation`
-* `created`
-* `updated`
-* `data`
+- `id`
+- `title`
+- `description`
+- `resource_type`
+- `encoding`
+- `cdh.domain`
+- `keywords`
+- `license`
+- `license_holder`
+- `contact`
+- `citation`
+- `created`
+- `updated`
+- `data`
 
 Then add only the sections that apply to the resource.
 
@@ -38,16 +38,16 @@ record feel complicated. If a field does not apply, leave it out.
 
 A useful record lets a person or an automated tool answer:
 
-* What is this resource?
-* What can it be used for?
-* Who produced or maintains it?
-* How should it be cited?
-* What license applies?
-* Where can the data, code, or documentation be found?
-* What geography and time period does it cover?
-* What variables, units, dimensions, or classes does it contain?
-* What sources and processing created it?
-* What limitations or caveats matter?
+- What is this resource?
+- What can it be used for?
+- Who produced or maintains it?
+- How should it be cited?
+- What license applies?
+- Where can the data, code, or documentation be found?
+- What geography and time period does it cover?
+- What variables, units, dimensions, or classes does it contain?
+- What sources and processing created it?
+- What limitations or caveats matter?
 
 ## Minimum Record
 
@@ -114,24 +114,24 @@ What kind of thing the record describes.
 
 Common values:
 
-* `dataset`
-* `document`
-* `model`
-* `notebook`
-* `code`
-* `service`
-* `dashboard`
-* `api`
-* `method`
-* `knowledge-product`
+- `dataset`
+- `document`
+- `model`
+- `notebook`
+- `code`
+- `service`
+- `dashboard`
+- `api`
+- `method`
+- `knowledge-product`
 
 ### `encoding`
 
 Choose where the record will be serialized.
 
-* Use `stac` for spatial, temporal, gridded, raster, vector, tabular, and
+- Use `stac` for spatial, temporal, gridded, raster, vector, tabular, and
   data-cube resources.
-* Use `ogc-records` for documents, code, models, notebooks, dashboards,
+- Use `ogc-records` for documents, code, models, notebooks, dashboards,
   services, APIs, methods, and other non-spatial resources.
 
 ### `cdh.domain`
@@ -234,16 +234,16 @@ Use `spatial` when the resource has geographic coverage or geospatial assets.
 
 Common fields:
 
-* `spatial.bbox`
-* `spatial.geography`
-* `spatial.crs`
-* `spatial.resolution`
+- `spatial.bbox`
+- `spatial.geography`
+- `spatial.crs`
+- `spatial.resolution`
 
 `spatial.bbox` is a list of bounding boxes in WGS84 (EPSG:4326). Order is
 SW-corner-first, then NE-corner, **axis-interleaved**:
 
-* 2D: `[west, south, east, north]` = `[xmin, ymin, xmax, ymax]`
-* 3D: `[west, south, min_z, east, north, max_z]` (elevation in metres)
+- 2D: `[west, south, east, north]` = `[xmin, ymin, xmax, ymax]`
+- 3D: `[west, south, min_z, east, north, max_z]` (elevation in metres)
 
 The first entry is the overall extent; only add more entries if the union would
 otherwise leave a large uncovered area (e.g., Germany + Chile).
@@ -278,9 +278,9 @@ period, or recurring observations.
 
 Common fields:
 
-* `temporal.start_date`
-* `temporal.end_date`
-* `temporal.resolution`
+- `temporal.start_date`
+- `temporal.end_date`
+- `temporal.resolution`
 
 ### Variables
 
@@ -304,10 +304,10 @@ variables:
 
 For each variable:
 
-* Use `description` for what the variable measures.
-* Include the normal reading guidance in `description` when direction matters.
-* Use `note` for variable-specific limitations, caveats, or warnings.
-* Use the record-level `note` for dataset-wide limitations.
+- Use `description` for what the variable measures.
+- Include the normal reading guidance in `description` when direction matters.
+- Use `note` for variable-specific limitations, caveats, or warnings.
+- Use the record-level `note` for dataset-wide limitations.
 
 For inspectable files, the CDH review process may add technical details such as
 column names, data types, bands, nodata values, or dimensions when they can be
@@ -360,13 +360,13 @@ applies.
 
 Common examples:
 
-* `cdh.climate.hazards`
-* `cdh.climate.scenarios`
-* `cdh.climate.models`
-* `cdh.climate.mip_era`
-* `cdh.climate.baseline`
-* `cdh.climate.bias_adjustment`
-* `cdh.climate.downscaling`
+- `cdh.climate.hazards`
+- `cdh.climate.scenarios`
+- `cdh.climate.models`
+- `cdh.climate.mip_era`
+- `cdh.climate.baseline`
+- `cdh.climate.bias_adjustment`
+- `cdh.climate.downscaling`
 
 ### Commodities
 
@@ -411,24 +411,24 @@ contributor or added during CDH review.
 The CDH review process may help fill technical facts from inspectable assets,
 but authors must provide the curatorial facts:
 
-* `title`
-* `description`
-* `license`
-* `citation`
-* `cdh.domain`
-* `cdh.commodities`
-* `cdh.climate.*`
-* variable meaning, units, reading guidance, and caveats
-* whether a record should be published
+- `title`
+- `description`
+- `license`
+- `citation`
+- `cdh.domain`
+- `cdh.commodities`
+- `cdh.climate.*`
+- variable meaning, units, reading guidance, and caveats
+- whether a record should be published
 
 ## What To Leave Out
 
 Leave a field out when:
 
-* It does not apply to the resource.
-* The value would only repeat another field.
-* The information is unknown and not required.
-* The detail belongs in a sidecar file because it is long, nested, or likely to
+- It does not apply to the resource.
+- The value would only repeat another field.
+- The information is unknown and not required.
+- The detail belongs in a sidecar file because it is long, nested, or likely to
   change.
 
 Avoid inventing new fields. If an important fact has no place in the template,
@@ -451,9 +451,9 @@ first check the formal standard, then consider whether it belongs in
 
 Before publishing, check:
 
-* The title and description are understandable without opening the data.
-* Search and filter facts are in structured fields, not only prose.
-* Variables have units and plain-language meaning.
-* Important caveats are in `note`.
-* Data, code, documentation, citation, and license links are stable.
-* Optional fields are omitted when they do not apply.
+- The title and description are understandable without opening the data.
+- Search and filter facts are in structured fields, not only prose.
+- Variables have units and plain-language meaning.
+- Important caveats are in `note`.
+- Data, code, documentation, citation, and license links are stable.
+- Optional fields are omitted when they do not apply.

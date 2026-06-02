@@ -12,10 +12,10 @@ levels are authoritative in `standard.md`; this document is authoritative for
 Use STAC when the resource has meaningful spatial, temporal, asset-level,
 variable-level, or data-cube discovery needs. Typical cases:
 
-* Rasters, COGs, Zarr, NetCDF, GeoParquet
-* Data cubes and gridded climate products
-* Spatial vector assets, spatial/temporal tabular assets
-* APIs for access to geospatial data
+- Rasters, COGs, Zarr, NetCDF, GeoParquet
+- Data cubes and gridded climate products
+- Spatial vector assets, spatial/temporal tabular assets
+- APIs for access to geospatial data
 
 The `encoding` field in `standard.yaml` is authoritative for routing. Set
 `encoding: stac` to use this mapping.
@@ -101,12 +101,12 @@ consistency when the record could also be expressed as an OGC API Record.
 
 Choice of extension depends on the primary asset format:
 
-* **Data cube / Zarr / NetCDF / multi-dimensional**: Datacube Extension.
-  * `dimensions[]` → `cube:dimensions`
-  * `variables[]` → `cube:variables`
-* **COG / GeoTIFF raster bands**: Raster Extension `raster:bands` on the asset,
+- **Data cube / Zarr / NetCDF / multi-dimensional**: Datacube Extension.
+  - `dimensions[]` → `cube:dimensions`
+  - `variables[]` → `cube:variables`
+- **COG / GeoTIFF raster bands**: Raster Extension `raster:bands` on the asset,
   in addition to Datacube when both apply.
-* **Tabular (Parquet, CSV, vector)**: Table Extension `table:columns`;
+- **Tabular (Parquet, CSV, vector)**: Table Extension `table:columns`;
   `table:primary_geometry` for `geography.column`; optional `table:row_count`.
 
 `classes[]` → Classification Extension `classification:classes` on the relevant
@@ -121,15 +121,15 @@ Asset depending on which level the join applies to.
 
 Decision rules:
 
-* **Collection-level field** when the value is an authoritative statement about
+- **Collection-level field** when the value is an authoritative statement about
   the whole resource (e.g., `title`, `license`, `extent`, `sci:citation`).
-* **`summaries`** when the value describes the set of values available across
+- **`summaries`** when the value describes the set of values available across
   Items / Assets / variables (e.g., available scenarios, available commodities,
   per-Item resolutions). Required Collection metadata MUST NOT live only in
   `summaries`.
-* **Item-level field** when the value varies per Item and Item-level discovery
+- **Item-level field** when the value varies per Item and Item-level discovery
   is needed (`datetime`, `bbox`, `geometry`, per-Item variables).
-* **Asset-level field** when the value describes a specific file or access
+- **Asset-level field** when the value describes a specific file or access
   endpoint (`file:size`, `file:checksum`, asset `roles`, `type`).
 
 ### 4.6 CDH-specific fields
@@ -154,17 +154,17 @@ values also appear in `themes` for ontology-aware discovery.
 
 Every asset SHOULD include:
 
-* `href`
-* `title`
-* `type` (media type)
-* `roles`
-* `description` if the asset is not self-explanatory
+- `href`
+- `title`
+- `type` (media type)
+- `roles`
+- `description` if the asset is not self-explanatory
 
 Recommended file metadata:
 
-* File Extension `file:size` in bytes — required for primary data assets
-* File Extension `file:checksum` — recommended for large or generated assets
-* Alternate Assets Extension when multiple access paths exist
+- File Extension `file:size` in bytes — required for primary data assets
+- File Extension `file:checksum` — recommended for large or generated assets
+- Alternate Assets Extension when multiple access paths exist
 
 ### 5.1 Asset roles
 
@@ -210,9 +210,9 @@ the data.
 Encoding rules:
 
 1. The `source` step maps to **Collection-level** Processing Extension fields:
-   * `processing:lineage` ← `description`
-   * `processing:datetime` ← `date`
-   * `processing:software` ← `{ <code.url basename>: code.version }`
+   - `processing:lineage` ← `description`
+   - `processing:datetime` ← `date`
+   - `processing:software` ← `{ <code.url basename>: code.version }`
 2. The `source` step's `code.url` maps to `links[rel=processing-expression]` on
    the Collection. Include `cgiar-cdh:code_version` on the link.
 3. The `source` step's `derived_from[].url` entries map to
@@ -230,8 +230,8 @@ Encoding rules:
 
 For STAC validation to pass:
 
-* Every declared extension URI in `stac_extensions` MUST be valid and pinned.
-* Every `cgiar-cdh:*` field MUST be defined in the CDH STAC Extension schema.
+- Every declared extension URI in `stac_extensions` MUST be valid and pinned.
+- Every `cgiar-cdh:*` field MUST be defined in the CDH STAC Extension schema.
   Adding undefined `cgiar-cdh:*` fields will fail validation.
-* File sizes, checksums, and projection codes SHOULD be present on assets that
+- File sizes, checksums, and projection codes SHOULD be present on assets that
   need them.

@@ -1,5 +1,11 @@
 # Taken from: https://github.com/stac-extensions/template/blob/main/.github/remark.yaml
 
+settings:
+  bullet: "-"
+  emphasis: "*"
+  fence: "`"
+  listItemIndent: "one"
+
 plugins:
   # GitHub Flavored Markdown
   - remark-gfm

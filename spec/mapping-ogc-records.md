@@ -15,12 +15,12 @@ this document is authoritative for **placement**.
 Use OGC API Records when the resource is discoverable but is not naturally
 modeled as STAC. Typical cases:
 
-* Documents and reports
-* Code repositories
-* Models, notebooks, methods, protocols
-* Dashboards, services, APIs
-* Knowledge products
-* Non-spatiotemporal tabular datasets
+- Documents and reports
+- Code repositories
+- Models, notebooks, methods, protocols
+- Dashboards, services, APIs
+- Knowledge products
+- Non-spatiotemporal tabular datasets
 
 The `encoding` field in `standard.yaml` is authoritative for routing. Set
 `encoding: ogc-records` to use this mapping.
@@ -30,14 +30,14 @@ The `encoding` field in `standard.yaml` is authoritative for routing. Set
 The CDH OGC Records profile uses the **recordJSON** encoding, not GeoJSON
 Features. A record is a plain JSON object with:
 
-* top-level identification fields (`id`, `type`, `time`, `geometry`, `links`)
-* a `properties` object for descriptive metadata
-* a `links` array for access points, citation targets, and related resources
+- top-level identification fields (`id`, `type`, `time`, `geometry`, `links`)
+- a `properties` object for descriptive metadata
+- a `links` array for access points, citation targets, and related resources
 
 For typical OGC Records use in CDH (non-spatial resources):
 
-* Set `geometry` to `null`. Do not invent a spatial extent.
-* Omit `time` unless the resource has temporal relevance.
+- Set `geometry` to `null`. Do not invent a spatial extent.
+- Omit `time` unless the resource has temporal relevance.
 
 ## 3. Native-fields-first rule
 
@@ -188,8 +188,8 @@ Encoding rules:
 
 ## 7. Validation expectations
 
-* Records MUST validate against the OGC API Records Part 1 recordJSON schema.
-* `cgiar-cdh:*` properties under `properties` MUST conform to the CDH OGC
+- Records MUST validate against the OGC API Records Part 1 recordJSON schema.
+- `cgiar-cdh:*` properties under `properties` MUST conform to the CDH OGC
   Records profile schema.
-* Records describing non-spatial resources MUST set `geometry: null` and MUST
+- Records describing non-spatial resources MUST set `geometry: null` and MUST
   NOT include a fabricated `bbox`.
