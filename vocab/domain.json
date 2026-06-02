@@ -12,11 +12,25 @@
   },
   "concepts": [
     {
+      "id": "adaptation",
+      "label": "Adaptation",
+      "description": "Climate-change adaptation: vulnerability, exposure, risk assessment, and adaptation planning resources.",
+      "code": "c_117",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_117"
+    },
+    {
       "id": "agricultural-production",
       "label": "Agricultural production",
       "description": "Production-focused agriculture: yields, harvested area, livestock numbers, and related production statistics.",
       "code": "c_2ac7c9e1",
       "uri": "http://aims.fao.org/aos/agrovoc/c_2ac7c9e1"
+    },
+    {
+      "id": "boundaries",
+      "label": "Boundaries",
+      "description": "",
+      "code": "c_15686",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_15686"
     },
     {
       "id": "climate",
@@ -26,11 +40,11 @@
       "uri": "http://aims.fao.org/aos/agrovoc/c_1665"
     },
     {
-      "id": "adaptation",
-      "label": "Adaptation",
-      "description": "Climate-change adaptation: vulnerability, exposure, risk assessment, and adaptation planning resources.",
-      "code": "c_117",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_117"
+      "id": "hydrology",
+      "label": "Hydrology",
+      "description": "Hydrology, water resources, irrigation, and water-related hazards.",
+      "code": "c_3731",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_3731"
     },
     {
       "id": "mitigation",
@@ -40,25 +54,11 @@
       "uri": "http://aims.fao.org/aos/agrovoc/c_10a6fbd8"
     },
     {
-      "id": "hydrology",
-      "label": "Hydrology",
-      "description": "Hydrology, water resources, irrigation, and water-related hazards.",
-      "code": "c_3731",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_3731"
-    },
-    {
       "id": "socioeconomic",
       "label": "Socioeconomic",
       "description": "Population, livelihoods, poverty, food security, and socioeconomic indicators.",
       "code": "c_2c482ac4",
       "uri": "http://aims.fao.org/aos/agrovoc/c_2c482ac4"
-    },
-    {
-      "id": "boundaries",
-      "label": "Boundaries",
-      "description": "",
-      "code": "c_15686",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_15686"
     }
   ]
 }
