@@ -21,12 +21,6 @@
       ]
     },
     {
-      "id": "coffee",
-      "label": "Coffee",
-      "code": "c_28379",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_28379"
-    },
-    {
       "id": "banana",
       "label": "Banana",
       "code": "c_806",
@@ -46,16 +40,6 @@
       ]
     },
     {
-      "id": "common-bean",
-      "label": "Common Bean",
-      "code": "c_4098",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_4098",
-      "broader": [
-        "legumes",
-        "pulses"
-      ]
-    },
-    {
       "id": "cassava",
       "label": "Cassava",
       "code": "c_9649",
@@ -66,12 +50,20 @@
       ]
     },
     {
+      "id": "cereals",
+      "label": "Cereals",
+      "code": "c_1474",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_1474"
+    },
+    {
       "id": "chickpeas",
       "label": "Chickpeas",
       "code": "c_9785",
       "uri": "http://aims.fao.org/aos/agrovoc/c_9785",
       "broader": [
-        "vegetables"
+        "vegetables",
+        "pulses",
+        "legumes"
       ]
     },
     {
@@ -100,6 +92,22 @@
       ]
     },
     {
+      "id": "coffee",
+      "label": "Coffee",
+      "code": "c_28379",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_28379"
+    },
+    {
+      "id": "common-bean",
+      "label": "Common Bean",
+      "code": "c_4098",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_4098",
+      "broader": [
+        "legumes",
+        "pulses"
+      ]
+    },
+    {
       "id": "cotton",
       "label": "Cotton",
       "code": "c_1926",
@@ -120,6 +128,18 @@
       ]
     },
     {
+      "id": "fibre-crops",
+      "label": "Fibre crops",
+      "code": "c_2876",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_2876"
+    },
+    {
+      "id": "fruits",
+      "label": "Fruits",
+      "code": "c_3131",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_3131"
+    },
+    {
       "id": "groundnuts",
       "label": "Groundnuts",
       "code": "c_11368",
@@ -131,12 +151,19 @@
       ]
     },
     {
+      "id": "legumes",
+      "label": "Legumes",
+      "code": "c_4255",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_4255"
+    },
+    {
       "id": "lentils",
       "label": "Lentils",
       "code": "c_12140",
       "uri": "http://aims.fao.org/aos/agrovoc/c_12140",
       "broader": [
         "legumes",
+        "pulses",
         "vegetables"
       ]
     },
@@ -148,6 +175,21 @@
       "broader": [
         "cereals"
       ]
+    },
+    {
+      "id": "millets",
+      "label": "Millets",
+      "code": "c_4838",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_4838",
+      "broader": [
+        "cereals"
+      ]
+    },
+    {
+      "id": "oil-crops",
+      "label": "Oil crops",
+      "code": "c_5328",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_5328"
     },
     {
       "id": "oil-palms",
@@ -168,63 +210,6 @@
       ]
     },
     {
-      "id": "cereals",
-      "label": "Cereals",
-      "code": "c_1474",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_1474"
-    },
-    {
-      "id": "fibre-crops",
-      "label": "Fibre crops",
-      "code": "c_2876",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_2876"
-    },
-    {
-      "id": "fruits",
-      "label": "Fruits",
-      "code": "c_3131",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_3131"
-    },
-    {
-      "id": "oil-crops",
-      "label": "Oil crops",
-      "code": "c_5328",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_5328"
-    },
-    {
-      "id": "pulses",
-      "label": "Pulses/Grain Legumes",
-      "code": "c_3351",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_3351",
-      "broader": [
-        "legumes"
-      ]
-    },
-    {
-      "id": "root-vegetables",
-      "label": "Root vegetables",
-      "code": "c_6647",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_6647",
-      "broader": [
-        "vegetables"
-      ]
-    },
-    {
-      "id": "tropical-fruits",
-      "label": "Tropical fruits",
-      "code": "c_7974",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_7974",
-      "broader": [
-        "fruits"
-      ]
-    },
-    {
-      "id": "vegetables",
-      "label": "Vegetables",
-      "code": "c_8174",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_8174"
-    },
-    {
       "id": "pearl-millet",
       "label": "Pearl millet",
       "code": "c_e4e17d1b",
@@ -235,21 +220,14 @@
       ]
     },
     {
-      "id": "millets",
-      "label": "Millets",
-      "code": "c_4838",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_4838",
-      "broader": [
-        "cereals"
-      ]
-    },
-    {
       "id": "pigeon-pea",
       "label": "Pigeon pea",
       "code": "c_13356",
       "uri": "http://aims.fao.org/aos/agrovoc/c_13356",
       "broader": [
-        "pulses"
+        "pulses",
+        "legumes",
+        "vegetables"
       ]
     },
     {
@@ -269,6 +247,15 @@
       "broader": [
         "root-vegetables",
         "vegetables"
+      ]
+    },
+    {
+      "id": "pulses",
+      "label": "Pulses/Grain Legumes",
+      "code": "c_3351",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_3351",
+      "broader": [
+        "legumes"
       ]
     },
     {
@@ -296,6 +283,15 @@
       "uri": "http://aims.fao.org/aos/agrovoc/c_6626",
       "broader": [
         "coffee"
+      ]
+    },
+    {
+      "id": "root-vegetables",
+      "label": "Root vegetables",
+      "code": "c_6647",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_6647",
+      "broader": [
+        "vegetables"
       ]
     },
     {
@@ -337,14 +333,9 @@
       "broader": [
         "vegetables",
         "legumes",
-        "oil-crops"
+        "oil-crops",
+        "pulses"
       ]
-    },
-    {
-      "id": "legumes",
-      "label": "Legumes",
-      "code": "c_4255",
-      "uri": "http://aims.fao.org/aos/agrovoc/c_4255"
     },
     {
       "id": "sugarbeet",
@@ -406,6 +397,21 @@
       "broader": [
         "vegetables"
       ]
+    },
+    {
+      "id": "tropical-fruits",
+      "label": "Tropical fruits",
+      "code": "c_7974",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_7974",
+      "broader": [
+        "fruits"
+      ]
+    },
+    {
+      "id": "vegetables",
+      "label": "Vegetables",
+      "code": "c_8174",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_8174"
     },
     {
       "id": "wheat",
