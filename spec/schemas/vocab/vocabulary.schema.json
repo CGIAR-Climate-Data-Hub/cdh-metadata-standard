@@ -105,6 +105,14 @@
                 "format": "uri"
               }
             ]
+          },
+          "broader": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/id"
+            }
           }
         }
       }
