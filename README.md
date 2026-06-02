@@ -5,9 +5,8 @@ template. The goal is lightweight, searchable, AI-readable metadata that can be
 validated and serialized to STAC or OGC API Records.
 
 > [!WARNING]
-> This standard is still a draft. Breaking changes are expected while
-> it is being tested and refined.
-
+> This standard is still a draft. Breaking changes are expected while it is
+> being tested and refined.
 
 ## Start Here
 
