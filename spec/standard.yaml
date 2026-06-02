@@ -170,7 +170,7 @@ cdh:
   # and ordered: first entry is the primary domain and drives STAC
   # sub-catalog placement; subsequent entries are secondary.
   # Required. Powers website filter and group-by.
-  domain: []
+  domain: [climate]
   climate:
     mip_era: ""
     scenarios: []

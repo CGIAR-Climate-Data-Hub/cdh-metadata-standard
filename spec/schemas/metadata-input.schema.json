@@ -59,6 +59,7 @@
           "items": {
             "$ref": "vocab/domain.schema.json"
           },
+          "minItems": 1,
           "type": "array",
           "uniqueItems": true
         },
@@ -87,6 +88,9 @@
           "type": "array"
         }
       },
+      "required": [
+        "domain"
+      ],
       "type": "object"
     },
     "classSet": {
