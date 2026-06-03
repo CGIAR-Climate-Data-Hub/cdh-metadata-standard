@@ -2,9 +2,9 @@
 
 Status: draft
 
-This document specifies how a CDH metadata record (as defined by `standard.md`
-and `standard.yaml`) is encoded as an **OGC API Records** record using the
-**recordJSON** schema
+This document specifies how a CDH metadata input record (as defined by
+`standard.md` and validated by `schemas/metadata-input.schema.json`) is encoded
+as an **OGC API Records** record using the **recordJSON** schema
 (`https://schemas.opengis.net/ogcapi/records/part1/1.0/openapi/schemas/recordJSON.yaml`).
 
 Field definitions and requirement levels are authoritative in `standard.md`;
@@ -22,7 +22,7 @@ modeled as STAC. Typical cases:
 - Knowledge products
 - Non-spatiotemporal tabular datasets
 
-The `encoding` field in `standard.yaml` is authoritative for routing. Set
+The `encoding` field in the input record is authoritative for routing. Set
 `encoding: ogc-records` to use this mapping.
 
 ## 2. Record encoding
@@ -68,7 +68,7 @@ identical to the STAC profile.
 | `keywords`                  | `properties.keywords`                                                                                                                                                                         |
 | `cdh.domain[]`              | `properties["cgiar-cdh:domain"]`; also expanded into `properties.themes` under the CDH domain scheme. First entry is the primary domain.                                                      |
 | `keywords[]` (linked items) | Each linked-keyword entry (`{ term, scheme, uri }`) is also emitted as a `properties.themes` concept, grouped by `scheme`. Plain-string keywords are emitted only into `properties.keywords`. |
-| `properties.themes`         | Encoder output only — populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                                |
+| `properties.themes`         | Encoder output only — populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                                        |
 | `license`                   | `properties.license`                                                                                                                                                                          |
 | `license_holder`            | `properties.contacts[]` with `roles: [licensor]`                                                                                                                                              |
 | `contact[]`                 | `properties.contacts[]`                                                                                                                                                                       |
@@ -110,7 +110,7 @@ not emitted for OGC Records.
 
 ### 4.4 CDH-specific fields
 
-The `cdh.*`, `climate.*`, and `commodities` fields in `standard.yaml` are
+The `cdh.*`, `climate.*`, and `commodities` fields in the input record are
 encoded under `properties["cgiar-cdh:*"]`, **except** for `commodities` and
 `climate.hazards`, which are expanded into `properties.themes` entries by
 the encoder using the CDH commodity and CDH hazard JSON lookups (see core

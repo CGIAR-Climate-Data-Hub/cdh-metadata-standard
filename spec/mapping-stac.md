@@ -2,10 +2,10 @@
 
 Status: draft
 
-This document specifies how a CDH metadata record (as defined by `standard.md`
-and `standard.yaml`) is encoded as STAC. Field definitions and requirement
-levels are authoritative in `standard.md`; this document is authoritative for
-**placement**.
+This document specifies how a CDH metadata input record (as defined by
+`standard.md` and validated by `schemas/metadata-input.schema.json`) is encoded
+as STAC. Field definitions and requirement levels are authoritative in
+`standard.md`; this document is authoritative for **placement**.
 
 ## 1. When to use STAC
 
@@ -17,7 +17,7 @@ variable-level, or data-cube discovery needs. Typical cases:
 - Spatial vector assets, spatial/temporal tabular assets
 - APIs for access to geospatial data
 
-The `encoding` field in `standard.yaml` is authoritative for routing. Set
+The `encoding` field in the input record is authoritative for routing. Set
 `encoding: stac` to use this mapping.
 
 ## 2. STAC Extensions
@@ -77,7 +77,7 @@ searchable structured facts.
 | `funding[]`                 | `cgiar-cdh:funding`                                                                                                                                                                             |
 | `cdh.domain[]`              | `cgiar-cdh:domain` on the Collection; also expanded into Themes Extension `themes[]` under the CDH domain scheme. First entry drives sub-catalog placement.                                     |
 | `keywords[]` (linked items) | Each linked-keyword entry (`{ term, scheme, uri }`) is also emitted as a Themes Extension `themes[]` concept, grouped by `scheme`. Plain-string keywords are emitted only into STAC `keywords`. |
-| Themes Extension `themes[]` | Encoder output only — populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                                  |
+| Themes Extension `themes[]` | Encoder output only — populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                                          |
 
 ### 4.2 Resource type
 
@@ -88,14 +88,14 @@ consistency when the record could also be expressed as an OGC API Record.
 
 ### 4.3 Spatial / Temporal
 
-| CDH                                | STAC placement                                                                                 |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `spatial.bbox`                     | `extent.spatial.bbox` (Collection); `bbox` (Item)                                              |
-| `spatial.geography`                | `cgiar-cdh:geography`                                                                          |
-| `spatial.crs`                      | Projection Extension: `proj:code` (preferred) or `proj:epsg`                                   |
+| CDH                                | STAC placement                                                                                                                                         |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `spatial.bbox`                     | `extent.spatial.bbox` (Collection); `bbox` (Item)                                                                                                      |
+| `spatial.geography`                | `cgiar-cdh:geography`                                                                                                                                  |
+| `spatial.crs`                      | Projection Extension: `proj:code` (preferred) or `proj:epsg`                                                                                           |
 | `spatial.resolution`               | `cube:dimensions[].step` (+ `unit`/`reference_system`) for the grid; also `cgiar-cdh:spatial_resolution` at Collection; use `summaries` when it varies |
-| `temporal.start_date` / `end_date` | `extent.temporal.interval` (Collection); `datetime` / `start_datetime` / `end_datetime` (Item) |
-| `temporal.resolution`              | `cube:dimensions[time].step` (+ `unit`) for the grid; also `cgiar-cdh:temporal_resolution` at Collection; use `summaries` when it varies |
+| `temporal.start_date` / `end_date` | `extent.temporal.interval` (Collection); `datetime` / `start_datetime` / `end_datetime` (Item)                                                         |
+| `temporal.resolution`              | `cube:dimensions[time].step` (+ `unit`) for the grid; also `cgiar-cdh:temporal_resolution` at Collection; use `summaries` when it varies               |
 
 Resolution placement, in order of preference:
 
@@ -122,6 +122,7 @@ The only decision is **tabular or not**:
 - **Datacube by default for all array/grid data** (Zarr, NetCDF, GRIB, HDF5, and
   COG/GeoTIFF — single-band or stacked). Datacube is the always-on descriptive
   home for variables and dimensions:
+
   - `dimensions[]` → `cube:dimensions`
   - `variables[]` → `cube:variables`
 
@@ -177,7 +178,7 @@ Decision rules:
 
 ### 4.6 CDH-specific fields
 
-The `cdh.*`, `climate.*`, and `commodities` fields in `standard.yaml` are
+The `cdh.*`, `climate.*`, and `commodities` fields in the input record are
 encoded under the `cgiar-cdh:` namespace, **except** for `commodities` and
 `climate.hazards`, which are expanded into `themes` entries by the encoder via
 the CDH commodity and CDH hazard JSON lookups (see core standard sections 5.1

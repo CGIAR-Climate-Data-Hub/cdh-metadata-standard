@@ -3,8 +3,8 @@
 This guide is for people filling out metadata records. It explains what to write
 first, what can wait, and where optional detail belongs.
 
-The formal standard is `standard.md`. The template to fill in is
-`standard.yaml`, which points YAML-aware editors to
+The formal standard is `standard.md`. Fillable YAML starting points live in
+`../templates/`; each template points YAML-aware editors to
 `schemas/metadata-input.schema.json` for field validation.
 
 ## The Short Version
@@ -155,12 +155,12 @@ that are not already captured elsewhere.
 
 Put these in structured fields instead:
 
-| If the term is a...                        | Put it in...          |
-| ------------------------------------------ | --------------------- |
-| place, country, region, or named geography | `spatial.geography`   |
-| crop, livestock type, or commodity         | `commodities`     |
-| climate hazard                             | `climate.hazards` |
-| time period or temporal resolution         | `temporal.*`          |
+| If the term is a...                        | Put it in...        |
+| ------------------------------------------ | ------------------- |
+| place, country, region, or named geography | `spatial.geography` |
+| crop, livestock type, or commodity         | `commodities`       |
+| climate hazard                             | `climate.hazards`   |
+| time period or temporal resolution         | `temporal.*`        |
 
 ```yaml
 keywords:

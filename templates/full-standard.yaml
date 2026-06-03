@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=./schemas/metadata-input.schema.json
+# yaml-language-server: $schema=../spec/schemas/metadata-input.schema.json
 cdh_schema_version: "v0.0.1"
 
 # Encoding (required) — selects the serialization profile.

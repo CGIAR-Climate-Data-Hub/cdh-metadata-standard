@@ -2,7 +2,7 @@
 // Validate CDH input YAML records against metadata-input.schema.json.
 //
 // Usage:
-//   node scripts/validate-yaml.js                # default: spec/standard.yaml + examples/
+//   node scripts/validate-yaml.js                # default: templates/ + examples/
 //   node scripts/validate-yaml.js path [path...] # validate the given files or directories
 //
 // Directories are walked recursively for *.yaml and *.yml files. Files of any
@@ -53,7 +53,14 @@ async function expand(path) {
 }
 
 async function defaultTargets() {
-  const targets = [resolve(ROOT, "spec/standard.yaml")];
+  const targets = [];
+  const templatesDir = resolve(ROOT, "templates");
+  try {
+    const st = await stat(templatesDir);
+    if (st.isDirectory()) targets.push(...(await walkYaml(templatesDir)));
+  } catch (err) {
+    if (err.code !== "ENOENT") throw err;
+  }
   const examplesDir = resolve(ROOT, "examples");
   try {
     const st = await stat(examplesDir);

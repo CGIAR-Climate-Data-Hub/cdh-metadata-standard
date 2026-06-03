@@ -23,12 +23,13 @@ jobs:
       - run: npm ci
       - run: npm test
 
-  # Validate this repo's own YAML records (spec/standard.yaml + examples/)
+  # Validate this repo's own YAML templates via the reusable workflow, so the
+  # reusable surface is exercised on every push to main.
   # via the reusable workflow, so the reusable surface is exercised on every
   # push to main.
   records:
     uses: ./.github/workflows/validate-records.yaml
     with:
-      path: spec/standard.yaml
+      path: templates
       tooling-repository: ${{ github.repository }}
       tooling-ref: ${{ github.sha }}

@@ -1,8 +1,8 @@
 # Climate Data Hub Metadata Standard
 
-This repository defines the Climate Data Hub metadata standard and input
-template. The goal is lightweight, searchable, AI-readable metadata that can be
-validated and serialized to STAC or OGC API Records.
+This repository defines the Climate Data Hub metadata standard, input schema,
+and authoring templates. The goal is lightweight, searchable, AI-readable
+metadata that can be validated and serialized to STAC or OGC API Records.
 
 > \[!WARNING]
 > This standard is still a draft. Breaking changes are expected while it is
@@ -12,7 +12,10 @@ validated and serialized to STAC or OGC API Records.
 
 - [Authoring guide](./spec/authoring-guide.md) - how to fill out metadata
   without getting overwhelmed by optional fields.
-- [YAML template](./spec/standard.yaml) - the metadata input template.
+- [Templates](./templates) - fillable YAML starting points for common record
+  types.
+- [Full template](./templates/full-standard.yaml) - the complete metadata input
+  structure.
 - [Metadata input schema](./spec/schemas/metadata-input.schema.json) - validates
   the YAML structure and controlled values.
 - [Standard](./spec/standard.md) - formal field definitions and validation
