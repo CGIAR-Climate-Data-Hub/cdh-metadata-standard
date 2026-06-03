@@ -7,10 +7,12 @@ name: Validate CDH records
 #
 #   jobs:
 #     validate:
-#       uses: CGIAR-Climate-Data-Hub/metadata/.github/workflows/validate-records.yaml@v1
+#       uses: CGIAR-Climate-Data-Hub/metadata/.github/workflows/validate-records.yaml@main
 #       with:
 #         path: ./metadata-records          # directory or file to validate
-#         tooling-ref: v1                   # optional, ref of the standard repo
+#
+# Pin both refs to a release tag (e.g. @v0.0.1 above and tooling-ref: v0.0.1)
+# to validate against a fixed version of the standard instead of latest.
 #
 on:
   workflow_call:
