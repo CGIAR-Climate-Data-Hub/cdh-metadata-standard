@@ -114,7 +114,7 @@ All `cdh.*` fields in `standard.yaml` are encoded under
 `properties["cgiar-cdh:*"]`, **except** for `cdh.commodities` and
 `cdh.climate.hazards`, which are expanded into `properties.themes` entries by
 the encoder using the CDH commodity and CDH hazard JSON lookups (see core
-standard §4.1 and §4.6). Field names, value types, and controlled vocabularies
+standard sections 5.1 and 5.6). Field names, value types, and controlled vocabularies
 otherwise match the STAC profile exactly. OGC Records has no equivalent of STAC
 `summaries`; faceted values that would be in STAC summaries appear as direct
 array properties.
@@ -167,7 +167,7 @@ The required CDH `data[]` entries map to `links[rel=enclosure]` for downloadable
 files, or `links[rel=service]` for service endpoints. If the resource is a
 landing page, code repository, dashboard, or model, use `rel=about`, `rel=code`
 (`processing-expression` for workflow code), or the most appropriate relation
-from §5.1.
+from section 5.1.
 
 ## 6. Processing and provenance
 

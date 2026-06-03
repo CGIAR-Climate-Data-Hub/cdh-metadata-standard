@@ -60,12 +60,12 @@ The standard follows RFC 2119-style requirement levels.
 
 ## 4. Authoring Rules
 
-### 3.1 Routing
+### 4.1 Routing
 
 Every record sets `encoding: stac` or `encoding: ogc-records`. The encoder uses
 this to select the serialization profile.
 
-### 3.2 Native fields first
+### 4.2 Native fields first
 
 Each fact about the resource is encoded in the most standard place available, in
 this order:
@@ -77,14 +77,14 @@ this order:
    the CDH OGC Records profile.
 4. **A linked sidecar metadata asset** (`rel=describedby`) when the content is
    large, nested, or frequently changing.
-5. **A custom property or custom extension** (see §4.3) when no standard
+5. **A custom property or custom extension** (see section 4.3) when no standard
    placement fits.
 6. **Free-text inside `description`**, as a last resort, when the fact genuinely
    cannot be structured.
 
-### 3.3 Extending the schema
+### 4.3 Extending the schema
 
-The hierarchy in §4.2 covers the overwhelming majority of cases. When it does
+The hierarchy in section 4.2 covers the overwhelming majority of cases. When it does
 not, the schema is extensible via the following paths, in preferred order:
 
 - **Additional STAC Extensions.** Any community STAC Extension may be added to a
@@ -120,7 +120,7 @@ not, the schema is extensible via the following paths, in preferred order:
   custom properties (e.g., `myproj_internal_id: "ABC-123"`,
   `something_else: 42`) are a last resort and should be avoided. Records filled
   with one-off fields and invented prefixes become unsearchable, inconsistent,
-  and a burden on every downstream tool. Before adding one, exhaust §4.2 (1–5)
+  and a burden on every downstream tool. Before adding one, exhaust section 4.2 (1–5)
   and the two extension paths above. If a fact matters enough to record, it
   almost always belongs in a `cgiar-cdh:*` field or a proper custom extension
   namespace — promote it there instead. If, after all of that, an ad hoc
@@ -137,12 +137,12 @@ not, the schema is extensible via the following paths, in preferred order:
 The `cgiar-cdh:` prefix is reserved for approved CDH fields and is never a
 general-purpose custom namespace.
 
-### 3.4 Description, note, and free text
+### 4.4 Description, note, and free text
 
 `description` and `note` are first-class fields, not catch-all fallbacks:
 
 - **`description` (required)** is the canonical human- and AI-readable paragraph
-  explaining the resource. Step 6 of the hierarchy in §4.2 lives here.
+  explaining the resource. Step 6 of the hierarchy in section 4.2 lives here.
 - **`note` (optional)** is reserved for caveats, warnings, or
   interpretation-critical remarks that a reader of `description` alone would
   otherwise miss. It is not a second description, and not a place to dump prose
@@ -154,7 +154,7 @@ be encoded as a structured field, not only mentioned in `description` or `note`.
 `description` exists to contextualize structured facts; `note` exists to flag
 caveats. Neither is the source of truth for filterable data.
 
-### 3.5 Domain vs keywords (and how themes are produced)
+### 4.5 Domain vs keywords (and how themes are produced)
 
 `cdh.domain` and `keywords` are not interchangeable — each serves a different
 purpose. There is no author-facing `themes` field; the serialized themes block
@@ -183,7 +183,7 @@ Decision rule:
   for semantic discovery → linked entry in `keywords`.
 - A value useful only for **full-text search** → plain string in `keywords`.
 
-### 3.6 Sidecar metadata
+### 4.6 Sidecar metadata
 
 Use sidecar files (linked with `rel=describedby`) for large, nested, or
 frequently changing content such as long code lists, full variable dictionaries,
@@ -195,7 +195,7 @@ The fields below mirror the structure of `standard.yaml`. For each field:
 **Requirement**, **Definition**, **Expected value**, **Rules**, **Vocabulary**
 where applicable, and **Example**.
 
-### 4.1 Core
+### 5.1 Core
 
 #### `id`
 
@@ -306,7 +306,7 @@ where applicable, and **Example**.
     exists, encode it in `cdh.climate.*`; if a variable, band, indicator, or
     column exists, encode it in `variables[]`.
   - Values used for filter, group-by, or facet belong in `cdh.domain` (closed
-    CDH vocab), not here. See §4.5.
+    CDH vocab), not here. See section 4.5.
   - Should use consistent spelling and capitalization.
   - Linked items must include both `scheme` and `uri` to be expanded as themes;
     a `term`-only object is equivalent to a plain string.
@@ -340,7 +340,7 @@ serialization time from:
 - any linked-keyword entries in `keywords`, grouped by `scheme`.
 
 Themes are NOT what the website filter reads — use `cdh.domain` for filter /
-group-by (see §5.6). Themes exist for ontology / linked-data context in the
+group-by (see section 5.6). Themes exist for ontology / linked-data context in the
 serialized record.
 
 #### `created`, `updated`
@@ -365,7 +365,7 @@ serialized record.
     are all acceptable.
   - `previous_version` is the `id` of the predecessor record.
 
-### 4.2 Contact and Citation
+### 5.2 Contact and Citation
 
 #### `license_holder`
 
@@ -416,7 +416,7 @@ serialized record.
 - **Requirement:** Optional
 - **Expected value:** List of `{ name, url }`.
 
-### 4.3 Spatial
+### 5.3 Spatial
 
 Required for STAC. Conditional for OGC Records when the resource has spatial
 relevance.
@@ -511,7 +511,7 @@ spatial:
   - `unit` must be a UDUNITS-2 unit symbol when numeric.
   - `label` is a human-readable form (e.g., `5 arc-minutes`).
 
-### 4.4 Temporal
+### 5.4 Temporal
 
 Required for STAC. Conditional for OGC Records when the resource has temporal
 relevance.
@@ -531,7 +531,7 @@ relevance.
   - For non-numeric resolutions (e.g., climatology over a baseline period), use
     `value: static` and a `label`.
 
-### 4.5 Data Fields
+### 5.5 Data Fields
 
 #### `dimensions[]`
 
@@ -628,7 +628,7 @@ variables:
   dataset (e.g., GAUL polygons).
 - **Expected value:** `{ source_key, target: { id, url, key }, note }`.
 
-### 4.6 CDH-specific
+### 5.6 CDH-specific
 
 #### `cdh.domain[]`
 
@@ -647,7 +647,7 @@ variables:
     Records).
   - Also expanded by the encoder into a `themes` entry under the
     `https://cgiar.org/cdh/vocab/domain` scheme for linked-data consumers (see
-    §5.1).
+    section 5.1).
 - **Example:**
 
 ```yaml
@@ -674,7 +674,7 @@ cdh:
 - **Expected value:** List of friendly names (e.g., `banana`, `cassava`,
   `arabica-coffee`).
 - **Encoding:** Expanded into a `themes` entry under the CDH commodity scheme
-  (see §5.1). Does not appear as a standalone field in the encoded output.
+  (see section 5.1). Does not appear as a standalone field in the encoded output.
 
 #### `cdh.climate.mip_era`
 
@@ -704,7 +704,7 @@ cdh:
 - **Expected value:** List of friendly names (e.g., `drought`, `heat-stress`,
   `flooding`, `cold-stress`).
 - **Encoding:** Expanded into a `themes` entry under the CDH hazard scheme (see
-  §5.1). Does not appear as a standalone field in the encoded output.
+  section 5.1). Does not appear as a standalone field in the encoded output.
 
 #### `cdh.climate.baseline`
 
@@ -722,7 +722,7 @@ cdh:
 - **Requirement:** Conditional — required for downscaled climate data.
 - **Expected value:** `{ method, resolution }`.
 
-### 4.7 Processing and Provenance
+### 5.7 Processing and Provenance
 
 #### `processing[]`
 
@@ -744,7 +744,7 @@ cdh:
     step. Add subsequent steps only when meaningful new processing occurs (e.g.,
     format conversion, bias adjustment).
 
-### 4.8 Assets and Links
+### 5.8 Assets and Links
 
 #### `data[]`
 
@@ -792,7 +792,7 @@ cdh:
 
 - **Requirement:** Optional
 - **Expected value per entry:** `{ name, rel, url, description }`.
-- **Vocabulary for `rel`:** See §5.
+- **Vocabulary for `rel`:** See section 5.
 
 ## 6. Link Relations
 
@@ -824,7 +824,7 @@ cdh:
 | `variables[].name` (climate)                                  | CF Standard Names (where practical)                                                                                                                                                                                                                                    |
 | `contact[].role`                                              | Official STAC provider roles: `licensor`, `producer`, `processor`, `host`                                                                                                                                                                                              |
 | `media_type`                                                  | IANA media types                                                                                                                                                                                                                                                       |
-| `resource_type`                                               | CDH-controlled list (§5.1)                                                                                                                                                                                                                                             |
+| `resource_type`                                               | CDH-controlled list (section 5.1)                                                                                                                                                                                                                                      |
 | `cdh.domain`                                                  | `vocab/domain.json` (CDH closed set)                                                                                                                                                                                                                                   |
 | `keywords[].scheme` (linked items)                            | Open — any resolvable controlled-vocabulary URI (e.g., AGROVOC, GEMET). The serialized themes block is generated by the encoder from these linked keywords plus the CDH domain, commodity, and hazard schemes. Do not link entries to `https://cgiar.org/cdh/vocab/*`. |
 | `cdh.commodities`                                             | `vocab/commodity.json` (AGROVOC-mapped); encoded as themes                                                                                                                                                                                                             |

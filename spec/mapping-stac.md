@@ -137,7 +137,7 @@ Decision rules:
 All `cdh.*` fields in `standard.yaml` are encoded under the `cgiar-cdh:`
 namespace, **except** for `cdh.commodities` and `cdh.climate.hazards`, which are
 expanded into `themes` entries by the encoder via the CDH commodity and CDH
-hazard JSON lookups (see core standard §4.1 and §4.6). The flat
+hazard JSON lookups (see core standard sections 5.1 and 5.6). The flat
 `cgiar-cdh:commodities` / `cgiar-cdh:hazards` fields are not emitted.
 
 Other faceted/multi-valued fields (`scenarios`, `models`) live in `summaries` at
