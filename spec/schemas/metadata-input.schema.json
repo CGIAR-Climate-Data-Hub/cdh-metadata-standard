@@ -756,7 +756,9 @@
       "$ref": "#/$defs/cdh"
     },
     "cdh_schema_version": {
-      "type": "string"
+      "type": "string",
+      "description": "CDH standard version this record targets. Matches the release tag: v<MAJOR>.<MINOR>.<PATCH>.",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
     },
     "citation": {
       "type": "string"

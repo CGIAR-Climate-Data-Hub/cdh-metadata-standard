@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=./schemas/metadata-input.schema.json
-cdh_schema_version: "1.0"
+cdh_schema_version: "v0.0.1"
 
 # Encoding (required) — selects the serialization profile.
 # One of: stac | ogc-records
