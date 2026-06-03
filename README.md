@@ -4,7 +4,7 @@ This repository defines the Climate Data Hub metadata standard and input
 template. The goal is lightweight, searchable, AI-readable metadata that can be
 validated and serialized to STAC or OGC API Records.
 
-> [!WARNING]
+> \[!WARNING]
 > This standard is still a draft. Breaking changes are expected while it is
 > being tested and refined.
 

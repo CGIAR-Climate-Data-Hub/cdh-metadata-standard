@@ -18,13 +18,6 @@ plugins:
   # General formatting
   - - remark-lint-emphasis-marker
     - "*"
-  - - remark-lint-no-undefined-references
-    - allow:
-        - "!NOTE"
-        - "!TIP"
-        - "!IMPORTANT"
-        - "!WARNING"
-        - "!CAUTION"
   - remark-lint-hard-break-spaces
   - remark-lint-blockquote-indentation
   - remark-lint-no-consecutive-blank-lines

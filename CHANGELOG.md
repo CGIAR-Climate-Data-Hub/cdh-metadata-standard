@@ -11,6 +11,8 @@ breaking changes may occur between minor versions.
 
 ## \[Unreleased]
 
+## \[0.0.1] - 2026-06-03
+
 ### Added
 
 - Initial prototype of the core metadata specification, controlled vocabularies,
