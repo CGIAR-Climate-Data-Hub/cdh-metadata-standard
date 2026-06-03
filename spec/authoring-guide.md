@@ -158,8 +158,8 @@ Put these in structured fields instead:
 | If the term is a...                        | Put it in...          |
 | ------------------------------------------ | --------------------- |
 | place, country, region, or named geography | `spatial.geography`   |
-| crop, livestock type, or commodity         | `cdh.commodities`     |
-| climate hazard                             | `cdh.climate.hazards` |
+| crop, livestock type, or commodity         | `commodities`     |
+| climate hazard                             | `climate.hazards` |
 | time period or temporal resolution         | `temporal.*`          |
 
 ```yaml
@@ -355,22 +355,22 @@ processing:
 
 ### Climate Fields
 
-Use `cdh.climate` fields only when the resource is climate-related and the field
+Use `climate` fields only when the resource is climate-related and the field
 applies.
 
 Common examples:
 
-- `cdh.climate.hazards`
-- `cdh.climate.scenarios`
-- `cdh.climate.models`
-- `cdh.climate.mip_era`
-- `cdh.climate.baseline`
-- `cdh.climate.bias_adjustment`
-- `cdh.climate.downscaling`
+- `climate.hazards`
+- `climate.scenarios`
+- `climate.models`
+- `climate.mip_era`
+- `climate.baseline`
+- `climate.bias_adjustment`
+- `climate.downscaling`
 
 ### Commodities
 
-Use `cdh.commodities` for agriculture, food-systems, livestock, and crop
+Use `commodities` for agriculture, food-systems, livestock, and crop
 resources.
 
 Use values from `vocab/commodity.json`.
@@ -378,7 +378,7 @@ Use values from `vocab/commodity.json`.
 ### Linking keywords to an ontology
 
 There is no author-facing `themes` field. The encoder builds the serialized
-themes block from `cdh.domain`, `cdh.commodities`, and `cdh.climate.hazards`,
+themes block from `cdh.domain`, `commodities`, and `climate.hazards`,
 plus any linked entries in `keywords`.
 
 To attach an external ontology link (AGROVOC, GEMET, etc.) to a keyword, use the
@@ -416,8 +416,8 @@ but authors must provide the curatorial facts:
 - `license`
 - `citation`
 - `cdh.domain`
-- `cdh.commodities`
-- `cdh.climate.*`
+- `commodities`
+- `climate.*`
 - variable meaning, units, reading guidance, and caveats
 - whether a record should be published
 

@@ -45,16 +45,6 @@
     "cdh": {
       "additionalProperties": false,
       "properties": {
-        "climate": {
-          "$ref": "#/$defs/climate"
-        },
-        "commodities": {
-          "items": {
-            "$ref": "vocab/commodity.schema.json"
-          },
-          "type": "array",
-          "uniqueItems": true
-        },
         "domain": {
           "items": {
             "$ref": "vocab/domain.schema.json"
@@ -768,6 +758,16 @@
         "$ref": "#/$defs/classSet"
       },
       "type": "array"
+    },
+    "climate": {
+      "$ref": "#/$defs/climate"
+    },
+    "commodities": {
+      "items": {
+        "$ref": "vocab/commodity.schema.json"
+      },
+      "type": "array",
+      "uniqueItems": true
     },
     "contact": {
       "items": {

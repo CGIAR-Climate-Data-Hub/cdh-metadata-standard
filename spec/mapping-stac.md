@@ -77,7 +77,7 @@ searchable structured facts.
 | `funding[]`                 | `cgiar-cdh:funding`                                                                                                                                                                             |
 | `cdh.domain[]`              | `cgiar-cdh:domain` on the Collection; also expanded into Themes Extension `themes[]` under the CDH domain scheme. First entry drives sub-catalog placement.                                     |
 | `keywords[]` (linked items) | Each linked-keyword entry (`{ term, scheme, uri }`) is also emitted as a Themes Extension `themes[]` concept, grouped by `scheme`. Plain-string keywords are emitted only into STAC `keywords`. |
-| Themes Extension `themes[]` | Encoder output only — populated from `cdh.domain`, `cdh.commodities`, `cdh.climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                                  |
+| Themes Extension `themes[]` | Encoder output only — populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                                  |
 
 ### 4.2 Resource type
 
@@ -93,21 +93,64 @@ consistency when the record could also be expressed as an OGC API Record.
 | `spatial.bbox`                     | `extent.spatial.bbox` (Collection); `bbox` (Item)                                              |
 | `spatial.geography`                | `cgiar-cdh:geography`                                                                          |
 | `spatial.crs`                      | Projection Extension: `proj:code` (preferred) or `proj:epsg`                                   |
-| `spatial.resolution`               | `cgiar-cdh:spatial_resolution` at Collection; use `summaries` when it varies                   |
+| `spatial.resolution`               | `cube:dimensions[].step` (+ `unit`/`reference_system`) for the grid; also `cgiar-cdh:spatial_resolution` at Collection; use `summaries` when it varies |
 | `temporal.start_date` / `end_date` | `extent.temporal.interval` (Collection); `datetime` / `start_datetime` / `end_datetime` (Item) |
-| `temporal.resolution`              | `cgiar-cdh:temporal_resolution` at Collection; use `summaries` when it varies                  |
+| `temporal.resolution`              | `cube:dimensions[time].step` (+ `unit`) for the grid; also `cgiar-cdh:temporal_resolution` at Collection; use `summaries` when it varies |
+
+Resolution placement, in order of preference:
+
+1. For gridded/array assets, the **numeric** resolution is the `step` of the
+   relevant `cube:dimensions[]` entry (x/y for spatial, `time` for temporal),
+   expressed in that dimension's native `unit` / `reference_system`. This is the
+   faithful home for geographic grids (degrees, arc-minutes).
+2. `raster:bands[].spatial_resolution` MAY also be emitted on raster assets, but
+   note it is **defined in meters only** — use it only when the grid is metric
+   (e.g., 30 m, 250 m). Do not force degree/arc-minute resolutions into it; the
+   same caveat applies to core `gsd`.
+3. The Collection-level `cgiar-cdh:spatial_resolution` /
+   `cgiar-cdh:temporal_resolution` (`{ value, unit, label, aggregation }`) is
+   always emitted. It carries the human-readable `label` (e.g., `5 arc-minutes`)
+   and `aggregation`, which the native fields cannot express, and is the
+   format-independent value the catalog filter and AI consumers read — including
+   for non-cube and non-metric data where no native field fits.
 
 ### 4.4 Data fields, dimensions, variables
 
-Choice of extension depends on the primary asset format:
+The encoder does **not** choose between Datacube, Raster, and Table per asset.
+The only decision is **tabular or not**:
 
-- **Data cube / Zarr / NetCDF / multi-dimensional**: Datacube Extension.
+- **Datacube by default for all array/grid data** (Zarr, NetCDF, GRIB, HDF5, and
+  COG/GeoTIFF — single-band or stacked). Datacube is the always-on descriptive
+  home for variables and dimensions:
   - `dimensions[]` → `cube:dimensions`
   - `variables[]` → `cube:variables`
-- **COG / GeoTIFF raster bands**: Raster Extension `raster:bands` on the asset,
-  in addition to Datacube when both apply.
-- **Tabular (Parquet, CSV, vector)**: Table Extension `table:columns`;
-  `table:primary_geometry` for `geography.column`; optional `table:row_count`.
+
+  A 2D raster is a valid cube: its x and y are horizontal spatial dimensions.
+  Use `cube:dimensions[].step` (+ `unit` / `reference_system`) for grid
+  resolution; the step is expressed in the dimension's native units, so
+  geographic grids (degrees, arc-minutes) are represented faithfully — unlike
+  the meters-only `raster:spatial_resolution` and core `gsd` (see section 4.3 and the
+  `cgiar-cdh:spatial_resolution` note).
+
+- **Compose the Raster Extension on raster assets when band-level physical
+  metadata exists.** STAC extensions compose: emit `raster:bands` on a
+  COG/GeoTIFF asset *in addition to* `cube:*` whenever the asset carries
+  per-band facts that Datacube has no slot for — `nodata`, `data_type`,
+  `statistics`, `histogram`, `scale` / `offset`, `sampling`, and metric
+  `spatial_resolution`. This is additive (not an either/or) and is what raster
+  tooling (titiler, QGIS STAC, stac-raster clients) reads. Omit it only when no
+  such band metadata is available.
+
+- **Tabular data uses the Table Extension — never Datacube.** A Parquet/CSV/
+  vector table has no labeled axes with extent/step, so it is not a cube;
+  forcing rows and columns into `cube:dimensions` is incorrect and will not
+  validate cleanly. Use Table Extension `table:columns`; `table:primary_geometry`
+  for `geography.column`; optional `table:row_count`. Variable/column metadata
+  for tabular assets lives in `table:columns`, not `cube:variables`.
+
+Decision summary: tabular → **Table**; everything else (any array/grid) →
+**Datacube**, plus **Raster** composed on top for raster assets that have
+band-level metadata.
 
 `classes[]` → Classification Extension `classification:classes` on the relevant
 asset or variable. Large class lists SHOULD be a sidecar asset with
@@ -134,11 +177,12 @@ Decision rules:
 
 ### 4.6 CDH-specific fields
 
-All `cdh.*` fields in `standard.yaml` are encoded under the `cgiar-cdh:`
-namespace, **except** for `cdh.commodities` and `cdh.climate.hazards`, which are
-expanded into `themes` entries by the encoder via the CDH commodity and CDH
-hazard JSON lookups (see core standard sections 5.1 and 5.6). The flat
-`cgiar-cdh:commodities` / `cgiar-cdh:hazards` fields are not emitted.
+The `cdh.*`, `climate.*`, and `commodities` fields in `standard.yaml` are
+encoded under the `cgiar-cdh:` namespace, **except** for `commodities` and
+`climate.hazards`, which are expanded into `themes` entries by the encoder via
+the CDH commodity and CDH hazard JSON lookups (see core standard sections 5.1
+and 5.6). The flat `cgiar-cdh:commodities` / `cgiar-cdh:hazards` fields are not
+emitted.
 
 Other faceted/multi-valued fields (`scenarios`, `models`) live in `summaries` at
 the Collection level when the value applies across Items. Singletons (`mip_era`,
