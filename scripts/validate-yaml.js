@@ -15,8 +15,13 @@ import yaml from "js-yaml";
 
 import { loadAllSchemas, newAjv, rel, ROOT } from "./_ajv.js";
 
+// Version-tagged $id matches the schema's published gh-pages URL. The version
+// comes from package.json so a release bump flows through automatically.
+const { version } = JSON.parse(
+  await readFile(resolve(ROOT, "package.json"), "utf-8"),
+);
 const INPUT_SCHEMA_ID =
-  "https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/schemas/metadata-input.schema.json";
+  `https://cgiar-climate-data-hub.github.io/metadata/v${version}/schemas/metadata-input.schema.json`;
 
 async function walkYaml(dir) {
   const out = [];
