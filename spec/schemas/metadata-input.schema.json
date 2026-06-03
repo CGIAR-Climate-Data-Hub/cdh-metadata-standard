@@ -1,6 +1,6 @@
 {
-  "$id": "https://cgiar.org/cdh/schemas/metadata-input.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/schemas/metadata-input.schema.json",
   "additionalProperties": false,
   "$defs": {
     "additionalAsset": {

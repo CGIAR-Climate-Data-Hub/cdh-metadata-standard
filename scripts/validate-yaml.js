@@ -16,7 +16,7 @@ import yaml from "js-yaml";
 import { loadAllSchemas, newAjv, rel, ROOT } from "./_ajv.js";
 
 const INPUT_SCHEMA_ID =
-  "https://cgiar.org/cdh/schemas/metadata-input.schema.json";
+  "https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/schemas/metadata-input.schema.json";
 
 async function walkYaml(dir) {
   const out = [];
