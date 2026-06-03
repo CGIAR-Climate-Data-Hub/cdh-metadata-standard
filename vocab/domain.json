@@ -28,7 +28,7 @@
     {
       "id": "boundaries",
       "label": "Boundaries",
-      "description": "",
+      "description": "Spatial boundary datasets used to delineate or aggregate data, including administrative units (e.g. GAUL country and subnational areas) and watershed or river-basin boundaries.",
       "code": "c_15686",
       "uri": "http://aims.fao.org/aos/agrovoc/c_15686"
     },
