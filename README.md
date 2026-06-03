@@ -15,8 +15,8 @@ validated and serialized to STAC or OGC API Records.
 - [YAML template](./spec/standard.yaml) - the metadata input template.
 - [Metadata input schema](./spec/schemas/metadata-input.schema.json) - validates
   the YAML structure and controlled values.
-- [Core standard](./spec/core-standard.md) - formal field definitions and
-  validation expectations.
+- [Standard](./spec/standard.md) - formal field definitions and validation
+  expectations.
 
 ## Mappings
 

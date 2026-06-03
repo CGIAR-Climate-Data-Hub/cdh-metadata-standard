@@ -3,7 +3,7 @@
 This guide is for people filling out metadata records. It explains what to write
 first, what can wait, and where optional detail belongs.
 
-The formal standard is `core-standard.md`. The template to fill in is
+The formal standard is `standard.md`. The template to fill in is
 `standard.yaml`, which points YAML-aware editors to
 `schemas/metadata-input.schema.json` for field validation.
 
@@ -445,7 +445,7 @@ first check the formal standard, then consider whether it belongs in
 5. Add `processing` for derived products.
 6. Add climate, commodity, and use-case fields when they improve discovery.
 7. Add sidecars or extra links for long supporting detail.
-8. Review the record using the checklist in `core-standard.md`.
+8. Review the record using the checklist in `standard.md`.
 
 ## Quick Review
 

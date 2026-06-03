@@ -21,7 +21,7 @@ name: Publish JSON Schemas
 #
 # The CDH STAC extension does NOT carry its own inner version segment. The
 # standard, schemas, vocabularies, and extension are released together under
-# a single tag (see VERSIONING in core-standard.md).
+# a single tag (see VERSIONING in standard.md).
 
 on:
   release:
