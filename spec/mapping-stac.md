@@ -66,7 +66,7 @@ searchable structured facts.
 | `created` / `updated`       | `created` / `updated`                                                                                                                                                                           |
 | `keywords`                  | `keywords`                                                                                                                                                                                      |
 | `license`                   | `license` (SPDX preferred)                                                                                                                                                                      |
-| `contact[]`                 | `providers[]` for organizations; Contacts Extension `contacts[]` for people. At least one contact must use `role=licensor`, which maps to `providers[role=licensor]`.                          |
+| `contact[]`                 | `providers[]` for organizations; Contacts Extension `contacts[]` for people. At least one contact must use `role=licensor`, which maps to `providers[role=licensor]`.                           |
 | `citation`                  | `sci:citation`                                                                                                                                                                                  |
 | `doi`                       | `sci:doi` and `links[rel=cite-as]`                                                                                                                                                              |
 | `related_publications[]`    | `sci:publications[]`                                                                                                                                                                            |
@@ -87,15 +87,15 @@ consistency when the record could also be expressed as an OGC API Record.
 
 ### 4.3 Spatial / Temporal
 
-| CDH                                | STAC placement                                                                                                                                         |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `spatial.bbox`                     | `extent.spatial.bbox` (Collection); `bbox` (Item)                                                                                                      |
-| `spatial.geography`                | `cgiar-cdh:geography`                                                                                                                                  |
-| `spatial.crs`                      | Projection Extension: `proj:code` (preferred) or `proj:epsg`                                                                                           |
-| `spatial.geometry_column`          | Table Extension `table:primary_geometry`                                                                                                               |
+| CDH                                | STAC placement                                                                                                                                       |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spatial.bbox`                     | `extent.spatial.bbox` (Collection); `bbox` (Item)                                                                                                    |
+| `spatial.geography`                | `cgiar-cdh:geography`                                                                                                                                |
+| `spatial.crs`                      | Projection Extension: `proj:code` (preferred) or `proj:epsg`                                                                                         |
+| `spatial.geometry_column`          | Table Extension `table:primary_geometry`                                                                                                             |
 | `spatial.resolution[]`             | Grid entries (`xy`, `x`, `y`) map to `cube:dimensions[].step` (+ `unit`/`reference_system`); all entries also emit as `cgiar-cdh:spatial_resolution` |
-| `temporal.start_date` / `end_date` | `extent.temporal.interval` (Collection); `datetime` / `start_datetime` / `end_datetime` (Item)                                                         |
-| `temporal.resolution`              | `cube:dimensions[time].step` when `step` is provided; also `cgiar-cdh:temporal_resolution` at Collection                                               |
+| `temporal.start_date` / `end_date` | `extent.temporal.interval` (Collection); `datetime` / `start_datetime` / `end_datetime` (Item)                                                       |
+| `temporal.resolution`              | `cube:dimensions[time].step` when `step` is provided; also `cgiar-cdh:temporal_resolution` at Collection                                             |
 
 Resolution placement, in order of preference:
 

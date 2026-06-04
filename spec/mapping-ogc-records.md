@@ -149,14 +149,14 @@ resources, documentation, and provenance.
 For OGC Records, file-level metadata lives on the link, not as top-level record
 metadata:
 
-| CDH                    | recordJSON placement                                    |
-| ---------------------- | ------------------------------------------------------- |
-| `data[].locations[].url` | `links[*].href`                                       |
-| `data[].locations[].title` | `links[*].title` (access label)                     |
-| `data[].name`          | `links[*].title`                                        |
-| `data[].media_type`    | `links[*].type`                                         |
-| `data[].file_size`     | `links[*].length`                                       |
-| `data[].description`   | `links[*].title` / `description` extension if supported |
+| CDH                        | recordJSON placement                                    |
+| -------------------------- | ------------------------------------------------------- |
+| `data[].locations[].url`   | `links[*].href`                                         |
+| `data[].locations[].title` | `links[*].title` (access label)                         |
+| `data[].name`              | `links[*].title`                                        |
+| `data[].media_type`        | `links[*].type`                                         |
+| `data[].file_size`         | `links[*].length`                                       |
+| `data[].description`       | `links[*].title` / `description` extension if supported |
 
 OGC Records uses a native `links[]` array, so multiple access paths need no
 extension (unlike STAC): each `locations[]` entry becomes its own link. The

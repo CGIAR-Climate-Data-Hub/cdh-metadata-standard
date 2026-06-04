@@ -23,7 +23,7 @@ both encodings.
 | `keywords`             | Required            | `keywords`; linked-keyword items (`{ term, scheme, uri }`) are additionally expanded into Themes Extension `themes` grouped by `scheme`                  | `properties.keywords`; linked items additionally expanded into `properties.themes`                    |
 | `themes`               | Encoder output only | Themes Extension `themes` — generated from `cdh.domain`, `commodities`, `climate.hazards`, and linked-keyword entries. Not an author-facing input field. | `properties.themes` — same rules                                                                      |
 | `license`              | Required            | `license`                                                                                                                                                | `properties.license`                                                                                  |
-| `contact`              | Required            | `providers`; Contacts Extension `contacts`; at least one `role=licensor` contact maps to `providers[role=licensor]`                                     | `properties.contacts`; at least one `role=licensor`                                                    |
+| `contact`              | Required            | `providers`; Contacts Extension `contacts`; at least one `role=licensor` contact maps to `providers[role=licensor]`                                      | `properties.contacts`; at least one `role=licensor`                                                   |
 | `citation`             | Required            | Scientific Extension `sci:citation`                                                                                                                      | `properties["cgiar-cdh:citation"]`                                                                    |
 | `doi`                  | Conditional         | Scientific Extension `sci:doi`; `links[rel=cite-as]`                                                                                                     | `links[rel=cite-as]`                                                                                  |
 | `related_publications` | Optional            | Scientific Extension `sci:publications`                                                                                                                  | `properties["cgiar-cdh:related_publications"]`                                                        |
@@ -34,23 +34,23 @@ both encodings.
 
 ## Spatial / Temporal
 
-| CDH field                          | Requirement                    | STAC                                                        | OGC API Records                               |
-| ---------------------------------- | ------------------------------ | ----------------------------------------------------------- | --------------------------------------------- |
-| `spatial.bbox`                     | STAC required; OGC conditional | Collection `extent.spatial.bbox`; Item `bbox`               | `geometry`; optionally `bbox`                 |
-| `spatial.geography`                | Optional                       | `cgiar-cdh:geography`                                       | `properties["cgiar-cdh:geography"]`           |
-| `spatial.crs`                      | Geospatial conditional         | Projection Extension `proj:code` / `proj:epsg`              | `properties["cgiar-cdh:crs"]`                 |
-| `spatial.geometry_column`          | Vector conditional             | Table Extension `table:primary_geometry`                    | `properties["cgiar-cdh:geometry_column"]`     |
+| CDH field                          | Requirement                    | STAC                                                                                                          | OGC API Records                               |
+| ---------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| `spatial.bbox`                     | STAC required; OGC conditional | Collection `extent.spatial.bbox`; Item `bbox`                                                                 | `geometry`; optionally `bbox`                 |
+| `spatial.geography`                | Optional                       | `cgiar-cdh:geography`                                                                                         | `properties["cgiar-cdh:geography"]`           |
+| `spatial.crs`                      | Geospatial conditional         | Projection Extension `proj:code` / `proj:epsg`                                                                | `properties["cgiar-cdh:crs"]`                 |
+| `spatial.geometry_column`          | Vector conditional             | Table Extension `table:primary_geometry`                                                                      | `properties["cgiar-cdh:geometry_column"]`     |
 | `spatial.resolution[]`             | Spatial-unit conditional       | Grid entries map to Datacube `cube:dimensions[].step`; full list also emits as `cgiar-cdh:spatial_resolution` | `properties["cgiar-cdh:spatial_resolution"]`  |
-| `temporal.start_date` / `end_date` | STAC required; OGC conditional | Collection `extent.temporal.interval`; Item `datetime` etc. | `time` interval                               |
-| `temporal.resolution`              | Temporal conditional           | `cube:dimensions[time].step` when applicable; also `cgiar-cdh:temporal_resolution` | `properties["cgiar-cdh:temporal_resolution"]` |
+| `temporal.start_date` / `end_date` | STAC required; OGC conditional | Collection `extent.temporal.interval`; Item `datetime` etc.                                                   | `time` interval                               |
+| `temporal.resolution`              | Temporal conditional           | `cube:dimensions[time].step` when applicable; also `cgiar-cdh:temporal_resolution`                            | `properties["cgiar-cdh:temporal_resolution"]` |
 
 ## Data fields
 
-| CDH field | Requirement | STAC | OGC API Records |
-| --- | --- | --- | --- |
-| `dimensions[]` | Data conditional | Datacube Extension `cube:dimensions` | `properties["cgiar-cdh:dimensions"]` |
-| `variables[]` | Data conditional | Datacube Extension `cube:variables`; Raster Extension `raster:bands` for COG-style | `properties["cgiar-cdh:variables"]` |
-| `classes[]` | Classified conditional | Classification Extension `classification:classes` | `links[rel=describedby]` to sidecar |
+| CDH field      | Requirement            | STAC                                                                               | OGC API Records                      |
+| -------------- | ---------------------- | ---------------------------------------------------------------------------------- | ------------------------------------ |
+| `dimensions[]` | Data conditional       | Datacube Extension `cube:dimensions`                                               | `properties["cgiar-cdh:dimensions"]` |
+| `variables[]`  | Data conditional       | Datacube Extension `cube:variables`; Raster Extension `raster:bands` for COG-style | `properties["cgiar-cdh:variables"]`  |
+| `classes[]`    | Classified conditional | Classification Extension `classification:classes`                                  | `links[rel=describedby]` to sidecar  |
 
 ## CDH-specific
 
@@ -69,24 +69,24 @@ both encodings.
 
 ## Provenance / Processing
 
-| CDH field                         | Requirement | STAC                                                                                                      | OGC API Records                                        |
-| --------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| CDH field                         | Requirement                             | STAC                                                                                                      | OGC API Records                                        |
+| --------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
 | `processing[].id = "source"`      | Required when `processing[]` is present | Collection-level Processing Extension: `processing:lineage`, `processing:datetime`, `processing:software` | Same fields under `properties["cgiar-cdh:processing"]` |
-| `processing[]` (subsequent)       | Conditional | Asset-level `processing:datetime`, `processing:lineage`                                                   | Appended to `properties["cgiar-cdh:processing"]`       |
-| `processing[].code.url`           | Conditional | `links[rel=processing-expression]`                                                                        | `links[rel=processing-expression]`                     |
-| `processing[].code.version`       | Conditional | Link `cgiar-cdh:code_version` field                                                                       | Link `cgiar-cdh:code_version` field                    |
-| `processing[].derived_from[].url` | Conditional | `links[rel=derived_from]`                                                                                 | `links[rel=derived_from]`                              |
+| `processing[]` (subsequent)       | Conditional                             | Asset-level `processing:datetime`, `processing:lineage`                                                   | Appended to `properties["cgiar-cdh:processing"]`       |
+| `processing[].code.url`           | Conditional                             | `links[rel=processing-expression]`                                                                        | `links[rel=processing-expression]`                     |
+| `processing[].code.version`       | Conditional                             | Link `cgiar-cdh:code_version` field                                                                       | Link `cgiar-cdh:code_version` field                    |
+| `processing[].derived_from[].url` | Conditional                             | `links[rel=derived_from]`                                                                                 | `links[rel=derived_from]`                              |
 
 ## Assets and Links
 
-| CDH field | Scope | STAC | OGC API Records |
-| --- | --- | --- | --- |
-| `data[].locations[]` | Required | `assets[*].href` ← `locations[0]`; extra same-content locations → Alternate Assets `alternate` | `locations[0]` → `links[rel=enclosure]`/`service`; extras → `links[rel=alternate]` |
-| `data[].media_type` | Recommended | `assets[*].type` | `links[*].type` |
-| `data[].file_size` | Recommended | File Extension `assets[*]["file:size"]` | `links[*].length` |
-| `data[].nodata` | Conditional | Datacube `cube:variables[*].nodata`; Raster `raster:bands[*].nodata` | `properties["cgiar-cdh:variables"][*].nodata` |
-| `additional_assets[]` | Recommended | `assets[*]` with appropriate `roles` | `links[*]` with appropriate `rel` |
-| `additional_links[]` | Optional | `links[*]` | `links[*]` |
+| CDH field             | Scope       | STAC                                                                                           | OGC API Records                                                                    |
+| --------------------- | ----------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `data[].locations[]`  | Required    | `assets[*].href` ← `locations[0]`; extra same-content locations → Alternate Assets `alternate` | `locations[0]` → `links[rel=enclosure]`/`service`; extras → `links[rel=alternate]` |
+| `data[].media_type`   | Recommended | `assets[*].type`                                                                               | `links[*].type`                                                                    |
+| `data[].file_size`    | Recommended | File Extension `assets[*]["file:size"]`                                                        | `links[*].length`                                                                  |
+| `data[].nodata`       | Conditional | Datacube `cube:variables[*].nodata`; Raster `raster:bands[*].nodata`                           | `properties["cgiar-cdh:variables"][*].nodata`                                      |
+| `additional_assets[]` | Recommended | `assets[*]` with appropriate `roles`                                                           | `links[*]` with appropriate `rel`                                                  |
+| `additional_links[]`  | Optional    | `links[*]`                                                                                     | `links[*]`                                                                         |
 
 ## Link relations used
 
