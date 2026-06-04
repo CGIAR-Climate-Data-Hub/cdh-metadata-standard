@@ -369,22 +369,18 @@ serialized record.
 
 ### 5.2 Contact and Citation
 
-#### `license_holder`
-
-- **Requirement:** Required
-- **Definition:** Party that holds the rights to license the resource.
-- **Encodes as:** `providers[role=licensor]` (STAC) or
-  `properties.contacts[role=licensor]` (OGC).
-
 #### `contact[]`
 
-- **Requirement:** Required for published records.
+- **Requirement:** Required. At least one contact MUST have `role: licensor`.
 - **Expected value:** List of objects with `name`, `role`, `email`,
   `organization`, `url`.
 - **Vocabulary for `role`:** Official STAC provider roles only — `licensor`,
   `producer`, `processor`, `host`.
 - **Rules:**
   - Must identify at least one responsible party.
+  - Must identify at least one licensing party using `role: licensor`.
+  - A `licensor` contact is the party that holds or administers the right to
+    license the resource.
   - Each contact MUST include `role`.
   - Each contact MUST include either `organization` or `name`.
   - Use `organization` on its own for organization-level contacts when no
@@ -844,8 +840,8 @@ cdh:
 - [ ] `resource_type`, `encoding`
 - [ ] `cdh.domain[]` includes at least one concept from `vocab/domain.json`
 - [ ] `keywords[]`
-- [ ] `license`, `license_holder`
-- [ ] `contact[]` (for published records)
+- [ ] `license`
+- [ ] `contact[]` includes at least one `role: licensor`
 - [ ] `citation`
 - [ ] `data[]` includes at least one entry
 

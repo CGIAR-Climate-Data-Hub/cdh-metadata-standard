@@ -33,13 +33,12 @@ keywords: []
 note: > # Optional
   ""
 
-# Contact Metadata (required)
-license_holder: ""
+# Contact Metadata (required). At least one contact MUST use role: licensor.
 contact:
   # Use organization alone for organization-level contacts. If name is used,
   # organization is also required.
   - name: "" # optional when organization is present; required for person-level contacts
-    role: "" # one of: licensor | producer | processor | host
+    role: licensor # one of: licensor | producer | processor | host
     email: ""
     organization: "" # required when name is present; may be used on its own
     url: ""

@@ -773,6 +773,18 @@
       "items": {
         "$ref": "#/$defs/contact"
       },
+      "minItems": 1,
+      "contains": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "const": "licensor"
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
       "type": "array"
     },
     "created": {
@@ -864,9 +876,6 @@
     "license": {
       "type": "string"
     },
-    "license_holder": {
-      "type": "string"
-    },
     "note": {
       "$ref": "#/$defs/nullableString"
     },
@@ -937,7 +946,6 @@
     "license",
     "resource_type",
     "keywords",
-    "license_holder",
     "contact",
     "citation",
     "created",

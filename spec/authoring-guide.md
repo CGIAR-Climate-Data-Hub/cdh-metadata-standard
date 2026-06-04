@@ -22,8 +22,7 @@ Fill these first:
 - `cdh.domain`
 - `keywords`
 - `license`
-- `license_holder`
-- `contact`
+- `contact` with at least one `role: licensor`
 - `citation`
 - `created`
 - `updated`
@@ -61,15 +60,14 @@ resource_type: ""
 encoding: ""
 keywords: []
 license: ""
-license_holder: ""
 contact:
   - organization: ""
-    role: ""
+    role: licensor
     email: ""
     url: ""
 citation: ""
-created: # may be filled during CDH review
-updated: # may be filled during CDH review
+created: # can be filled during CDH review
+updated: # can be filled during CDH review
 cdh:
   domain: []
 data:
@@ -88,7 +86,7 @@ A short, stable, URL-safe identifier.
 Use lowercase words with hyphens:
 
 ```yaml
-id: banana-climate-risk-admin2
+id: banana-climate-risk-indicators
 ```
 
 ### `title`
@@ -102,8 +100,6 @@ title: Banana Climate Risk Indicators
 ### `description`
 
 One short paragraph explaining what the resource is and what it can be used for.
-Mention geography, time period, variables, scenarios, hazards, or commodities
-when they matter.
 
 Do not rely on the description for filterable facts. Put those facts in the
 structured fields too.
@@ -123,7 +119,7 @@ Common values:
 - `dashboard`
 - `api`
 - `method`
-- `knowledge-product`
+- `skill`
 
 ### `encoding`
 
@@ -132,7 +128,7 @@ Choose where the record will be serialized.
 - Use `stac` for spatial, temporal, gridded, raster, vector, tabular, and
   data-cube resources.
 - Use `ogc-records` for documents, code, models, notebooks, dashboards,
-  services, APIs, methods, and other non-spatial resources.
+  services, APIs, methods, and other non-spatial datasets.
 
 ### `cdh.domain`
 
@@ -170,20 +166,22 @@ keywords:
   - growing season
 ```
 
-### `license`, `license_holder`, `contact`, and `citation`
+### `license`, `contact`, and `citation`
 
 These make the record reusable and citable.
 
 Prefer SPDX license identifiers such as `CC-BY-4.0`, `CC0-1.0`, or `MIT`.
 
-For `contact`, use either an organization contact or a person contact.
+For `contact`, use either an organization contact or a person contact. Every
+record must include at least one contact with `role: licensor`; that contact is
+the licensing party for the resource.
 
 Organization contact:
 
 ```yaml
 contact:
   - organization: Alliance of Bioversity International and CIAT
-    role: producer
+    role: licensor
     url: https://alliancebioversityciat.org/
 ```
 
@@ -192,7 +190,7 @@ Person contact:
 ```yaml
 contact:
   - name: Jane Doe
-    organization: Alliance of Bioversity International and CIAT
+    organization: CGIAR
     role: processor
     email: jane.doe@example.org
 ```
@@ -208,7 +206,7 @@ they may be left blank when CDH review manages metadata timestamps.
 
 ### `data`
 
-At least one link to the resource, access page, service, or instructions.
+At least one link to the resource.
 
 ```yaml
 data:
@@ -220,11 +218,7 @@ data:
 
 If you know the media type or file size, provide it. If either value is missing,
 the CDH review process may add it when it can be determined from the asset URL,
-file extension, or inspectable metadata. Serialized records must contain the
-required values, whether supplied by the contributor or added during CDH review.
-This is not guaranteed for extensionless URLs, signed URLs, APIs, landing pages,
-directories, object-store prefixes, ambiguous formats, Zarr stores, or other
-multi-file resources.
+file extension, or inspectable metadata.
 
 ## Add These Only When They Apply
 
@@ -239,17 +233,19 @@ Common fields:
 - `spatial.crs`
 - `spatial.resolution`
 
-`spatial.bbox` is a list of bounding boxes in WGS84 (EPSG:4326). Order is
-SW-corner-first, then NE-corner, **axis-interleaved**:
+`spatial.bbox` is a list of bounding boxes in WGS84 (EPSG:4326).
+
+Bounding box coordinate order is:
 
 - 2D: `[west, south, east, north]` = `[xmin, ymin, xmax, ymax]`
 - 3D: `[west, south, min_z, east, north, max_z]` (elevation in metres)
 
-The first entry is the overall extent; only add more entries if the union would
-otherwise leave a large uncovered area (e.g., Germany + Chile).
+If submitting multiple bounding boxes, the first entry is the overall extent;
+only add more entries if the union would otherwise leave a large uncovered area
+(e.g., Germany + Chile) and data is split across multiple bounding boxes.
 
-When converting from common tools, watch the axis order — STAC interleaves axes,
-several tools do not:
+When converting from common tools, watch the axis order. Here is a comparison
+across several tools + stac:
 
 | From                     | Output order               | CDH bbox                     |
 | ------------------------ | -------------------------- | ---------------------------- |
@@ -257,11 +253,13 @@ several tools do not:
 | R `sf::st_bbox(x)`       | `xmin, ymin, xmax, ymax`   | `[xmin, ymin, xmax, ymax]`   |
 | Python `rasterio.bounds` | `left, bottom, right, top` | `[left, bottom, right, top]` |
 | GDAL `gdalinfo` corners  | `ulx, uly, lrx, lry`       | `[ulx, lry, lrx, uly]`       |
+| STAC `bbox`              | `xmin, ymin, xmax, ymax`   | `[xmin, ymin, xmax, ymax]`   |
 
 ```yaml
 spatial:
   bbox:
     - [-180.0, -90.0, 180.0, 90.0] # whole Earth
+    - [-10.0, 10.0, 10.0, 20.0] # a small region included
 ```
 
 If `spatial.bbox` or `spatial.crs` is omitted for a geospatial STAC record, the
@@ -370,16 +368,15 @@ Common examples:
 
 ### Commodities
 
-Use `commodities` for agriculture, food-systems, livestock, and crop
-resources.
+Use `commodities` for agriculture, food-systems, livestock, and crop resources.
 
 Use values from `vocab/commodity.json`.
 
 ### Linking keywords to an ontology
 
 There is no author-facing `themes` field. The encoder builds the serialized
-themes block from `cdh.domain`, `commodities`, and `climate.hazards`,
-plus any linked entries in `keywords`.
+themes block from `cdh.domain`, `commodities`, and `climate.hazards`, plus any
+linked entries in `keywords`.
 
 To attach an external ontology link (AGROVOC, GEMET, etc.) to a keyword, use the
 object form:
