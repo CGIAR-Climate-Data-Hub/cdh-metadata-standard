@@ -167,6 +167,24 @@ keywords:
   - growing season
 ```
 
+#### Linking keywords to an ontology
+
+It is recomended, but not required, to link keywords to an ontology if it
+exists. To attach an external ontology link (AGROVOC, GEMET, etc.) to a keyword,
+use the object form:
+
+```yaml
+keywords:
+  - zonal statistics
+  - term: Food security
+    scheme: https://www.eionet.europa.eu/gemet/
+    uri: https://www.eionet.europa.eu/gemet/en/concept/1838
+    description: Availability of food and access to it.
+```
+
+Plain-string keywords stay full-text-only. Both forms can be mixed in the same
+list.
+
 ### `license`, `contact`, and `citation`
 
 These make the record reusable and citable.
@@ -298,7 +316,7 @@ spatial:
     - type: polygon
       value: 2
       unit: admin-level
-      label: Kenya counties
+      label: Counties
       reference_system: GAUL
 ```
 
@@ -317,8 +335,9 @@ Common fields:
 - `temporal.resolution`
 
 Use `temporal.resolution.step` for the machine-readable time step when known
-(prefer ISO 8601 durations such as `P1D`, `P1M`, or `P1Y`). Use `values` for
-named or easily interpretable temporal positions.
+(ISO 8601 durations such as `P1D`, `P1M`, or `P1Y`). If not know, this will be
+added during CDH review. Use `values` for named or easily interpretable temporal
+positions.
 
 ```yaml
 temporal:
@@ -366,8 +385,9 @@ values should be interpreted, or what caveats matter.
 
 ### Dimensions
 
-Use `dimensions` when variables depend on axes such as time, scenario, model,
-crop, technology, band, or geography.
+Use `dimensions` when variables depend on additional axes such as scenario,
+model, crop, technology, band, etc. Time dimension is already covered by
+`temporal` metadata field.
 
 Define coded values. If a code is not obvious, explain it in the dimension
 description, point to a controlled vocabulary, or link a sidecar code list.
@@ -395,7 +415,7 @@ processing:
       baseline and future-period indicators.
     code:
       url: https://github.com/example-org/climate-risk-pipeline
-      version: 0f3ac9d
+      version: 0f3ac9d # Commit hash but could also be version tag
     date: 2026-04-21
     derived_from:
       - title: NEX-GDDP-CMIP6
@@ -407,7 +427,7 @@ processing:
 Use `climate` fields only when the resource is climate-related and the field
 applies.
 
-Common examples:
+Possible Fields:
 
 - `climate.hazards`
 - `climate.scenarios`
@@ -422,26 +442,6 @@ Common examples:
 Use `commodities` for agriculture, food-systems, livestock, and crop resources.
 
 Use values from `vocab/commodity.json`.
-
-### Linking keywords to an ontology
-
-There is no author-facing `themes` field. The encoder builds the serialized
-themes block from `cdh.domain`, `commodities`, and `climate.hazards`, plus any
-linked entries in `keywords`.
-
-To attach an external ontology link (AGROVOC, GEMET, etc.) to a keyword, use the
-object form:
-
-```yaml
-keywords:
-  - term: Food security
-    scheme: https://www.eionet.europa.eu/gemet/
-    uri: https://www.eionet.europa.eu/gemet/en/concept/1838
-    description: Availability of food and access to it.
-```
-
-Plain-string keywords stay full-text-only. Both forms can be mixed in the same
-list.
 
 ### Additional Assets and Links
 
