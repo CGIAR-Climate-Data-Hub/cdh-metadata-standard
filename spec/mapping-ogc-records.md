@@ -148,13 +148,22 @@ resources, documentation, and provenance.
 For OGC Records, file-level metadata lives on the link, not as top-level record
 metadata:
 
-| CDH                  | recordJSON placement                                    |
-| -------------------- | ------------------------------------------------------- |
-| `data[].url`         | `links[*].href`                                         |
-| `data[].name`        | `links[*].title`                                        |
-| `data[].media_type`  | `links[*].type`                                         |
-| `data[].file_size`   | `links[*].length`                                       |
-| `data[].description` | `links[*].title` / `description` extension if supported |
+| CDH                    | recordJSON placement                                    |
+| ---------------------- | ------------------------------------------------------- |
+| `data[].locations[].url` | `links[*].href`                                       |
+| `data[].locations[].title` | `links[*].title` (access label)                     |
+| `data[].name`          | `links[*].title`                                        |
+| `data[].media_type`    | `links[*].type`                                         |
+| `data[].file_size`     | `links[*].length`                                       |
+| `data[].description`   | `links[*].title` / `description` extension if supported |
+
+OGC Records uses a native `links[]` array, so multiple access paths need no
+extension (unlike STAC): each `locations[]` entry becomes its own link. The
+canonical entry (`locations[0]`) takes the primary relation
+(`rel=enclosure` / `rel=service`, per section 5.3); each additional same-content
+location is emitted as `rel=alternate` with the shared `type` and a `title` from
+`locations[].title`. The asset-level `media_type` and `file_size` are repeated
+on each generated link.
 
 There is no universal OGC Records equivalent to `file:checksum`. If a checksum
 is required, link to a sidecar checksum manifest with `rel=describedby` or use
@@ -163,10 +172,10 @@ an approved CDH link-level field `cgiar-cdh:checksum`.
 ### 5.3 Primary data link
 
 The required CDH `data[]` entries map to `links[rel=enclosure]` for downloadable
-files, or `links[rel=service]` for service endpoints. If the resource is a
-landing page, code repository, dashboard, or model, use `rel=about`, `rel=code`
-(`processing-expression` for workflow code), or the most appropriate relation
-from section 5.1.
+files, or `links[rel=service]` for service endpoints (using the canonical
+`locations[0]`). If the resource is a landing page, code repository, dashboard,
+or model, use `rel=about`, `rel=code` (`processing-expression` for workflow
+code), or the most appropriate relation from section 5.1.
 
 ## 6. Processing and provenance
 

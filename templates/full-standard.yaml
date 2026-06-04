@@ -204,7 +204,17 @@ processing:
 # Data Urls (required)
 data:
   - name: ""
-    url: ""
+    # Access location(s) for this asset. At least one is required. Add more
+    # entries ONLY when they point at the SAME content via a different access
+    # path (e.g., HTTPS and S3 URLs for the same file); the first entry is
+    # canonical. Different content/formats (e.g., COG vs NetCDF) and services
+    # queried rather than downloaded (e.g., a GEE collection) are SEPARATE
+    # assets, not extra locations here.
+    locations:
+      - url: ""
+        # title is optional — an access label (e.g., "HTTPS", "S3") describing
+        # the access path, not the content.
+        title: ""
     processing_steps: [] # conditional, if processing metadata exists / steps are needed
     description: ""
     nodata: ""
@@ -217,7 +227,10 @@ data:
 
 additional_assets: # recommended
   - name: ""
-    url: ""
+    # Same rule as data[].locations — same content only; first entry canonical.
+    locations:
+      - url: ""
+        title: ""
     description: ""
     # Provide when known. If missing, CDH review may add it when it can be
     # determined from the asset URL, file extension, or inspectable metadata.

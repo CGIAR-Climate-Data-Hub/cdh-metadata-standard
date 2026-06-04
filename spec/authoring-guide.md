@@ -72,7 +72,8 @@ cdh:
   domain: []
 data:
   - name: ""
-    url: ""
+    locations:
+      - url: ""
     description: ""
     media_type: ""
 ```
@@ -211,10 +212,16 @@ At least one link to the resource.
 ```yaml
 data:
   - name: primary-data
-    url: https://example.org/data.parquet
+    locations:
+      - url: https://example.org/data.parquet
     description: Primary Parquet table
     media_type: application/vnd.apache.parquet
 ```
+
+Each asset's `locations` lists one or more access paths to the **same content**
+(the first is canonical). Use extra entries only for a different way to reach
+the same file (e.g., an S3 mirror of an HTTPS URL); different formats or a
+queried service belong in separate `data` / `additional_assets` entries.
 
 If you know the media type or file size, provide it. If either value is missing,
 the CDH review process may add it when it can be determined from the asset URL,

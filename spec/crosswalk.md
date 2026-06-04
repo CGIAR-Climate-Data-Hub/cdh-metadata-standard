@@ -82,7 +82,7 @@ both encodings.
 
 | CDH field              | Scope       | STAC                                                                 | OGC API Records                                |
 | ---------------------- | ----------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| `data[].url` (primary) | Required    | `assets[*].href` with `roles` including `data`                       | `links[rel=enclosure]` or `links[rel=service]` |
+| `data[].locations[]`   | Required    | `assets[*].href` ← `locations[0]`; extra same-content locations → Alternate Assets `alternate` | `locations[0]` → `links[rel=enclosure]`/`service`; extras → `links[rel=alternate]` |
 | `data[].media_type`    | Recommended | `assets[*].type`                                                     | `links[*].type`                                |
 | `data[].file_size`     | Recommended | File Extension `assets[*]["file:size"]`                              | `links[*].length`                              |
 | `data[].nodata`        | Conditional | Datacube `cube:variables[*].nodata`; Raster `raster:bands[*].nodata` | `properties["cgiar-cdh:variables"][*].nodata`  |

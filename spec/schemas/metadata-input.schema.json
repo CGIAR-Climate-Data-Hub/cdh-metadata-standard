@@ -23,6 +23,13 @@
             }
           ]
         },
+        "locations": {
+          "items": {
+            "$ref": "#/$defs/location"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
         "media_type": {
           "$ref": "#/$defs/mediaType"
         },
@@ -35,11 +42,11 @@
           },
           "type": "array",
           "uniqueItems": true
-        },
-        "url": {
-          "$ref": "#/$defs/nullableString"
         }
       },
+      "required": [
+        "locations"
+      ],
       "type": "object"
     },
     "cdh": {
@@ -320,6 +327,13 @@
             }
           ]
         },
+        "locations": {
+          "items": {
+            "$ref": "#/$defs/location"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
         "media_type": {
           "$ref": "#/$defs/mediaType"
         },
@@ -344,11 +358,11 @@
             "type": "string"
           },
           "type": "array"
-        },
-        "url": {
-          "$ref": "#/$defs/nullableString"
         }
       },
+      "required": [
+        "locations"
+      ],
       "type": "object"
     },
     "dateOrBlank": {
@@ -469,6 +483,21 @@
           "$ref": "#/$defs/nullableString"
         }
       },
+      "type": "object"
+    },
+    "location": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "$ref": "#/$defs/nullableString"
+        }
+      },
+      "required": [
+        "url"
+      ],
       "type": "object"
     },
     "mediaType": {

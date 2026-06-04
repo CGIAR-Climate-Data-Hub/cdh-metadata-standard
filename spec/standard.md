@@ -748,15 +748,27 @@ cdh:
 
 - **Requirement:** Required — at least one entry.
 - **Expected value per entry:**
-  `{ name, url, description, media_type, file_size, nodata, processing_steps }`.
+  `{ name, locations, description, media_type, file_size, nodata, processing_steps }`.
 - **Vocabulary:** `media_type` must be an
   [IANA media type](https://www.iana.org/assignments/media-types/) (e.g.,
   `application/vnd.zarr; version=3`,
   `image/tiff; application=geotiff; profile=cloud-optimized`).
+- **`locations[]`:** Access location(s) for the asset. Required — at least one
+  entry. Each entry is `{ url, title? }`, where `title` is an optional access
+  label describing the **access path** (e.g., `HTTPS`, `S3`), not the content.
+  - The **first entry is canonical**.
+  - List more than one entry **only** when the additional entries point at the
+    **same content** via a different access path (e.g., an HTTPS and an S3 URL
+    for the same file). All `locations[]` share the asset's `media_type`,
+    `file_size`, and `nodata`.
+  - Different content or formats (e.g., COG vs NetCDF) and services that are
+    queried rather than downloaded (e.g., a Google Earth Engine collection) are
+    **separate assets** — a separate `data[]` or `additional_assets[]` entry,
+    not an extra location here.
 - **Rules:**
-  - `url` must point to the described resource and should be stable.
-  - For restricted resources, `url` should point to a landing page or access
-    instructions.
+  - `locations[].url` must point to the described resource and should be stable.
+  - For restricted resources, `locations[].url` should point to a landing page
+    or access instructions.
   - Authors SHOULD provide `media_type` when they know it.
   - If `media_type` or `file_size` is missing, the CDH review process may add it
     when it can be determined from the asset URL, file extension, or inspectable
@@ -774,7 +786,10 @@ cdh:
 - **Definition:** Non-primary assets (QA/QC, code lists, schemas, thumbnails,
   alternate formats).
 - **Expected value per entry:**
-  `{ name, url, description, media_type, roles, file_size }`.
+  `{ name, locations, description, media_type, roles, file_size }`.
+- **`locations[]`:** Same shape and rules as `data[].locations` — required, at
+  least one entry; first is canonical; multiple entries only for the same
+  content via a different access path.
 - **Vocabulary for `roles`:** STAC roles — `metadata`, `validation`,
   `describedby`, `thumbnail`, `overview`, `visual`, plus CDH-specific roles when
   defined.

@@ -208,7 +208,19 @@ Recommended file metadata:
 
 - File Extension `file:size` in bytes — required for primary data assets
 - File Extension `file:checksum` — recommended for large or generated assets
-- Alternate Assets Extension when multiple access paths exist
+
+#### Asset `locations[]`
+
+Each input `data[]` / `additional_assets[]` entry carries `locations[]` (one or
+more access paths to the **same content**). Encode as:
+
+- `assets[*].href` ← `locations[0].url` (the canonical location).
+- Each additional `locations[]` entry → an Alternate Assets Extension
+  `alternate` entry on the same asset, keyed by a short name (from
+  `locations[].title` when present, otherwise a generated key), carrying its
+  `href` and optional `title`.
+- The asset's `type` (media type) and `file:size` apply to all locations, since
+  they are the same content.
 
 ### 5.1 Asset roles
 
