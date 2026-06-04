@@ -9,6 +9,10 @@ The `cgiar-cdh:` prefix denotes fields defined by the CDH STAC Extension and the
 CDH OGC Records profile. Names, types, and allowed values are identical across
 both encodings.
 
+Some of the mappings to OGC API Records are not relevant for the CDH (*e.g.,*
+`crs` and `geometry_column`) as records with these fields will always be
+serialized to STAC. These are indicated with an `N/A` in the table below.
+
 ## Core
 
 | CDH field              | Requirement         | STAC                                                                                                                                                     | OGC API Records (recordJSON)                                                                          |
@@ -36,11 +40,11 @@ both encodings.
 
 | CDH field                          | Requirement                    | STAC                                                                                                          | OGC API Records                               |
 | ---------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| `spatial.bbox`                     | STAC required; OGC conditional | Collection `extent.spatial.bbox`; Item `bbox`                                                                 | `geometry`; optionally `bbox`                 |
+| `spatial.bbox`                     | STAC required                  | Collection `extent.spatial.bbox`; Item `bbox`                                                                 | N/A                                           |
 | `spatial.geography`                | Optional                       | `cgiar-cdh:geography`                                                                                         | `properties["cgiar-cdh:geography"]`           |
-| `spatial.crs`                      | Geospatial conditional         | Projection Extension `proj:code` / `proj:epsg`                                                                | `properties["cgiar-cdh:crs"]`                 |
-| `spatial.geometry_column`          | Vector conditional             | Table Extension `table:primary_geometry`                                                                      | `properties["cgiar-cdh:geometry_column"]`     |
-| `spatial.resolution[]`             | Spatial-unit conditional       | Grid entries map to Datacube `cube:dimensions[].step`; full list also emits as `cgiar-cdh:spatial_resolution` | `properties["cgiar-cdh:spatial_resolution"]`  |
+| `spatial.crs`                      | Geospatial conditional         | Projection Extension `proj:code` / `proj:epsg`                                                                | N/A                                           |
+| `spatial.geometry_column`          | Vector conditional             | Table Extension `table:primary_geometry`                                                                      | N/A                                           |
+| `spatial.resolution[]`             | Spatial-unit conditional       | Grid entries map to Datacube `cube:dimensions[].step`; full list also emits as `cgiar-cdh:spatial_resolution` | N/A                                           |
 | `temporal.start_date` / `end_date` | STAC required; OGC conditional | Collection `extent.temporal.interval`; Item `datetime` etc.                                                   | `time` interval                               |
 | `temporal.resolution`              | Temporal conditional           | `cube:dimensions[time].step` when applicable; also `cgiar-cdh:temporal_resolution`                            | `properties["cgiar-cdh:temporal_resolution"]` |
 
@@ -54,18 +58,18 @@ both encodings.
 
 ## CDH-specific
 
-| CDH field                 | Requirement                    | STAC                                                                                                                                                             | OGC API Records                                            |
-| ------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `cdh.use_cases`           | Optional                       | `cgiar-cdh:use_cases`                                                                                                                                            | `properties["cgiar-cdh:use_cases"]`                        |
-| `cdh.not_recommended_for` | Optional                       | `cgiar-cdh:not_recommended_for`                                                                                                                                  | `properties["cgiar-cdh:not_recommended_for"]`              |
-| `commodities`             | Agriculture conditional        | Encoded as `themes` entry under scheme `https://cgiar.org/cdh/vocab/commodity` (AGROVOC-resolved); also a `cube:dimensions` / `table:columns` axis if applicable | Encoded as `properties.themes` entry under the same scheme |
-| `climate.mip_era`         | Climate conditional            | `cgiar-cdh:mip_era`                                                                                                                                              | `properties["cgiar-cdh:mip_era"]`                          |
-| `climate.scenarios`       | Scenario conditional           | `summaries["cgiar-cdh:scenarios"]`; dimension/column if axis                                                                                                     | `properties["cgiar-cdh:scenarios"]`                        |
-| `climate.models`          | Climate conditional            | `summaries["cgiar-cdh:models"]`                                                                                                                                  | `properties["cgiar-cdh:models"]`                           |
-| `climate.hazards`         | Hazard conditional             | Encoded as `themes` entry under scheme `https://cgiar.org/cdh/vocab/hazard` (AGROVOC-resolved)                                                                   | Encoded as `properties.themes` entry under the same scheme |
-| `climate.baseline`        | Anomaly/projection conditional | `cgiar-cdh:baseline`                                                                                                                                             | `properties["cgiar-cdh:baseline"]`                         |
-| `climate.bias_adjustment` | Bias-adjusted conditional      | `cgiar-cdh:bias_adjustment`                                                                                                                                      | `properties["cgiar-cdh:bias_adjustment"]`                  |
-| `climate.downscaling`     | Downscaled conditional         | `cgiar-cdh:downscaling`                                                                                                                                          | `properties["cgiar-cdh:downscaling"]`                      |
+| CDH field                 | Requirement                    | STAC                                                                                              | OGC API Records                                            |
+| ------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `cdh.use_cases`           | Optional                       | `cgiar-cdh:use_cases`                                                                             | `properties["cgiar-cdh:use_cases"]`                        |
+| `cdh.not_recommended_for` | Optional                       | `cgiar-cdh:not_recommended_for`                                                                   | `properties["cgiar-cdh:not_recommended_for"]`              |
+| `commodities`             | Agriculture conditional        | Encoded as `themes` entry under scheme `https://cgiar.org/cdh/vocab/commodity` (AGROVOC-resolved) | Encoded as `properties.themes` entry under the same scheme |
+| `climate.mip_era`         | Climate conditional            | `cgiar-cdh:mip_era`                                                                               | `properties["cgiar-cdh:mip_era"]`                          |
+| `climate.scenarios`       | Scenario conditional           | `summaries["cgiar-cdh:scenarios"]`; dimension/column if axis                                      | `properties["cgiar-cdh:scenarios"]`                        |
+| `climate.models`          | Climate conditional            | `summaries["cgiar-cdh:models"]`                                                                   | `properties["cgiar-cdh:models"]`                           |
+| `climate.hazards`         | Hazard conditional             | Encoded as `themes` entry under scheme `https://cgiar.org/cdh/vocab/hazard` (AGROVOC-resolved)    | Encoded as `properties.themes` entry under the same scheme |
+| `climate.baseline`        | Anomaly/projection conditional | `cgiar-cdh:baseline`                                                                              | `properties["cgiar-cdh:baseline"]`                         |
+| `climate.bias_adjustment` | Bias-adjusted conditional      | `cgiar-cdh:bias_adjustment`                                                                       | `properties["cgiar-cdh:bias_adjustment"]`                  |
+| `climate.downscaling`     | Downscaled conditional         | `cgiar-cdh:downscaling`                                                                           | `properties["cgiar-cdh:downscaling"]`                      |
 
 ## Provenance / Processing
 
@@ -79,14 +83,14 @@ both encodings.
 
 ## Assets and Links
 
-| CDH field             | Scope       | STAC                                                                                           | OGC API Records                                                                    |
-| --------------------- | ----------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `data[].locations[]`  | Required    | `assets[*].href` ← `locations[0]`; extra same-content locations → Alternate Assets `alternate` | `locations[0]` → `links[rel=enclosure]`/`service`; extras → `links[rel=alternate]` |
-| `data[].media_type`   | Recommended | `assets[*].type`                                                                               | `links[*].type`                                                                    |
-| `data[].file_size`    | Recommended | File Extension `assets[*]["file:size"]`                                                        | `links[*].length`                                                                  |
-| `data[].nodata`       | Conditional | Datacube `cube:variables[*].nodata`; Raster `raster:bands[*].nodata`                           | `properties["cgiar-cdh:variables"][*].nodata`                                      |
-| `additional_assets[]` | Recommended | `assets[*]` with appropriate `roles`                                                           | `links[*]` with appropriate `rel`                                                  |
-| `additional_links[]`  | Optional    | `links[*]`                                                                                     | `links[*]`                                                                         |
+| CDH field             | Scope       | STAC                                                                      | OGC API Records                                                                     |
+| --------------------- | ----------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `data[].locations[]`  | Required    | `locations[0]` = `assets[*].href`; extras to Alternate Assets `alternate` | `locations[0]` = `links[rel=enclosure]`/`service`; extras to `links[rel=alternate]` |
+| `data[].media_type`   | Recommended | `assets[*].type`                                                          | `links[*].type`                                                                     |
+| `data[].file_size`    | Recommended | File Extension `assets[*]["file:size"]`                                   | `links[*].length`                                                                   |
+| `data[].nodata`       | Conditional | Datacube `cube:variables[*].nodata`; Raster `raster:bands[*].nodata`      | `properties["cgiar-cdh:variables"][*].nodata`                                       |
+| `additional_assets[]` | Recommended | `assets[*]` with appropriate `roles`                                      | `links[*]` with appropriate `rel`                                                   |
+| `additional_links[]`  | Optional    | `links[*]`                                                                | `links[*]`                                                                          |
 
 ## Link relations used
 

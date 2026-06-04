@@ -250,6 +250,9 @@ file extension, or inspectable metadata.
 ### Spatial
 
 Use `spatial` when the resource has geographic coverage or geospatial assets.
+In CDH, records that need `spatial.bbox`, `spatial.crs`,
+`spatial.geometry_column`, or `spatial.resolution` should use `encoding: stac`;
+OGC Records only carries `spatial.geography` for broad discovery filtering.
 
 Common fields:
 

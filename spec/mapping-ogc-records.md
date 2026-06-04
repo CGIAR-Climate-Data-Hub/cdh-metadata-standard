@@ -52,7 +52,8 @@ Each field MUST be encoded in the most standard place available, in this order:
 5. Free-text `description` or `properties["cgiar-cdh:note"]`
 
 `cgiar-cdh:*` property names, value types, and controlled vocabularies are
-identical to the STAC profile.
+identical to the STAC profile, except for CDH fields that are explicitly
+STAC-only in the crosswalk.
 
 ## 4. Field-by-field placement
 
@@ -81,18 +82,21 @@ identical to the STAC profile.
 
 ### 4.2 Spatial / Temporal (when applicable)
 
-OGC Records is the non-spatial encoding path in CDH. Use these fields only when
-the resource genuinely has spatial or temporal relevance.
+OGC Records is the non-spatial encoding path in CDH. Records that require
+geospatial extent, CRS, spatial resolution, or embedded geometry-column metadata
+should be serialized to STAC instead. OGC Records may still carry a broad named
+geography label and temporal metadata when they help discovery.
 
 | CDH                                | recordJSON placement                                               |
 | ---------------------------------- | ------------------------------------------------------------------ |
-| `spatial.bbox`                     | `geometry` (and optionally `bbox`)                                 |
 | `spatial.geography`                | `properties["cgiar-cdh:geography"]`                                |
-| `spatial.crs`                      | `properties["cgiar-cdh:crs"]`                                      |
-| `spatial.geometry_column`          | `properties["cgiar-cdh:geometry_column"]` when needed              |
-| `spatial.resolution[]`             | `properties["cgiar-cdh:spatial_resolution"]`                       |
 | `temporal.start_date` / `end_date` | `time` (interval form `{ interval: [start, end] }` per recordJSON) |
 | `temporal.resolution`              | `properties["cgiar-cdh:temporal_resolution"]`                      |
+
+The following spatial fields are not emitted by the CDH OGC Records profile:
+`spatial.bbox`, `spatial.crs`, `spatial.geometry_column`, and
+`spatial.resolution[]`. If any of these fields are needed to describe the
+resource, use `encoding: stac`.
 
 ### 4.3 Data fields
 
@@ -105,8 +109,8 @@ is (e.g., a tabular dataset surfaced via OGC Records rather than STAC):
 | `variables[]`  | `properties["cgiar-cdh:variables"]` and/or `links[rel=describedby]` sidecar |
 | `classes[]`    | `links[rel=describedby]` to a sidecar class list                            |
 
-`spatial.geometry_column` is generally only useful for spatial tabular/vector
-records. For most non-spatial OGC Records resources, omit it.
+If a tabular dataset has embedded geometry or needs spatial asset metadata, use
+STAC with the Table Extension instead of OGC Records.
 
 ### 4.4 CDH-specific fields
 

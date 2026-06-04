@@ -416,8 +416,10 @@ serialized record.
 
 ### 5.3 Spatial
 
-Required for STAC. Conditional for OGC Records when the resource has spatial
-relevance.
+Required for STAC when the resource has spatial relevance. In the CDH OGC
+Records profile, only `spatial.geography` is emitted for broad discovery
+filtering; records that require bbox, CRS, spatial resolution, or embedded
+geometry-column metadata should use `encoding: stac`.
 
 #### `spatial.bbox`
 
