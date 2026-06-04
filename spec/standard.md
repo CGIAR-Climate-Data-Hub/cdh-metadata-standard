@@ -503,11 +503,32 @@ spatial:
 
 #### `spatial.resolution`
 
-- **Requirement:** Conditional — required for gridded data.
-- **Expected value:** `{ value, unit, label }`.
+- **Requirement:** Conditional — required when the spatial unit or spacing is
+  needed to interpret the data (e.g., regular grids, point observations, or
+  polygon reporting units).
+- **Expected value:** List of
+  `{ type, value, unit, label, reference_system, note }`.
 - **Rules:**
-  - `unit` must be a UDUNITS-2 unit symbol when numeric.
-  - `label` is a human-readable form (e.g., `5 arc-minutes`).
+  - `type` is one of `xy`, `x`, `y`, `point`, or `polygon`.
+  - Use `type: xy` for regular grids with the same x/y spacing.
+  - Use separate `type: x` and `type: y` entries only when x/y spacing differs.
+  - Do not mix `xy` with `x` / `y` entries in the same record.
+  - For grid entries (`xy`, `x`, `y`), `value` + `unit` describe grid spacing
+    and map to STAC Datacube dimension `step` + `unit`.
+  - For point or polygon entries, use `label` and `reference_system` to describe
+    the observation locations or reporting units. `value` + `unit` may be used
+    when a meaningful level exists, such as `value: 2`, `unit: admin-level`.
+  - `label` is the human-readable form (e.g., `5 arc-minutes`,
+    `Kenya counties`).
+  - `note` is for short spatial interpretation notes that do not belong in the
+    record-level `note`.
+
+#### `spatial.geometry_column`
+
+- **Requirement:** Conditional — for vector tables with an embedded geometry
+  column.
+- **Expected value:** Name of the geometry column.
+- **Encoding:** STAC Table Extension `table:primary_geometry`.
 
 ### 5.4 Temporal
 
@@ -523,11 +544,16 @@ relevance.
 
 - **Requirement:** Conditional — required for time-series, forecast, projection,
   or recurring-observation data.
-- **Expected value:** `{ value, unit, label }`.
+- **Expected value:** `{ values, unit, step, note }`.
 - **Rules:**
-  - `unit` must be a UDUNITS-2 time unit (`day`, `month`, `year`) when numeric.
-  - For non-numeric resolutions (e.g., climatology over a baseline period), use
-    `value: static` and a `label`.
+  - `values` lists named or easily interpretable temporal positions when useful
+    (e.g., `[1, 2, ..., 12]` for months).
+  - `unit` is the author-facing time unit or label (e.g., `day`, `month`,
+    `year`, `daily`, `monthly`).
+  - `step` is the STAC Datacube-compatible step when known, preferably an ISO
+    8601 duration such as `P1D`, `P1M`, or `P1Y`.
+  - `note` explains temporal interpretation or temporal aggregation, such as
+    "daily data aggregated to monthly using median".
 
 ### 5.5 Data Fields
 
@@ -615,16 +641,6 @@ variables:
   - Each entry must reference a declared variable name.
   - For long class lists, prefer a sidecar asset linked with `rel=describedby`
     and keep only summary information here.
-
-#### `geography.column`
-
-- **Requirement:** Conditional — for vector tables with a geometry column.
-
-#### `geography.spatial_join`
-
-- **Requirement:** Conditional — for tabular data that joins to a spatial
-  dataset (e.g., GAUL polygons).
-- **Expected value:** `{ source_key, target: { id, url, key }, note }`.
 
 ### 5.6 CDH-specific
 
@@ -725,22 +741,23 @@ cdh:
 #### `processing[]`
 
 - **Requirement:** Recommended — required for derived products.
-- **Definition:** Ordered list of processing steps. The first step SHOULD use
-  `id: source` and describes the original generation of the data; for many
-  records this is the only step needed.
+- **Definition:** Ordered list of processing steps. When `processing[]` is
+  provided, at least one step MUST use `id: source` and describe the original
+  generation of the data; for many records this is the only step needed.
 - **Expected value per step:**
   `{ id, description, code: { url, version }, date, derived_from[] }`.
 - **Rules:**
   - `id` must be unique within `processing[]`.
+  - At least one step must use `id: source` whenever `processing[]` is present.
   - `derived_from[]` entries are **always external URLs** of the form
     `{ url, title }`. This matches STAC `links[rel=derived_from]` semantics.
     Inter-step references are NOT used here — order in the `processing[]` array
     carries the step sequence, and the chain for a specific asset is captured by
     `data[].processing_steps[]`.
   - `date` is ISO 8601 / RFC 3339.
-  - When a record needs only the original generation, list a single `id: source`
-    step. Add subsequent steps only when meaningful new processing occurs (e.g.,
-    format conversion, bias adjustment).
+  - Put the `source` step first unless there is a specific reason to preserve a
+    different processing order. Add subsequent steps only when meaningful new
+    processing occurs (e.g., format conversion, bias adjustment).
 
 ### 5.8 Assets and Links
 
@@ -833,7 +850,7 @@ cdh:
 | `license`                                                     | SPDX License List                                                                                                                                                                                                                                                      |
 | dates (`created`, `updated`, `temporal.*`, `processing.date`) | ISO 8601 / RFC 3339                                                                                                                                                                                                                                                    |
 | `spatial.crs`                                                 | EPSG codes                                                                                                                                                                                                                                                             |
-| `variables[].unit`, `*.resolution.unit`                       | UDUNITS-2                                                                                                                                                                                                                                                              |
+| `variables[].unit`, grid `spatial.resolution[].unit`           | UDUNITS-2 where practical; non-grid spatial units may use clear labels such as `admin-level`                                                                                                                                                                           |
 | `variables[].name` (climate)                                  | CF Standard Names (where practical)                                                                                                                                                                                                                                    |
 | `contact[].role`                                              | Official STAC provider roles: `licensor`, `producer`, `processor`, `host`                                                                                                                                                                                              |
 | `media_type`                                                  | IANA media types                                                                                                                                                                                                                                                       |

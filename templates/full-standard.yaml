@@ -14,16 +14,7 @@ license: ""
 # Resource type — one of: dataset | document | model | notebook | code |
 #                         service | dashboard | api | method | knowledge-product
 resource_type: ""
-# Free-text search phrases. Do not duplicate structured values such as
-# spatial.geography, commodities, climate.hazards, cdh.domain, or
-# variables[]. Use keywords for aliases, acronyms, methods, and extra user
-# search terms.
-#
-# Each item is either a plain string OR an object linking the term to an
-# external vocabulary/ontology (e.g., AGROVOC, GEMET). Linked-keyword items
-# are also emitted as ontology themes in the serialized record, grouped by
-# `scheme`. Example:
-#
+
 #   keywords:
 #     - zonal statistics
 #     - term: Food security
@@ -35,12 +26,15 @@ note: > # Optional
 
 # Contact Metadata (required). At least one contact MUST use role: licensor.
 contact:
-  # Use organization alone for organization-level contacts. If name is used,
-  # organization is also required.
   - name: "" # optional when organization is present; required for person-level contacts
     role: licensor # one of: licensor | producer | processor | host
     email: ""
     organization: "" # required when name is present; may be used on its own
+    url: ""
+  - name: ""
+    role: ""
+    email: ""
+    organization: ""
     url: ""
 
 # Citation Metadata
@@ -52,7 +46,7 @@ related_publications: # optional
 
 # metadata tracking (required/auto-populated)
 # May be left blank in draft authoring files when CDH review manages metadata
-# timestamps. Serialized records must include both.
+# timestamps.
 created:
 updated:
 
@@ -67,50 +61,29 @@ funding:
 
 # Spatial (conditional - if data has a spatial aspect/will be in STAC)
 spatial:
-  # STAC-aligned. A list of bounding boxes in WGS84 (EPSG:4326). Each bbox
-  # lists all axes of the SW-most corner first, then all axes of the NE-most
-  # corner:
-  #   2D: [west, south, east, north]            = [xmin, ymin, xmax, ymax]
-  #   3D: [west, south, min_z, east, north, max_z]
-  #                                             = [xmin, ymin, zmin, xmax, ymax, zmax]
-  # Elevation (z) is in metres. The first entry is the overall extent;
-  # additional entries describe sub-regions, and should only be added when
-  # the union of those entries would otherwise leave a large uncovered area
-  # (e.g., Germany + Chile). Single-region data should use one entry.
-  #
-  # Mapping from common tools (note the axis-interleaved order!):
-  #   R terra::ext(r) -> xmin, xmax, ymin, ymax
-  #     bbox: [[xmin, ymin, xmax, ymax]]
-  #   R sf::st_bbox()  -> xmin, ymin, xmax, ymax  (already SW->NE)
-  #     bbox: [[xmin, ymin, xmax, ymax]]
-  #   GDAL gdalinfo / rasterio bounds (left, bottom, right, top)
-  #     bbox: [[left, bottom, right, top]]
-  #
-  # Examples:
-  #   bbox: [[-180.0, -90.0, 180.0, 90.0]]                       # whole Earth
-  #   bbox: [[-180.0, -90.0, -100.0, 180.0, 90.0, 150.0]]        # whole Earth, -100m..150m
-  #   bbox: [[5.9, 47.3, 15.0, 55.1], [-75.6, -55.9, -66.4, -17.5]]  # Germany + Chile
-  bbox: []
+  bbox: [] # [xmin, ymin, xmax, ymax]
   geography: ""
   crs: ""
+  geometry_column: "" # conditional - if spatial vector with a geometry column exists
   resolution:
-    value:
-    unit: ""
-    label: ""
-    aggregation: ""
+    - type: "" # one of xy, x, y, point, or polygon
+      unit: ""
+      value:
+      label: ""
+      reference_system: ""
+      note: ""
 
-# Temporal (conditional - if data has a temporal aspect/will be in STAC)
-temporal:
+temporal: # Temporal (conditional - if data has a temporal aspect/will be in STAC)
   start_date: ""
   end_date: ""
   resolution:
-    value:
-    unit: ""
-    label: ""
-    aggregation: ""
+    values: [] # if named/easily interpretable - 1-12 for months, jan-feb-march, etc
+    unit: "" # unit of the data - e.g., daily
+    step: "" # ISO_8601#Durations (can be auto filled by cdh team)
+    note: > # i.e. time specific usage notes, the aggregation method, etc.
+      ""
 
 # Data fields/Attributes (required)
-
 dimensions:
   - name: ""
     type: ""
@@ -130,10 +103,6 @@ variables:
     # limitations belong in the record-level `note` field.
     note: >
       ""
-    # aggregation:
-    #   method: "weighted_mean"
-    #   weight_by: "harvested_area"
-    #   notes: "Cannot be summed or simply averaged across cells. Must be weighted by harvested area to get a meaningful regional value."
 
 classes: # conditional, if classification scheme exists - must map to a listed variable
   - variable: ""
@@ -141,22 +110,6 @@ classes: # conditional, if classification scheme exists - must map to a listed v
       - value:
         label: ""
         description: ""
-
-geography:
-  column: "" # conditional - if spatial vector with a geometry column exists
-  spatial_join:
-    source_key: "gaul_uid"
-    target:
-      id: ""
-      url: ""
-      key: ""
-    note: ""
-
-# Note: there is no author-facing `themes:` field. The serialized record's
-# themes block is generated by the encoder from `cdh.domain`,
-# `commodities`, `climate.hazards`, and any linked-keyword items in
-# `keywords` (those with a `scheme` + `uri`). Add external ontology links by
-# using the object form of `keywords` above.
 
 # Additional fields for searching and filtering
 cdh:
@@ -182,16 +135,14 @@ climate:
   downscaling:
     method: null
     resolution: null
-commodities: []
+
+commodities: [] # Required - CDH-controlled vocabulary (vocab/commodity.json)
 
 # Data provenance / processing
-# - `processing[]` is an ordered list of steps. The first step SHOULD use
-#   `id: source` and describes the original generation of the data.
-# - `derived_from[]` entries are always external URLs (matches STAC
-#   `links[rel=derived_from]`). Step-to-step ordering comes from array
-#   order here, and per-asset chains come from `data[].processing_steps[]`.
+# - `processing[]` is an ordered list of steps. When provided, at least one step
+#   MUST use `id: source` and describe the original generation of the data.
 processing:
-  - id:
+  - id: source
     description:
     code:
       url:
@@ -204,40 +155,30 @@ processing:
 # Data Urls (required)
 data:
   - name: ""
-    # Access location(s) for this asset. At least one is required. Add more
+    # Access locations for this asset. At least one is required. Add more
     # entries ONLY when they point at the SAME content via a different access
-    # path (e.g., HTTPS and S3 URLs for the same file); the first entry is
-    # canonical. Different content/formats (e.g., COG vs NetCDF) and services
+    # path (e.g., HTTPS and S3 URLs for the same file)
+    #
+    # Different content/formats (e.g., COG vs NetCDF) and services
     # queried rather than downloaded (e.g., a GEE collection) are SEPARATE
-    # assets, not extra locations here.
+    # data entries, not extra locations here.
     locations:
       - url: ""
-        # title is optional — an access label (e.g., "HTTPS", "S3") describing
-        # the access path, not the content.
-        title: ""
+        title: "" # optional an access label (e.g., "HTTPS", "S3")
     processing_steps: [] # conditional, if processing metadata exists / steps are needed
     description: ""
     nodata: ""
-    # Provide when known. If missing, CDH review may add it when it can be
-    # determined from the asset URL, file extension, or inspectable metadata.
-    media_type: ""
-    # Provide when known. If missing, CDH review may add it when it can be
-    # determined from the asset URL, file extension, or inspectable metadata.
-    file_size: ""
+    media_type: "" # provide if known
+    file_size: "" # provide if known
 
-additional_assets: # recommended
+additional_assets: # recommended - same guidelines as above data fields
   - name: ""
-    # Same rule as data[].locations — same content only; first entry canonical.
     locations:
       - url: ""
         title: ""
     description: ""
-    # Provide when known. If missing, CDH review may add it when it can be
-    # determined from the asset URL, file extension, or inspectable metadata.
     media_type: ""
     roles: []
-    # Provide when known. If missing, CDH review may add it when it can be
-    # determined from the asset URL, file extension, or inspectable metadata.
     file_size: ""
 
 additional_links:

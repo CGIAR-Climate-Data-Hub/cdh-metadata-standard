@@ -238,6 +238,7 @@ Common fields:
 - `spatial.bbox`
 - `spatial.geography`
 - `spatial.crs`
+- `spatial.geometry_column`
 - `spatial.resolution`
 
 `spatial.bbox` is a list of bounding boxes in WGS84 (EPSG:4326).
@@ -276,6 +277,34 @@ values, whether supplied by the contributor or added during CDH review. Provide
 these fields when you know them, especially for multi-asset records or when the
 first asset is not representative.
 
+Use `spatial.resolution` for the spatial spacing or unit at which values are
+represented. For regular grids, use `type: xy` when x/y spacing is the same:
+
+```yaml
+spatial:
+  resolution:
+    - type: xy
+      value: 0.08333333333333333
+      unit: degree
+      label: 5 arc-minutes
+      reference_system: EPSG:4326
+```
+
+For polygon reporting units such as counties or watersheds:
+
+```yaml
+spatial:
+  resolution:
+    - type: polygon
+      value: 2
+      unit: admin-level
+      label: Kenya counties
+      reference_system: GAUL
+```
+
+Use `spatial.geometry_column` when a vector/table asset contains an embedded
+geometry column.
+
 ### Temporal
 
 Use `temporal` when the resource has a time period, forecast period, projection
@@ -286,6 +315,21 @@ Common fields:
 - `temporal.start_date`
 - `temporal.end_date`
 - `temporal.resolution`
+
+Use `temporal.resolution.step` for the machine-readable time step when known
+(prefer ISO 8601 durations such as `P1D`, `P1M`, or `P1Y`). Use `values` for
+named or easily interpretable temporal positions.
+
+```yaml
+temporal:
+  start_date: "1981-01-01"
+  end_date: "2020-12-31"
+  resolution:
+    values: []
+    unit: daily
+    step: P1D
+    note: ""
+```
 
 ### Variables
 

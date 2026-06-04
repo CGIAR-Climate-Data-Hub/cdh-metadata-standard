@@ -420,42 +420,6 @@
       },
       "type": "object"
     },
-    "geography": {
-      "additionalProperties": false,
-      "properties": {
-        "column": {
-          "$ref": "#/$defs/nullableString"
-        },
-        "spatial_join": {
-          "additionalProperties": false,
-          "properties": {
-            "note": {
-              "$ref": "#/$defs/nullableString"
-            },
-            "source_key": {
-              "$ref": "#/$defs/nullableString"
-            },
-            "target": {
-              "additionalProperties": false,
-              "properties": {
-                "id": {
-                  "$ref": "#/$defs/nullableString"
-                },
-                "key": {
-                  "$ref": "#/$defs/nullableString"
-                },
-                "url": {
-                  "$ref": "#/$defs/nullableString"
-                }
-              },
-              "type": "object"
-            }
-          },
-          "type": "object"
-        }
-      },
-      "type": "object"
-    },
     "id": {
       "oneOf": [
         {
@@ -596,14 +560,33 @@
       },
       "type": "object"
     },
-    "resolution": {
+    "spatialResolution": {
       "additionalProperties": false,
       "properties": {
-        "aggregation": {
-          "$ref": "#/$defs/nullableString"
-        },
         "label": {
           "$ref": "#/$defs/nullableString"
+        },
+        "note": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "reference_system": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "type": {
+          "oneOf": [
+            {
+              "const": ""
+            },
+            {
+              "enum": [
+                "xy",
+                "x",
+                "y",
+                "point",
+                "polygon"
+              ]
+            }
+          ]
         },
         "unit": {
           "$ref": "#/$defs/nullableString"
@@ -693,8 +676,48 @@
         "geography": {
           "$ref": "#/$defs/nullableString"
         },
+        "geometry_column": {
+          "$ref": "#/$defs/nullableString"
+        },
         "resolution": {
-          "$ref": "#/$defs/resolution"
+          "items": {
+            "$ref": "#/$defs/spatialResolution"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "temporalResolution": {
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "step": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "unit": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "values": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "array"
         }
       },
       "type": "object"
@@ -706,7 +729,7 @@
           "$ref": "#/$defs/dateOrBlank"
         },
         "resolution": {
-          "$ref": "#/$defs/resolution"
+          "$ref": "#/$defs/temporalResolution"
         },
         "start_date": {
           "$ref": "#/$defs/dateOrBlank"
@@ -717,21 +740,6 @@
     "variable": {
       "additionalProperties": false,
       "properties": {
-        "aggregation": {
-          "additionalProperties": false,
-          "properties": {
-            "method": {
-              "$ref": "#/$defs/nullableString"
-            },
-            "notes": {
-              "$ref": "#/$defs/nullableString"
-            },
-            "weight_by": {
-              "$ref": "#/$defs/nullableString"
-            }
-          },
-          "type": "object"
-        },
         "data_type": {
           "$ref": "#/$defs/nullableString"
         },
@@ -857,9 +865,6 @@
       },
       "type": "array"
     },
-    "geography": {
-      "$ref": "#/$defs/geography"
-    },
     "id": {
       "$ref": "#/$defs/id"
     },
@@ -912,9 +917,21 @@
       "$ref": "#/$defs/nullableString"
     },
     "processing": {
+      "contains": {
+        "properties": {
+          "id": {
+            "const": "source"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "type": "object"
+      },
       "items": {
         "$ref": "#/$defs/processingStep"
       },
+      "minContains": 1,
       "type": "array"
     },
     "related_publications": {

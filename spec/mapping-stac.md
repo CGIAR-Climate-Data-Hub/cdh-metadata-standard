@@ -92,26 +92,28 @@ consistency when the record could also be expressed as an OGC API Record.
 | `spatial.bbox`                     | `extent.spatial.bbox` (Collection); `bbox` (Item)                                                                                                      |
 | `spatial.geography`                | `cgiar-cdh:geography`                                                                                                                                  |
 | `spatial.crs`                      | Projection Extension: `proj:code` (preferred) or `proj:epsg`                                                                                           |
-| `spatial.resolution`               | `cube:dimensions[].step` (+ `unit`/`reference_system`) for the grid; also `cgiar-cdh:spatial_resolution` at Collection; use `summaries` when it varies |
+| `spatial.geometry_column`          | Table Extension `table:primary_geometry`                                                                                                               |
+| `spatial.resolution[]`             | Grid entries (`xy`, `x`, `y`) map to `cube:dimensions[].step` (+ `unit`/`reference_system`); all entries also emit as `cgiar-cdh:spatial_resolution` |
 | `temporal.start_date` / `end_date` | `extent.temporal.interval` (Collection); `datetime` / `start_datetime` / `end_datetime` (Item)                                                         |
-| `temporal.resolution`              | `cube:dimensions[time].step` (+ `unit`) for the grid; also `cgiar-cdh:temporal_resolution` at Collection; use `summaries` when it varies               |
+| `temporal.resolution`              | `cube:dimensions[time].step` when `step` is provided; also `cgiar-cdh:temporal_resolution` at Collection                                               |
 
 Resolution placement, in order of preference:
 
-1. For gridded/array assets, the **numeric** resolution is the `step` of the
-   relevant `cube:dimensions[]` entry (x/y for spatial, `time` for temporal),
-   expressed in that dimension's native `unit` / `reference_system`. This is the
-   faithful home for geographic grids (degrees, arc-minutes).
-2. `raster:bands[].spatial_resolution` MAY also be emitted on raster assets, but
+1. For gridded/array assets, `spatial.resolution[]` entries with `type: xy`,
+   `x`, or `y` are expanded to the relevant `cube:dimensions[]` `step`, expressed
+   in that dimension's native `unit` / `reference_system`. `type: xy` is an
+   authoring shorthand and serializes as separate x and y dimensions.
+2. `temporal.resolution.step` maps to `cube:dimensions[time].step` when the data
+   has a real time axis.
+3. `raster:bands[].spatial_resolution` MAY also be emitted on raster assets, but
    note it is **defined in meters only** — use it only when the grid is metric
    (e.g., 30 m, 250 m). Do not force degree/arc-minute resolutions into it; the
    same caveat applies to core `gsd`.
-3. The Collection-level `cgiar-cdh:spatial_resolution` /
-   `cgiar-cdh:temporal_resolution` (`{ value, unit, label, aggregation }`) is
-   always emitted. It carries the human-readable `label` (e.g., `5 arc-minutes`)
-   and `aggregation`, which the native fields cannot express, and is the
-   format-independent value the catalog filter and AI consumers read — including
-   for non-cube and non-metric data where no native field fits.
+4. The Collection-level `cgiar-cdh:spatial_resolution` mirrors the input
+   `spatial.resolution[]` list. This is the format-independent value for labels,
+   point/polygon reporting units, and non-metric spatial units.
+5. The Collection-level `cgiar-cdh:temporal_resolution` mirrors
+   `temporal.resolution` (`{ values, unit, step, note }`).
 
 ### 4.4 Data fields, dimensions, variables
 
@@ -126,11 +128,11 @@ The only decision is **tabular or not**:
   - `variables[]` → `cube:variables`
 
   A 2D raster is a valid cube: its x and y are horizontal spatial dimensions.
-  Use `cube:dimensions[].step` (+ `unit` / `reference_system`) for grid
-  resolution; the step is expressed in the dimension's native units, so
-  geographic grids (degrees, arc-minutes) are represented faithfully — unlike
-  the meters-only `raster:spatial_resolution` and core `gsd` (see section 4.3 and the
-  `cgiar-cdh:spatial_resolution` note).
+  Use `spatial.resolution[]` grid entries to derive `cube:dimensions[].step`
+  (+ `unit` / `reference_system`) for grid resolution; the step is expressed in
+  the dimension's native units, so geographic grids (degrees, arc-minutes) are
+  represented faithfully — unlike the meters-only `raster:spatial_resolution`
+  and core `gsd` (see section 4.3 and the `cgiar-cdh:spatial_resolution` note).
 
 - **Compose the Raster Extension on raster assets when band-level physical
   metadata exists.** STAC extensions compose: emit `raster:bands` on a
@@ -145,7 +147,7 @@ The only decision is **tabular or not**:
   vector table has no labeled axes with extent/step, so it is not a cube;
   forcing rows and columns into `cube:dimensions` is incorrect and will not
   validate cleanly. Use Table Extension `table:columns`; `table:primary_geometry`
-  for `geography.column`; optional `table:row_count`. Variable/column metadata
+  for `spatial.geometry_column`; optional `table:row_count`. Variable/column metadata
   for tabular assets lives in `table:columns`, not `cube:variables`.
 
 Decision summary: tabular → **Table**; everything else (any array/grid) →
@@ -156,9 +158,6 @@ band-level metadata.
 asset or variable. Large class lists SHOULD be a sidecar asset with
 `roles=[metadata, describedby]` and a link with `rel=describedby` from the
 variable's containing object.
-
-`geography.spatial_join` → `cgiar-cdh:spatial_join` at Collection, Item, or
-Asset depending on which level the join applies to.
 
 ### 4.5 Collection vs Item vs Summaries vs Asset
 
@@ -209,7 +208,7 @@ Recommended file metadata:
 - File Extension `file:size` in bytes — required for primary data assets
 - File Extension `file:checksum` — recommended for large or generated assets
 
-#### Asset `locations[]`
+### 5.1 Asset `locations[]`
 
 Each input `data[]` / `additional_assets[]` entry carries `locations[]` (one or
 more access paths to the **same content**). Encode as:
@@ -259,9 +258,9 @@ be used for CDH-defined attributes such as `cgiar-cdh:code_version`.
 
 ## 7. Processing and provenance
 
-The CDH `processing[]` block is an id-keyed DAG of processing steps. The first
-step SHOULD use `id: source` and describes the original/initial production of
-the data.
+The CDH `processing[]` block is an ordered, id-keyed list of processing steps.
+When `processing[]` is provided, at least one step MUST use `id: source` and
+describe the original/initial production of the data.
 
 Encoding rules:
 

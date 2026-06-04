@@ -39,19 +39,18 @@ both encodings.
 | `spatial.bbox`                     | STAC required; OGC conditional | Collection `extent.spatial.bbox`; Item `bbox`               | `geometry`; optionally `bbox`                 |
 | `spatial.geography`                | Optional                       | `cgiar-cdh:geography`                                       | `properties["cgiar-cdh:geography"]`           |
 | `spatial.crs`                      | Geospatial conditional         | Projection Extension `proj:code` / `proj:epsg`              | `properties["cgiar-cdh:crs"]`                 |
-| `spatial.resolution`               | Gridded conditional            | `cgiar-cdh:spatial_resolution` (Collection or `summaries`)  | `properties["cgiar-cdh:spatial_resolution"]`  |
+| `spatial.geometry_column`          | Vector conditional             | Table Extension `table:primary_geometry`                    | `properties["cgiar-cdh:geometry_column"]`     |
+| `spatial.resolution[]`             | Spatial-unit conditional       | Grid entries map to Datacube `cube:dimensions[].step`; full list also emits as `cgiar-cdh:spatial_resolution` | `properties["cgiar-cdh:spatial_resolution"]`  |
 | `temporal.start_date` / `end_date` | STAC required; OGC conditional | Collection `extent.temporal.interval`; Item `datetime` etc. | `time` interval                               |
-| `temporal.resolution`              | Temporal conditional           | `cgiar-cdh:temporal_resolution` (Collection or `summaries`) | `properties["cgiar-cdh:temporal_resolution"]` |
+| `temporal.resolution`              | Temporal conditional           | `cube:dimensions[time].step` when applicable; also `cgiar-cdh:temporal_resolution` | `properties["cgiar-cdh:temporal_resolution"]` |
 
 ## Data fields
 
-| CDH field                | Requirement            | STAC                                                                               | OGC API Records                       |
-| ------------------------ | ---------------------- | ---------------------------------------------------------------------------------- | ------------------------------------- |
-| `dimensions[]`           | Data conditional       | Datacube Extension `cube:dimensions`                                               | `properties["cgiar-cdh:dimensions"]`  |
-| `variables[]`            | Data conditional       | Datacube Extension `cube:variables`; Raster Extension `raster:bands` for COG-style | `properties["cgiar-cdh:variables"]`   |
-| `classes[]`              | Classified conditional | Classification Extension `classification:classes`                                  | `links[rel=describedby]` to sidecar   |
-| `geography.column`       | Vector conditional     | Table Extension `table:primary_geometry`                                           | n/a (OGC Records is non-spatial path) |
-| `geography.spatial_join` | Vector conditional     | `cgiar-cdh:spatial_join` (Collection, Item, or Asset)                              | n/a                                   |
+| CDH field | Requirement | STAC | OGC API Records |
+| --- | --- | --- | --- |
+| `dimensions[]` | Data conditional | Datacube Extension `cube:dimensions` | `properties["cgiar-cdh:dimensions"]` |
+| `variables[]` | Data conditional | Datacube Extension `cube:variables`; Raster Extension `raster:bands` for COG-style | `properties["cgiar-cdh:variables"]` |
+| `classes[]` | Classified conditional | Classification Extension `classification:classes` | `links[rel=describedby]` to sidecar |
 
 ## CDH-specific
 
@@ -72,7 +71,7 @@ both encodings.
 
 | CDH field                         | Requirement | STAC                                                                                                      | OGC API Records                                        |
 | --------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| `processing[].id = "source"`      | Recommended | Collection-level Processing Extension: `processing:lineage`, `processing:datetime`, `processing:software` | Same fields under `properties["cgiar-cdh:processing"]` |
+| `processing[].id = "source"`      | Required when `processing[]` is present | Collection-level Processing Extension: `processing:lineage`, `processing:datetime`, `processing:software` | Same fields under `properties["cgiar-cdh:processing"]` |
 | `processing[]` (subsequent)       | Conditional | Asset-level `processing:datetime`, `processing:lineage`                                                   | Appended to `properties["cgiar-cdh:processing"]`       |
 | `processing[].code.url`           | Conditional | `links[rel=processing-expression]`                                                                        | `links[rel=processing-expression]`                     |
 | `processing[].code.version`       | Conditional | Link `cgiar-cdh:code_version` field                                                                       | Link `cgiar-cdh:code_version` field                    |
@@ -80,14 +79,14 @@ both encodings.
 
 ## Assets and Links
 
-| CDH field              | Scope       | STAC                                                                 | OGC API Records                                |
-| ---------------------- | ----------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| `data[].locations[]`   | Required    | `assets[*].href` ← `locations[0]`; extra same-content locations → Alternate Assets `alternate` | `locations[0]` → `links[rel=enclosure]`/`service`; extras → `links[rel=alternate]` |
-| `data[].media_type`    | Recommended | `assets[*].type`                                                     | `links[*].type`                                |
-| `data[].file_size`     | Recommended | File Extension `assets[*]["file:size"]`                              | `links[*].length`                              |
-| `data[].nodata`        | Conditional | Datacube `cube:variables[*].nodata`; Raster `raster:bands[*].nodata` | `properties["cgiar-cdh:variables"][*].nodata`  |
-| `additional_assets[]`  | Recommended | `assets[*]` with appropriate `roles`                                 | `links[*]` with appropriate `rel`              |
-| `additional_links[]`   | Optional    | `links[*]`                                                           | `links[*]`                                     |
+| CDH field | Scope | STAC | OGC API Records |
+| --- | --- | --- | --- |
+| `data[].locations[]` | Required | `assets[*].href` ← `locations[0]`; extra same-content locations → Alternate Assets `alternate` | `locations[0]` → `links[rel=enclosure]`/`service`; extras → `links[rel=alternate]` |
+| `data[].media_type` | Recommended | `assets[*].type` | `links[*].type` |
+| `data[].file_size` | Recommended | File Extension `assets[*]["file:size"]` | `links[*].length` |
+| `data[].nodata` | Conditional | Datacube `cube:variables[*].nodata`; Raster `raster:bands[*].nodata` | `properties["cgiar-cdh:variables"][*].nodata` |
+| `additional_assets[]` | Recommended | `assets[*]` with appropriate `roles` | `links[*]` with appropriate `rel` |
+| `additional_links[]` | Optional | `links[*]` | `links[*]` |
 
 ## Link relations used
 

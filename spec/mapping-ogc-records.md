@@ -89,7 +89,8 @@ the resource genuinely has spatial or temporal relevance.
 | `spatial.bbox`                     | `geometry` (and optionally `bbox`)                                 |
 | `spatial.geography`                | `properties["cgiar-cdh:geography"]`                                |
 | `spatial.crs`                      | `properties["cgiar-cdh:crs"]`                                      |
-| `spatial.resolution`               | `properties["cgiar-cdh:spatial_resolution"]`                       |
+| `spatial.geometry_column`          | `properties["cgiar-cdh:geometry_column"]` when needed              |
+| `spatial.resolution[]`             | `properties["cgiar-cdh:spatial_resolution"]`                       |
 | `temporal.start_date` / `end_date` | `time` (interval form `{ interval: [start, end] }` per recordJSON) |
 | `temporal.resolution`              | `properties["cgiar-cdh:temporal_resolution"]`                      |
 
@@ -104,8 +105,8 @@ is (e.g., a tabular dataset surfaced via OGC Records rather than STAC):
 | `variables[]`  | `properties["cgiar-cdh:variables"]` and/or `links[rel=describedby]` sidecar |
 | `classes[]`    | `links[rel=describedby]` to a sidecar class list                            |
 
-`geography.column` and `geography.spatial_join` are STAC-only concepts and are
-not emitted for OGC Records.
+`spatial.geometry_column` is generally only useful for spatial tabular/vector
+records. For most non-spatial OGC Records resources, omit it.
 
 ### 4.4 CDH-specific fields
 
@@ -186,8 +187,8 @@ Encoding rules:
 
 1. The full `processing[]` array, in order, is emitted as
    `properties["cgiar-cdh:processing"]`. The schema mirrors the YAML.
-2. The first step's `code.url` maps to `links[rel=processing-expression]` on the
-   record. Include `cgiar-cdh:code_version` as a link extra field.
+2. The `source` step's `code.url` maps to `links[rel=processing-expression]` on
+   the record. Include `cgiar-cdh:code_version` as a link extra field.
 3. Each step's `derived_from[].url` entries (always external URLs) map to
    `links[rel=derived_from]` on the record.
 4. Per-asset processing chains live in the corresponding link's
