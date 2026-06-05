@@ -13,11 +13,14 @@ name: Publish JSON Schemas
 #       <ext-name>/schema.json          # CDH STAC extensions, when present
 #     vocab/
 #       <name>.json                     # source vocabulary concept lists
+#   vocab/                              # unversioned mirror (latest release)
+#     <name>.json                       # durable themes[].scheme targets
 #
 # Public URL pattern (assuming GitHub Pages on this repo):
 #   https://<owner>.github.io/<repo>/<TAG>/schemas/metadata-input.schema.json
 #   https://<owner>.github.io/<repo>/<TAG>/vocab/domain.json
 #   https://<owner>.github.io/<repo>/<TAG>/extensions/cgiar-cdh/schema.json
+#   https://<owner>.github.io/<repo>/vocab/domain.json   # unversioned scheme URL
 #
 # The CDH STAC extension does NOT carry its own inner version segment. The
 # standard, schemas, vocabularies, and extension are released together under
@@ -79,4 +82,16 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: publish
           destination_dir: ${{ github.event.release.tag_name }}
+          keep_files: true
+
+      # Stable, unversioned mirror of the controlled vocabularies. The serialized
+      # `themes[].scheme` URIs reference these durable URLs
+      # (…/metadata/vocab/<name>.json), so they must resolve independently of any
+      # release tag. This always reflects the most recent release.
+      - name: Publish stable vocabularies (unversioned)
+        uses: peaceiris/actions-gh-pages@v3.9.3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: publish/vocab
+          destination_dir: vocab
           keep_files: true
