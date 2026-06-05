@@ -19,7 +19,6 @@ name: Publish JSON Schemas
 # Public URL pattern (assuming GitHub Pages on this repo):
 #   https://<owner>.github.io/<repo>/<TAG>/schemas/metadata-input.schema.json
 #   https://<owner>.github.io/<repo>/<TAG>/vocab/domain.json
-#   https://<owner>.github.io/<repo>/<TAG>/extensions/cgiar-cdh/schema.json
 #   https://<owner>.github.io/<repo>/vocab/domain.json   # unversioned scheme URL
 #
 # The CDH STAC extension does NOT carry its own inner version segment. The
