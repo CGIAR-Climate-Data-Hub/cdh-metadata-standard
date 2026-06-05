@@ -7,6 +7,7 @@
   "scripts": {
     "test": "npm run check-markdown && npm run check",
     "check": "npm run check-schemas && npm run check-vocabs && npm run compile-schemas && npm run check-yaml",
+    "build-geography": "node scripts/build-geography-vocab.js",
     "gen-schemas": "node scripts/generate-vocab-schemas.js",
     "check-schemas": "node scripts/generate-vocab-schemas.js --check",
     "check-vocabs": "node scripts/check-vocabs.js",

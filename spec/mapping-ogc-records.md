@@ -1,4 +1,4 @@
-# CDH → OGC API Records Mapping
+# CDH to OGC API Records Mapping
 
 Status: draft
 

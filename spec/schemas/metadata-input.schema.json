@@ -675,8 +675,7 @@
         },
         "geography": {
           "items": {
-            "type": "string",
-            "minLength": 1
+            "$ref": "vocab/geography.schema.json"
           },
           "type": "array",
           "uniqueItems": true

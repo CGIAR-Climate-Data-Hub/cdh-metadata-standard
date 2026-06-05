@@ -1,5 +1,9 @@
 #!/usr/bin/env node
-// Validate vocab/*.json against spec/schemas/vocab/vocabulary.schema.json.
+// Validate hand-maintained vocab/*.json against vocabulary.schema.json.
+//
+// Generated vocab files (built from an external source by a script) are skipped
+// here: their generator guarantees their shape, so a separate structure schema
+// would be redundant.
 
 import { readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -9,14 +13,16 @@ import { newAjv, rel, ROOT } from "./_ajv.js";
 const META_PATH = resolve(ROOT, "spec/schemas/vocab/vocabulary.schema.json");
 const VOCAB_DIR = resolve(ROOT, "vocab");
 
+// Built by scripts/build-geography-vocab.js, which self-checks its output.
+const GENERATED = new Set(["geography.json"]);
+
 const ajv = newAjv();
-const meta = JSON.parse(await readFile(META_PATH, "utf-8"));
-const validate = ajv.compile(meta);
+const validate = ajv.compile(JSON.parse(await readFile(META_PATH, "utf-8")));
 
 const entries = await readdir(VOCAB_DIR);
-const files = entries.filter((n) => n.endsWith(".json")).map((n) =>
-  resolve(VOCAB_DIR, n)
-);
+const files = entries
+  .filter((n) => n.endsWith(".json") && !GENERATED.has(n))
+  .map((n) => resolve(VOCAB_DIR, n));
 
 if (files.length === 0) {
   console.log("No vocab files found.");

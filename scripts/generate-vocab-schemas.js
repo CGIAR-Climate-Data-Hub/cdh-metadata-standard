@@ -42,6 +42,11 @@ const VOCABS = {
     target: resolve(ROOT, "spec/schemas/vocab/hazard.schema.json"),
     title: "CDH Hazard Vocabulary",
   },
+  geography: {
+    source: resolve(ROOT, "vocab/geography.json"),
+    target: resolve(ROOT, "spec/schemas/vocab/geography.schema.json"),
+    title: "CDH Geography Vocabulary",
+  },
 };
 
 async function conceptIds(path) {

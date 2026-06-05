@@ -141,7 +141,7 @@ The only decision is **tabular or not**:
   optional `table:row_count`. Variable/column metadata for tabular assets lives
   in `table:columns`, not `cube:variables`.
 
-`classes[]` → Classification Extension `classification:classes` on the relevant
+`classes[]` -> Classification Extension `classification:classes` on the relevant
 asset or variable. Large class lists SHOULD be a sidecar asset with
 `roles=[metadata, describedby]` and a link with `rel=describedby` from the
 variable's containing object.
@@ -198,7 +198,7 @@ Each input `data[]` / `additional_assets[]` entry carries `locations[]` (one or
 more access paths to the **same content**). Encode as:
 
 - `assets[*].href` ← `locations[0].url` (the canonical location).
-- Each additional `locations[]` entry → an Alternate Assets Extension
+- Each additional `locations[]` entry -> an Alternate Assets Extension
   `alternate` entry on the same asset, keyed by a short name (from
   `locations[].title` when present, otherwise a generated key), carrying its
   `href` and optional `title`.

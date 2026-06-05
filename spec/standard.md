@@ -23,10 +23,9 @@ For the field-level mapping table to both encodings, see
 For contributor-facing guidance, start in
 [`authoring-guide.md`](./authoring-guide.md).
 
-> \[!NOTE]
-> For now, all metadata submissions must be in CDH YAML format which will be
-> automatically converted to STAC or OGC API Records. In the future, there may
-> be an option to directly submit STAC or OGC API Records.
+> \[!NOTE] For now, all metadata submissions must be in CDH YAML format which
+> will be automatically converted to STAC or OGC API Records. In the future,
+> there may be an option to directly submit STAC or OGC API Records.
 
 ## 1. Purpose
 
@@ -285,7 +284,7 @@ and **Example**.
   - Should use consistent spelling and capitalization.
   - Linked items must include both `scheme` and `uri` to be expanded as themes;
     a `term`-only object is equivalent to a plain string.
-  - Do not link entries to the `https://cgiar.org/cdh/vocab/*` schemes — those
+  - Do not link entries to the `https://cgiar-climate-data-hub.github.io/metadata/vocab/*` schemes — those
     are reserved for encoder expansion from `cdh.domain`, `commodities`, and
     `climate.hazards`.
 
@@ -306,17 +305,23 @@ keywords:
 There is no author-facing `themes` field. The encoder produces a themes block at
 serialization time from:
 
-- `cdh.domain` → scheme `https://cgiar.org/cdh/vocab/domain` (primary and
+- `cdh.domain` -> scheme `https://cgiar-climate-data-hub.github.io/metadata/vocab/domain.json` (primary and
   secondary domain concepts);
-- `commodities` → scheme `https://cgiar.org/cdh/vocab/commodity`, populated with
-  AGROVOC URIs via `vocab/commodity.json`;
-- `climate.hazards` → scheme `https://cgiar.org/cdh/vocab/hazard`, populated
+- `commodities` -> scheme `https://cgiar-climate-data-hub.github.io/metadata/vocab/commodity.json`, populated
+  with AGROVOC URIs via `vocab/commodity.json`;
+- `climate.hazards` -> scheme `https://cgiar-climate-data-hub.github.io/metadata/vocab/hazard.json`, populated
   with AGROVOC URIs via `vocab/hazard.json`;
 - any linked-keyword entries in `keywords`, grouped by `scheme`.
 
-Themes are NOT what the website filter reads — use `cdh.domain` for filter /
-group-by (see section 5.6). Themes exist for ontology / linked-data context in
-the serialized record.
+Each `themes[].concepts[]` entry carries the concept's `id` (CDH vocab id),
+`title`, and — where the vocabulary provides one — its authoritative external
+concept `url` (e.g., the AGROVOC URI). The `scheme` URIs above are deliberately
+**unversioned** stable identifiers (unlike the versioned schema URLs in section
+2): a concept scheme's identity must be durable across releases, and the
+unversioned mirror always resolves to the latest published vocabulary.
+
+Themes are NOT what the website filter reads. Themes exist for ontology /
+linked-data context in the serialized record.
 
 #### `created`, `updated`
 
@@ -332,7 +337,7 @@ the serialized record.
 
 #### `version`, `previous_version`
 
-- **Requirement:** Conditional — required when the resource is versioned.
+- **Requirement:** Conditional. Required when the resource is versioned.
 - **Expected value:** Stable version label.
 - **Rules:**
   - Identify the resource version, not the metadata schema version.
@@ -374,7 +379,7 @@ the serialized record.
 
 #### `doi`
 
-- **Requirement:** Conditional — required when a DOI exists.
+- **Requirement:** Conditional. Required when a DOI exists.
 - **Expected value:** DOI URL (preferred) or DOI string.
 
 #### `related_publications[]`
@@ -466,10 +471,18 @@ spatial:
 #### `spatial.geography`
 
 - **Requirement:** Optional
-- **Definition:** Named geography labels for broad discovery filtering.
-- **Expected value:** List of place, region, country, basin, or other named
-  geography labels.
-- **Examples:** `[global]`, `[africa]`, `[kenya, uganda]`.
+- **Definition:** Named geographies for broad discovery, browse, and filtering.
+- **Expected value:** List of concept ids from `vocab/geography.json`.
+- **Vocabulary:** `vocab/geography.json` - a controlled list generated from the
+  UN M49 standard. It covers the full hierarchy (World, regions, sub-regions,
+  intermediate regions, and countries). Each concept carries its M49 `code`, an
+  `iso3` code (countries), `parents` (ancestor ids, for roll-up filtering), and
+  LDC/LLDC/SIDS `groups`.
+- **Rules:**
+  - Must use the `id` from the `vocab/geography.json` vocabulary.
+  - Serves a diffrent purpose from `bbox`, just because one exists does not mean
+    the other doesn't need to.
+- **Examples:** `[world]`, `[sub-saharan-africa]`, `[kenya, uganda]`.
 
 #### `spatial.crs`
 
@@ -643,7 +656,7 @@ variables:
   - Encoded as `cgiar-cdh:domain` (STAC) / `properties["cgiar-cdh:domain"]` (OGC
     Records).
   - Also expanded by the encoder into a `themes` entry under the
-    `https://cgiar.org/cdh/vocab/domain` scheme for linked-data consumers (see
+    `https://cgiar-climate-data-hub.github.io/metadata/vocab/domain.json` scheme for linked-data consumers (see
     section 5.1).
 - **Example:**
 
@@ -831,13 +844,14 @@ cdh:
 | `license`                                                     | SPDX License List                                                                                                               |
 | dates (`created`, `updated`, `temporal.*`, `processing.date`) | ISO 8601 / RFC 3339                                                                                                             |
 | `spatial.crs`                                                 | EPSG codes                                                                                                                      |
+| `spatial.geography`                                           | `vocab/geography.json` (UN M49; regions + countries)                                                                            |
 | `variables[].unit`, grid `spatial.resolution[].unit`          | UDUNITS-2 where practical; non-grid spatial units may use clear labels such as `admin-level`                                    |
 | `variables[].name` (climate)                                  | CF Standard Names (where practical)                                                                                             |
 | `contact[].role`                                              | Official STAC provider roles: `licensor`, `producer`, `processor`, `host`                                                       |
 | `media_type`                                                  | IANA media types                                                                                                                |
 | `resource_type`                                               | `vocab/resource_type.json`                                                                                                      |
 | `cdh.domain`                                                  | `vocab/domain.json` (CDH closed set)                                                                                            |
-| `keywords[].scheme` (linked items)                            | Open — any resolvable controlled-vocabulary URI (e.g., AGROVOC, GEMET). Do not link entries to `https://cgiar.org/cdh/vocab/*`. |
+| `keywords[].scheme` (linked items)                            | Open — any resolvable controlled-vocabulary URI (e.g., AGROVOC, GEMET). Do not link entries to `https://cgiar-climate-data-hub.github.io/metadata/vocab/*`. |
 | `commodities`                                                 | `vocab/commodity.json` (AGROVOC-mapped); encoded as themes                                                                      |
 | `climate.hazards`                                             | `vocab/hazard.json` (AGROVOC-mapped); encoded as themes                                                                         |
 | `climate.mip_era`                                             | `CMIP5`, `CMIP6` (informal)                                                                                                     |

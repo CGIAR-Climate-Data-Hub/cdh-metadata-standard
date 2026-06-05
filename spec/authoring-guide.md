@@ -285,6 +285,14 @@ spatial:
     - [-10.0, 10.0, 10.0, 20.0] # a small region included
 ```
 
+`spatial.geography` is the named-place facet for browse and filtering (the
+precise footprint lives in `spatial.bbox`). Use ids from `vocab/geography.json`,
+a controlled list built from UN M49. Because M49 includes regions, you can tag
+macro-regions as easily as countries — `[sub-saharan-africa]`,
+`[eastern-africa]`, `[kenya, uganda]`, or `[world]` (M49's top level; there is
+no `global`). Country ids resolve to their ISO3 code on output, and `parents`
+let the catalog roll a country up under its region.
+
 If `spatial.bbox` or `spatial.crs` is omitted for a geospatial STAC record, the
 CDH review process may add it when it can be determined from the asset URL, file
 extension, or inspectable metadata. Serialized records must contain the required
