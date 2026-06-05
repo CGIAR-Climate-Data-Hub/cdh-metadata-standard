@@ -6,7 +6,7 @@
   "type": "string",
   "enum": [
     "dataset",
-    "tool",
+    "software",
     "ai-skill",
     "document"
   ]
