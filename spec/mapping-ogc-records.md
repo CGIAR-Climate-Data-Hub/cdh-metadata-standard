@@ -84,12 +84,12 @@ STAC-only in the crosswalk.
 
 OGC Records is the non-spatial encoding path in CDH. Records that require
 geospatial extent, CRS, spatial resolution, or embedded geometry-column metadata
-should be serialized to STAC instead. OGC Records may still carry a broad named
-geography label and temporal metadata when they help discovery.
+should be serialized to STAC instead. OGC Records may still carry broad named
+geography labels and temporal metadata when they help discovery.
 
 | CDH                                | recordJSON placement                                               |
 | ---------------------------------- | ------------------------------------------------------------------ |
-| `spatial.geography`                | `properties["cgiar-cdh:geography"]`                                |
+| `spatial.geography[]`              | `properties["cgiar-cdh:geography"]` array                          |
 | `temporal.start_date` / `end_date` | `time` (interval form `{ interval: [start, end] }` per recordJSON) |
 | `temporal.resolution`              | `properties["cgiar-cdh:temporal_resolution"]`                      |
 

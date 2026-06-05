@@ -466,8 +466,10 @@ spatial:
 #### `spatial.geography`
 
 - **Requirement:** Optional
-- **Definition:** Named geography label.
-- **Examples:** `global`, `africa`, `kenya`.
+- **Definition:** Named geography labels for broad discovery filtering.
+- **Expected value:** List of place, region, country, basin, or other named
+  geography labels.
+- **Examples:** `[global]`, `[africa]`, `[kenya, uganda]`.
 
 #### `spatial.crs`
 

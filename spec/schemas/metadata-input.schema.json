@@ -674,7 +674,12 @@
           "$ref": "#/$defs/nullableString"
         },
         "geography": {
-          "$ref": "#/$defs/nullableString"
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": "array",
+          "uniqueItems": true
         },
         "geometry_column": {
           "$ref": "#/$defs/nullableString"

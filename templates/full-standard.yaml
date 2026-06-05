@@ -61,7 +61,7 @@ funding:
 # Spatial (conditional - if data has a spatial aspect/will be in STAC)
 spatial:
   bbox: [] # [xmin, ymin, xmax, ymax]
-  geography: ""
+  geography: [] # e.g. [global] or [kenya, uganda]
   crs: ""
   geometry_column: "" # conditional - if spatial vector with a geometry column exists
   resolution:

@@ -92,7 +92,7 @@ consistency when the record could also be expressed as an OGC API Record.
 | CDH                                | STAC placement                                                                                                                                       |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `spatial.bbox`                     | `extent.spatial.bbox` (Collection); `bbox` (Item)                                                                                                    |
-| `spatial.geography`                | `cgiar-cdh:geography`                                                                                                                                |
+| `spatial.geography[]`              | `cgiar-cdh:geography` array                                                                                                                          |
 | `spatial.crs`                      | Projection Extension: `proj:code` (preferred) or `proj:epsg`                                                                                         |
 | `spatial.geometry_column`          | Table Extension `table:primary_geometry`                                                                                                             |
 | `spatial.resolution[]`             | Grid entries (`xy`, `x`, `y`) map to `cube:dimensions[].step` (+ `unit`/`reference_system`); all entries also emit as `cgiar-cdh:spatial_resolution` |

@@ -148,7 +148,7 @@ Put these in structured fields instead:
 
 | If the term is a...                        | Put it in...        |
 | ------------------------------------------ | ------------------- |
-| place, country, region, or named geography | `spatial.geography` |
+| places, countries, regions, or named geographies | `spatial.geography` |
 | crop, livestock type, or commodity         | `commodities`       |
 | climate hazard                             | `climate.hazards`   |
 | time period or temporal resolution         | `temporal.*`        |
