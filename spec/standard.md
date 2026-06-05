@@ -2,17 +2,17 @@
 
 Status: draft
 
-This document defines the **conceptual** metadata model used by the Climate Data
-Hub. Every Hub record, regardless of encoding, conforms to the field
-definitions, requirement levels, and rules in this document.
+This document defines the metadata model used by the Climate Data Hub. Every Hub
+record, regardless of encoding, conforms to the field definitions, requirement
+levels, and rules in this document.
 
 Two encodings are supported:
 
 - **STAC** — for spatial, spatiotemporal, gridded, raster, data-cube, and
   spatial/temporal tabular data. See [`mapping-stac.md`](./mapping-stac.md).
 - **OGC API Records** (recordJSON) — for discoverable resources that are not
-  naturally spatial: documents, code, models, notebooks, dashboards, services,
-  APIs, methods, knowledge products. See
+  naturally spatial: non-spatipotemporal datasets, documents, code, models,
+  notebooks, dashboards, services, methods, knowledge products. See
   [`mapping-ogc-records.md`](./mapping-ogc-records.md).
 
 For the field-level mapping table to both encodings, see
@@ -20,8 +20,13 @@ For the field-level mapping table to both encodings, see
 [`templates/`](../templates/), including the complete
 [`full-standard.yaml`](../templates/full-standard.yaml) template.
 
-For contributor-facing guidance, see the plain-language
+For contributor-facing guidance, start in
 [`authoring-guide.md`](./authoring-guide.md).
+
+> \[!NOTE]
+> For now, all metadata submissions must be in CDH YAML format which will be
+> automatically converted to STAC or OGC API Records. In the future, there may
+> be an option to directly submit STAC or OGC API Records.
 
 ## 1. Purpose
 
@@ -33,20 +38,17 @@ A Hub record exists to make a resource:
 - **Validatable** against a schema.
 - **Usable** by automated/AI tools without manual interpretation.
 
-Free-text descriptions support these goals, but MUST NOT be the only place where
+Free-text descriptions support these goals, but cannot be the only place where
 structured, filterable facts are stored.
 
 ## 2. Versioning
 
-The CDH metadata standard, schemas, controlled vocabularies, and the
-`cgiar-cdh` STAC extension are versioned together. A single git tag
-(`v<MAJOR>.<MINOR>.<PATCH>`) covers all of them. `cdh_schema_version`
-in input YAML records matches the same tag.
+The CDH metadata standard, schemas, controlled vocabularies, and extensions are
+versioned together. A single git tag (`v<MAJOR>.<MINOR>.<PATCH>`) covers all of
+them. `cdh_schema_version` in input YAML records matches the same tag.
 
-There is no independent extension version. Published URLs follow the
-pattern `<base>/<TAG>/...` and the extension is served at
-`<base>/<TAG>/extensions/cgiar-cdh/schema.json` (no inner version
-segment).
+For now, here is no independent extension version. This may change with incresed
+use of the extensions. Published URLs follow the pattern `<base>/<TAG>/...`.
 
 ## 3. Requirement Levels
 
@@ -77,7 +79,9 @@ this order:
 3. **An approved `cgiar-cdh:*` field**, as defined by the CDH STAC Extension and
    the CDH OGC Records profile.
 4. **A linked sidecar metadata asset** (`rel=describedby`) when the content is
-   large, nested, or frequently changing.
+   large, nested, or frequently changing. This can/should also be used to
+   reference other dataset metadata files that may exist, that do not fit into
+   the standard, such as a dataset README.
 5. **A custom property or custom extension** (see section 4.3) when no standard
    placement fits.
 6. **Free-text inside `description`**, as a last resort, when the fact genuinely
@@ -85,65 +89,37 @@ this order:
 
 ### 4.3 Extending the schema
 
-The hierarchy in section 4.2 covers the overwhelming majority of cases. When it does
-not, the schema is extensible via the following paths, in preferred order:
+The YAML input schema is closed: fields not defined by this standard are not
+valid CDH input metadata. When a record needs metadata that is not covered by
+section 4.2, the field must be handled through a standard update before it can
+appear in YAML.
 
-- **Additional STAC Extensions.** Any community STAC Extension may be added to a
-  STAC record's `stac_extensions` array. Pin the version. Use when its field set
-  is a better fit than core fields, the CDH profile, or an existing approved
-  extension.
-- **New `cgiar-cdh:*` fields.** Proposed additions must define name, expected
-  type, allowed values, and requirement level, and must be added to both the CDH
-  STAC Extension schema and the CDH OGC Records profile before use. Adding an
-  undefined `cgiar-cdh:*` field will fail validation.
-- **Custom extension namespace. Discouraged.** A new prefixed namespace (e.g.,
-  `myproj:`) may be defined for a project- or dataset-specific extension when a
-  coherent group of related fields is needed and no existing community STAC
-  Extension or `cgiar-cdh:*` field fits. This is allowed when genuinely
-  necessary, but it is the wrong long-term home for anything broadly useful.
-  Before going this route:
+1. Use an existing approved STAC Extension field if the extension is already
+   part of the CDH STAC profile.
+2. Add a new `cgiar-cdh:*` field when the metadata is broadly useful to CDH
+   records. The field must be defined in the CDH STAC Extension schema, OGC
+   Records profile, crosswalk, YAML schema, and examples before use.
+3. Add a community STAC Extension to the CDH STAC profile only when its field
+   set is a better fit than a CDH-specific field. The extension URI must be
+   pinned and documented in `mapping-stac.md`.
 
-  - Check the [STAC Extensions catalog](https://stac-extensions.github.io/) for
-    an existing community extension that fits.
-  - If the fields would be useful to more than one CDH record, propose them as
-    additions to the CDH STAC Extension and OGC Records profile instead (the
-    `cgiar-cdh:*` path above). A custom namespace that survives more than one
-    project is a sign it should have been a Hub extension.
+Custom STAC extensions or ad hoc fields may exist in hand-authored STAC outside
+the CDH YAML workflow, but they are not compatible with the CDH YAML input
+schema and CDH tooling unless explicitly added to this standard.
 
-  If a custom namespace is still the right answer:
-
-  - Declare it in `stac_extensions` (STAC) with a pinned schema URI, or document
-    it in a sidecar for OGC Records.
-  - Publish the schema so consumers can validate.
-  - Plan to revisit at the next standard review and promote to a proper
-    extension if the fields prove broadly useful.
-- **Additional metadata properties (ad hoc). Strongly discouraged.** Standalone
-  custom properties (e.g., `myproj_internal_id: "ABC-123"`,
-  `something_else: 42`) are a last resort and should be avoided. Records filled
-  with one-off fields and invented prefixes become unsearchable, inconsistent,
-  and a burden on every downstream tool. Before adding one, exhaust section 4.2 (1–5)
-  and the two extension paths above. If a fact matters enough to record, it
-  almost always belongs in a `cgiar-cdh:*` field or a proper custom extension
-  namespace — promote it there instead. If, after all of that, an ad hoc
-  property is genuinely unavoidable:
-  - MUST NOT use the `cgiar-cdh:` prefix or any other established namespace
-    prefix.
-  - MUST NOT invent a vanity prefix to mimic an official one (e.g., `cdh_*`,
-    `cgiar:`, etc.).
-  - Must be self-describing (clear name, obvious type).
-  - Will not appear in search, filter, or facet UI, and will not be validated.
-  - Must be treated as temporary; revisit at the next standard review and either
-    promote, replace, or remove.
-
-The `cgiar-cdh:` prefix is reserved for approved CDH fields and is never a
-general-purpose custom namespace.
+- Check the [STAC Extensions catalog](https://stac-extensions.github.io/) for an
+  existing community extension that fits.
+- If the fields would be useful to more than one CDH record, propose them as
+  additions to the CDH STAC Extension and OGC Records profile instead (the
+  `cgiar-cdh:*` path above). A custom namespace that survives more than one
+  project is a sign it should have been a Hub extension.
 
 ### 4.4 Description, note, and free text
 
 `description` and `note` are first-class fields, not catch-all fallbacks:
 
 - **`description` (required)** is the canonical human- and AI-readable paragraph
-  explaining the resource. Step 6 of the hierarchy in section 4.2 lives here.
+  explaining the resource.
 - **`note` (optional)** is reserved for caveats, warnings, or
   interpretation-critical remarks that a reader of `description` alone would
   otherwise miss. It is not a second description, and not a place to dump prose
@@ -174,15 +150,14 @@ is generated by the encoder.
   themes.
 - **`themes` (encoder output only)** — not authored. The encoder produces a
   themes block at serialization time from `cdh.domain`, `commodities`,
-  `climate.hazards` (against `vocab/*.json`), and any linked-keyword
-  entries.
+  `climate.hazards` (against `vocab/*.json`), and any linked-keyword entries.
 
 Decision rule:
 
-- A value needed for **filter / group-by / catalog browse** → `cdh.domain`.
+- A value needed for filter / group-by / catalog browse -> `cdh.domain`.
 - A value with a canonical concept in an external ontology you want to expose
-  for semantic discovery → linked entry in `keywords`.
-- A value useful only for **full-text search** → plain string in `keywords`.
+  for semantic discovery -> linked entry in `keywords`.
+- A value useful only for full-text search -> plain string in `keywords`.
 
 ### 4.6 Sidecar metadata
 
@@ -193,9 +168,9 @@ QA/QC outputs, detailed table schemas, and detailed classification legends.
 ## 5. Field Reference
 
 The fields below mirror the conceptual input structure validated by
-`schemas/metadata-input.schema.json`. For each field:
-**Requirement**, **Definition**, **Expected value**, **Rules**, **Vocabulary**
-where applicable, and **Example**.
+`schemas/metadata-input.schema.json`. For each field: **Requirement**,
+**Definition**, **Expected value**, **Rules**, **Vocabulary** where applicable,
+and **Example**.
 
 ### 5.1 Core
 
@@ -270,11 +245,10 @@ where applicable, and **Example**.
 
 - **Requirement:** Required
 - **Definition:** Kind of resource the record describes.
-- **Vocabulary (CDH-controlled):** `dataset`, `document`, `model`, `notebook`,
-  `code`, `service`, `dashboard`, `api`, `method`, `knowledge-product`.
+- **Vocabulary:** Closed set defined in `vocab/resource_type.json`. Initial
+  values are `dataset`, `document`, `tool`, and `ai-skill`.
 - **Rules:**
   - Should not replace asset media types.
-  - Drives selection of encoding (STAC vs OGC Records).
 
 #### `encoding`
 
@@ -300,13 +274,12 @@ where applicable, and **Example**.
     other user-facing search phrases that are not already captured by structured
     fields.
   - Must not replace structured fields such as `resource_type`, `cdh.domain`,
-    `commodities`, `climate.*`, `spatial.*`, `temporal.*`, or
-    `variables[]`.
+    `commodities`, `climate.*`, `spatial.*`, `temporal.*`, or `variables[]`.
   - Should not duplicate structured values. If a geography exists, encode it in
     `spatial.geography`; if a crop or commodity exists, encode it in
-    `commodities`; if a hazard, scenario, model, baseline, or MIP era
-    exists, encode it in `climate.*`; if a variable, band, indicator, or
-    column exists, encode it in `variables[]`.
+    `commodities`; if a hazard, scenario, model, baseline, or MIP era exists,
+    encode it in `climate.*`; if a variable, band, indicator, or column exists,
+    encode it in `variables[]`.
   - Values used for filter, group-by, or facet belong in `cdh.domain` (closed
     CDH vocab), not here. See section 4.5.
   - Should use consistent spelling and capitalization.
@@ -335,15 +308,15 @@ serialization time from:
 
 - `cdh.domain` → scheme `https://cgiar.org/cdh/vocab/domain` (primary and
   secondary domain concepts);
-- `commodities` → scheme `https://cgiar.org/cdh/vocab/commodity`, populated
-  with AGROVOC URIs via `vocab/commodity.json`;
+- `commodities` → scheme `https://cgiar.org/cdh/vocab/commodity`, populated with
+  AGROVOC URIs via `vocab/commodity.json`;
 - `climate.hazards` → scheme `https://cgiar.org/cdh/vocab/hazard`, populated
   with AGROVOC URIs via `vocab/hazard.json`;
 - any linked-keyword entries in `keywords`, grouped by `scheme`.
 
 Themes are NOT what the website filter reads — use `cdh.domain` for filter /
-group-by (see section 5.6). Themes exist for ontology / linked-data context in the
-serialized record.
+group-by (see section 5.6). Themes exist for ontology / linked-data context in
+the serialized record.
 
 #### `created`, `updated`
 
@@ -442,7 +415,7 @@ geometry-column metadata should use `encoding: stac`.
   - Longitude is constrained to `[-180, 180]` and latitude to `[-90, 90]`; the
     schema rejects out-of-range values.
   - Bbox arrays MUST have length 4 or 6 — other lengths are rejected.
-- **Authoring note:** Authors SHOULD provide `spatial.bbox` when they know it,
+- **Authoring note:** Authors should provide `spatial.bbox` when they know it,
   especially for multi-asset records or when the first asset is not
   representative. If this value is missing, the CDH review process may add it
   when it can be determined from the asset URL, file extension, or inspectable
@@ -451,17 +424,15 @@ geometry-column metadata should use `encoding: stac`.
 
 ##### Common-tool mappings
 
-The STAC order is **axis-interleaved** (`xmin, ymin, xmax, ymax`), not the
-"min-min-max-max-per-axis" order produced by R's `terra::ext()` or GDAL's
-`-projwin`. Translate carefully:
+The STAC order is (`xmin, ymin, xmax, ymax`), not the "min-min-max-max-per-axis"
+order produced by R's `terra::ext()` or GDAL's `-projwin`. Translate carefully:
 
-| Source                                      | Native order                         | CDH `bbox` entry                       |
-| ------------------------------------------- | ------------------------------------ | -------------------------------------- |
-| R `terra::ext(r)`                           | `xmin, xmax, ymin, ymax`             | `[xmin, ymin, xmax, ymax]`             |
-| R `sf::st_bbox(x)`                          | `xmin, ymin, xmax, ymax`             | `[xmin, ymin, xmax, ymax]` (as-is)     |
-| Python `rasterio.bounds` / `shapely.bounds` | `(left, bottom, right, top)`         | `[left, bottom, right, top]`           |
-| GDAL `gdalinfo` corner coordinates          | `ulx, uly, lrx, lry`                 | `[ulx, lry, lrx, uly]`                 |
-| 3D extent with elevation                    | `xmin, ymin, zmin, xmax, ymax, zmax` | `[xmin, ymin, zmin, xmax, ymax, zmax]` |
+| Source                                      | Native order                 | CDH `bbox` entry                   |
+| ------------------------------------------- | ---------------------------- | ---------------------------------- |
+| R `terra::ext(r)`                           | `xmin, xmax, ymin, ymax`     | `[xmin, ymin, xmax, ymax]`         |
+| R `sf::st_bbox(x)`                          | `xmin, ymin, xmax, ymax`     | `[xmin, ymin, xmax, ymax]` (as-is) |
+| Python `rasterio.bounds` / `shapely.bounds` | `(left, bottom, right, top)` | `[left, bottom, right, top]`       |
+| GDAL `gdalinfo` corner coordinates          | `ulx, uly, lrx, lry`         | `[ulx, lry, lrx, uly]`             |
 
 ##### Examples
 
@@ -474,7 +445,14 @@ spatial:
 ```yaml
 spatial:
   bbox:
-    - [-180.0, -90.0, -100.0, 180.0, 90.0, 150.0] # whole Earth, -100m..150m
+    - [
+        -180.0,
+        -90.0,
+        -1,
+        180.0,
+        90.0,
+        0,
+      ] # whole Earth, -1m to 0m (i.e. soil data...)
 ```
 
 ```yaml
@@ -544,7 +522,7 @@ relevance.
 
 #### `temporal.resolution`
 
-- **Requirement:** Conditional — required for time-series, forecast, projection,
+- **Requirement:** Conditional - required for time-series, forecast, projection,
   or recurring-observation data.
 - **Expected value:** `{ values, unit, step, note }`.
 - **Rules:**
@@ -561,7 +539,7 @@ relevance.
 
 #### `dimensions[]`
 
-- **Requirement:** Conditional — required for data cubes, tabular data with
+- **Requirement:** Conditional - required for data cubes, tabular data with
   axes, or any dataset whose meaning depends on axes/codes.
 - **Expected value per dimension:**
   `{ name, type, description, values, reference_system }`.
@@ -609,8 +587,9 @@ relevance.
     it matters (for example, "Higher values indicate greater heat hazard" or
     "Negative values indicate lower than the baseline").
   - `note` carries caveats, limitations, warnings, or non-obvious use rules for
-    the variable. Dataset-wide limitations belong in the record-level `note`
-    field instead.
+    the variable (e.g., "Data must be aggregated to with weighted\_mean from ...
+    variable"). Dataset-wide limitations belong in the record-level `note` field
+    instead.
   - For inspectable formats, the CDH review process may add technical variable
     metadata such as names, data types, bands, nodata values, or dimensions when
     it can be determined from the asset URL, file extension, or inspectable
@@ -674,7 +653,8 @@ cdh:
 #### `cdh.use_cases[]`
 
 - **Requirement:** Optional
-- **Vocabulary:** CDH-controlled list (TBD). Free-form until then.
+- **Vocabulary:** Free-form test for now. May migrate to a controlled vocabulary
+  as needed.
 
 #### `cdh.not_recommended_for[]`
 
@@ -690,7 +670,8 @@ cdh:
 - **Expected value:** List of friendly names (e.g., `banana`, `cassava`,
   `arabica-coffee`).
 - **Encoding:** Expanded into a `themes` entry under the CDH commodity scheme
-  (see section 5.1). Does not appear as a standalone field in the encoded output.
+  (see section 5.1). Does not appear as a standalone field in the encoded
+  output.
 
 #### `climate.mip_era`
 
@@ -751,7 +732,7 @@ cdh:
 - **Rules:**
   - `id` must be unique within `processing[]`.
   - At least one step must use `id: source` whenever `processing[]` is present.
-  - `derived_from[]` entries are **always external URLs** of the form
+  - `derived_from[]` entries are always external URLs of the form
     `{ url, title }`. This matches STAC `links[rel=derived_from]` semantics.
     Inter-step references are NOT used here — order in the `processing[]` array
     carries the step sequence, and the chain for a specific asset is captured by
@@ -772,18 +753,18 @@ cdh:
   [IANA media type](https://www.iana.org/assignments/media-types/) (e.g.,
   `application/vnd.zarr; version=3`,
   `image/tiff; application=geotiff; profile=cloud-optimized`).
-- **`locations[]`:** Access location(s) for the asset. Required — at least one
+- **`locations[]`:** Access location(s) for the asset. Required for at least one
   entry. Each entry is `{ url, title? }`, where `title` is an optional access
-  label describing the **access path** (e.g., `HTTPS`, `S3`), not the content.
-  - The **first entry is canonical**.
-  - List more than one entry **only** when the additional entries point at the
-    **same content** via a different access path (e.g., an HTTPS and an S3 URL
-    for the same file). All `locations[]` share the asset's `media_type`,
-    `file_size`, and `nodata`.
+  label describing the access path (e.g., `HTTPS`, `S3`), not the content.
+  - The first entry is canonical.
+  - List more than one entry only when the additional entries point at the same
+    content via a different access path (e.g., an HTTPS and an S3 URL for the
+    same file). All `locations[]` share the asset's `media_type`, `file_size`,
+    and `nodata`.
   - Different content or formats (e.g., COG vs NetCDF) and services that are
     queried rather than downloaded (e.g., a Google Earth Engine collection) are
-    **separate assets** — a separate `data[]` or `additional_assets[]` entry,
-    not an extra location here.
+    separate assets — a separate `data[]` or `additional_assets[]` entry, not an
+    extra location here.
 - **Rules:**
   - `locations[].url` must point to the described resource and should be stable.
   - For restricted resources, `locations[].url` should point to a landing page
@@ -792,9 +773,6 @@ cdh:
   - If `media_type` or `file_size` is missing, the CDH review process may add it
     when it can be determined from the asset URL, file extension, or inspectable
     metadata.
-  - This review assistance is best effort and may fail for extensionless URLs,
-    signed URLs, APIs, landing pages, directories, object-store prefixes,
-    ambiguous formats, Zarr stores, or other multi-file resources.
   - Serialized records must contain the required values, whether supplied by the
     contributor or added during CDH review.
   - `processing_steps` references `processing[].id` values.
@@ -803,15 +781,14 @@ cdh:
 
 - **Requirement:** Recommended
 - **Definition:** Non-primary assets (QA/QC, code lists, schemas, thumbnails,
-  alternate formats).
+  alternate formats, additional metadata files).
 - **Expected value per entry:**
   `{ name, locations, description, media_type, roles, file_size }`.
 - **`locations[]`:** Same shape and rules as `data[].locations` — required, at
   least one entry; first is canonical; multiple entries only for the same
   content via a different access path.
 - **Vocabulary for `roles`:** STAC roles — `metadata`, `validation`,
-  `describedby`, `thumbnail`, `overview`, `visual`, plus CDH-specific roles when
-  defined.
+  `describedby`, `thumbnail`, `overview`, `visual`.
 - **Rules:**
   - Authors SHOULD provide `media_type` and `file_size` when they know them.
   - If `media_type` or `file_size` is missing, the CDH review process may add it
@@ -847,23 +824,23 @@ cdh:
 
 ## 7. Controlled Vocabularies Summary
 
-| Field                                                         | Vocabulary                                                                                                                                                                                                                                                             |
-| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `license`                                                     | SPDX License List                                                                                                                                                                                                                                                      |
-| dates (`created`, `updated`, `temporal.*`, `processing.date`) | ISO 8601 / RFC 3339                                                                                                                                                                                                                                                    |
-| `spatial.crs`                                                 | EPSG codes                                                                                                                                                                                                                                                             |
-| `variables[].unit`, grid `spatial.resolution[].unit`          | UDUNITS-2 where practical; non-grid spatial units may use clear labels such as `admin-level`                                                                                                                                                                           |
-| `variables[].name` (climate)                                  | CF Standard Names (where practical)                                                                                                                                                                                                                                    |
-| `contact[].role`                                              | Official STAC provider roles: `licensor`, `producer`, `processor`, `host`                                                                                                                                                                                              |
-| `media_type`                                                  | IANA media types                                                                                                                                                                                                                                                       |
-| `resource_type`                                               | CDH-controlled list (section 5.1)                                                                                                                                                                                                                                      |
-| `cdh.domain`                                                  | `vocab/domain.json` (CDH closed set)                                                                                                                                                                                                                                   |
-| `keywords[].scheme` (linked items)                            | Open — any resolvable controlled-vocabulary URI (e.g., AGROVOC, GEMET). The serialized themes block is generated by the encoder from these linked keywords plus the CDH domain, commodity, and hazard schemes. Do not link entries to `https://cgiar.org/cdh/vocab/*`. |
-| `commodities`                                                 | `vocab/commodity.json` (AGROVOC-mapped); encoded as themes                                                                                                                                                                                                             |
-| `climate.hazards`                                             | `vocab/hazard.json` (AGROVOC-mapped); encoded as themes                                                                                                                                                                                                                |
-| `climate.mip_era`                                             | `CMIP5`, `CMIP6` (informal)                                                                                                                                                                                                                                            |
-| `climate.scenarios`                                           | SSP / RCP labels, `historic` (informal)                                                                                                                                                                                                                                |
-| `climate.models`                                              | CMIP source IDs (informal)                                                                                                                                                                                                                                             |
+| Field                                                         | Vocabulary                                                                                                                      |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `license`                                                     | SPDX License List                                                                                                               |
+| dates (`created`, `updated`, `temporal.*`, `processing.date`) | ISO 8601 / RFC 3339                                                                                                             |
+| `spatial.crs`                                                 | EPSG codes                                                                                                                      |
+| `variables[].unit`, grid `spatial.resolution[].unit`          | UDUNITS-2 where practical; non-grid spatial units may use clear labels such as `admin-level`                                    |
+| `variables[].name` (climate)                                  | CF Standard Names (where practical)                                                                                             |
+| `contact[].role`                                              | Official STAC provider roles: `licensor`, `producer`, `processor`, `host`                                                       |
+| `media_type`                                                  | IANA media types                                                                                                                |
+| `resource_type`                                               | `vocab/resource_type.json`                                                                                                      |
+| `cdh.domain`                                                  | `vocab/domain.json` (CDH closed set)                                                                                            |
+| `keywords[].scheme` (linked items)                            | Open — any resolvable controlled-vocabulary URI (e.g., AGROVOC, GEMET). Do not link entries to `https://cgiar.org/cdh/vocab/*`. |
+| `commodities`                                                 | `vocab/commodity.json` (AGROVOC-mapped); encoded as themes                                                                      |
+| `climate.hazards`                                             | `vocab/hazard.json` (AGROVOC-mapped); encoded as themes                                                                         |
+| `climate.mip_era`                                             | `CMIP5`, `CMIP6` (informal)                                                                                                     |
+| `climate.scenarios`                                           | SSP / RCP labels, `historic` (informal)                                                                                         |
+| `climate.models`                                              | CMIP source IDs (informal)                                                                                                      |
 
 ## 8. Validation Checklist
 
