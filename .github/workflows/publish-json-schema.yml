@@ -47,7 +47,7 @@ jobs:
       - name: Install tooling
         run: npm ci
 
-      # Gate the publish on validation — never publish a broken schema graph.
+      # Gate the publish on validation - never publish a broken schema graph.
       - name: Validate before publishing
         run: npm run check
 

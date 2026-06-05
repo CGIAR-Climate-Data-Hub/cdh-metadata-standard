@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../spec/schemas/metadata-input.schema.json
 cdh_schema_version: "v0.0.1"
 
-# Encoding (required) — selects the serialization profile.
+# Encoding (required) - selects the serialization profile.
 # One of: stac | ogc-records
 encoding: ""
 
@@ -11,7 +11,7 @@ title: ""
 description: >
   ""
 license: ""
-# Resource type — one of: dataset | document | tool | ai-skill
+# Resource type - one of: dataset | document | tool | ai-skill
 resource_type: ""
 
 #   keywords:

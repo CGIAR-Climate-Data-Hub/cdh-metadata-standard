@@ -69,7 +69,7 @@ STAC-only in the crosswalk.
 | `keywords`                  | `properties.keywords`                                                                                                                                                      |
 | `cdh.domain[]`              | `properties["cgiar-cdh:domain"]`; also expanded into `properties.themes` under the CDH domain scheme. First entry is the primary domain.                                   |
 | `keywords[]` (linked items) | Plain-string keywords are emitted into `properties.keywords`. Linked-keyword entries (`{ term, scheme, uri }`) are also added to `properties.themes`, grouped by `scheme`. |
-| `properties.themes`         | Encoder output only — populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                     |
+| `properties.themes`         | Encoder output only - populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                     |
 | `license`                   | `properties.license`                                                                                                                                                       |
 | `contact[]`                 | `properties.contacts[]`. At least one contact must use `role=licensor`.                                                                                                    |
 | `citation`                  | `properties["cgiar-cdh:citation"]` (plain text)                                                                                                                            |

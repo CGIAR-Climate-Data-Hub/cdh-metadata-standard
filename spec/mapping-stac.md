@@ -78,7 +78,7 @@ searchable structured facts.
 | `funding[]`                 | `cgiar-cdh:funding`                                                                                                                                                                             |
 | `cdh.domain[]`              | `cgiar-cdh:domain` on the Collection; also expanded into Themes Extension `themes[]` under the CDH domain scheme. First entry drives sub-catalog placement.                                     |
 | `keywords[]` (linked items) | Each linked-keyword entry (`{ term, scheme, uri }`) is also emitted as a Themes Extension `themes[]` concept, grouped by `scheme`. Plain-string keywords are emitted only into STAC `keywords`. |
-| Themes Extension `themes[]` | Encoder output only — populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                                          |
+| Themes Extension `themes[]` | Encoder output only - populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                                          |
 
 ### 4.2 Resource type
 
@@ -119,7 +119,7 @@ The encoder does **not** choose between Datacube, Raster, and Table per asset.
 The only decision is **tabular or not**:
 
 - **Datacube by default for all array/grid data** (Zarr, NetCDF, GRIB, HDF5, and
-  COG/GeoTIFF — single-band or stacked). Datacube is the always-on descriptive
+  COG/GeoTIFF - single-band or stacked). Datacube is the always-on descriptive
   home for variables and dimensions:
 
   - `dimensions[]` -> `cube:dimensions`
@@ -129,7 +129,7 @@ The only decision is **tabular or not**:
   Use `spatial.resolution[]` grid entries to derive `cube:dimensions[].step` (+
   `unit` / `reference_system`) for grid resolution; the step is expressed in the
   dimension's native units, so geographic grids (degrees, arc-minutes) are
-  represented faithfully — unlike the meters-only `raster:spatial_resolution`
+  represented faithfully - unlike the meters-only `raster:spatial_resolution`
   and core `gsd` (see section 4.3 and the `cgiar-cdh:spatial_resolution` note).
 
 - **Compose the Raster Extension on raster assets when band-level physical
@@ -190,7 +190,7 @@ Every asset SHOULD include:
 
 Recommended file metadata:
 
-- File Extension `file:size` in bytes — required for primary data assets
+- File Extension `file:size` in bytes - required for primary data assets
 
 ### 5.1 Asset `locations[]`
 

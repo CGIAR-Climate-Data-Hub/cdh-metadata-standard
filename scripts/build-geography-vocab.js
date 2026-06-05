@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Build vocab/geography.json from the official UN M49 CSV export.
 //
-// Source of truth: vocab/sources/un-m49.csv (UNSD — Methodology export,
+// Source of truth: vocab/sources/un-m49.csv (UNSD - Methodology export,
 // semicolon-delimited). This script flattens the M49 hierarchy into a single
 // list of selectable geographies (World, regions, sub-regions, intermediate
 // regions, and countries), each with:

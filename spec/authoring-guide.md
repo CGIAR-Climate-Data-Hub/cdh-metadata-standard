@@ -146,12 +146,12 @@ that are not already captured elsewhere.
 
 Put these in structured fields instead:
 
-| If the term is a...                        | Put it in...        |
-| ------------------------------------------ | ------------------- |
+| If the term is a...                              | Put it in...        |
+| ------------------------------------------------ | ------------------- |
 | places, countries, regions, or named geographies | `spatial.geography` |
-| crop, livestock type, or commodity         | `commodities`       |
-| climate hazard                             | `climate.hazards`   |
-| time period or temporal resolution         | `temporal.*`        |
+| crop, livestock type, or commodity               | `commodities`       |
+| climate hazard                                   | `climate.hazards`   |
+| time period or temporal resolution               | `temporal.*`        |
 
 ```yaml
 keywords:
@@ -288,7 +288,7 @@ spatial:
 `spatial.geography` is the named-place facet for browse and filtering (the
 precise footprint lives in `spatial.bbox`). Use ids from `vocab/geography.json`,
 a controlled list built from UN M49. Because M49 includes regions, you can tag
-macro-regions as easily as countries — `[sub-saharan-africa]`,
+macro-regions as easily as countries - `[sub-saharan-africa]`,
 `[eastern-africa]`, `[kenya, uganda]`, or `[world]` (M49's top level; there is
 no `global`). Country ids resolve to their ISO3 code on output, and `parents`
 let the catalog roll a country up under its region.

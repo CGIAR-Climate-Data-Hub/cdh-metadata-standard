@@ -23,14 +23,14 @@ npm install
 
 Useful scripts:
 
-- `npm test` — run markdown and schema/vocab checks.
-- `npm run check` — schema, vocab, and YAML validation only.
-- `npm run format-markdown` — auto-format Markdown files.
+- `npm test`: run markdown and schema/vocab checks.
+- `npm run check`: schema, vocab, and YAML validation only.
+- `npm run format-markdown`: auto-format Markdown files.
 
 This repository also uses [prek](https://prek.j178.dev/) (a faster, drop-in
 `pre-commit` replacement) to run hooks defined in `.pre-commit-config.yaml`,
-including JSON formatting and basic file checks. Install it once and enable
-the hooks:
+including JSON formatting and basic file checks. Install it once and enable the
+hooks:
 
 ```sh
 prek install
