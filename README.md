@@ -10,8 +10,7 @@ metadata that can be validated and mapped to STAC or OGC API Records.
 
 ## Start Here
 
-- [Authoring guide](./spec/authoring-guide.md) - how to fill out metadata
-  without getting overwhelmed by optional fields.
+- [Authoring guide](./spec/authoring-guide.md) - how to fill out metadata.
 - [Templates](./templates) - fillable YAML starting points for common record
   types.
 - [Full template](./templates/full-standard.yaml) - the complete metadata input

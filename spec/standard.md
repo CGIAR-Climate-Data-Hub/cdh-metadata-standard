@@ -428,8 +428,7 @@ geometry-column metadata should use `encoding: stac`.
   especially for multi-asset records or when the first asset is not
   representative. If this value is missing, the CDH review process may add it
   when it can be determined from the asset URL, file extension, or inspectable
-  metadata. Serialized records must contain the required values, whether
-  supplied by the contributor or added during CDH review.
+  metadata.
 
 ##### Common-tool mappings
 
@@ -497,8 +496,6 @@ spatial:
 - **Authoring note:** Authors SHOULD provide `spatial.crs` when they know it. If
   this value is missing, the CDH review process may add it when it can be
   determined from the asset URL, file extension, or inspectable metadata.
-  Serialized records must contain the required values, whether supplied by the
-  contributor or added during CDH review.
 
 #### `spatial.resolution`
 
@@ -792,8 +789,6 @@ cdh:
   - If `media_type` or `file_size` is missing, the CDH review process may add it
     when it can be determined from the asset URL, file extension, or inspectable
     metadata.
-  - Serialized records must contain the required values, whether supplied by the
-    contributor or added during CDH review.
   - `processing_steps` references `processing[].id` values.
 
 #### `additional_assets[]`
@@ -813,8 +808,6 @@ cdh:
   - If `media_type` or `file_size` is missing, the CDH review process may add it
     when it can be determined from the asset URL, file extension, or inspectable
     metadata.
-  - Serialized records must contain the required values, whether supplied by the
-    contributor or added during CDH review.
 
 #### `additional_links[]`
 
@@ -894,22 +887,3 @@ cdh:
 - [ ] `climate.hazards[]` for hazard/risk resources
 - [ ] `climate.baseline` for anomalies and baseline-relative indicators
 - [ ] `classes[]` or class sidecar for classified data
-
-## 9. AI-Readability Minimum
-
-A record is AI-ready when an automated tool can answer the following without
-opening the data files:
-
-- What is this resource?
-- Who produced and maintains it?
-- How should it be cited?
-- What license governs reuse?
-- Where is it accessed?
-- What geography and time period does it cover?
-- What variables, dimensions, and codes does it contain, and in what units?
-- What source data and processing produced it?
-- What known limitations apply?
-- What file size, media type, and alternate access paths are available?
-
-Descriptions explain and contextualize these answers but are not their only
-source.

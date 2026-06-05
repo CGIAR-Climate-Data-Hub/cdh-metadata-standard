@@ -1,5 +1,3 @@
-# CDH Metadata Authoring Guide
-
 This guide is for people filling out metadata records. It explains what to write
 first, what can wait, and where optional detail belongs.
 
@@ -235,18 +233,17 @@ Each asset's `locations` lists one or more access paths to the **same content**
 the same file (e.g., an S3 mirror of an HTTPS URL); different formats or a
 queried service belong in separate `data` / `additional_assets` entries.
 
-If you know the media type or file size, provide it. If either value is missing,
-the CDH review process may add it when it can be determined from the asset URL,
-file extension, or inspectable metadata.
+If you know the media type or file size, provide it. If either value is missing
+it will be added during CDH review.
 
 ## Add These Only When They Apply
 
 ### Spatial
 
-Use `spatial` when the resource has geographic coverage or geospatial assets.
-In CDH, records that need `spatial.bbox`, `spatial.crs`,
-`spatial.geometry_column`, or `spatial.resolution` should use `encoding: stac`;
-OGC Records only carries `spatial.geography` for broad discovery filtering.
+Use `spatial` when the resource has geographic coverage or geospatial assets. In
+CDH, records that need `spatial.bbox`, `spatial.crs`, `spatial.geometry_column`,
+or `spatial.resolution` should use `encoding: stac`; OGC Records only carries
+`spatial.geography` for broad discovery filtering.
 
 Common fields:
 
@@ -294,11 +291,9 @@ no `global`). Country ids resolve to their ISO3 code on output, and `parents`
 let the catalog roll a country up under its region.
 
 If `spatial.bbox` or `spatial.crs` is omitted for a geospatial STAC record, the
-CDH review process may add it when it can be determined from the asset URL, file
-extension, or inspectable metadata. Serialized records must contain the required
-values, whether supplied by the contributor or added during CDH review. Provide
-these fields when you know them, especially for multi-asset records or when the
-first asset is not representative.
+CDH review process will add it. Provide these fields when you know them,
+especially for multi-asset records or when the first asset is not
+representative.
 
 Use `spatial.resolution` for the spatial spacing or unit at which values are
 represented. For regular grids, use `type: xy` when x/y spacing is the same:
