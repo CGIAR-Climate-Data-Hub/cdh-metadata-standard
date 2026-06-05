@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>CDH Metadata Standard</title>
+  </head>
+  <body>
+    <script>
+      // Lists version directories on the gh-pages branch via the GitHub API at
+      // view time (no build step, always current).
+      (async () => {
+        const repo = "CGIAR-Climate-Data-Hub/metadata";
+        const res = await fetch(
+          `https://api.github.com/repos/${repo}/git/trees/gh-pages?recursive=1`,
+        );
+        const data = await res.json();
+        const versions = (data.tree || [])
+          .filter((f) => f.type === "tree" && /^v\d+\.\d+\.\d+$/.test(f.path))
+          .map((f) => f.path)
+          .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+
+        let html = "<h1>CDH Metadata Standard schemas & vocabularies</h1><ul>";
+        for (const v of versions) {
+          html += `<li><a href="${v}/schemas/metadata-input.schema.json">${v}</a></li>`;
+        }
+        html += "</ul>";
+        document.body.innerHTML = html;
+      })();
+    </script>
+  </body>
+</html>
