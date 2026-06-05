@@ -113,14 +113,8 @@ Common values:
 
 - `dataset`
 - `document`
-- `model`
-- `notebook`
-- `code`
-- `service`
-- `dashboard`
-- `api`
-- `method`
-- `skill`
+- `tool`
+- `ai-skill`
 
 ### `encoding`
 

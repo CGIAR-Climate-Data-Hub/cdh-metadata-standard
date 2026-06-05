@@ -27,6 +27,11 @@ const VOCABS = {
     target: resolve(ROOT, "spec/schemas/vocab/domain.schema.json"),
     title: "CDH Domain Vocabulary",
   },
+  resource_type: {
+    source: resolve(ROOT, "vocab/resource_type.json"),
+    target: resolve(ROOT, "spec/schemas/vocab/resource_type.schema.json"),
+    title: "CDH Resource Type Vocabulary",
+  },
   commodity: {
     source: resolve(ROOT, "vocab/commodity.json"),
     target: resolve(ROOT, "spec/schemas/vocab/commodity.schema.json"),

@@ -33,6 +33,7 @@ metadata that can be validated and serialized to STAC or OGC API Records.
 Controlled vocabularies live in [vocab/](./vocab):
 
 - [domain.json](./vocab/domain.json)
+- [resource\_type.json](./vocab/resource_type.json)
 - [commodity.json](./vocab/commodity.json)
 - [hazard.json](./vocab/hazard.json)
 

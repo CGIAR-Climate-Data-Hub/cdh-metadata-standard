@@ -946,18 +946,7 @@
           "const": ""
         },
         {
-          "enum": [
-            "dataset",
-            "document",
-            "model",
-            "notebook",
-            "code",
-            "service",
-            "dashboard",
-            "api",
-            "method",
-            "knowledge-product"
-          ]
+          "$ref": "vocab/resource_type.schema.json"
         }
       ]
     },

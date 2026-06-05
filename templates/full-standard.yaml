@@ -11,8 +11,7 @@ title: ""
 description: >
   ""
 license: ""
-# Resource type — one of: dataset | document | model | notebook | code |
-#                         service | dashboard | api | method | knowledge-product
+# Resource type — one of: dataset | document | tool | ai-skill
 resource_type: ""
 
 #   keywords:
