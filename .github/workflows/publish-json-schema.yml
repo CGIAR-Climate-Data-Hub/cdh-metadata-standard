@@ -98,8 +98,10 @@ jobs:
       # Stable, unversioned mirror of the controlled vocabularies. The serialized
       # `themes[].scheme` URIs reference these durable URLs
       # (…/metadata/vocab/<name>.json), so they must resolve independently of any
-      # release tag. This always reflects the most recent release.
+      # release tag. Gated to full releases only, so "latest" never points at a
+      # pre-release — pre-releases are still testable via the versioned URL above.
       - name: Publish stable vocabularies (unversioned)
+        if: ${{ !github.event.release.prerelease }}
         uses: peaceiris/actions-gh-pages@v3.9.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
