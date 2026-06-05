@@ -15,12 +15,12 @@ this document is authoritative for **placement**.
 Use OGC API Records when the resource is discoverable but is not naturally
 modeled as STAC. Typical cases:
 
+- Non-spatiotemporal tabular datasets
 - Documents and reports
 - Code repositories
 - Models, notebooks, methods, protocols
-- Dashboards, services, APIs
+- Dashboards, services, APIs for non spatial data
 - Knowledge products
-- Non-spatiotemporal tabular datasets
 
 The `encoding` field in the input record is authoritative for routing. Set
 `encoding: ogc-records` to use this mapping.
@@ -36,7 +36,7 @@ Features. A record is a plain JSON object with:
 
 For typical OGC Records use in CDH (non-spatial resources):
 
-- Set `geometry` to `null`. Do not invent a spatial extent.
+- Set `geometry` to `null`.
 - Omit `time` unless the resource has temporal relevance.
 
 ## 3. Native-fields-first rule
@@ -59,26 +59,26 @@ STAC-only in the crosswalk.
 
 ### 4.1 Core
 
-| CDH                         | recordJSON placement                                                                                                                                                                          |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                        | `id`                                                                                                                                                                                          |
-| `type` (resource)           | `properties.type`                                                                                                                                                                             |
-| `title`                     | `properties.title`                                                                                                                                                                            |
-| `description`               | `properties.description`                                                                                                                                                                      |
-| `created` / `updated`       | `properties.created` / `properties.updated`                                                                                                                                                   |
-| `keywords`                  | `properties.keywords`                                                                                                                                                                         |
-| `cdh.domain[]`              | `properties["cgiar-cdh:domain"]`; also expanded into `properties.themes` under the CDH domain scheme. First entry is the primary domain.                                                      |
-| `keywords[]` (linked items) | Each linked-keyword entry (`{ term, scheme, uri }`) is also emitted as a `properties.themes` concept, grouped by `scheme`. Plain-string keywords are emitted only into `properties.keywords`. |
-| `properties.themes`         | Encoder output only — populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                                        |
-| `license`                   | `properties.license`                                                                                                                                                                          |
-| `contact[]`                 | `properties.contacts[]`. At least one contact must use `role=licensor`.                                                                                                                       |
-| `citation`                  | `properties["cgiar-cdh:citation"]` (plain text)                                                                                                                                               |
-| `doi`                       | `links[rel=cite-as]`                                                                                                                                                                          |
-| `related_publications[]`    | `properties["cgiar-cdh:related_publications"]`                                                                                                                                                |
-| `note`                      | `properties["cgiar-cdh:note"]`                                                                                                                                                                |
-| `version`                   | `properties.version`                                                                                                                                                                          |
-| `previous_version`          | `links[rel=predecessor-version]`                                                                                                                                                              |
-| `funding[]`                 | `properties["cgiar-cdh:funding"]`                                                                                                                                                             |
+| CDH                         | recordJSON placement                                                                                                                                                       |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                        | `id`                                                                                                                                                                       |
+| `type` (resource)           | `properties.type`                                                                                                                                                          |
+| `title`                     | `properties.title`                                                                                                                                                         |
+| `description`               | `properties.description`                                                                                                                                                   |
+| `created` / `updated`       | `properties.created` / `properties.updated`                                                                                                                                |
+| `keywords`                  | `properties.keywords`                                                                                                                                                      |
+| `cdh.domain[]`              | `properties["cgiar-cdh:domain"]`; also expanded into `properties.themes` under the CDH domain scheme. First entry is the primary domain.                                   |
+| `keywords[]` (linked items) | Plain-string keywords are emitted into `properties.keywords`. Linked-keyword entries (`{ term, scheme, uri }`) are also added to `properties.themes`, grouped by `scheme`. |
+| `properties.themes`         | Encoder output only — populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                     |
+| `license`                   | `properties.license`                                                                                                                                                       |
+| `contact[]`                 | `properties.contacts[]`. At least one contact must use `role=licensor`.                                                                                                    |
+| `citation`                  | `properties["cgiar-cdh:citation"]` (plain text)                                                                                                                            |
+| `doi`                       | `links[rel=cite-as]`                                                                                                                                                       |
+| `related_publications[]`    | `properties["cgiar-cdh:related_publications"]`                                                                                                                             |
+| `note`                      | `properties["cgiar-cdh:note"]`                                                                                                                                             |
+| `version`                   | `properties.version`                                                                                                                                                       |
+| `previous_version`          | `links[rel=predecessor-version]`                                                                                                                                           |
+| `funding[]`                 | `properties["cgiar-cdh:funding"]`                                                                                                                                          |
 
 ### 4.2 Spatial / Temporal (when applicable)
 
@@ -116,9 +116,9 @@ STAC with the Table Extension instead of OGC Records.
 
 The `cdh.*`, `climate.*`, and `commodities` fields in the input record are
 encoded under `properties["cgiar-cdh:*"]`, **except** for `commodities` and
-`climate.hazards`, which are expanded into `properties.themes` entries by
-the encoder using the CDH commodity and CDH hazard JSON lookups (see core
-standard sections 5.1 and 5.6). Field names, value types, and controlled vocabularies
+`climate.hazards`, which are expanded into `properties.themes` entries by the
+encoder using the CDH commodity and CDH hazard JSON lookups (see core standard
+sections 5.1 and 5.6). Field names, value types, and controlled vocabularies
 otherwise match the STAC profile exactly. OGC Records has no equivalent of STAC
 `summaries`; faceted values that would be in STAC summaries appear as direct
 array properties.
@@ -164,15 +164,11 @@ metadata:
 
 OGC Records uses a native `links[]` array, so multiple access paths need no
 extension (unlike STAC): each `locations[]` entry becomes its own link. The
-canonical entry (`locations[0]`) takes the primary relation
-(`rel=enclosure` / `rel=service`, per section 5.3); each additional same-content
-location is emitted as `rel=alternate` with the shared `type` and a `title` from
+canonical entry (`locations[0]`) takes the primary relation (`rel=enclosure` /
+`rel=service`, per section 5.3); each additional same-content location is
+emitted as `rel=alternate` with the shared `type` and a `title` from
 `locations[].title`. The asset-level `media_type` and `file_size` are repeated
 on each generated link.
-
-There is no universal OGC Records equivalent to `file:checksum`. If a checksum
-is required, link to a sidecar checksum manifest with `rel=describedby` or use
-an approved CDH link-level field `cgiar-cdh:checksum`.
 
 ### 5.3 Primary data link
 

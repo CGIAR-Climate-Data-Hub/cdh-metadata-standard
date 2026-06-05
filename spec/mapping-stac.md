@@ -1,11 +1,13 @@
-# CDH → STAC Mapping
+# CDH to STAC Mapping
 
 Status: draft
 
 This document specifies how a CDH metadata input record (as defined by
 `standard.md` and validated by `schemas/metadata-input.schema.json`) is encoded
 as STAC. Field definitions and requirement levels are authoritative in
-`standard.md`; this document is authoritative for **placement**.
+`standard.md`; this document is authoritative for **placement**. Item level
+mappings are inlcuded for reference and possible future expansion. However, CDH
+yaml files are intended for collection-level metadata.
 
 ## 1. When to use STAC
 
@@ -35,7 +37,7 @@ The CDH STAC profile uses the following extensions where applicable.
 | Processing          | Processing datetime, lineage, software                              |
 | Contacts            | People and organizations, using official STAC provider roles        |
 | Version             | Dataset version, predecessor/successor records                      |
-| File                | File size, checksum                                                 |
+| File                | File size                                                           |
 | Alternate Assets    | Mirrors and alternate access paths                                  |
 | Themes              | Controlled-vocabulary thematic classification                       |
 | **CDH (cgiar-cdh)** | Hub-specific approved fields not covered by the above               |
@@ -66,7 +68,7 @@ searchable structured facts.
 | `created` / `updated`       | `created` / `updated`                                                                                                                                                                           |
 | `keywords`                  | `keywords`                                                                                                                                                                                      |
 | `license`                   | `license` (SPDX preferred)                                                                                                                                                                      |
-| `contact[]`                 | `providers[]` for organizations; Contacts Extension `contacts[]` for people. At least one contact must use `role=licensor`, which maps to `providers[role=licensor]`.                           |
+| `contact[]`                 | `providers[]` and contacts extension `contacts[]` for additional contact info. At least one contact must use `role=licensor`, which maps to `providers[role=licensor]`.                         |
 | `citation`                  | `sci:citation`                                                                                                                                                                                  |
 | `doi`                       | `sci:doi` and `links[rel=cite-as]`                                                                                                                                                              |
 | `related_publications[]`    | `sci:publications[]`                                                                                                                                                                            |
@@ -94,25 +96,21 @@ consistency when the record could also be expressed as an OGC API Record.
 | `spatial.crs`                      | Projection Extension: `proj:code` (preferred) or `proj:epsg`                                                                                         |
 | `spatial.geometry_column`          | Table Extension `table:primary_geometry`                                                                                                             |
 | `spatial.resolution[]`             | Grid entries (`xy`, `x`, `y`) map to `cube:dimensions[].step` (+ `unit`/`reference_system`); all entries also emit as `cgiar-cdh:spatial_resolution` |
-| `temporal.start_date` / `end_date` | `extent.temporal.interval` (Collection); `datetime` / `start_datetime` / `end_datetime` (Item)                                                       |
-| `temporal.resolution`              | `cube:dimensions[time].step` when `step` is provided; also `cgiar-cdh:temporal_resolution` at Collection                                             |
+| `temporal.start_date` / `end_date` | `extent.temporal.interval` (Collection); `cube:dimensions[time].extent`; `datetime` / `start_datetime` / `end_datetime` (Item);                      |
+| `temporal.resolution`              | `cube:dimensions[time]` for `step`, `values`, and `unit`                                                                                             |
 
 Resolution placement, in order of preference:
 
 1. For gridded/array assets, `spatial.resolution[]` entries with `type: xy`,
-   `x`, or `y` are expanded to the relevant `cube:dimensions[]` `step`, expressed
-   in that dimension's native `unit` / `reference_system`. `type: xy` is an
-   authoring shorthand and serializes as separate x and y dimensions.
+   `x`, or `y` are expanded to the relevant `cube:dimensions[]` `step`,
+   expressed in that dimension's native `unit` / `reference_system`. `type: xy`
+   is an authoring shorthand and serializes as separate x and y dimensions.
 2. `temporal.resolution.step` maps to `cube:dimensions[time].step` when the data
    has a real time axis.
-3. `raster:bands[].spatial_resolution` MAY also be emitted on raster assets, but
-   note it is **defined in meters only** — use it only when the grid is metric
-   (e.g., 30 m, 250 m). Do not force degree/arc-minute resolutions into it; the
-   same caveat applies to core `gsd`.
-4. The Collection-level `cgiar-cdh:spatial_resolution` mirrors the input
+3. The Collection-level `cgiar-cdh:spatial_resolution` mirrors the input
    `spatial.resolution[]` list. This is the format-independent value for labels,
    point/polygon reporting units, and non-metric spatial units.
-5. The Collection-level `cgiar-cdh:temporal_resolution` mirrors
+4. The Collection-level `cgiar-cdh:temporal_resolution` mirrors
    `temporal.resolution` (`{ values, unit, step, note }`).
 
 ### 4.4 Data fields, dimensions, variables
@@ -124,35 +122,24 @@ The only decision is **tabular or not**:
   COG/GeoTIFF — single-band or stacked). Datacube is the always-on descriptive
   home for variables and dimensions:
 
-  - `dimensions[]` → `cube:dimensions`
-  - `variables[]` → `cube:variables`
+  - `dimensions[]` -> `cube:dimensions`
+  - `variables[]`-> `cube:variables`
 
   A 2D raster is a valid cube: its x and y are horizontal spatial dimensions.
-  Use `spatial.resolution[]` grid entries to derive `cube:dimensions[].step`
-  (+ `unit` / `reference_system`) for grid resolution; the step is expressed in
-  the dimension's native units, so geographic grids (degrees, arc-minutes) are
+  Use `spatial.resolution[]` grid entries to derive `cube:dimensions[].step` (+
+  `unit` / `reference_system`) for grid resolution; the step is expressed in the
+  dimension's native units, so geographic grids (degrees, arc-minutes) are
   represented faithfully — unlike the meters-only `raster:spatial_resolution`
   and core `gsd` (see section 4.3 and the `cgiar-cdh:spatial_resolution` note).
 
 - **Compose the Raster Extension on raster assets when band-level physical
-  metadata exists.** STAC extensions compose: emit `raster:bands` on a
-  COG/GeoTIFF asset *in addition to* `cube:*` whenever the asset carries
-  per-band facts that Datacube has no slot for — `nodata`, `data_type`,
-  `statistics`, `histogram`, `scale` / `offset`, `sampling`, and metric
-  `spatial_resolution`. This is additive (not an either/or) and is what raster
-  tooling (titiler, QGIS STAC, stac-raster clients) reads. Omit it only when no
-  such band metadata is available.
+  metadata exists.** This is additive for additional stac raster tooling (i.e.
+  gdal `/STACIT/`, `odc-stac`, and `stackstac`)
 
-- **Tabular data uses the Table Extension — never Datacube.** A Parquet/CSV/
-  vector table has no labeled axes with extent/step, so it is not a cube;
-  forcing rows and columns into `cube:dimensions` is incorrect and will not
-  validate cleanly. Use Table Extension `table:columns`; `table:primary_geometry`
-  for `spatial.geometry_column`; optional `table:row_count`. Variable/column metadata
-  for tabular assets lives in `table:columns`, not `cube:variables`.
-
-Decision summary: tabular → **Table**; everything else (any array/grid) →
-**Datacube**, plus **Raster** composed on top for raster assets that have
-band-level metadata.
+- **Tabular data uses the Table Extension.** Use Table Extension
+  `table:columns`; `table:primary_geometry` for `spatial.geometry_column`;
+  optional `table:row_count`. Variable/column metadata for tabular assets lives
+  in `table:columns`, not `cube:variables`.
 
 `classes[]` → Classification Extension `classification:classes` on the relevant
 asset or variable. Large class lists SHOULD be a sidecar asset with
@@ -170,28 +157,26 @@ Decision rules:
   per-Item resolutions). Required Collection metadata MUST NOT live only in
   `summaries`.
 - **Item-level field** when the value varies per Item and Item-level discovery
-  is needed (`datetime`, `bbox`, `geometry`, per-Item variables).
+  is needed (`datetime`, `bbox`, `geometry`, per-Item variables). **NOTE: This
+  is currently not implemented in the current yaml spec.**
 - **Asset-level field** when the value describes a specific file or access
-  endpoint (`file:size`, `file:checksum`, asset `roles`, `type`).
+  endpoint (`file:size`, asset `roles`, `type`).
 
 ### 4.6 CDH-specific fields
 
 The `cdh.*`, `climate.*`, and `commodities` fields in the input record are
-encoded under the `cgiar-cdh:` namespace, **except** for `commodities` and
-`climate.hazards`, which are expanded into `themes` entries by the encoder via
-the CDH commodity and CDH hazard JSON lookups (see core standard sections 5.1
-and 5.6). The flat `cgiar-cdh:commodities` / `cgiar-cdh:hazards` fields are not
-emitted.
+encoded under the `cgiar-cdh:` namespace. `commodities` and `climate.hazards`
+are expanded into `themes` entries by the encoder via the CDH commodity and CDH
+hazard JSON lookups (see core standard sections 5.1 and 5.6).
 
 Other faceted/multi-valued fields (`scenarios`, `models`) live in `summaries` at
-the Collection level when the value applies across Items. Singletons (`mip_era`,
-`baseline`, `bias_adjustment`, `downscaling`, `use_cases`,
-`not_recommended_for`) are Collection top-level `cgiar-cdh:*` fields.
+the Collection level when the value applies across Items. `mip_era`, `baseline`,
+`bias_adjustment`, `downscaling`, `use_cases`, `not_recommended_for` are
+Collection top-level `cgiar-cdh:*` fields.
 
 When a CDH faceted value is also a discoverable axis of the data (e.g., `crop`
-is a `cube:dimensions` axis), put the values in the cube/table dimension
-definition and advertise the set in `summaries` for catalog filtering. The same
-values also appear in `themes` for ontology-aware discovery.
+or `commodity` is a `cube:dimensions` axis), values will be included in both, as
+they serve different purposes (dataset discovery and data use/subsetting)
 
 ## 5. Assets
 
@@ -206,7 +191,6 @@ Every asset SHOULD include:
 Recommended file metadata:
 
 - File Extension `file:size` in bytes — required for primary data assets
-- File Extension `file:checksum` — recommended for large or generated assets
 
 ### 5.1 Asset `locations[]`
 
@@ -258,28 +242,25 @@ be used for CDH-defined attributes such as `cgiar-cdh:code_version`.
 
 ## 7. Processing and provenance
 
-The CDH `processing[]` block is an ordered, id-keyed list of processing steps.
-When `processing[]` is provided, at least one step MUST use `id: source` and
-describe the original/initial production of the data.
+The CDH `processing[]` block is a id-keyed list of processing steps. When
+`processing[]` is provided, at least one step MUST use `id: source` and describe
+the original/initial production of the data.
 
 Encoding rules:
 
-1. The `source` step maps to **Collection-level** Processing Extension fields:
-   - `processing:lineage` ← `description`
-   - `processing:datetime` ← `date`
-   - `processing:software` ← `{ <code.url basename>: code.version }`
-2. The `source` step's `code.url` maps to `links[rel=processing-expression]` on
-   the Collection. Include `cgiar-cdh:code_version` on the link.
+1. The `source` step maps to **Collection-level Provider** Processing Extension
+   fields:
+   - `description` -> `processing:lineage`
+   - `date` -> `processing:datetime`
+   - `{ <code.url basename>: code.version }` -> `processing:software`
+2. The any `code.url` maps to `links[rel=processing-expression]` on the
+   Collection.
 3. The `source` step's `derived_from[].url` entries map to
    `links[rel=derived_from]` on the Collection.
 4. Subsequent steps map to **Asset-level** Processing Extension fields on the
-   assets that reference them in `processing_steps[]`. If the asset doesn't
-   reference any subsequent step explicitly, the encoder MAY default to applying
-   the latest step.
-5. `derived_from[]` entries are always external URLs and map to
-   `links[rel=derived_from]` at the appropriate level (Collection for the
-   `source` step; Asset for subsequent steps when the URL is asset-specific).
-   Inter-step references are not used.
+   assets that reference them in `processing_steps[]`.
+5. `derived_from[]` entries are external URLs/STAC Metadata links and map to
+   `links[rel=derived_from]`.
 
 ## 8. Validation expectations
 
@@ -288,5 +269,4 @@ For STAC validation to pass:
 - Every declared extension URI in `stac_extensions` MUST be valid and pinned.
 - Every `cgiar-cdh:*` field MUST be defined in the CDH STAC Extension schema.
   Adding undefined `cgiar-cdh:*` fields will fail validation.
-- File sizes, checksums, and projection codes SHOULD be present on assets that
-  need them.
+- File sizes and projection codes SHOULD be present on assets that need them.
