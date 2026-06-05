@@ -3,7 +3,7 @@
   "scheme": {
     "id": "cdh-agrovoc-hazards",
     "title": "Climate Data Hub Hazard Vocabulary",
-    "description": "Controlled vocabulary of climate-related hazards used by the Climate Data Hub for metadata validation, filtering, and catalog rendering. Each concept is a friendly Hub name; where applicable, it carries an AGROVOC code and URI.\n",
+    "description": "Controlled vocabulary of climate-related hazards used by the Climate Data Hub for metadata validation, filtering, and catalog rendering. Each concept is a friendly Hub name; where applicable, it carries an AGROVOC code and URI.",
     "source_scheme": {
       "id": "agrovoc",
       "uri": "https://agrovoc.fao.org/",

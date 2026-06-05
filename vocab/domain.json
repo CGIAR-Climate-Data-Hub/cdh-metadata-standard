@@ -3,11 +3,11 @@
   "scheme": {
     "id": "cdh-domain",
     "title": "Climate Data Hub Domain Vocabulary",
-    "description": "Controlled vocabulary of high-level CDH domains used for catalog browse, filter, and group-by. The first concept on a record is treated as the primary domain and drives STAC sub-catalog placement. Subsequent concepts enable cross-cutting search.\n",
+    "description": "Controlled vocabulary of high-level CDH domains used for catalog browse, filter, and group-by. The first concept on a record is treated as the primary domain and drives STAC sub-catalog placement. Subsequent concepts enable cross-cutting search.",
     "source_scheme": {
-      "id": "cdh-domain",
-      "uri": "https://cgiar.org/cdh/vocab/domain",
-      "title": "CDH Domain Vocabulary"
+      "id": "agrovoc",
+      "uri": "https://agrovoc.fao.org/",
+      "title": "AGROVOC"
     }
   },
   "concepts": [
