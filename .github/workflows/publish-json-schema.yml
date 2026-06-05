@@ -25,9 +25,21 @@ name: Publish JSON Schemas
 # standard, schemas, vocabularies, and extension are released together under
 # a single tag (see VERSIONING in standard.md).
 
+# Triggers:
+#   - published: fires when a release (including a pre-release) is first
+#     published. Lets you cut a pre-release to preview the versioned URL.
+#   - released: fires when a full release is published, or a pre-release is
+#     promoted to a full release. Re-publishes the versioned dir (picking up any
+#     changes) and updates the unversioned "latest" vocab mirror.
+# A direct (non-pre-release) publish fires BOTH events, so the concurrency group
+# serializes the two runs to avoid racing on the gh-pages push.
 on:
   release:
-    types: [published]
+    types: [published, released]
+
+concurrency:
+  group: publish-json-schema
+  cancel-in-progress: false
 
 permissions:
   contents: write
