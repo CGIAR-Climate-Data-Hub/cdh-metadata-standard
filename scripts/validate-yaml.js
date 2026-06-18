@@ -20,8 +20,9 @@ import { loadAllSchemas, newAjv, rel, ROOT } from "./_ajv.js";
 const { version } = JSON.parse(
   await readFile(resolve(ROOT, "package.json"), "utf-8"),
 );
+// Records validate against the CDH profile (core + the CDH-mandated extensions).
 const INPUT_SCHEMA_ID =
-  `https://cgiar-climate-data-hub.github.io/metadata/v${version}/schemas/metadata-input.schema.json`;
+  `https://cgiar-climate-data-hub.github.io/metadata/v${version}/schemas/profiles/cdh.schema.json`;
 
 async function walkYaml(dir) {
   const out = [];
