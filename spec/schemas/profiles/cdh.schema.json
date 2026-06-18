@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/schemas/profiles/cdh.schema.json",
+  "title": "CDH Profile",
+  "description": "Core + the CDH-mandated extensions. The schema CDH records validate against and bind for editor hints.",
+  "allOf": [
+    { "$ref": "../core.schema.json" },
+    { "$ref": "../../extensions/cdh/schema.json" },
+    { "$ref": "../../extensions/climate/schema.json" },
+    { "$ref": "../../extensions/datacube/schema.json" },
+    { "$ref": "../../extensions/classification/schema.json" },
+    { "$ref": "../../extensions/agriculture/schema.json" }
+  ],
+  "required": ["cdh"],
+  "unevaluatedProperties": false
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Validate CDH input YAML records against metadata-input.schema.json.
+// Validate CDH input YAML records against the CDH profile (core + extensions).
 //
 // Usage:
 //   node scripts/validate-yaml.js                # default: templates/ + examples/
