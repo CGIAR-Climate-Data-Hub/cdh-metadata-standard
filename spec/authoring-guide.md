@@ -3,7 +3,7 @@ first, what can wait, and where optional detail belongs.
 
 The formal standard is `standard.md`. Fillable YAML starting points live in
 `../templates/`; each template points YAML-aware editors to
-`schemas/metadata-input.schema.json` for field validation.
+`schemas/core.schema.json` for field validation.
 
 ## The Short Version
 
@@ -238,6 +238,11 @@ it will be added during CDH review.
 
 ## Add These Only When They Apply
 
+Some of these are CDH extension fields - `climate`, `commodities`, `classes`, and
+`variables`/`dimensions`. The CDH template already declares them in
+`extensions[]`, so you only fill the ones that apply. `spatial`, `temporal`,
+`processing`, and the asset fields are core and always available.
+
 ### Spatial
 
 Use `spatial` when the resource has geographic coverage or geospatial assets. In
@@ -350,7 +355,7 @@ temporal:
     note: ""
 ```
 
-### Variables
+### Variables and dimensions
 
 Use `variables` when the resource has measurements, bands, columns, indicators,
 or other named data values.
@@ -383,7 +388,7 @@ determined from the asset URL, file extension, or inspectable metadata. Review
 cannot reliably determine what a variable means, what unit should be used, how
 values should be interpreted, or what caveats matter.
 
-### Dimensions
+**Dimensions**
 
 Use `dimensions` when variables depend on additional axes such as scenario,
 model, crop, technology, band, etc. Time dimension is already covered by

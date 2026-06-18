@@ -88,30 +88,26 @@ this order:
 
 ### 4.3 Extending the schema
 
-The YAML input schema is closed: fields not defined by this standard are not
-valid CDH input metadata. When a record needs metadata that is not covered by
-section 4.2, the field must be handled through a standard update before it can
-appear in YAML.
+CDH metadata is a small, generic **core** plus optional **extensions**. A record
+declares the extensions it uses in `extensions[]` (pinned schema URLs) and is
+validated against a **profile** that composes the core with those extensions.
+The CDH profile bundles the CDH-maintained extensions - `cdh`, `climate`,
+`datacube`, `classification`, and `agriculture` (defined in section 5.5).
 
-1. Use an existing approved STAC Extension field if the extension is already
-   part of the CDH STAC profile.
-2. Add a new `cgiar-cdh:*` field when the metadata is broadly useful to CDH
-   records. The field must be defined in the CDH STAC Extension schema, OGC
-   Records profile, crosswalk, YAML schema, and examples before use.
-3. Add a community STAC Extension to the CDH STAC profile only when its field
-   set is a better fit than a CDH-specific field. The extension URI must be
-   pinned and documented in `mapping-stac.md`.
+To carry metadata the standard does not yet cover:
 
-Custom STAC extensions or ad hoc fields may exist in hand-authored STAC outside
-the CDH YAML workflow, but they are not compatible with the CDH YAML input
-schema and CDH tooling unless explicitly added to this standard.
+1. Use a field from an existing CDH extension if one fits.
+2. Add a field to the relevant CDH extension when it is broadly useful. It must
+   land in the extension schema, profile, crosswalk, and examples before use.
+3. Author a new extension - your own pinned schema - for project- or
+   center-specific fields, and declare it in `extensions[]`. It composes with
+   the core without modifying it.
 
-- Check the [STAC Extensions catalog](https://stac-extensions.github.io/) for an
-  existing community extension that fits.
-- If the fields would be useful to more than one CDH record, propose them as
-  additions to the CDH STAC Extension and OGC Records profile instead (the
-  `cgiar-cdh:*` path above). A custom namespace that survives more than one
-  project is a sign it should have been a Hub extension.
+A field that outlives one project or center is a sign it should be a shared
+extension rather than an ad hoc addition.
+
+How input fields map to STAC/OGC output extensions (including `cgiar-cdh:*`) is a
+separate concern, covered in `mapping-stac.md` and `mapping-ogc-records.md`.
 
 ### 4.4 Description, note, and free text
 
@@ -166,10 +162,10 @@ QA/QC outputs, detailed table schemas, and detailed classification legends.
 
 ## 5. Field Reference
 
-The fields below mirror the conceptual input structure validated by
-`schemas/metadata-input.schema.json`. For each field: **Requirement**,
-**Definition**, **Expected value**, **Rules**, **Vocabulary** where applicable,
-and **Example**.
+The fields below are validated by the CDH profile: the core schema
+(`schemas/core.schema.json`) plus the CDH extensions (section 5.5, declared in
+`extensions[]`). For each field: **Requirement**, **Definition**, **Expected
+value**, **Rules**, **Vocabulary** where applicable, and **Example**.
 
 ### 5.1 Core
 
@@ -254,6 +250,16 @@ and **Example**.
 - **Requirement:** Required
 - **Definition:** Which serialization profile this record uses.
 - **Vocabulary:** `stac`, `ogc-records`.
+
+#### `extensions[]`
+
+- **Requirement:** Recommended.
+- **Definition:** Pinned schema URLs of the CDH extensions the record uses.
+- **Rules:**
+  - The record is validated against a profile composing the core with these
+    extensions (see section 4.3).
+  - The CDH template pre-lists the CDH-maintained extensions; authors rarely edit
+    this by hand.
 
 #### `keywords`
 
@@ -551,7 +557,13 @@ relevance.
   - `note` explains temporal interpretation or temporal aggregation, such as
     "daily data aggregated to monthly using median".
 
-### 5.5 Data Fields
+### 5.5 Extension fields
+
+These fields come from CDH extensions, declared in `extensions[]` and validated
+through the CDH profile (see section 4.3). All are optional except where the
+profile requires them - `cdh.domain` is required.
+
+**Datacube extension**
 
 #### `dimensions[]`
 
@@ -628,6 +640,8 @@ variables:
       Does not describe intra-seasonal rainfall timing or dry-spell frequency.
 ```
 
+**Classification extension**
+
 #### `classes[]`
 
 - **Requirement:** Conditional. Required for classified, categorical, or
@@ -639,7 +653,7 @@ variables:
   - For long class lists, prefer a sidecar asset linked with `rel=describedby`
     and keep only summary information here.
 
-### 5.6 CDH-specific
+**CDH extension**
 
 #### `cdh.domain[]`
 
@@ -677,6 +691,8 @@ cdh:
 - **Requirement:** Optional
 - **Expected value:** List of `{ use, reason, use_instead }`.
 
+**Agriculture extension**
+
 #### `commodities[]`
 
 - **Requirement:** Conditional. Required for agriculture, food-systems,
@@ -688,6 +704,8 @@ cdh:
 - **Encoding:** Expanded into a `themes` entry under the CDH commodity scheme
   (see section 5.1). Does not appear as a standalone field in the encoded
   output.
+
+**Climate extension**
 
 #### `climate.mip_era`
 
@@ -735,7 +753,7 @@ cdh:
 - **Requirement:** Conditional. Required for downscaled climate data.
 - **Expected value:** `{ method, resolution }`.
 
-### 5.7 Processing and Provenance
+### 5.6 Processing and Provenance
 
 #### `processing[]`
 
@@ -758,7 +776,7 @@ cdh:
     different processing order. Add subsequent steps only when meaningful new
     processing occurs (e.g., format conversion, bias adjustment).
 
-### 5.8 Assets and Links
+### 5.7 Assets and Links
 
 #### `data[]`
 

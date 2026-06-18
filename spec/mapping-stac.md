@@ -3,7 +3,7 @@
 Status: draft
 
 This document specifies how a CDH metadata input record (as defined by
-`standard.md` and validated by `schemas/metadata-input.schema.json`) is encoded
+`standard.md` and validated by `schemas/core.schema.json`) is encoded
 as STAC. Field definitions and requirement levels are authoritative in
 `standard.md`; this document is authoritative for **placement**. Item level
 mappings are inlcuded for reference and possible future expansion. However, CDH
