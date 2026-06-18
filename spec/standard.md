@@ -212,6 +212,7 @@ and **Example**.
   - Should avoid unexplained acronyms.
   - Must not be a copy of the title.
   - Must not be the only place where filterable facts are stored.
+  - May use CommonMark (Markdown) for rich text.
 
 #### `note`
 

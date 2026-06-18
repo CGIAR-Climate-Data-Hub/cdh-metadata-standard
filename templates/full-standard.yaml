@@ -8,7 +8,9 @@ encoding: ""
 # Core Metadata (required)
 id: ""
 title: ""
-description: >
+# CommonMark (Markdown) allowed. Use the literal block `|` (not folded `>`) so
+# Markdown line breaks, lists, and headings are preserved.
+description: |
   ""
 license: ""
 # Resource type - one of: dataset | document | tool | ai-skill

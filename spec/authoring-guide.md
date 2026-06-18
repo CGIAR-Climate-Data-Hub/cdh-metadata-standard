@@ -103,6 +103,10 @@ One short paragraph explaining what the resource is and what it can be used for.
 Do not rely on the description for filterable facts. Put those facts in the
 structured fields too.
 
+CommonMark (Markdown) is allowed in `description`. For anything beyond a single
+paragraph, use a YAML literal block (`|`) so line breaks and Markdown lists or
+headings are preserved.
+
 ### `resource_type`
 
 What kind of thing the record describes.
