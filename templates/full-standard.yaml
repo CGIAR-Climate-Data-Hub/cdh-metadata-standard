@@ -9,10 +9,6 @@ extensions:
   - https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/classification/schema.json
   - https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/agriculture/schema.json
 
-# Encoding (required) - selects the serialization profile.
-# One of: stac | ogc-records
-encoding: ""
-
 # Core Metadata (required)
 id: ""
 title: ""

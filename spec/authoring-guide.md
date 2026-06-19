@@ -17,7 +17,6 @@ Fill these first:
 - `title`
 - `description`
 - `resource_type`
-- `encoding`
 - `cdh.domain`
 - `keywords`
 - `license`
@@ -56,7 +55,6 @@ id: ""
 title: ""
 description: ""
 resource_type: ""
-encoding: ""
 extensions:
   - https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/cdh/schema.json
 keywords: []
@@ -116,15 +114,6 @@ Common values:
 - `software`
 - `ai-skill`
 - `document`
-
-### `encoding`
-
-Choose where the record will be serialized.
-
-- Use `stac` for spatial, temporal, gridded, raster, vector, tabular, and
-  data-cube resources.
-- Use `ogc-records` for documents, code, models, notebooks, dashboards,
-  services, APIs, methods, and other non-spatial datasets.
 
 ### `cdh.domain`
 
@@ -254,10 +243,7 @@ owns the extension. See `standard.md` section 4.3.
 
 ### Spatial
 
-Use `spatial` when the resource has geographic coverage or geospatial assets. In
-CDH, records that need `spatial.bbox`, `spatial.crs`, `spatial.geometry_column`,
-or `spatial.resolution` should use `encoding: stac`; OGC Records only carries
-`spatial.geography` for broad discovery filtering.
+Use `spatial` when the resource has geographic coverage or geospatial assets.
 
 Common fields:
 

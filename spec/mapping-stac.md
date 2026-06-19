@@ -19,8 +19,8 @@ variable-level, or data-cube discovery needs. Typical cases:
 - Spatial vector assets, spatial/temporal tabular assets
 - APIs for access to geospatial data
 
-The `encoding` field in the input record is authoritative for routing. Set
-`encoding: stac` to use this mapping.
+This mapping applies to records routed to STAC: a `dataset` with a spatial
+footprint (see `standard.md` section 4.1). Routing is inferred, not author-set.
 
 ## 2. STAC Extensions
 

@@ -2,23 +2,22 @@
 
 Status: draft
 
-This document defines the metadata model used by the Climate Data Hub. Every Hub
-record, regardless of encoding, conforms to the field definitions, requirement
-levels, and rules in this document.
+This document defines the metadata model used by the Climate Data Hub - the
+field definitions, requirement levels, and rules every Hub record conforms to.
+The model is self-contained and stands on its own, independent of any output
+format.
 
-Two encodings are supported:
+Records serialize to one of two formats, chosen automatically (see section 4.1)
+and designed to align with established standards:
 
-- **STAC** - for spatial, spatiotemporal, gridded, raster, data-cube, and
-  spatial/temporal tabular data. See [`mapping-stac.md`](./mapping-stac.md).
-- **OGC API Records** (recordJSON) - for discoverable resources that are not
-  naturally spatial: non-spatipotemporal datasets, documents, code, models,
-  notebooks, dashboards, services, methods, knowledge products. See
+- **STAC** - for geospatial data. See [`mapping-stac.md`](./mapping-stac.md).
+- **OGC API Records** (recordJSON) - for everything else: non-spatial datasets,
+  documents, software, services, AI skills. See
   [`mapping-ogc-records.md`](./mapping-ogc-records.md).
 
-For the field-level mapping table to both encodings, see
-[`crosswalk.md`](./crosswalk.md). Fillable YAML authoring templates live in
-[`templates/`](../templates/), including the complete
-[`full-standard.yaml`](../templates/full-standard.yaml) template.
+For the field-level mapping to both formats, see [`crosswalk.md`](./crosswalk.md).
+Fillable YAML templates live in [`templates/`](../templates/), including
+[`full-standard.yaml`](../templates/full-standard.yaml).
 
 For contributor-facing guidance, start in
 [`authoring-guide.md`](./authoring-guide.md).
@@ -64,8 +63,11 @@ The standard follows RFC 2119-style requirement levels.
 
 ### 4.1 Routing
 
-Every record sets `encoding: stac` or `encoding: ogc-records`. The encoder uses
-this to select the serialization profile.
+The serialization target is inferred, not author-set: a `dataset` with a spatial
+footprint (`spatial.bbox` / geometry) serializes to **STAC**; everything else -
+non-spatial datasets, documents, software, services, AI skills - serializes to
+**OGC API Records**. Inference runs at encode time, after any review-supplied
+bbox (see section 4.7).
 
 ### 4.2 Native fields first
 
@@ -254,12 +256,6 @@ value**, **Rules**, **Vocabulary** where applicable, and **Example**.
 - **Rules:**
   - Should not replace asset media types.
 
-#### `encoding`
-
-- **Requirement:** Required
-- **Definition:** Which serialization profile this record uses.
-- **Vocabulary:** `stac`, `ogc-records`.
-
 #### `extensions[]`
 
 - **Requirement:** Recommended.
@@ -389,10 +385,9 @@ keywords:
 
 ### 5.3 Spatial
 
-Required for STAC when the resource has spatial relevance. In the CDH OGC
-Records profile, only `spatial.geography` is emitted for broad discovery
-filtering; records that require bbox, CRS, spatial resolution, or embedded
-geometry-column metadata should use `encoding: stac`.
+Required when the resource has a geospatial footprint. `spatial.geography` (named
+places) applies to any resource for broad discovery; `bbox`, `crs`,
+`resolution`, and `geometry_column` describe a precise footprint.
 
 #### `spatial.bbox`
 
@@ -516,8 +511,7 @@ spatial:
 
 ### 5.4 Temporal
 
-Required for STAC. Conditional for OGC Records when the resource has temporal
-relevance.
+Required when the resource has temporal coverage.
 
 #### `temporal.start_date`, `temporal.end_date`
 
@@ -675,7 +669,7 @@ extension fields, not in `keywords` (see section 4.5).
 
 - [ ] `id`, `title`, `description`
 - [ ] `created`, `updated`
-- [ ] `resource_type`, `encoding`
+- [ ] `resource_type`
 - [ ] `cdh.domain[]` includes at least one concept from `vocab/domain.json`
 - [ ] `keywords[]`
 - [ ] `license`
@@ -683,7 +677,7 @@ extension fields, not in `keywords` (see section 4.5).
 - [ ] `citation`
 - [ ] `data[]` includes at least one entry
 
-### Required for STAC records
+### Required for geospatial records
 
 - [ ] `spatial.bbox` or `spatial.geography`
 - [ ] `temporal.start_date` / `end_date` when temporal

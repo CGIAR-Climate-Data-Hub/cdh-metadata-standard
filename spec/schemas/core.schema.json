@@ -603,19 +603,6 @@
     "doi": {
       "$ref": "#/$defs/nullableString"
     },
-    "encoding": {
-      "oneOf": [
-        {
-          "const": ""
-        },
-        {
-          "enum": [
-            "stac",
-            "ogc-records"
-          ]
-        }
-      ]
-    },
     "extensions": {
       "description": "Pinned URLs of the CDH extension schemas this record uses.",
       "items": {
@@ -734,7 +721,6 @@
   },
   "required": [
     "cdh_schema_version",
-    "encoding",
     "id",
     "title",
     "description",

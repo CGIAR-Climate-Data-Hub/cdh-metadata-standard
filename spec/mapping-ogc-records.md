@@ -22,8 +22,9 @@ modeled as STAC. Typical cases:
 - Dashboards, services, APIs for non spatial data
 - Knowledge products
 
-The `encoding` field in the input record is authoritative for routing. Set
-`encoding: ogc-records` to use this mapping.
+This mapping applies to records routed to OGC API Records: everything that is
+not a spatial `dataset` (see `standard.md` section 4.1). Routing is inferred,
+not author-set.
 
 ## 2. Record encoding
 
@@ -95,8 +96,8 @@ geography labels and temporal metadata when they help discovery.
 
 The following spatial fields are not emitted by the CDH OGC Records profile:
 `spatial.bbox`, `spatial.crs`, `spatial.geometry_column`, and
-`spatial.resolution[]`. If any of these fields are needed to describe the
-resource, use `encoding: stac`.
+`spatial.resolution[]`. A record carrying these has a footprint and is routed to
+STAC instead (see `standard.md` section 4.1).
 
 ### 4.3 Data fields
 
