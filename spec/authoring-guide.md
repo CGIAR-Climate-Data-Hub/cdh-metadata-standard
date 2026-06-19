@@ -2,8 +2,9 @@ This guide is for people filling out metadata records. It explains what to write
 first, what can wait, and where optional detail belongs.
 
 The formal standard is `standard.md`. Fillable YAML starting points live in
-`../templates/`; each template points YAML-aware editors to
-`schemas/metadata-input.schema.json` for field validation.
+`../templates/`; each template binds YAML-aware editors to the CDH profile
+(`schemas/profiles/cdh.schema.json` = the core plus the CDH extensions) for
+validation and field hints.
 
 ## The Short Version
 
@@ -16,7 +17,6 @@ Fill these first:
 - `title`
 - `description`
 - `resource_type`
-- `encoding`
 - `cdh.domain`
 - `keywords`
 - `license`
@@ -55,7 +55,8 @@ id: ""
 title: ""
 description: ""
 resource_type: ""
-encoding: ""
+extensions:
+  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/cdh/schema.json
 keywords: []
 license: ""
 contact:
@@ -110,18 +111,10 @@ What kind of thing the record describes.
 Common values:
 
 - `dataset`
-- `document`
-- `tool`
+- `software`
+- `service`
 - `ai-skill`
-
-### `encoding`
-
-Choose where the record will be serialized.
-
-- Use `stac` for spatial, temporal, gridded, raster, vector, tabular, and
-  data-cube resources.
-- Use `ogc-records` for documents, code, models, notebooks, dashboards,
-  services, APIs, methods, and other non-spatial datasets.
+- `document`
 
 ### `cdh.domain`
 
@@ -238,12 +231,20 @@ it will be added during CDH review.
 
 ## Add These Only When They Apply
 
+Some of these are CDH extension fields - `climate`, `commodities`, `classes`, and
+`variables`/`dimensions`. The CDH template already declares them in
+`extensions[]`, so you only fill the ones that apply. `spatial`, `temporal`,
+`processing`, and the asset fields are core and always available.
+
+Using an extension from another project or center? Add its pinned schema URL to
+`extensions[]`, bind the matching profile via the
+`# yaml-language-server: $schema=` line for validation and hints, then fill its
+fields the same way - the core + extension model is identical regardless of who
+owns the extension. See `standard.md` section 4.3.
+
 ### Spatial
 
-Use `spatial` when the resource has geographic coverage or geospatial assets. In
-CDH, records that need `spatial.bbox`, `spatial.crs`, `spatial.geometry_column`,
-or `spatial.resolution` should use `encoding: stac`; OGC Records only carries
-`spatial.geography` for broad discovery filtering.
+Use `spatial` when the resource has geographic coverage or geospatial assets.
 
 Common fields:
 
@@ -350,7 +351,7 @@ temporal:
     note: ""
 ```
 
-### Variables
+### Variables and dimensions
 
 Use `variables` when the resource has measurements, bands, columns, indicators,
 or other named data values.
@@ -383,7 +384,7 @@ determined from the asset URL, file extension, or inspectable metadata. Review
 cannot reliably determine what a variable means, what unit should be used, how
 values should be interpreted, or what caveats matter.
 
-### Dimensions
+**Dimensions**
 
 Use `dimensions` when variables depend on additional axes such as scenario,
 model, crop, technology, band, etc. Time dimension is already covered by
@@ -481,8 +482,9 @@ Leave a field out when:
 
 Avoid inventing new fields. If an important fact has no place in the template,
 first check the formal standard, then consider whether it belongs in
-`additional_links`, `additional_assets`, a sidecar file, or a proposed
-`cgiar-cdh:*` field.
+`additional_links`, `additional_assets`, a sidecar file, or a CDH extension - an
+existing extension's field, a new field proposed on one, or a new extension (see
+`standard.md` section 4.3).
 
 ## Practical Authoring Order
 

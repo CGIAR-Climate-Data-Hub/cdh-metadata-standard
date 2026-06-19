@@ -15,7 +15,7 @@ metadata that can be validated and mapped to STAC or OGC API Records.
   types.
 - [Full template](./templates/full-standard.yaml) - the complete metadata input
   structure.
-- [Metadata input schema](./spec/schemas/metadata-input.schema.json) - validates
+- [Core schema](./spec/schemas/core.schema.json) - validates
   the YAML structure and controlled values.
 - [Standard](./spec/standard.md) - formal field definitions and validation
   expectations.

@@ -3,7 +3,7 @@
 Status: draft
 
 This document specifies how a CDH metadata input record (as defined by
-`standard.md` and validated by `schemas/metadata-input.schema.json`) is encoded
+`standard.md` and validated by `schemas/core.schema.json`) is encoded
 as STAC. Field definitions and requirement levels are authoritative in
 `standard.md`; this document is authoritative for **placement**. Item level
 mappings are inlcuded for reference and possible future expansion. However, CDH
@@ -19,8 +19,8 @@ variable-level, or data-cube discovery needs. Typical cases:
 - Spatial vector assets, spatial/temporal tabular assets
 - APIs for access to geospatial data
 
-The `encoding` field in the input record is authoritative for routing. Set
-`encoding: stac` to use this mapping.
+This mapping applies to records routed to STAC: a `dataset` with a spatial
+footprint (see `standard.md` section 4.1). Routing is inferred, not author-set.
 
 ## 2. STAC Extensions
 

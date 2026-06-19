@@ -2,7 +2,7 @@
 // Generate JSON Schema enum fragments from vocab/*.json files.
 //
 // The vocabulary JSON files are the human-maintained source of truth. The
-// generated schema fragments are used by spec/schemas/metadata-input.schema.json
+// generated schema fragments are used by spec/schemas/core.schema.json
 // for editor and CI validation.
 
 import { mkdir, readFile, writeFile } from "node:fs/promises";

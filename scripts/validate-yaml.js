@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-// Validate CDH input YAML records against metadata-input.schema.json.
+// Validate CDH input YAML records: core composed with only the extensions each
+// record declares in extensions[]. A field from an extension that was used but
+// not declared is rejected (unevaluatedProperties). cdh is always required.
 //
 // Usage:
 //   node scripts/validate-yaml.js                # default: templates/ + examples/
@@ -20,8 +22,9 @@ import { loadAllSchemas, newAjv, rel, ROOT } from "./_ajv.js";
 const { version } = JSON.parse(
   await readFile(resolve(ROOT, "package.json"), "utf-8"),
 );
-const INPUT_SCHEMA_ID =
-  `https://cgiar-climate-data-hub.github.io/metadata/v${version}/schemas/metadata-input.schema.json`;
+const BASE = `https://cgiar-climate-data-hub.github.io/metadata/v${version}`;
+const CORE_ID = `${BASE}/schemas/core.schema.json`;
+const CDH_EXT_URL = `${BASE}/extensions/cdh/schema.json`;
 
 async function walkYaml(dir) {
   const out = [];
@@ -83,10 +86,29 @@ if (files.length === 0) {
 
 const ajv = newAjv();
 await loadAllSchemas(ajv);
-const validate = ajv.getSchema(INPUT_SCHEMA_ID);
-if (!validate) {
-  console.error(`Could not load schema ${INPUT_SCHEMA_ID}`);
+if (!ajv.getSchema(CORE_ID)) {
+  console.error(`Could not load core schema ${CORE_ID}`);
   process.exit(2);
+}
+
+// Compose the validation schema for one record: core + only the extensions it
+// declares in extensions[]. unevaluatedProperties:false then rejects a field
+// whose extension was used but not declared. cdh is always required.
+function profileFor(doc) {
+  const declared = Array.isArray(doc?.extensions) ? doc.extensions : [];
+  const known = [];
+  const unknown = [];
+  for (const url of declared) {
+    if (typeof url !== "string") continue;
+    (ajv.getSchema(url) ? known : unknown).push(url);
+  }
+  const schema = {
+    allOf: [{ $ref: CORE_ID }, ...known.map((url) => ({ $ref: url }))],
+    required: ["cdh", "extensions"],
+    properties: { extensions: { contains: { const: CDH_EXT_URL } } },
+    unevaluatedProperties: false,
+  };
+  return { schema, unknown };
 }
 
 let failures = 0;
@@ -99,6 +121,13 @@ for (const file of files) {
     console.error(`FAIL ${rel(file)}: YAML parse error: ${err.message}`);
     continue;
   }
+  const { schema, unknown } = profileFor(doc);
+  if (unknown.length) {
+    console.warn(
+      `warn ${rel(file)}: unrecognized extension(s), fields not validated: ${unknown.join(", ")}`,
+    );
+  }
+  const validate = ajv.compile(schema);
   if (validate(doc)) {
     console.log(`ok   ${rel(file)}`);
   } else {

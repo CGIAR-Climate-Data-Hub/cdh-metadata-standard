@@ -6,7 +6,7 @@ name: Publish JSON Schemas
 #
 #   <TAG>/
 #     schemas/
-#       metadata-input.schema.json
+#       core.schema.json
 #       vocab/<name>.schema.json        # generated enum fragments
 #       vocab/vocabulary.schema.json    # vocab meta-schema
 #     extensions/
@@ -17,7 +17,7 @@ name: Publish JSON Schemas
 #     <name>.json                       # durable themes[].scheme targets
 #
 # Public URL pattern (assuming GitHub Pages on this repo):
-#   https://<owner>.github.io/<repo>/<TAG>/schemas/metadata-input.schema.json
+#   https://<owner>.github.io/<repo>/<TAG>/schemas/core.schema.json
 #   https://<owner>.github.io/<repo>/<TAG>/vocab/domain.json
 #   https://<owner>.github.io/<repo>/vocab/domain.json   # unversioned scheme URL
 #

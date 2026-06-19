@@ -1,7 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/schemas/metadata-input.schema.json",
-  "additionalProperties": false,
+  "$id": "https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/schemas/core.schema.json",
   "$defs": {
     "additionalAsset": {
       "additionalProperties": false,
@@ -47,163 +46,6 @@
       "required": [
         "locations"
       ],
-      "type": "object"
-    },
-    "cdh": {
-      "additionalProperties": false,
-      "properties": {
-        "domain": {
-          "items": {
-            "$ref": "vocab/domain.schema.json"
-          },
-          "minItems": 1,
-          "type": "array",
-          "uniqueItems": true
-        },
-        "not_recommended_for": {
-          "items": {
-            "additionalProperties": false,
-            "properties": {
-              "reason": {
-                "type": "string"
-              },
-              "use": {
-                "type": "string"
-              },
-              "use_instead": {
-                "$ref": "#/$defs/nullableString"
-              }
-            },
-            "type": "object"
-          },
-          "type": "array"
-        },
-        "use_cases": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        }
-      },
-      "required": [
-        "domain"
-      ],
-      "type": "object"
-    },
-    "classSet": {
-      "additionalProperties": false,
-      "properties": {
-        "values": {
-          "items": {
-            "additionalProperties": false,
-            "properties": {
-              "description": {
-                "type": "string"
-              },
-              "label": {
-                "type": "string"
-              },
-              "value": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "boolean"
-                  },
-                  {
-                    "type": "null"
-                  }
-                ]
-              }
-            },
-            "type": "object"
-          },
-          "type": "array"
-        },
-        "variable": {
-          "type": "string"
-        }
-      },
-      "type": "object"
-    },
-    "climate": {
-      "additionalProperties": false,
-      "properties": {
-        "baseline": {
-          "additionalProperties": false,
-          "properties": {
-            "end_date": {
-              "$ref": "#/$defs/dateOrBlank"
-            },
-            "start_date": {
-              "$ref": "#/$defs/dateOrBlank"
-            }
-          },
-          "type": "object"
-        },
-        "bias_adjustment": {
-          "additionalProperties": false,
-          "properties": {
-            "method": {
-              "$ref": "#/$defs/nullableString"
-            },
-            "reference_dataset": {
-              "$ref": "#/$defs/nullableString"
-            }
-          },
-          "type": "object"
-        },
-        "downscaling": {
-          "additionalProperties": false,
-          "properties": {
-            "method": {
-              "$ref": "#/$defs/nullableString"
-            },
-            "resolution": {
-              "$ref": "#/$defs/numberOrStringOrNull"
-            }
-          },
-          "type": "object"
-        },
-        "hazards": {
-          "items": {
-            "$ref": "vocab/hazard.schema.json"
-          },
-          "type": "array",
-          "uniqueItems": true
-        },
-        "mip_era": {
-          "oneOf": [
-            {
-              "const": ""
-            },
-            {
-              "enum": [
-                "CMIP5",
-                "CMIP6"
-              ]
-            }
-          ]
-        },
-        "models": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array",
-          "uniqueItems": true
-        },
-        "scenarios": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array",
-          "uniqueItems": true
-        }
-      },
       "type": "object"
     },
     "contact": {
@@ -382,43 +224,6 @@
           "type": "string"
         }
       ]
-    },
-    "dimension": {
-      "additionalProperties": false,
-      "properties": {
-        "description": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "reference_system": {
-          "$ref": "#/$defs/nullableString"
-        },
-        "type": {
-          "type": "string"
-        },
-        "values": {
-          "items": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              },
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "type": "array"
-        }
-      },
-      "type": "object"
     },
     "id": {
       "oneOf": [
@@ -740,33 +545,6 @@
         }
       },
       "type": "object"
-    },
-    "variable": {
-      "additionalProperties": false,
-      "properties": {
-        "data_type": {
-          "$ref": "#/$defs/nullableString"
-        },
-        "description": {
-          "type": "string"
-        },
-        "dimensions": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "name": {
-          "type": "string"
-        },
-        "note": {
-          "$ref": "#/$defs/nullableString"
-        },
-        "unit": {
-          "$ref": "#/$defs/nullableString"
-        }
-      },
-      "type": "object"
     }
   },
   "description": "JSON Schema for validating CDH metadata input YAML records before serialization to STAC or OGC API Records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
@@ -783,9 +561,6 @@
       },
       "type": "array"
     },
-    "cdh": {
-      "$ref": "#/$defs/cdh"
-    },
     "cdh_schema_version": {
       "type": "string",
       "description": "CDH standard version this record targets. Matches the release tag: v<MAJOR>.<MINOR>.<PATCH>.",
@@ -793,22 +568,6 @@
     },
     "citation": {
       "type": "string"
-    },
-    "classes": {
-      "items": {
-        "$ref": "#/$defs/classSet"
-      },
-      "type": "array"
-    },
-    "climate": {
-      "$ref": "#/$defs/climate"
-    },
-    "commodities": {
-      "items": {
-        "$ref": "vocab/commodity.schema.json"
-      },
-      "type": "array",
-      "uniqueItems": true
     },
     "contact": {
       "items": {
@@ -841,27 +600,17 @@
     "description": {
       "type": "string"
     },
-    "dimensions": {
-      "items": {
-        "$ref": "#/$defs/dimension"
-      },
-      "type": "array"
-    },
     "doi": {
       "$ref": "#/$defs/nullableString"
     },
-    "encoding": {
-      "oneOf": [
-        {
-          "const": ""
-        },
-        {
-          "enum": [
-            "stac",
-            "ogc-records"
-          ]
-        }
-      ]
+    "extensions": {
+      "description": "Pinned URLs of the CDH extension schemas this record uses.",
+      "items": {
+        "format": "uri",
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
     },
     "funding": {
       "items": {
@@ -966,19 +715,12 @@
     "updated": {
       "$ref": "#/$defs/dateOrBlank"
     },
-    "variables": {
-      "items": {
-        "$ref": "#/$defs/variable"
-      },
-      "type": "array"
-    },
     "version": {
       "$ref": "#/$defs/nullableString"
     }
   },
   "required": [
     "cdh_schema_version",
-    "encoding",
     "id",
     "title",
     "description",
@@ -989,7 +731,6 @@
     "citation",
     "created",
     "updated",
-    "cdh",
     "data"
   ],
   "title": "Climate Data Hub Metadata Input Schema",
