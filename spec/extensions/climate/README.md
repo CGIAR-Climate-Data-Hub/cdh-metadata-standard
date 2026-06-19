@@ -36,8 +36,8 @@ Climate projection provenance: baseline, scenarios, models, downscaling, hazards
 - **Expected value:** List of friendly names (e.g., `drought`, `heat-stress`,
   `flooding`, `cold-stress`).
 - **Encoding:** Expanded into a `themes` entry under the CDH hazard scheme (see
-  themes generation in [the standard](../../standard.md)). Does not appear as a
-  standalone field in the encoded output.
+  the [crosswalk](../../crosswalk.md)). Does not appear as a standalone field in
+  the encoded output.
 
 ## `climate.baseline`
 

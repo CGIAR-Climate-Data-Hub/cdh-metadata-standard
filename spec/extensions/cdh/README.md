@@ -24,8 +24,7 @@ CGIAR Climate Data Hub governance: domain classification and use guidance.
     Records).
   - Also expanded by the encoder into a `themes` entry under the
     `https://cgiar-climate-data-hub.github.io/metadata/vocab/domain.json` scheme
-    for linked-data consumers (see themes generation in
-    [the standard](../../standard.md)).
+    for linked-data consumers (see the [crosswalk](../../crosswalk.md)).
 
 ## `cdh.use_cases[]`
 

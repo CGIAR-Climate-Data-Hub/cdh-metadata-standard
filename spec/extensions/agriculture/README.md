@@ -16,8 +16,8 @@ Agricultural commodities described by the record.
 - **Expected value:** List of friendly names (e.g., `banana`, `cassava`,
   `arabica-coffee`).
 - **Encoding:** Expanded into a `themes` entry under the CDH commodity scheme
-  (see themes generation in [the standard](../../standard.md)). Does not appear
-  as a standalone field in the encoded output.
+  (see the [crosswalk](../../crosswalk.md)). Does not appear as a standalone
+  field in the encoded output.
 
 ## Example
 
