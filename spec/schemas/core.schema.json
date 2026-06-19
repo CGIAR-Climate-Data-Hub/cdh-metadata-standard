@@ -285,6 +285,9 @@
           "pattern": "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+(\\s*;\\s*[^;=]+=[^;]+)*$",
           "type": "string"
         }
+      ],
+      "examples": [
+        "application/vnd.apache.parquet"
       ]
     },
     "nameUrl": {
@@ -367,7 +370,10 @@
           "type": "string"
         },
         "doi": {
-          "$ref": "#/$defs/nullableString"
+          "$ref": "#/$defs/nullableString",
+          "examples": [
+            "10.7910/DVN/SWPENT"
+          ]
         }
       },
       "type": "object"
@@ -415,6 +421,11 @@
         "bbox": {
           "description": "Spatial extent. STAC-aligned: an array of one or more bounding boxes, each of length 2*n where n is the number of dimensions. Order is all axes of the southwesterly-most extent, followed by all axes of the northeasterly-most extent. So 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z] = [xmin, ymin, zmin, xmax, ymax, zmax]. Coordinates are WGS84 (EPSG:4326); elevation is in metres. The first entry is the overall spatial extent; additional entries describe sub-regions (use only when their union would otherwise leave a large uncovered area). Empty outer array means unspecified.",
           "type": "array",
+          "examples": [
+            [
+              [-180, -90, 180, 90]
+            ]
+          ],
           "items": {
             "oneOf": [
               {
@@ -542,13 +553,19 @@
       "additionalProperties": false,
       "properties": {
         "end_date": {
-          "$ref": "#/$defs/dateOrBlank"
+          "$ref": "#/$defs/dateOrBlank",
+          "examples": [
+            "2020-01-01"
+          ]
         },
         "resolution": {
           "$ref": "#/$defs/temporalResolution"
         },
         "start_date": {
-          "$ref": "#/$defs/dateOrBlank"
+          "$ref": "#/$defs/dateOrBlank",
+          "examples": [
+            "2020-01-01"
+          ]
         }
       },
       "type": "object"
@@ -608,7 +625,10 @@
       "type": "string"
     },
     "doi": {
-      "$ref": "#/$defs/nullableString"
+      "$ref": "#/$defs/nullableString",
+      "examples": [
+        "10.7910/DVN/SWPENT"
+      ]
     },
     "extensions": {
       "description": "Pinned URLs of the CDH extension schemas this record uses.",
@@ -668,7 +688,10 @@
       }
     },
     "license": {
-      "type": "string"
+      "type": "string",
+      "examples": [
+        "CC-BY-SA-4.0"
+      ]
     },
     "note": {
       "$ref": "#/$defs/nullableString"
