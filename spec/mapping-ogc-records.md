@@ -70,7 +70,7 @@ STAC-only in the crosswalk.
 | `keywords`                  | `properties.keywords`                                                                                                                                                      |
 | `cdh.domain[]`              | `properties["cgiar-cdh:domain"]`; also expanded into `properties.themes` under the CDH domain scheme. First entry is the primary domain.                                   |
 | `keywords[]` (linked items) | Plain-string keywords are emitted into `properties.keywords`. Linked-keyword entries (`{ term, scheme, uri }`) are also added to `properties.themes`, grouped by `scheme`. |
-| `properties.themes`         | Encoder output only - populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                     |
+| `properties.themes`         | Encoder output only - populated from `cdh.domain`, `commodities`, and any linked-keyword entries. Not an author-facing input field.                                        |
 | `license`                   | `properties.license`                                                                                                                                                       |
 | `contact[]`                 | `properties.contacts[]`. At least one contact must use `role=licensor`.                                                                                                    |
 | `citation`                  | `properties["cgiar-cdh:citation"]` (plain text)                                                                                                                            |
@@ -116,10 +116,9 @@ STAC with the Table Extension instead of OGC Records.
 ### 4.4 CDH-specific fields
 
 The `cdh.*`, `climate.*`, and `commodities` fields in the input record are
-encoded under `properties["cgiar-cdh:*"]`, **except** for `commodities` and
-`climate.hazards`, which are expanded into `properties.themes` entries by the
-encoder using the CDH commodity and CDH hazard JSON lookups (see core standard
-sections 5.1 and 5.6). Field names, value types, and controlled vocabularies
+encoded under `properties["cgiar-cdh:*"]`, **except** for `commodities`, which
+is expanded into `properties.themes` entries by the encoder using the CDH
+commodity JSON lookup. Field names, value types, and controlled vocabularies
 otherwise match the STAC profile exactly. OGC Records has no equivalent of STAC
 `summaries`; faceted values that would be in STAC summaries appear as direct
 array properties.

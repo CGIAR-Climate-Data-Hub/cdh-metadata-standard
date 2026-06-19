@@ -47,11 +47,6 @@
             "resolution": { "$ref": "#/$defs/numberOrStringOrNull" }
           }
         },
-        "hazards": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": { "$ref": "../../schemas/vocab/hazard.schema.json" }
-        },
         "mip_era": {
           "oneOf": [{ "const": "" }, { "enum": ["CMIP5", "CMIP6"] }]
         },

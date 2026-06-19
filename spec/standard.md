@@ -287,8 +287,8 @@ value**, **Rules**, **Vocabulary** where applicable, and **Example**.
     `commodities`, `climate.*`, `spatial.*`, `temporal.*`, or `variables[]`.
   - Should not duplicate structured values. If a geography exists, encode it in
     `spatial.geography`; if a crop or commodity exists, encode it in
-    [`commodities`](extensions/agriculture/README.md); if a hazard, scenario,
-    model, baseline, or MIP era exists, encode it in
+    [`commodities`](extensions/agriculture/README.md); if a scenario, model,
+    baseline, or MIP era exists, encode it in
     [`climate.*`](extensions/climate/README.md); if a variable, band, indicator,
     or column exists, encode it in
     [`variables[]`](extensions/datacube/README.md).
@@ -299,8 +299,7 @@ value**, **Rules**, **Vocabulary** where applicable, and **Example**.
     a `term`-only object is equivalent to a plain string.
   - Do not link entries to the
     `https://cgiar-climate-data-hub.github.io/metadata/vocab/*` schemes - those
-    are reserved for encoder expansion from `cdh.domain`, `commodities`, and
-    `climate.hazards`.
+    are reserved for encoder expansion from `cdh.domain` and `commodities`.
 
 Authoring YAML:
 
@@ -541,13 +540,13 @@ CDH profile (see section 4.3). Each extension is documented alongside its schema
 (`cdh.domain` is required). Encode values you filter or facet on in these
 extension fields, not in `keywords` (see section 4.5).
 
-| Extension                                             | Fields                                                          | Applies to                           |
-| ----------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------ |
-| [CDH](extensions/cdh/README.md)                       | `cdh.domain`, `cdh.use_cases`, `cdh.not_recommended_for`        | all records (profile-required)       |
-| [Climate](extensions/climate/README.md)               | `climate.*` - scenarios, models, hazards, baseline, downscaling | climate / CMIP / hazard / adaptation |
-| [Datacube](extensions/datacube/README.md)             | `dimensions[]`, `variables[]`                                   | gridded / multidimensional / tabular |
-| [Classification](extensions/classification/README.md) | `classes[]`                                                     | categorical / classified data        |
-| [Agriculture](extensions/agriculture/README.md)       | `commodities[]`                                                 | agriculture / food-systems / crops   |
+| Extension                                             | Fields                                                   | Applies to                           |
+| ----------------------------------------------------- | -------------------------------------------------------- | ------------------------------------ |
+| [CDH](extensions/cdh/README.md)                       | `cdh.domain`, `cdh.use_cases`, `cdh.not_recommended_for` | all records (profile-required)       |
+| [Climate](extensions/climate/README.md)               | `climate.*` - scenarios, models, baseline, downscaling   | climate / CMIP / adaptation          |
+| [Datacube](extensions/datacube/README.md)             | `dimensions[]`, `variables[]`                            | gridded / multidimensional / tabular |
+| [Classification](extensions/classification/README.md) | `classes[]`                                              | categorical / classified data        |
+| [Agriculture](extensions/agriculture/README.md)       | `commodities[]`                                          | agriculture / food-systems / crops   |
 
 ### 5.6 Processing and Provenance
 
@@ -658,7 +657,6 @@ extension fields, not in `keywords` (see section 4.5).
 | `cdh.domain`                                                  | `vocab/domain.json` (CDH closed set)                                                                                                                        |
 | `keywords[].scheme` (linked items)                            | Open - any resolvable controlled-vocabulary URI (e.g., AGROVOC, GEMET). Do not link entries to `https://cgiar-climate-data-hub.github.io/metadata/vocab/*`. |
 | `commodities`                                                 | `vocab/commodity.json` (AGROVOC-mapped); encoded as themes                                                                                                  |
-| `climate.hazards`                                             | `vocab/hazard.json` (AGROVOC-mapped); encoded as themes                                                                                                     |
 | `climate.mip_era`                                             | `CMIP5`, `CMIP6` (informal)                                                                                                                                 |
 | `climate.scenarios`                                           | SSP / RCP labels, `historic` (informal)                                                                                                                     |
 | `climate.models`                                              | CMIP source IDs (informal)                                                                                                                                  |
@@ -692,6 +690,5 @@ extension fields, not in `keywords` (see section 4.5).
 - [ ] `commodities[]` for commodity-specific resources
 - [ ] `climate.scenarios[]` for projection-based climate resources
 - [ ] `climate.mip_era` for CMIP-based resources
-- [ ] `climate.hazards[]` for hazard/risk resources
 - [ ] `climate.baseline` for anomalies and baseline-relative indicators
 - [ ] `classes[]` or class sidecar for classified data
