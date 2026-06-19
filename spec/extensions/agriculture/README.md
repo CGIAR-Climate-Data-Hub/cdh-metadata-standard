@@ -2,9 +2,7 @@
 
 Agricultural commodities described by the record.
 
-- **Applies to:** agriculture, food-systems, livestock, and crop resources.
-- **Schema:** `https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/agriculture/schema.json`
-- **Declared in** a record's `extensions[]`. See [the standard](../../standard.md),
+- **Applies to:** agriculture, food-systems, livestock, and crop resources.- **Declared in** a record's `extensions[]`. See [the standard](../../standard.md),
   §4.3, for the extension mechanism.
 
 ## `commodities[]`
@@ -23,7 +21,7 @@ Agricultural commodities described by the record.
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/agriculture/schema.json
+  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/agriculture/schema.json
 commodities:
   - maize
   - rice

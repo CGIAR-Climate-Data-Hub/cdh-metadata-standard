@@ -3,9 +3,7 @@
 Class definitions for categorical, classified, or bitfield variables.
 
 - **Applies to:** classified, categorical, or bitfield variables (e.g., land
-  cover, suitability classes).
-- **Schema:** `https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/classification/schema.json`
-- **Declared in** a record's `extensions[]`. See [the standard](../../standard.md),
+  cover, suitability classes).- **Declared in** a record's `extensions[]`. See [the standard](../../standard.md),
   §4.3, for the extension mechanism.
 
 ## `classes[]`
@@ -23,7 +21,7 @@ Class definitions for categorical, classified, or bitfield variables.
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/classification/schema.json
+  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/classification/schema.json
 classes:
   - variable: land_cover
     values:

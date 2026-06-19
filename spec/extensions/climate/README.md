@@ -2,10 +2,7 @@
 
 Climate projection provenance: baseline, scenarios, models, downscaling.
 
-- **Applies to:** climate projection, CMIP-based, and adaptation resources.
-- **Schema:**
-  `https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/climate/schema.json`
-- **Declared in** a record's `extensions[]`. See
+- **Applies to:** climate projection, CMIP-based, and adaptation resources.- **Declared in** a record's `extensions[]`. See
   [the standard](../../standard.md), §4.3, for the extension mechanism.
 
 **Source provenance:** link the dataset this was directly made from as a
@@ -54,7 +51,7 @@ visible without walking the derivation chain. See
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/climate/schema.json
+  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/climate/schema.json
 climate:
   mip_era: CMIP6
   scenarios: [ssp245, ssp585]
