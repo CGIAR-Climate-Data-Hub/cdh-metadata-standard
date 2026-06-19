@@ -2,8 +2,9 @@ This guide is for people filling out metadata records. It explains what to write
 first, what can wait, and where optional detail belongs.
 
 The formal standard is `standard.md`. Fillable YAML starting points live in
-`../templates/`; each template points YAML-aware editors to
-`schemas/core.schema.json` for field validation.
+`../templates/`; each template binds YAML-aware editors to the CDH profile
+(`schemas/profiles/cdh.schema.json` = the core plus the CDH extensions) for
+validation and field hints.
 
 ## The Short Version
 
@@ -56,6 +57,8 @@ title: ""
 description: ""
 resource_type: ""
 encoding: ""
+extensions:
+  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/cdh/schema.json
 keywords: []
 license: ""
 contact:
@@ -242,6 +245,12 @@ Some of these are CDH extension fields - `climate`, `commodities`, `classes`, an
 `variables`/`dimensions`. The CDH template already declares them in
 `extensions[]`, so you only fill the ones that apply. `spatial`, `temporal`,
 `processing`, and the asset fields are core and always available.
+
+Using an extension from another project or center? Add its pinned schema URL to
+`extensions[]`, bind the matching profile via the
+`# yaml-language-server: $schema=` line for validation and hints, then fill its
+fields the same way - the core + extension model is identical regardless of who
+owns the extension. See `standard.md` section 4.3.
 
 ### Spatial
 
@@ -486,8 +495,9 @@ Leave a field out when:
 
 Avoid inventing new fields. If an important fact has no place in the template,
 first check the formal standard, then consider whether it belongs in
-`additional_links`, `additional_assets`, a sidecar file, or a proposed
-`cgiar-cdh:*` field.
+`additional_links`, `additional_assets`, a sidecar file, or a CDH extension - an
+existing extension's field, a new field proposed on one, or a new extension (see
+`standard.md` section 4.3).
 
 ## Practical Authoring Order
 

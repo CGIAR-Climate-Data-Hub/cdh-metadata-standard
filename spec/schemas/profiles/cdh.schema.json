@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/schemas/profiles/cdh.schema.json",
   "title": "CDH Profile",
-  "description": "Core + the CDH-mandated extensions. The schema CDH records validate against and bind for editor hints.",
+  "description": "Editor bundle: core composed with all CDH extensions, bound via the yaml-language-server modeline for autocomplete and validation. CI validates dynamically against only the extensions a record declares in extensions[] (see scripts/validate-yaml.js), so the authoritative 'declared what you use' check happens there, not here.",
   "allOf": [
     { "$ref": "../core.schema.json" },
     { "$ref": "../../extensions/cdh/schema.json" },
@@ -11,6 +11,11 @@
     { "$ref": "../../extensions/classification/schema.json" },
     { "$ref": "../../extensions/agriculture/schema.json" }
   ],
-  "required": ["cdh"],
+  "required": ["cdh", "extensions"],
+  "properties": {
+    "extensions": {
+      "contains": { "const": "https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/cdh/schema.json" }
+    }
+  },
   "unevaluatedProperties": false
 }
