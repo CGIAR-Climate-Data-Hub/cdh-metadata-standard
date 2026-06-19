@@ -110,9 +110,9 @@ What kind of thing the record describes.
 Common values:
 
 - `dataset`
-- `document`
-- `tool`
+- `software`
 - `ai-skill`
+- `document`
 
 ### `encoding`
 
