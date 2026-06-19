@@ -37,11 +37,6 @@ const VOCABS = {
     target: resolve(ROOT, "spec/schemas/vocab/commodity.schema.json"),
     title: "CDH Commodity Vocabulary",
   },
-  hazard: {
-    source: resolve(ROOT, "vocab/hazard.json"),
-    target: resolve(ROOT, "spec/schemas/vocab/hazard.schema.json"),
-    title: "CDH Hazard Vocabulary",
-  },
   geography: {
     source: resolve(ROOT, "vocab/geography.json"),
     target: resolve(ROOT, "spec/schemas/vocab/geography.schema.json"),

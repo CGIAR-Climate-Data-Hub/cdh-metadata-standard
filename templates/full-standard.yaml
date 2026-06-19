@@ -128,7 +128,6 @@ climate:
   scenarios: []
   models: # use `ensemble` to indicate a multi-model ensemble
     - ""
-  hazards: []
   baseline:
     start_date: ""
     end_date: ""

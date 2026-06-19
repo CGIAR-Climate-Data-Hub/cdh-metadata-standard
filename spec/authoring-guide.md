@@ -141,7 +141,6 @@ Put these in structured fields instead:
 | ------------------------------------------------ | ------------------- |
 | places, countries, regions, or named geographies | `spatial.geography` |
 | crop, livestock type, or commodity               | `commodities`       |
-| climate hazard                                   | `climate.hazards`   |
 | time period or temporal resolution               | `temporal.*`        |
 
 ```yaml
@@ -430,7 +429,6 @@ applies.
 
 Possible Fields:
 
-- `climate.hazards`
 - `climate.scenarios`
 - `climate.models`
 - `climate.mip_era`

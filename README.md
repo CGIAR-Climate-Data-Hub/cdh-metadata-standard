@@ -34,7 +34,6 @@ Controlled vocabularies live in [vocab/](./vocab):
 - [domain.json](./vocab/domain.json)
 - [resource\_type.json](./vocab/resource_type.json)
 - [commodity.json](./vocab/commodity.json)
-- [hazard.json](./vocab/hazard.json)
 
 Vocabulary files are validated against
 [spec/schemas/vocab/vocabulary.schema.json](./spec/schemas/vocab/vocabulary.schema.json).

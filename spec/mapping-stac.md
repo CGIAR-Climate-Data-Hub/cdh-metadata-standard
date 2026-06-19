@@ -78,7 +78,7 @@ searchable structured facts.
 | `funding[]`                 | `cgiar-cdh:funding`                                                                                                                                                                             |
 | `cdh.domain[]`              | `cgiar-cdh:domain` on the Collection; also expanded into Themes Extension `themes[]` under the CDH domain scheme. First entry drives sub-catalog placement.                                     |
 | `keywords[]` (linked items) | Each linked-keyword entry (`{ term, scheme, uri }`) is also emitted as a Themes Extension `themes[]` concept, grouped by `scheme`. Plain-string keywords are emitted only into STAC `keywords`. |
-| Themes Extension `themes[]` | Encoder output only - populated from `cdh.domain`, `commodities`, `climate.hazards`, and any linked-keyword entries. Not an author-facing input field.                                          |
+| Themes Extension `themes[]` | Encoder output only - populated from `cdh.domain`, `commodities`, and any linked-keyword entries. Not an author-facing input field.                                                             |
 
 ### 4.2 Resource type
 
@@ -165,9 +165,8 @@ Decision rules:
 ### 4.6 CDH-specific fields
 
 The `cdh.*`, `climate.*`, and `commodities` fields in the input record are
-encoded under the `cgiar-cdh:` namespace. `commodities` and `climate.hazards`
-are expanded into `themes` entries by the encoder via the CDH commodity and CDH
-hazard JSON lookups (see core standard sections 5.1 and 5.6).
+encoded under the `cgiar-cdh:` namespace. `commodities` is expanded into
+`themes` entries by the encoder via the CDH commodity JSON lookup.
 
 Other faceted/multi-valued fields (`scenarios`, `models`) live in `summaries` at
 the Collection level when the value applies across Items. `mip_era`, `baseline`,
