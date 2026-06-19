@@ -252,7 +252,7 @@ value**, **Rules**, **Vocabulary** where applicable, and **Example**.
 - **Requirement:** Required
 - **Definition:** Kind of resource the record describes.
 - **Vocabulary:** Closed set defined in `vocab/resource_type.json`. Initial
-  values are `dataset`, `software`, `ai-skill`, and `document`.
+  values are `dataset`, `software`, `service`, `ai-skill`, and `document`.
 - **Rules:**
   - Should not replace asset media types.
 

@@ -112,6 +112,7 @@ Common values:
 
 - `dataset`
 - `software`
+- `service`
 - `ai-skill`
 - `document`
 
