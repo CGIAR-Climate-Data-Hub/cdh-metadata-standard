@@ -3,14 +3,16 @@
 Climate projection provenance: baseline, scenarios, models, downscaling.
 
 - **Applies to:** climate projection, CMIP-based, and adaptation resources.
-- **Schema:** `https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/climate/schema.json`
-- **Declared in** a record's `extensions[]`. See [the standard](../../standard.md),
-  §4.3, for the extension mechanism.
+- **Schema:**
+  `https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/climate/schema.json`
+- **Declared in** a record's `extensions[]`. See
+  [the standard](../../standard.md), §4.3, for the extension mechanism.
 
-**Source provenance:** record the foundational climate product (e.g.,
-NEX-GDDP-CMIP6, CHIRPS, NASA POWER, ERA5) as a `derived_from` link on the
-`processing` `source` step - even if your dataset is several steps removed. List
-the product it's based on; note intermediate steps in the description. See
+**Source provenance:** link the dataset this was directly made from as a
+`derived_from` on the `processing` `source` step. Surface the foundational
+climate product (e.g., NEX-GDDP-CMIP6, CHIRPS, NASA POWER, ERA5) - even when it
+is several steps upstream - with a `via` link in `additional_links`, so it stays
+visible without walking the derivation chain. See
 [the standard](../../standard.md), §5.7.
 
 ## `climate.mip_era`
