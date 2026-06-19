@@ -106,8 +106,8 @@ To carry metadata the standard does not yet cover:
 A field that outlives one project or center is a sign it should be a shared
 extension rather than an ad hoc addition.
 
-How input fields map to STAC/OGC output extensions (including `cgiar-cdh:*`) is a
-separate concern, covered in `mapping-stac.md` and `mapping-ogc-records.md`.
+How input fields map to STAC/OGC output extensions (including `cgiar-cdh:*`) is
+a separate concern, covered in `mapping-stac.md` and `mapping-ogc-records.md`.
 
 ### 4.4 Description, note, and free text
 
@@ -267,8 +267,8 @@ value**, **Rules**, **Vocabulary** where applicable, and **Example**.
 - **Rules:**
   - The record is validated against a profile composing the core with these
     extensions (see section 4.3).
-  - The CDH template pre-lists the CDH-maintained extensions; authors rarely edit
-    this by hand.
+  - The CDH template pre-lists the CDH-maintained extensions; authors rarely
+    edit this by hand.
 
 #### `keywords`
 
@@ -294,7 +294,8 @@ value**, **Rules**, **Vocabulary** where applicable, and **Example**.
     [`commodities`](extensions/agriculture/README.md); if a hazard, scenario,
     model, baseline, or MIP era exists, encode it in
     [`climate.*`](extensions/climate/README.md); if a variable, band, indicator,
-    or column exists, encode it in [`variables[]`](extensions/datacube/README.md).
+    or column exists, encode it in
+    [`variables[]`](extensions/datacube/README.md).
   - Values used for filter, group-by, or facet belong in `cdh.domain` (closed
     CDH vocab), not here. See section 4.5.
   - Should use consistent spelling and capitalization.
@@ -546,13 +547,13 @@ CDH profile (see section 4.3). Each extension is documented alongside its schema
 (`cdh.domain` is required). Encode values you filter or facet on in these
 extension fields, not in `keywords` (see section 4.5).
 
-| Extension | Fields | Applies to |
-| --- | --- | --- |
-| [CDH](extensions/cdh/README.md) | `cdh.domain`, `cdh.use_cases`, `cdh.not_recommended_for` | all records (profile-required) |
-| [Climate](extensions/climate/README.md) | `climate.*` - scenarios, models, hazards, baseline, downscaling | climate / CMIP / hazard / adaptation |
-| [Datacube](extensions/datacube/README.md) | `dimensions[]`, `variables[]` | gridded / multidimensional / tabular |
-| [Classification](extensions/classification/README.md) | `classes[]` | categorical / classified data |
-| [Agriculture](extensions/agriculture/README.md) | `commodities[]` | agriculture / food-systems / crops |
+| Extension                                             | Fields                                                          | Applies to                           |
+| ----------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------ |
+| [CDH](extensions/cdh/README.md)                       | `cdh.domain`, `cdh.use_cases`, `cdh.not_recommended_for`        | all records (profile-required)       |
+| [Climate](extensions/climate/README.md)               | `climate.*` - scenarios, models, hazards, baseline, downscaling | climate / CMIP / hazard / adaptation |
+| [Datacube](extensions/datacube/README.md)             | `dimensions[]`, `variables[]`                                   | gridded / multidimensional / tabular |
+| [Classification](extensions/classification/README.md) | `classes[]`                                                     | categorical / classified data        |
+| [Agriculture](extensions/agriculture/README.md)       | `commodities[]`                                                 | agriculture / food-systems / crops   |
 
 ### 5.6 Processing and Provenance
 
@@ -618,11 +619,9 @@ extension fields, not in `keywords` (see section 4.5).
 - **`locations[]`:** Same shape and rules as `data[].locations` - required, at
   least one entry; first is canonical; multiple entries only for the same
   content via a different access path.
-- **Vocabulary for `roles`:** STAC roles - `metadata`, `validation`,
-  `describedby`, `thumbnail`, `overview`, `visual`.
-- **Rules:**
-  - Provide `media_type` and `file_size` when known; otherwise review may add
-    them (see section 4.7).
+- **Vocabulary for `roles`:** `metadata`, `validation`, `describedby`,
+  `thumbnail`, `overview`, `visual`.
+- **Rules:** Same as `data[]`.
 
 #### `additional_links[]`
 
