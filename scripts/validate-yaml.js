@@ -22,7 +22,7 @@ import { loadAllSchemas, newAjv, rel, ROOT } from "./_ajv.js";
 const { version } = JSON.parse(
   await readFile(resolve(ROOT, "package.json"), "utf-8"),
 );
-const BASE = `https://cgiar-climate-data-hub.github.io/metadata/v${version}`;
+const BASE = `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v${version}`;
 const CORE_ID = `${BASE}/schemas/core.schema.json`;
 const CDH_EXT_URL = `${BASE}/extensions/cdh/schema.json`;
 

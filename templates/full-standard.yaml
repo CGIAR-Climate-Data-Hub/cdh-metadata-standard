@@ -3,11 +3,11 @@ cdh_schema_version: "v0.0.2"
 
 # Extensions this record uses (pinned schema URLs).
 extensions:
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/cdh/schema.json
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/climate/schema.json
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/datacube/schema.json
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/classification/schema.json
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/agriculture/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/extensions/climate/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/extensions/datacube/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/extensions/classification/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/extensions/agriculture/schema.json
 
 # Core Metadata (required)
 id: ""
