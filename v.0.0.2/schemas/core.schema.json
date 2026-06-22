@@ -1,0 +1,768 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/schemas/core.schema.json",
+  "$defs": {
+    "additionalAsset": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "file_size": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "locations": {
+          "items": {
+            "$ref": "#/$defs/location"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "media_type": {
+          "$ref": "#/$defs/mediaType"
+        },
+        "name": {
+          "type": "string"
+        },
+        "roles": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "locations"
+      ],
+      "type": "object"
+    },
+    "contact": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "type": "object"
+          },
+          "then": {
+            "properties": {
+              "organization": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "organization"
+            ],
+            "type": "object"
+          }
+        }
+      ],
+      "anyOf": [
+        {
+          "properties": {
+            "organization": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "organization"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "name": {
+              "const": ""
+            },
+            "organization": {
+              "const": ""
+            }
+          },
+          "required": [
+            "name",
+            "organization"
+          ],
+          "type": "object"
+        }
+      ],
+      "properties": {
+        "email": {
+          "anyOf": [
+            {
+              "const": ""
+            },
+            {
+              "format": "email",
+              "type": "string"
+            }
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "role": {
+          "oneOf": [
+            {
+              "const": ""
+            },
+            {
+              "enum": [
+                "licensor",
+                "producer",
+                "processor",
+                "host"
+              ]
+            }
+          ]
+        },
+        "url": {
+          "$ref": "#/$defs/nullableString"
+        }
+      },
+      "required": [
+        "role"
+      ],
+      "type": "object"
+    },
+    "dataAsset": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "file_size": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "locations": {
+          "items": {
+            "$ref": "#/$defs/location"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "media_type": {
+          "$ref": "#/$defs/mediaType"
+        },
+        "name": {
+          "type": "string"
+        },
+        "href_template": {
+          "type": "string",
+          "description": "Optional. When present, each locations[].url is treated as a base path and this relative pattern is appended to it (base + filled template). Tokens in {braces} must match a dimensions[].name; the encoder expands the cross-product of those dimensions' values into one item per combination, using locations[0] for the canonical href and any other locations as alternates. When absent, locations[].url are full file URLs and the entry is a single asset.",
+          "examples": [
+            "mapspam_{crop}_{technology}_{variable}.tif"
+          ]
+        },
+        "nodata": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "processing_steps": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "locations"
+      ],
+      "type": "object"
+    },
+    "dateOrBlank": {
+      "anyOf": [
+        {
+          "const": ""
+        },
+        {
+          "type": "null"
+        },
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "format": "date-time",
+          "type": "string"
+        }
+      ]
+    },
+    "id": {
+      "oneOf": [
+        {
+          "const": ""
+        },
+        {
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "type": "string"
+        }
+      ]
+    },
+    "link": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "rel": {
+          "type": "string"
+        },
+        "url": {
+          "$ref": "#/$defs/nullableString"
+        }
+      },
+      "type": "object"
+    },
+    "location": {
+      "additionalProperties": false,
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "$ref": "#/$defs/nullableString"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "type": "object"
+    },
+    "mediaType": {
+      "oneOf": [
+        {
+          "const": ""
+        },
+        {
+          "pattern": "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+(\\s*;\\s*[^;=]+=[^;]+)*$",
+          "type": "string"
+        }
+      ],
+      "examples": [
+        "application/vnd.apache.parquet"
+      ]
+    },
+    "nameUrl": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "$ref": "#/$defs/nullableString"
+        }
+      },
+      "type": "object"
+    },
+    "nullableString": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "numberOrStringOrNull": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "processingStep": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "additionalProperties": false,
+          "properties": {
+            "url": {
+              "$ref": "#/$defs/nullableString"
+            },
+            "version": {
+              "$ref": "#/$defs/nullableString"
+            }
+          },
+          "type": "object"
+        },
+        "date": {
+          "$ref": "#/$defs/dateOrBlank"
+        },
+        "derived_from": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "title": {
+                "$ref": "#/$defs/nullableString"
+              },
+              "url": {
+                "$ref": "#/$defs/nullableString"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "description": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "id": {
+          "$ref": "#/$defs/nullableString"
+        }
+      },
+      "type": "object"
+    },
+    "publication": {
+      "additionalProperties": false,
+      "properties": {
+        "citation": {
+          "type": "string"
+        },
+        "doi": {
+          "$ref": "#/$defs/nullableString",
+          "examples": [
+            "10.7910/DVN/SWPENT"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "spatialResolution": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "note": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "reference_system": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "type": {
+          "oneOf": [
+            {
+              "const": ""
+            },
+            {
+              "enum": [
+                "xy",
+                "x",
+                "y",
+                "point",
+                "polygon"
+              ]
+            }
+          ]
+        },
+        "unit": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "value": {
+          "$ref": "#/$defs/numberOrStringOrNull"
+        }
+      },
+      "type": "object"
+    },
+    "spatial": {
+      "additionalProperties": false,
+      "properties": {
+        "bbox": {
+          "description": "Spatial extent. STAC-aligned: an array of one or more bounding boxes, each of length 2*n where n is the number of dimensions. Order is all axes of the southwesterly-most extent, followed by all axes of the northeasterly-most extent. So 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z] = [xmin, ymin, zmin, xmax, ymax, zmax]. Coordinates are WGS84 (EPSG:4326); elevation is in metres. The first entry is the overall spatial extent; additional entries describe sub-regions (use only when their union would otherwise leave a large uncovered area). Empty outer array means unspecified.",
+          "type": "array",
+          "examples": [
+            [
+              [-180, -90, 180, 90]
+            ]
+          ],
+          "items": {
+            "oneOf": [
+              {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "prefixItems": [
+                  {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  }
+                ],
+                "items": false
+              },
+              {
+                "type": "array",
+                "minItems": 6,
+                "maxItems": 6,
+                "prefixItems": [
+                  {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "items": false
+              }
+            ]
+          }
+        },
+        "crs": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "geography": {
+          "items": {
+            "$ref": "vocab/geography.schema.json"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "geometry_column": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "resolution": {
+          "items": {
+            "$ref": "#/$defs/spatialResolution"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "temporalResolution": {
+      "additionalProperties": false,
+      "properties": {
+        "note": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "step": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "unit": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "values": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "temporal": {
+      "additionalProperties": false,
+      "properties": {
+        "end_date": {
+          "$ref": "#/$defs/dateOrBlank",
+          "examples": [
+            "2020-01-01"
+          ]
+        },
+        "resolution": {
+          "$ref": "#/$defs/temporalResolution"
+        },
+        "start_date": {
+          "$ref": "#/$defs/dateOrBlank",
+          "examples": [
+            "2020-01-01"
+          ]
+        }
+      },
+      "type": "object"
+    }
+  },
+  "description": "JSON Schema for validating CDH metadata input YAML records before serialization to STAC or OGC API Records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
+  "properties": {
+    "additional_assets": {
+      "items": {
+        "$ref": "#/$defs/additionalAsset"
+      },
+      "type": "array"
+    },
+    "additional_links": {
+      "items": {
+        "$ref": "#/$defs/link"
+      },
+      "type": "array"
+    },
+    "cdh_schema_version": {
+      "type": "string",
+      "description": "CDH standard version this record targets. Matches the release tag: v<MAJOR>.<MINOR>.<PATCH>.",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "citation": {
+      "type": "string"
+    },
+    "contact": {
+      "items": {
+        "$ref": "#/$defs/contact"
+      },
+      "minItems": 1,
+      "contains": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "const": "licensor"
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
+      "type": "array"
+    },
+    "created": {
+      "$ref": "#/$defs/dateOrBlank"
+    },
+    "data": {
+      "items": {
+        "$ref": "#/$defs/dataAsset"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "description": {
+      "type": "string"
+    },
+    "doi": {
+      "$ref": "#/$defs/nullableString",
+      "examples": [
+        "10.7910/DVN/SWPENT"
+      ]
+    },
+    "extensions": {
+      "description": "Pinned URLs of the CDH extension schemas this record uses.",
+      "items": {
+        "format": "uri",
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "funding": {
+      "items": {
+        "$ref": "#/$defs/nameUrl"
+      },
+      "type": "array"
+    },
+    "id": {
+      "$ref": "#/$defs/id"
+    },
+    "keywords": {
+      "description": "Free-text search terms. Each item is either a plain string, or an object linking the term to an external vocabulary/ontology (e.g., AGROVOC, GEMET). Linked-keyword items are also emitted as ontology themes in the serialized output, grouped by `scheme`.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "type": "string",
+            "minLength": 1
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "term"
+            ],
+            "properties": {
+              "term": {
+                "type": "string",
+                "minLength": 1
+              },
+              "scheme": {
+                "description": "Resolvable URI of the controlled vocabulary or ontology this term comes from.",
+                "type": "string",
+                "format": "uri"
+              },
+              "uri": {
+                "description": "Resolvable URI of the specific concept within `scheme`.",
+                "type": "string",
+                "format": "uri"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "license": {
+      "type": "string",
+      "examples": [
+        "CC-BY-SA-4.0"
+      ]
+    },
+    "note": {
+      "$ref": "#/$defs/nullableString"
+    },
+    "previous_version": {
+      "$ref": "#/$defs/nullableString"
+    },
+    "processing": {
+      "contains": {
+        "properties": {
+          "id": {
+            "const": "source"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "type": "object"
+      },
+      "items": {
+        "$ref": "#/$defs/processingStep"
+      },
+      "minContains": 1,
+      "type": "array"
+    },
+    "related_publications": {
+      "items": {
+        "$ref": "#/$defs/publication"
+      },
+      "type": "array"
+    },
+    "resource_type": {
+      "oneOf": [
+        {
+          "const": ""
+        },
+        {
+          "$ref": "vocab/resource_type.schema.json"
+        }
+      ]
+    },
+    "spatial": {
+      "$ref": "#/$defs/spatial"
+    },
+    "temporal": {
+      "$ref": "#/$defs/temporal"
+    },
+    "title": {
+      "type": "string"
+    },
+    "updated": {
+      "$ref": "#/$defs/dateOrBlank"
+    },
+    "version": {
+      "$ref": "#/$defs/nullableString"
+    }
+  },
+  "required": [
+    "cdh_schema_version",
+    "id",
+    "title",
+    "description",
+    "license",
+    "resource_type",
+    "keywords",
+    "contact",
+    "citation",
+    "created",
+    "updated",
+    "data"
+  ],
+  "title": "Climate Data Hub Metadata Input Schema",
+  "type": "object"
+}

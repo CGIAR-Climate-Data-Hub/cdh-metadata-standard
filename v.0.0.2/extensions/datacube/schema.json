@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/extensions/datacube/schema.json",
+  "title": "Datacube Extension",
+  "description": "Dimensions and variables for gridded, multidimensional, or tabular data.",
+  "type": "object",
+  "$defs": {
+    "nullableString": { "type": ["string", "null"] },
+    "scalarOrNull": {
+      "anyOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "properties": {
+    "dimensions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "type": { "type": "string" },
+          "reference_system": { "$ref": "#/$defs/nullableString" },
+          "values": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/scalarOrNull" }
+          }
+        }
+      }
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "data_type": { "$ref": "#/$defs/nullableString" },
+          "dimensions": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "unit": { "$ref": "#/$defs/nullableString", "examples": ["t ha-1"] },
+          "note": { "$ref": "#/$defs/nullableString" }
+        }
+      }
+    }
+  }
+}
