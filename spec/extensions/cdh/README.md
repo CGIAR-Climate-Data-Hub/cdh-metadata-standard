@@ -2,9 +2,7 @@
 
 CGIAR Climate Data Hub governance: domain classification and use guidance.
 
-- **Applies to:** all CDH records - the CDH profile requires this extension.
-- **Schema:** `https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/cdh/schema.json`
-- **Declared in** a record's `extensions[]`. See [the standard](../../standard.md),
+- **Applies to:** all CDH records - the CDH profile requires this extension.- **Declared in** a record's `extensions[]`. See [the standard](../../standard.md),
   §4.3, for the extension mechanism.
 
 ## `cdh.domain[]`
@@ -41,7 +39,7 @@ CGIAR Climate Data Hub governance: domain classification and use guidance.
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/cdh/schema.json
 cdh:
   domain: [agricultural-production] # primary first; rest are secondary
   use_cases:

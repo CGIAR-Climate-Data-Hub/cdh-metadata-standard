@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/climate/schema.json",
+  "$id": "https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/climate/schema.json",
   "title": "Climate Extension",
   "description": "Climate projection provenance: baseline, bias adjustment, downscaling, scenarios.",
   "type": "object",

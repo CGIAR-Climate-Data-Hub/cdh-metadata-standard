@@ -3,9 +3,7 @@
 Dimensions and variables for gridded, multidimensional, or tabular data.
 
 - **Applies to:** datasets with measurement variables, bands, or columns, and any
-  dataset whose meaning depends on axes/codes.
-- **Schema:** `https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/datacube/schema.json`
-- **Declared in** a record's `extensions[]`. See [the standard](../../standard.md),
+  dataset whose meaning depends on axes/codes.- **Declared in** a record's `extensions[]`. See [the standard](../../standard.md),
   §4.3, for the extension mechanism.
 
 ## `dimensions[]`
@@ -72,7 +70,7 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.1/extensions/datacube/schema.json
+  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/datacube/schema.json
 dimensions:
   - name: crop
     type: crop

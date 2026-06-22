@@ -51,6 +51,18 @@ STAC extension are versioned together. A single git tag
 (`v<MAJOR>.<MINOR>.<PATCH>`) covers all of them. `cdh_schema_version` in input
 YAML records matches the same tag.
 
+To cut a release (e.g. 0.0.1 → 0.0.2):
+
+```sh
+npm version --no-git-tag-version 0.0.2   # bumps package.json + lock
+npm run gen-schemas                       # regenerates the vocab schemas from it
+grep -rl 'v0.0.1' --include='*.json' --include='*.yaml' --include='*.md' . \
+  | grep -vE 'node_modules|validate-records|vocab/(domain|resource_type|commodity|geography)' \
+  | xargs sed -i 's/v0.0.1/v0.0.2/g'      # bumps the hand-authored files
+```
+
+Then commit, `npm test`, and publish a GitHub release tagged `v0.0.2`.
+
 ## Validation
 
 All validation runs through `npm`:
