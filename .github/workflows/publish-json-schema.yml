@@ -97,7 +97,7 @@ jobs:
 
       # Stable, unversioned mirror of the controlled vocabularies. The serialized
       # `themes[].scheme` URIs reference these durable URLs
-      # (…/metadata/vocab/<name>.json), so they must resolve independently of any
+      # (…/cdh-metadata-standard/vocab/<name>.json), so they must resolve independently of any
       # release tag. Gated to full releases only, so "latest" never points at a
       # pre-release — pre-releases are still testable via the versioned URL above.
       - name: Publish stable vocabularies (unversioned)

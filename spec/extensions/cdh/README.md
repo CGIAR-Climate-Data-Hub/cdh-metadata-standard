@@ -21,7 +21,7 @@ CGIAR Climate Data Hub governance: domain classification and use guidance.
   - Encoded as `cgiar-cdh:domain` (STAC) / `properties["cgiar-cdh:domain"]` (OGC
     Records).
   - Also expanded by the encoder into a `themes` entry under the
-    `https://cgiar-climate-data-hub.github.io/metadata/vocab/domain.json` scheme
+    `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/vocab/domain.json` scheme
     for linked-data consumers (see the [crosswalk](../../crosswalk.md)).
 
 ## `cdh.use_cases[]`
@@ -39,7 +39,7 @@ CGIAR Climate Data Hub governance: domain classification and use guidance.
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/extensions/cdh/schema.json
 cdh:
   domain: [agricultural-production] # primary first; rest are secondary
   use_cases:

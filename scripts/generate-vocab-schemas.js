@@ -19,7 +19,7 @@ const { version } = JSON.parse(
   await readFile(resolve(ROOT, "package.json"), "utf-8"),
 );
 const SCHEMA_BASE =
-  `https://cgiar-climate-data-hub.github.io/metadata/v${version}/schemas/vocab`;
+  `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v${version}/schemas/vocab`;
 
 const VOCABS = {
   domain: {

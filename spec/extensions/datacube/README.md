@@ -70,7 +70,7 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/metadata/v0.0.2/extensions/datacube/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/extensions/datacube/schema.json
 dimensions:
   - name: crop
     type: crop

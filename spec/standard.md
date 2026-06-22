@@ -298,7 +298,7 @@ value**, **Rules**, **Vocabulary** where applicable, and **Example**.
   - Linked items must include both `scheme` and `uri` to be expanded as themes;
     a `term`-only object is equivalent to a plain string.
   - Do not link entries to the
-    `https://cgiar-climate-data-hub.github.io/metadata/vocab/*` schemes - those
+    `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/vocab/*` schemes - those
     are reserved for encoder expansion from `cdh.domain` and `commodities`.
 
 Authoring YAML:
@@ -667,7 +667,7 @@ extension fields, not in `keywords` (see section 4.5).
 | `media_type`                                                  | IANA media types                                                                                                                                            |
 | `resource_type`                                               | `vocab/resource_type.json`                                                                                                                                  |
 | `cdh.domain`                                                  | `vocab/domain.json` (CDH closed set)                                                                                                                        |
-| `keywords[].scheme` (linked items)                            | Open - any resolvable controlled-vocabulary URI (e.g., AGROVOC, GEMET). Do not link entries to `https://cgiar-climate-data-hub.github.io/metadata/vocab/*`. |
+| `keywords[].scheme` (linked items)                            | Open - any resolvable controlled-vocabulary URI (e.g., AGROVOC, GEMET). Do not link entries to `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/vocab/*`. |
 | `commodities`                                                 | `vocab/commodity.json` (AGROVOC-mapped); encoded as themes                                                                                                  |
 | `climate.mip_era`                                             | `CMIP5`, `CMIP6` (informal)                                                                                                                                 |
 | `climate.scenarios`                                           | SSP / RCP labels, `historic` (informal)                                                                                                                     |
