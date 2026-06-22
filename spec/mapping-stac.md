@@ -157,8 +157,9 @@ Decision rules:
   per-Item resolutions). Required Collection metadata MUST NOT live only in
   `summaries`.
 - **Item-level field** when the value varies per Item and Item-level discovery
-  is needed (`datetime`, `bbox`, `geometry`, per-Item variables). **NOTE: This
-  is currently not implemented in the current yaml spec.**
+  is needed (`datetime`, `bbox`, `geometry`, per-Item variables). Items are
+  produced from a `data[]` entry carrying an `href_template` (see 5.2); broader
+  per-Item authoring beyond template expansion is not yet supported.
 - **Asset-level field** when the value describes a specific file or access
   endpoint (`file:size`, asset `roles`, `type`).
 
@@ -204,7 +205,26 @@ more access paths to the **same content**). Encode as:
 - The asset's `type` (media type) and `file:size` apply to all locations, since
   they are the same content.
 
-### 5.1 Asset roles
+### 5.2 Templated assets (`href_template`)
+
+A `data[]` entry that carries an `href_template` does **not** serialize as a
+single asset. The encoder treats each `locations[].url` as a base path, appends
+the filled template (`base + filled-template`), and emits **one STAC Item per
+token combination**:
+
+- Each `{token}` resolves against the `dimensions[]` entry of the same `name`;
+  the encoder iterates the cross-product of those dimensions' `values`.
+- For each combination, `locations[0]` + the filled template is the Item's
+  primary asset `href` (canonical); every additional `locations[]` entry + the
+  filled template becomes an Alternate Assets `alternate` entry on that asset
+  (so an HTTPS canonical + S3 alternate per slice fall out automatically).
+- The Item inherits the Collection's `dimensions` / `variables`; the token values
+  pin its position on those axes and SHOULD be emitted as Item properties so each
+  slice is independently searchable.
+- A `data[]` entry **without** `href_template` serializes as a single asset, per
+  5.1.
+
+### 5.3 Asset roles
 
 | Role          | Use                                                     |
 | ------------- | ------------------------------------------------------- |

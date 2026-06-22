@@ -167,6 +167,11 @@ data:
     locations:
       - url: ""
         title: "" # optional an access label (e.g., "HTTPS", "S3")
+    # Optional: split one dataset into many files. With href_template, the
+    # locations[].url above become base paths and this pattern is appended to
+    # each. Tokens in {braces} must match a dimensions[].name; the encoder emits
+    # one item per value combination. Omit for a single file.
+    # href_template: "name_{dim_a}_{dim_b}.tif"
     processing_steps: [] # conditional, if processing metadata exists / steps are needed
     description: ""
     nodata: ""

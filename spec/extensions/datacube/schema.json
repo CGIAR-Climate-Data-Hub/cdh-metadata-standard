@@ -46,7 +46,7 @@
             "type": "array",
             "items": { "type": "string" }
           },
-          "unit": { "$ref": "#/$defs/nullableString" },
+          "unit": { "$ref": "#/$defs/nullableString", "examples": ["t ha-1"] },
           "note": { "$ref": "#/$defs/nullableString" }
         }
       }

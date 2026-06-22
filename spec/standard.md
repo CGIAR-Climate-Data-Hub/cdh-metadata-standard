@@ -594,6 +594,18 @@ extension fields, not in `keywords` (see section 4.5).
     queried rather than downloaded (e.g., a Google Earth Engine collection) are
     separate assets - a separate `data[]` or `additional_assets[]` entry, not an
     extra location here.
+- **`href_template` (optional):** Use when one dataset is split into many files
+  along its dimensions (e.g., one COG per crop, production system, and variable).
+  When present, each `locations[].url` is treated as a base path and the template
+  is appended to it; the entry then serializes as one item per file instead of a
+  single asset. Each `{token}` must match a `dimensions[].name`, and that
+  dimension's `values` supply the substitution set; the encoder expands their
+  cross-product. Values are substituted verbatim, so they must equal the
+  file-name tokens exactly (put display labels in `classes`, not `values`), and
+  every combination is assumed to exist. `locations[0]` + the filled template is
+  each file's canonical
+  URL, and any additional `locations[]` become that file's alternates. Omit it
+  for a single file. See the authoring guide for an example.
 - **Rules:**
   - `locations[].url` must point to the described resource and should be stable.
   - For restricted resources, `locations[].url` should point to a landing page

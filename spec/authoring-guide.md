@@ -228,10 +228,56 @@ queried service belong in separate `data` / `additional_assets` entries.
 If you know the media type or file size, provide it. If either value is missing
 it will be added during CDH review.
 
+#### Generating many files with `href_template`
+
+When one dataset is split into many files along its dimensions - for example one
+COG per crop, production system, and variable - do **not** hand-list every file.
+Add an `href_template` to a single `data` entry and the encoder expands it into
+one discoverable item per file.
+
+With a template, `locations[].url` are treated as **base paths** and the
+template is appended to each:
+
+```yaml
+data:
+  - name: cogs
+    locations:
+      - url: https://data.cdh.org/mapspam/cogs/ # base; first is canonical (use HTTPS)
+        title: HTTPS
+      - url: s3://cdh/mapspam/cogs/ # mirror -> per-file alternate
+        title: S3
+    href_template: "mapspam_{crop}_{technology}_{variable}.tif"
+    media_type: "image/tiff; application=geotiff; profile=cloud-optimized"
+```
+
+How it expands:
+
+- Each `{token}` **must be the `name` of a declared `dimensions[]` entry**, and
+  that dimension's `values` list supplies the substitution set.
+- **The `values` are substituted verbatim**, so they must be the exact tokens
+  used in the file names (case-sensitive). Put the machine token in `values`
+  (the same code that appears in the data) and any human-readable name in
+  `classes` (`value` -> `label`). Do not put a display name in `values` and hope
+  it matches the file. If file names disagree with the data's codes, fix the
+  file names at the source rather than working around it here.
+- **Every token dimension must list its `values`** - a continuous axis like
+  `lat`/`lon` cannot be a token - and the template assumes **every combination
+  exists**. A missing file would produce a dead URL, so do not template a sparse
+  dataset blindly (a build-time existence check is the planned fix).
+- The canonical URL of each file is `locations[0]` + the filled template; every
+  additional location (e.g. the S3 mirror) becomes that file's alternate. So
+  each slice gets an HTTPS access path for discovery and an S3 path for compute,
+  automatically.
+- Without a template, `locations[].url` are full file URLs and the entry stays a
+  single asset (this is the default for a Zarr store, a single Parquet, etc.).
+
+Only the file-partitioning dimensions go in the template. Dimensions stored
+inside each file (e.g. bands of a multi-band COG) stay out of it.
+
 ## Add These Only When They Apply
 
-Some of these are CDH extension fields - `climate`, `commodities`, `classes`, and
-`variables`/`dimensions`. The CDH template already declares them in
+Some of these are CDH extension fields - `climate`, `commodities`, `classes`,
+and `variables`/`dimensions`. The CDH template already declares them in
 `extensions[]`, so you only fill the ones that apply. `spatial`, `temporal`,
 `processing`, and the asset fields are core and always available.
 
