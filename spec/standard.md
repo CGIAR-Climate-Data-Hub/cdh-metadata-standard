@@ -401,19 +401,19 @@ places) applies to any resource for broad discovery; `bbox`, `crs`,
 
 #### `spatial.bbox`
 
-- **Expected value:** STAC-aligned. A list of one or more bounding boxes in
-  WGS84 decimal degrees (EPSG:4326). Each bbox lists all axes of the
-  southwesterly-most corner first, then all axes of the northeasterly-most
-  corner:
+- **Expected value:** A single bounding box, or a list of boxes, in WGS84
+  decimal degrees (EPSG:4326). Each box lists all axes of the southwesterly-most
+  corner first, then all axes of the northeasterly-most corner:
 
   - 2D: `[west, south, east, north]` (= `[xmin, ymin, xmax, ymax]`).
   - 3D: `[west, south, min_z, east, north, max_z]` (=
     `[xmin, ymin, zmin, xmax, ymax, zmax]`); elevation in metres.
 
-  The first entry is the overall extent. Additional entries describe sub-regions
-  and should only be added when the union of those sub-regions would otherwise
-  leave a large uncovered area (e.g., Germany + Chile). Single-region datasets
-  should use exactly one entry.
+  Single-region datasets use one box, e.g. `[-180, -90, 180, 90]`. To describe
+  sub-regions, pass a list of boxes (`[[...], [...]]`) where the first is the
+  overall extent; add more only when their union would otherwise leave a large
+  uncovered area (e.g., Germany + Chile). Both forms serialize to STAC's
+  array-of-boxes.
 - **Rules:**
   - Coordinates MUST be in WGS84 regardless of `spatial.crs` (which describes
     the underlying assets, not the bbox).

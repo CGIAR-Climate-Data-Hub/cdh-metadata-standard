@@ -219,6 +219,73 @@
       ],
       "type": "object"
     },
+    "bboxCoords": {
+      "description": "A single bounding box: 2D [west, south, east, north], or 3D [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+      "oneOf": [
+        {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "prefixItems": [
+            {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            }
+          ],
+          "items": false
+        },
+        {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "prefixItems": [
+            {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            {
+              "type": "number",
+              "minimum": -90,
+              "maximum": 90
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "items": false
+        }
+      ]
+    },
     "dateOrBlank": {
       "description": "Date or date-time. Use YYYY-MM-DD (e.g. 2026-06-23) or an RFC 3339 date-time (e.g. 2026-06-23T00:00:00Z). May be left blank.",
       "examples": [
@@ -504,79 +571,24 @@
       "additionalProperties": false,
       "properties": {
         "bbox": {
-          "description": "Spatial extent. STAC-aligned: an array of one or more bounding boxes, each of length 2*n where n is the number of dimensions. Order is all axes of the southwesterly-most extent, followed by all axes of the northeasterly-most extent. So 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z] = [xmin, ymin, zmin, xmax, ymax, zmax]. Coordinates are WGS84 (EPSG:4326); elevation is in metres. The first entry is the overall spatial extent; additional entries describe sub-regions (use only when their union would otherwise leave a large uncovered area). Empty outer array means unspecified.",
-          "type": "array",
+          "description": "Spatial extent. A single bounding box, or an array of boxes when sub-regions are needed (the first is the overall extent; add more only when their union would otherwise leave a large uncovered area). 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres. Empty array means unspecified.",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/bboxCoords"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/bboxCoords"
+              }
+            }
+          ],
           "examples": [
+            [-180, -90, 180, 90],
             [
               [-180, -90, 180, 90]
             ]
-          ],
-          "items": {
-            "oneOf": [
-              {
-                "type": "array",
-                "minItems": 4,
-                "maxItems": 4,
-                "prefixItems": [
-                  {
-                    "type": "number",
-                    "minimum": -180,
-                    "maximum": 180
-                  },
-                  {
-                    "type": "number",
-                    "minimum": -90,
-                    "maximum": 90
-                  },
-                  {
-                    "type": "number",
-                    "minimum": -180,
-                    "maximum": 180
-                  },
-                  {
-                    "type": "number",
-                    "minimum": -90,
-                    "maximum": 90
-                  }
-                ],
-                "items": false
-              },
-              {
-                "type": "array",
-                "minItems": 6,
-                "maxItems": 6,
-                "prefixItems": [
-                  {
-                    "type": "number",
-                    "minimum": -180,
-                    "maximum": 180
-                  },
-                  {
-                    "type": "number",
-                    "minimum": -90,
-                    "maximum": 90
-                  },
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "type": "number",
-                    "minimum": -180,
-                    "maximum": 180
-                  },
-                  {
-                    "type": "number",
-                    "minimum": -90,
-                    "maximum": 90
-                  },
-                  {
-                    "type": "number"
-                  }
-                ],
-                "items": false
-              }
-            ]
-          }
+          ]
         },
         "crs": {
           "$ref": "#/$defs/nullableString",
