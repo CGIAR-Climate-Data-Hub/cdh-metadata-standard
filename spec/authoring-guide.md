@@ -20,7 +20,7 @@ Fill these first:
 - `cdh.domain`
 - `keywords`
 - `license`
-- `contact` with at least one `role: licensor`
+- `contact` with at least one `licensor` in `roles`
 - `citation`
 - `created`
 - `updated`
@@ -61,10 +61,12 @@ keywords: []
 license: ""
 contact:
   - organization: ""
-    role: licensor
+    roles: [licensor]
     email: ""
     url: ""
-citation: ""
+citation:
+  authors: []
+  date: ""
 created: # can be filled during CDH review
 updated: # can be filled during CDH review
 cdh:
@@ -176,7 +178,7 @@ These make the record reusable and citable.
 Prefer SPDX license identifiers such as `CC-BY-4.0`, `CC0-1.0`, or `MIT`.
 
 For `contact`, use either an organization contact or a person contact. Every
-record must include at least one contact with `role: licensor`; that contact is
+record must include at least one contact with `licensor` in `roles`; that contact is
 the licensing party for the resource.
 
 Organization contact:
@@ -184,7 +186,7 @@ Organization contact:
 ```yaml
 contact:
   - organization: Alliance of Bioversity International and CIAT
-    role: licensor
+    roles: [licensor]
     url: https://alliancebioversityciat.org/
 ```
 
@@ -194,13 +196,18 @@ Person contact:
 contact:
   - name: Jane Doe
     organization: CGIAR
-    role: processor
+    roles: [processor]
     email: jane.doe@example.org
 ```
 
 If `name` is used, include `organization` too. `organization` on its own is OK.
-Use only official STAC provider roles: `licensor`, `producer`, `processor`, or
-`host`.
+Roles: `licensor`, `producer`, `processor` (STAC provider roles), or
+`point-of-contact` (a contact point, mapped to the Contacts extension). `roles`
+is an array, so one contact may hold several.
+
+For `citation`, provide structured fields - `authors` and `date` (required),
+plus optional `title`, `publisher`, and `url`. You may omit `citation` when a
+`doi` is provided.
 
 ### `created` and `updated`
 

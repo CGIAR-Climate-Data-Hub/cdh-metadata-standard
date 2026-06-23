@@ -9,6 +9,7 @@
           "type": "string"
         },
         "file_size": {
+          "description": "File size in bytes (integer) or a human-readable string (e.g. 1.2 GB).",
           "anyOf": [
             {
               "type": "string"
@@ -23,6 +24,7 @@
           ]
         },
         "locations": {
+          "description": "Access paths to the same content; the first is canonical.",
           "items": {
             "$ref": "#/$defs/location"
           },
@@ -36,6 +38,7 @@
           "type": "string"
         },
         "roles": {
+          "description": "Asset roles, e.g. metadata, thumbnail, or describedby.",
           "items": {
             "type": "string"
           },
@@ -125,27 +128,25 @@
         "organization": {
           "type": "string"
         },
-        "role": {
-          "oneOf": [
-            {
-              "const": ""
-            },
-            {
-              "enum": [
-                "licensor",
-                "producer",
-                "processor",
-                "host"
-              ]
-            }
-          ]
+        "roles": {
+          "description": "Roles this contact holds (one or more).",
+          "type": "array",
+          "items": {
+            "enum": [
+              "licensor",
+              "producer",
+              "processor",
+              "point-of-contact"
+            ]
+          },
+          "uniqueItems": true
         },
         "url": {
           "$ref": "#/$defs/nullableString"
         }
       },
       "required": [
-        "role"
+        "roles"
       ],
       "type": "object"
     },
@@ -156,6 +157,7 @@
           "type": "string"
         },
         "file_size": {
+          "description": "File size in bytes (integer) or a human-readable string (e.g. 1.2 GB).",
           "anyOf": [
             {
               "type": "string"
@@ -170,6 +172,7 @@
           ]
         },
         "locations": {
+          "description": "Access paths to the same content; the first is canonical.",
           "items": {
             "$ref": "#/$defs/location"
           },
@@ -190,6 +193,7 @@
           ]
         },
         "nodata": {
+          "description": "No-data / fill value for the asset.",
           "anyOf": [
             {
               "type": "string"
@@ -203,6 +207,7 @@
           ]
         },
         "processing_steps": {
+          "description": "ids of processing[] steps that produced this asset.",
           "items": {
             "type": "string"
           },
@@ -215,6 +220,11 @@
       "type": "object"
     },
     "dateOrBlank": {
+      "description": "Date or date-time. Use YYYY-MM-DD (e.g. 2026-06-23) or an RFC 3339 date-time (e.g. 2026-06-23T00:00:00Z). May be left blank.",
+      "examples": [
+        "2026-06-23",
+        "2026-06-23T00:00:00Z"
+      ],
       "anyOf": [
         {
           "const": ""
@@ -232,7 +242,26 @@
         }
       ]
     },
+    "doi": {
+      "description": "Bare DOI (not a URL).",
+      "oneOf": [
+        {
+          "const": ""
+        },
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "pattern": "^10\\.\\d{2,}(\\.\\d+)*/\\S+$"
+        }
+      ],
+      "examples": [
+        "10.7910/DVN/SWPENT"
+      ]
+    },
     "id": {
+      "description": "Short, stable, URL-safe identifier (lowercase letters, digits, hyphens).",
       "oneOf": [
         {
           "const": ""
@@ -253,7 +282,8 @@
           "type": "string"
         },
         "rel": {
-          "type": "string"
+          "type": "string",
+          "description": "Link relation type, e.g. cite-as or describedby."
         },
         "url": {
           "$ref": "#/$defs/nullableString"
@@ -265,7 +295,8 @@
       "additionalProperties": false,
       "properties": {
         "title": {
-          "type": "string"
+          "type": "string",
+          "description": "Optional access label, e.g. HTTPS or S3."
         },
         "url": {
           "$ref": "#/$defs/nullableString"
@@ -277,6 +308,7 @@
       "type": "object"
     },
     "mediaType": {
+      "description": "Media type (IANA), optionally with format parameters such as profile or version.",
       "oneOf": [
         {
           "const": ""
@@ -287,7 +319,14 @@
         }
       ],
       "examples": [
-        "application/vnd.apache.parquet"
+        "image/tiff; application=geotiff; profile=cloud-optimized",
+        "image/tiff; application=geotiff",
+        "application/vnd.zarr; version=3",
+        "application/netcdf",
+        "application/vnd.apache.parquet",
+        "application/geopackage+sqlite3",
+        "application/json",
+        "text/csv"
       ]
     },
     "nameUrl": {
@@ -326,12 +365,15 @@
       "properties": {
         "code": {
           "additionalProperties": false,
+          "description": "Software or code that produced this step's output. Omit when none is published.",
           "properties": {
             "url": {
-              "$ref": "#/$defs/nullableString"
+              "$ref": "#/$defs/nullableString",
+              "description": "Link to the production code or repository."
             },
             "version": {
-              "$ref": "#/$defs/nullableString"
+              "$ref": "#/$defs/nullableString",
+              "description": "Version, tag, or commit of the code."
             }
           },
           "type": "object"
@@ -340,6 +382,7 @@
           "$ref": "#/$defs/dateOrBlank"
         },
         "derived_from": {
+          "description": "Upstream sources this step derived from - the data (e.g. a Zenodo/Dataverse landing page), not code.",
           "items": {
             "additionalProperties": false,
             "properties": {
@@ -355,25 +398,61 @@
           "type": "array"
         },
         "description": {
-          "$ref": "#/$defs/nullableString"
+          "$ref": "#/$defs/nullableString",
+          "description": "What this step did."
         },
         "id": {
+          "$ref": "#/$defs/nullableString",
+          "description": "Step identifier; one step must use id: source for the original generation."
+        }
+      },
+      "type": "object"
+    },
+    "citation": {
+      "additionalProperties": false,
+      "description": "Structured citation for the resource.",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Cite-as title; may differ from the record's top-level title."
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Names in citation order."
+        },
+        "date": {
+          "$ref": "#/$defs/nullableString",
+          "description": "Publication date or year, e.g. 2024 or 2024-07-15.",
+          "examples": [
+            "2024",
+            "2024-07-15"
+          ]
+        },
+        "publisher": {
+          "$ref": "#/$defs/nullableString",
+          "description": "Publisher or venue: the data publisher/repository for datasets, or the journal for articles."
+        },
+        "url": {
           "$ref": "#/$defs/nullableString"
         }
       },
+      "required": [
+        "authors",
+        "date"
+      ],
       "type": "object"
     },
     "publication": {
       "additionalProperties": false,
       "properties": {
         "citation": {
-          "type": "string"
+          "$ref": "#/$defs/citation"
         },
         "doi": {
-          "$ref": "#/$defs/nullableString",
-          "examples": [
-            "10.7910/DVN/SWPENT"
-          ]
+          "$ref": "#/$defs/doi"
         }
       },
       "type": "object"
@@ -382,15 +461,19 @@
       "additionalProperties": false,
       "properties": {
         "label": {
-          "$ref": "#/$defs/nullableString"
+          "$ref": "#/$defs/nullableString",
+          "description": "Human-readable resolution, e.g. 5 arc-minutes or Kenya counties."
         },
         "note": {
-          "$ref": "#/$defs/nullableString"
+          "$ref": "#/$defs/nullableString",
+          "description": "Short spatial interpretation note."
         },
         "reference_system": {
-          "$ref": "#/$defs/nullableString"
+          "$ref": "#/$defs/nullableString",
+          "description": "For point/polygon types, the system defining the reporting units (e.g. GAUL 2015, GADM)."
         },
         "type": {
+          "description": "Resolution type: xy (regular grid), x, y, point, or polygon.",
           "oneOf": [
             {
               "const": ""
@@ -407,10 +490,12 @@
           ]
         },
         "unit": {
-          "$ref": "#/$defs/nullableString"
+          "$ref": "#/$defs/nullableString",
+          "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM. Non-grid spatial units may use clear labels such as admin-level."
         },
         "value": {
-          "$ref": "#/$defs/numberOrStringOrNull"
+          "$ref": "#/$defs/numberOrStringOrNull",
+          "description": "Numeric resolution value (grid spacing, or admin level)."
         }
       },
       "type": "object"
@@ -494,9 +579,14 @@
           }
         },
         "crs": {
-          "$ref": "#/$defs/nullableString"
+          "$ref": "#/$defs/nullableString",
+          "description": "Coordinate reference system of the data: EPSG code, CRS URI, or PROJ string.",
+          "examples": [
+            "EPSG:4326"
+          ]
         },
         "geography": {
+          "description": "Named places for discovery (vocab/geography.json ids, UN M49).",
           "items": {
             "$ref": "vocab/geography.schema.json"
           },
@@ -504,9 +594,11 @@
           "uniqueItems": true
         },
         "geometry_column": {
-          "$ref": "#/$defs/nullableString"
+          "$ref": "#/$defs/nullableString",
+          "description": "Name of the geometry column, for vector tables."
         },
         "resolution": {
+          "description": "Spatial resolution / spacing entries.",
           "items": {
             "$ref": "#/$defs/spatialResolution"
           },
@@ -519,15 +611,23 @@
       "additionalProperties": false,
       "properties": {
         "note": {
-          "$ref": "#/$defs/nullableString"
+          "$ref": "#/$defs/nullableString",
+          "description": "Time-specific interpretation note, e.g. the aggregation method."
         },
         "step": {
-          "$ref": "#/$defs/nullableString"
+          "$ref": "#/$defs/nullableString",
+          "description": "ISO 8601 duration of one step.",
+          "examples": [
+            "P1D",
+            "P1M"
+          ]
         },
         "unit": {
-          "$ref": "#/$defs/nullableString"
+          "$ref": "#/$defs/nullableString",
+          "description": "Time unit of the data, e.g. daily or monthly."
         },
         "values": {
+          "description": "Named or easily interpretable values, e.g. 1-12 for months.",
           "items": {
             "anyOf": [
               {
@@ -574,12 +674,14 @@
   "description": "JSON Schema for validating CDH metadata input YAML records before serialization to STAC or OGC API Records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
   "properties": {
     "additional_assets": {
+      "description": "Sidecar or auxiliary assets, e.g. metadata files or thumbnails.",
       "items": {
         "$ref": "#/$defs/additionalAsset"
       },
       "type": "array"
     },
     "additional_links": {
+      "description": "Related links: citation targets, services, or related resources.",
       "items": {
         "$ref": "#/$defs/link"
       },
@@ -591,7 +693,7 @@
       "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
     },
     "citation": {
-      "type": "string"
+      "$ref": "#/$defs/citation"
     },
     "contact": {
       "items": {
@@ -601,20 +703,24 @@
       "contains": {
         "type": "object",
         "properties": {
-          "role": {
-            "const": "licensor"
+          "roles": {
+            "contains": {
+              "const": "licensor"
+            }
           }
         },
         "required": [
-          "role"
+          "roles"
         ]
       },
       "type": "array"
     },
     "created": {
-      "$ref": "#/$defs/dateOrBlank"
+      "$ref": "#/$defs/dateOrBlank",
+      "description": "Date the record was first published to the Hub - the metadata record, not the data file. May be left blank in drafts; populated during CDH review."
     },
     "data": {
+      "description": "Data assets for the resource; at least one entry.",
       "items": {
         "$ref": "#/$defs/dataAsset"
       },
@@ -622,13 +728,11 @@
       "type": "array"
     },
     "description": {
-      "type": "string"
+      "type": "string",
+      "description": "Canonical human- and AI-readable summary of the resource."
     },
     "doi": {
-      "$ref": "#/$defs/nullableString",
-      "examples": [
-        "10.7910/DVN/SWPENT"
-      ]
+      "$ref": "#/$defs/doi"
     },
     "extensions": {
       "description": "Pinned URLs of the CDH extension schemas this record uses.",
@@ -640,6 +744,7 @@
       "uniqueItems": true
     },
     "funding": {
+      "description": "Funding sources for the resource.",
       "items": {
         "$ref": "#/$defs/nameUrl"
       },
@@ -689,17 +794,23 @@
     },
     "license": {
       "type": "string",
+      "description": "License of the data. SPDX identifier preferred.",
       "examples": [
-        "CC-BY-SA-4.0"
+        "CC-BY-4.0",
+        "CC-BY-SA-4.0",
+        "CC0-1.0"
       ]
     },
     "note": {
-      "$ref": "#/$defs/nullableString"
+      "$ref": "#/$defs/nullableString",
+      "description": "Caveats, warnings, or interpretation-critical remarks not captured in description."
     },
     "previous_version": {
-      "$ref": "#/$defs/nullableString"
+      "$ref": "#/$defs/nullableString",
+      "description": "id of the predecessor record, when this supersedes an earlier version."
     },
     "processing": {
+      "description": "Ordered processing/provenance steps; at least one must have id: source.",
       "contains": {
         "properties": {
           "id": {
@@ -718,12 +829,14 @@
       "type": "array"
     },
     "related_publications": {
+      "description": "Related works such as papers or reports.",
       "items": {
         "$ref": "#/$defs/publication"
       },
       "type": "array"
     },
     "resource_type": {
+      "description": "Kind of resource: dataset, document, tool, or ai-skill.",
       "oneOf": [
         {
           "const": ""
@@ -740,13 +853,20 @@
       "$ref": "#/$defs/temporal"
     },
     "title": {
-      "type": "string"
+      "type": "string",
+      "description": "Human-readable title of the resource."
     },
     "updated": {
-      "$ref": "#/$defs/dateOrBlank"
+      "$ref": "#/$defs/dateOrBlank",
+      "description": "Date the record was last revised - the metadata record, not the data file. May be left blank in drafts; populated during CDH review."
     },
     "version": {
-      "$ref": "#/$defs/nullableString"
+      "$ref": "#/$defs/nullableString",
+      "description": "Version of the resource, when versioned.",
+      "examples": [
+        "v1.0",
+        "2.0-release-2"
+      ]
     }
   },
   "required": [
@@ -758,10 +878,27 @@
     "resource_type",
     "keywords",
     "contact",
-    "citation",
     "created",
     "updated",
     "data"
+  ],
+  "anyOf": [
+    {
+      "required": [
+        "citation"
+      ]
+    },
+    {
+      "properties": {
+        "doi": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "doi"
+      ]
+    }
   ],
   "title": "Climate Data Hub Metadata Input Schema",
   "type": "object"
