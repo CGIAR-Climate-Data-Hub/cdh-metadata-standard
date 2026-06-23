@@ -6,45 +6,48 @@
   </head>
   <body>
     <script>
-      // Lists version directories on the gh-pages branch via the GitHub API at
-      // view time (no build step, always current).
+      // Browsable directory listing for the gh-pages branch, fetched from the
+      // GitHub API at view time (no build step, always current). The URL hash
+      // is the "current folder" — clicking a folder navigates to a new page
+      // (and the browser Back button just works).
       (async () => {
-        // ponytail: derive owner/repo from the Pages URL so a repo rename
-        // never breaks this page again. (Project page: /<repo>/…)
+        // Derive owner/repo from the Pages URL so a repo rename never breaks
+        // this page. (Project page: /<repo>/…)
         const repo =
           location.hostname.split(".")[0] + "/" + location.pathname.split("/")[1];
         const res = await fetch(
           `https://api.github.com/repos/${repo}/git/trees/gh-pages?recursive=1`,
         );
         const data = await res.json();
+        const paths = (data.tree || [])
+          .filter((f) => f.type === "blob")
+          .map((f) => f.path)
+          .filter((p) => !p.split("/").pop().startsWith(".")); // hide .nojekyll etc.
 
-        // Build a nested folder structure from the flat path list, then render
-        // it as a browsable file tree.
-        const root = {};
-        for (const f of data.tree || []) {
-          if (f.type !== "blob") continue;
-          const parts = f.path.split("/");
-          if (parts.at(-1).startsWith(".")) continue; // hide .nojekyll etc.
-          let node = root;
-          for (const p of parts.slice(0, -1)) node = node[p] ??= {};
-          (node._files ??= []).push({ name: parts.at(-1), path: f.path });
-        }
+        const render = () => {
+          const cur = decodeURIComponent(location.hash.slice(1));
+          const base = cur ? cur + "/" : "";
+          const here = paths
+            .filter((p) => p.startsWith(base))
+            .map((p) => p.slice(base.length));
+          const dirs = [...new Set(here.filter((r) => r.includes("/")).map((r) => r.split("/")[0]))]
+            .sort((a, b) => b.localeCompare(a, undefined, { numeric: true })); // newest version first
+          const files = here.filter((r) => !r.includes("/")).sort();
 
-        // ponytail: native <details> folders — no tree library, no build step.
-        const render = (node) => {
-          const dirs = Object.keys(node)
-            .filter((k) => k !== "_files")
-            .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
-          let html = "<ul>";
-          for (const d of dirs)
-            html += `<li><details><summary>${d}/</summary>${render(node[d])}</details></li>`;
-          for (const f of (node._files || []).sort((a, b) => a.name.localeCompare(b.name)))
-            html += `<li><a href="${f.path}">${f.name}</a></li>`;
-          return html + "</ul>";
+          const crumbs = ["root", ...(cur ? cur.split("/") : [])]
+            .map((s, i, a) => `<a href="#${encodeURIComponent(a.slice(1, i + 1).join("/"))}">${s}</a>`)
+            .join(" / ");
+
+          const links = [
+            ...dirs.map((d) => `<a href="#${encodeURIComponent(base + d)}">${d}/</a>`),
+            ...files.map((f) => `<a href="${base + f}">${f}</a>`),
+          ];
+          document.body.innerHTML =
+            `<h1>CDH Metadata Standard</h1><p>${crumbs}</p><ul><li>${links.join("</li><li>")}</li></ul>`;
         };
 
-        document.body.innerHTML =
-          "<h1>CDH Metadata Standard schemas & vocabularies</h1>" + render(root);
+        addEventListener("hashchange", render);
+        render();
       })();
     </script>
   </body>
