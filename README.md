@@ -51,17 +51,21 @@ STAC extension are versioned together. A single git tag
 (`v<MAJOR>.<MINOR>.<PATCH>`) covers all of them. `cdh_schema_version` in input
 YAML records matches the same tag.
 
-To cut a release (e.g. 0.0.1 → 0.0.2):
+To cut a release, set `<PREV>` to the current version and `<NEW>` to the next:
 
 ```sh
-npm version --no-git-tag-version 0.0.2   # bumps package.json + lock
-npm run gen-schemas                       # regenerates the vocab schemas from it
-grep -rl 'v0.0.1' --include='*.json' --include='*.yaml' --include='*.md' . \
-  | grep -vE 'node_modules|validate-records|vocab/(domain|resource_type|commodity|geography)' \
-  | xargs sed -i 's/v0.0.1/v0.0.2/g'      # bumps the hand-authored files
+npm version --no-git-tag-version <NEW>     # bumps package.json + lock
+npm run gen-schemas                         # regenerates the vocab schemas
+
+# Bump the version pinned in hand-authored files (schema $ids, extension URLs,
+# docs, templates, examples); unrelated code versions are left untouched.
+grep -rl "/v<PREV>/" spec templates examples README.md \
+  | xargs sed -i "s|/v<PREV>/|/v<NEW>/|g"
+sed -i 's/cdh_schema_version: "v<PREV>"/cdh_schema_version: "v<NEW>"/' \
+  templates/*.yaml examples/*/*.yaml
 ```
 
-Then commit, `npm test`, and publish a GitHub release tagged `v0.0.2`.
+Then commit, run `npm test`, and publish a GitHub release tagged `v<NEW>`.
 
 ## Validation
 
