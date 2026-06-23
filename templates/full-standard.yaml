@@ -27,24 +27,34 @@ keywords: []
 note: > # Optional
   ""
 
-# Contact Metadata (required). At least one contact MUST use role: licensor.
+# Contact Metadata (required). At least one contact MUST list licensor in roles.
 contact:
   - name: "" # optional when organization is present; required for person-level contacts
-    role: licensor # one of: licensor | producer | processor | host
+    roles: [licensor] # any of: licensor | producer | processor | point-of-contact
     email: ""
     organization: "" # required when name is present; may be used on its own
     url: ""
   - name: ""
-    role: ""
+    roles: []
     email: ""
     organization: ""
     url: ""
 
-# Citation Metadata
-citation: "" # required
-doi: "" # conditional - if doi exists
+# Citation Metadata (citation required unless a doi is provided)
+citation:
+  title: "" # optional - cite-as title; may differ from the top-level title
+  authors: [] # required - names in citation order
+  date: "" # required - publication date or year
+  publisher: "" # optional - data publisher/repository, or journal for articles
+  url: "" # optional
+doi: "" # conditional - if doi exists (a doi waives the citation requirement)
 related_publications: # optional
-  - citation: ""
+  - citation:
+      title: ""
+      authors: []
+      date: ""
+      publisher: ""
+      url: ""
     doi: ""
 
 # metadata tracking (required/auto-populated)
@@ -64,7 +74,7 @@ funding:
 
 # Spatial (conditional - if data has a spatial aspect/will be in STAC)
 spatial:
-  bbox: [] # [xmin, ymin, xmax, ymax]
+  bbox: [] # list of boxes: [[xmin, ymin, xmax, ymax]] - first entry is the overall extent
   geography: [] # vocab/geography.json ids (UN M49), e.g. [world] or [kenya, uganda]
   crs: ""
   geometry_column: "" # conditional - if spatial vector with a geometry column exists
