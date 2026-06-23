@@ -17,25 +17,34 @@
           `https://api.github.com/repos/${repo}/git/trees/gh-pages?recursive=1`,
         );
         const data = await res.json();
-        const tree = data.tree || [];
-        const versions = tree
-          .filter((f) => f.type === "tree" && /^v\d+\.\d+\.\d+$/.test(f.path))
-          .map((f) => f.path)
-          .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
 
-        // Entry schema was renamed (metadata-input → core); link whichever
-        // this version actually published.
-        const paths = new Set(tree.map((f) => f.path));
-        const entry = (v) =>
-          [`${v}/schemas/core.schema.json`, `${v}/schemas/metadata-input.schema.json`]
-            .find((p) => paths.has(p)) || v;
-
-        let html = "<h1>CDH Metadata Standard schemas & vocabularies</h1><ul>";
-        for (const v of versions) {
-          html += `<li><a href="${entry(v)}">${v}</a></li>`;
+        // Build a nested folder structure from the flat path list, then render
+        // it as a browsable file tree.
+        const root = {};
+        for (const f of data.tree || []) {
+          if (f.type !== "blob") continue;
+          const parts = f.path.split("/");
+          if (parts.at(-1).startsWith(".")) continue; // hide .nojekyll etc.
+          let node = root;
+          for (const p of parts.slice(0, -1)) node = node[p] ??= {};
+          (node._files ??= []).push({ name: parts.at(-1), path: f.path });
         }
-        html += "</ul>";
-        document.body.innerHTML = html;
+
+        // ponytail: native <details> folders — no tree library, no build step.
+        const render = (node) => {
+          const dirs = Object.keys(node)
+            .filter((k) => k !== "_files")
+            .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+          let html = "<ul>";
+          for (const d of dirs)
+            html += `<li><details><summary>${d}/</summary>${render(node[d])}</details></li>`;
+          for (const f of (node._files || []).sort((a, b) => a.name.localeCompare(b.name)))
+            html += `<li><a href="${f.path}">${f.name}</a></li>`;
+          return html + "</ul>";
+        };
+
+        document.body.innerHTML =
+          "<h1>CDH Metadata Standard schemas & vocabularies</h1>" + render(root);
       })();
     </script>
   </body>
