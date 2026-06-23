@@ -6,6 +6,7 @@
   "type": "object",
   "properties": {
     "commodities": {
+      "description": "Agricultural commodities described by the record; CDH vocabulary (vocab/commodity.json).",
       "type": "array",
       "uniqueItems": true,
       "items": { "$ref": "../../schemas/vocab/commodity.schema.json" }
