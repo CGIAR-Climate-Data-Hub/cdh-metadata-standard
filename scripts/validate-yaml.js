@@ -19,9 +19,7 @@ import { loadAllSchemas, newAjv, rel, ROOT } from "./_ajv.js";
 
 // Version-tagged $id matches the schema's published gh-pages URL. The version
 // comes from package.json so a release bump flows through automatically.
-const { version } = JSON.parse(
-  await readFile(resolve(ROOT, "package.json"), "utf-8"),
-);
+const { version } = JSON.parse(await readFile(resolve(ROOT, "package.json"), "utf-8"));
 const BASE = `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v${version}`;
 const CORE_ID = `${BASE}/schemas/core.schema.json`;
 const CDH_EXT_URL = `${BASE}/extensions/cdh/schema.json`;
@@ -75,9 +73,8 @@ async function defaultTargets() {
 }
 
 const argPaths = process.argv.slice(2);
-const files = argPaths.length === 0
-  ? await defaultTargets()
-  : (await Promise.all(argPaths.map(expand))).flat();
+const files =
+  argPaths.length === 0 ? await defaultTargets() : (await Promise.all(argPaths.map(expand))).flat();
 
 if (files.length === 0) {
   console.error("error: no YAML files to validate");
@@ -115,7 +112,9 @@ let failures = 0;
 for (const file of files) {
   let doc;
   try {
-    doc = yaml.load(await readFile(file, "utf-8"));
+    // Parse as YAML 1.2 / JSON-style: bare dates stay strings (matching the
+    // editor and the JSON output) instead of becoming JS Date objects.
+    doc = yaml.load(await readFile(file, "utf-8"), { schema: yaml.CORE_SCHEMA });
   } catch (err) {
     failures += 1;
     console.error(`FAIL ${rel(file)}: YAML parse error: ${err.message}`);
