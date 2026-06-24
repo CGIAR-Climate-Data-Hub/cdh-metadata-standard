@@ -14,7 +14,9 @@
   "required": ["cdh", "extensions"],
   "properties": {
     "extensions": {
-      "contains": { "const": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/cdh/schema.json" }
+      "contains": {
+        "const": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/cdh/schema.json"
+      }
     }
   },
   "unevaluatedProperties": false

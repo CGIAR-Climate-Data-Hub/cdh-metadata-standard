@@ -24,9 +24,18 @@
         "additionalProperties": false,
         "properties": {
           "name": { "type": "string" },
-          "description": { "type": "string", "description": "What the dimension is; define coded values here, or via reference_system or a sidecar." },
-          "type": { "type": "string", "description": "Dimension type: spatial, temporal, bands, or a domain axis (e.g. crop, scenario)." },
-          "reference_system": { "$ref": "#/$defs/nullableString", "description": "Controlled-vocabulary URI or label defining the dimension's values, when coded." },
+          "description": {
+            "type": "string",
+            "description": "What the dimension is; define coded values here, or via reference_system or a sidecar."
+          },
+          "type": {
+            "type": "string",
+            "description": "Dimension type: spatial, temporal, bands, or a domain axis (e.g. crop, scenario)."
+          },
+          "reference_system": {
+            "$ref": "#/$defs/nullableString",
+            "description": "Controlled-vocabulary URI or label defining the dimension's values, when coded."
+          },
           "values": {
             "description": "Allowed values along the dimension.",
             "type": "array",
@@ -43,15 +52,28 @@
         "additionalProperties": false,
         "properties": {
           "name": { "type": "string" },
-          "description": { "type": "string", "description": "Stable definition and reading guidance for the variable." },
-          "data_type": { "$ref": "#/$defs/nullableString", "description": "Data type, numpy-style (e.g. float32, int16)." },
+          "description": {
+            "type": "string",
+            "description": "Stable definition and reading guidance for the variable."
+          },
+          "data_type": {
+            "$ref": "#/$defs/nullableString",
+            "description": "Data type, numpy-style (e.g. float32, int16)."
+          },
           "dimensions": {
             "description": "Axes this variable spans; omit when it spans all declared dimensions.",
             "type": "array",
             "items": { "type": "string" }
           },
-          "unit": { "$ref": "#/$defs/nullableString", "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM.", "examples": ["t ha-1", "{head}/km2"] },
-          "note": { "$ref": "#/$defs/nullableString", "description": "Variable-specific caveats, limitations, or warnings." }
+          "unit": {
+            "$ref": "#/$defs/nullableString",
+            "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM.",
+            "examples": ["t ha-1", "{head}/km2"]
+          },
+          "note": {
+            "$ref": "#/$defs/nullableString",
+            "description": "Variable-specific caveats, limitations, or warnings."
+          }
         }
       }
     }

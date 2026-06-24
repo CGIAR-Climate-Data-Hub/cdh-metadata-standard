@@ -43,10 +43,7 @@ async function walk(dir) {
 }
 
 export async function findSchemaFiles() {
-  const dirs = [
-    resolve(ROOT, "spec/schemas"),
-    resolve(ROOT, "spec/extensions"),
-  ];
+  const dirs = [resolve(ROOT, "spec/schemas"), resolve(ROOT, "spec/extensions")];
   const out = [];
   for (const dir of dirs) {
     try {

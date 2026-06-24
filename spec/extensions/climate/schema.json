@@ -39,8 +39,14 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "method": { "$ref": "#/$defs/nullableString", "description": "Bias-adjustment method." },
-            "reference_dataset": { "$ref": "#/$defs/nullableString", "description": "Reference dataset used for bias adjustment." }
+            "method": {
+              "$ref": "#/$defs/nullableString",
+              "description": "Bias-adjustment method."
+            },
+            "reference_dataset": {
+              "$ref": "#/$defs/nullableString",
+              "description": "Reference dataset used for bias adjustment."
+            }
           }
         },
         "downscaling": {
@@ -48,8 +54,14 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "method": { "$ref": "#/$defs/nullableString", "description": "Downscaling method." },
-            "resolution": { "$ref": "#/$defs/numberOrStringOrNull", "description": "Target resolution of the downscaling." }
+            "method": {
+              "$ref": "#/$defs/nullableString",
+              "description": "Downscaling method."
+            },
+            "resolution": {
+              "$ref": "#/$defs/numberOrStringOrNull",
+              "description": "Target resolution of the downscaling."
+            }
           }
         },
         "mip_era": {
