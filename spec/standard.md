@@ -339,17 +339,19 @@ keywords:
 
 #### `contact[]`
 
-- **Requirement:** Required. At least one contact MUST have `role: licensor`.
-- **Expected value:** List of objects with `name`, `role`, `email`,
+- **Requirement:** Required. At least one contact MUST list `licensor` in `roles`.
+- **Expected value:** List of objects with `name`, `roles`, `email`,
   `organization`, `url`.
-- **Vocabulary for `role`:** Official STAC provider roles only - `licensor`,
-  `producer`, `processor`, `host`.
+- **Vocabulary for `roles`:** `licensor`, `producer`, `processor`, and
+  `point-of-contact`. The first three are STAC provider roles; `point-of-contact`
+  maps to the Contacts extension instead. `roles` is an array, so one contact may
+  hold several (e.g., `[producer, licensor]`).
 - **Rules:**
   - Must identify at least one responsible party.
-  - Must identify at least one licensing party using `role: licensor`.
+  - Must identify at least one licensing party by including `licensor` in `roles`.
   - A `licensor` contact is the party that holds or administers the right to
     license the resource.
-  - Each contact MUST include `role`.
+  - Each contact MUST include `roles`.
   - Each contact MUST include either `organization` or `name`.
   - Use `organization` on its own for organization-level contacts when no
     specific person should be named.
@@ -360,22 +362,31 @@ keywords:
 
 #### `citation`
 
-- **Requirement:** Required
-- **Definition:** Preferred plain-text citation for the resource.
+- **Requirement:** Required unless a `doi` is provided (a DOI resolves to full
+  citation metadata).
+- **Definition:** Structured citation for the resource.
+- **Expected value:** Object with `authors` and `date` (both required), and
+  optional `title`, `publisher`, `url`.
 - **Rules:**
   - Cite the resource described by the record, not only a source dataset.
-  - Should include title, organization or author, year, version, and persistent
-    identifier when available.
+  - `authors` is an ordered list of name strings.
+  - `title` defaults to the record's top-level `title`; set it only when the
+    cite-as title differs.
+  - `publisher` holds the data publisher/repository for datasets, or the journal
+    for articles.
 
 #### `doi`
 
-- **Requirement:** Conditional. Required when a DOI exists.
-- **Expected value:** DOI URL (preferred) or DOI string.
+- **Requirement:** Conditional. Required when a DOI exists; a DOI also satisfies
+  the citation requirement on its own.
+- **Expected value:** Bare DOI (e.g. `10.7910/DVN/SWPENT`), not a URL. The
+  resolvable `https://doi.org/…` link is built downstream.
 
 #### `related_publications[]`
 
 - **Requirement:** Optional
-- **Expected value:** List of `{ citation, doi }`.
+- **Expected value:** List of `{ citation, doi }`, where `citation` is the same
+  structured object. A `doi` alone is sufficient for an entry.
 
 #### `funding[]`
 
@@ -390,19 +401,19 @@ places) applies to any resource for broad discovery; `bbox`, `crs`,
 
 #### `spatial.bbox`
 
-- **Expected value:** STAC-aligned. A list of one or more bounding boxes in
-  WGS84 decimal degrees (EPSG:4326). Each bbox lists all axes of the
-  southwesterly-most corner first, then all axes of the northeasterly-most
-  corner:
+- **Expected value:** A single bounding box, or a list of boxes, in WGS84
+  decimal degrees (EPSG:4326). Each box lists all axes of the southwesterly-most
+  corner first, then all axes of the northeasterly-most corner:
 
   - 2D: `[west, south, east, north]` (= `[xmin, ymin, xmax, ymax]`).
   - 3D: `[west, south, min_z, east, north, max_z]` (=
     `[xmin, ymin, zmin, xmax, ymax, zmax]`); elevation in metres.
 
-  The first entry is the overall extent. Additional entries describe sub-regions
-  and should only be added when the union of those sub-regions would otherwise
-  leave a large uncovered area (e.g., Germany + Chile). Single-region datasets
-  should use exactly one entry.
+  Single-region datasets use one box, e.g. `[-180, -90, 180, 90]`. To describe
+  sub-regions, pass a list of boxes (`[[...], [...]]`) where the first is the
+  overall extent; add more only when their union would otherwise leave a large
+  uncovered area (e.g., Germany + Chile). Both forms serialize to STAC's
+  array-of-boxes.
 - **Rules:**
   - Coordinates MUST be in WGS84 regardless of `spatial.crs` (which describes
     the underlying assets, not the bbox).
@@ -655,23 +666,23 @@ extension fields, not in `keywords` (see section 4.5).
 
 ## 7. Controlled Vocabularies Summary
 
-| Field                                                         | Vocabulary                                                                                                                                                  |
-| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `license`                                                     | SPDX License List                                                                                                                                           |
-| dates (`created`, `updated`, `temporal.*`, `processing.date`) | ISO 8601 / RFC 3339                                                                                                                                         |
-| `spatial.crs`                                                 | EPSG codes                                                                                                                                                  |
-| `spatial.geography`                                           | `vocab/geography.json` (UN M49; regions + countries)                                                                                                        |
-| `variables[].unit`, grid `spatial.resolution[].unit`          | UDUNITS-2 where practical; non-grid spatial units may use clear labels such as `admin-level`                                                                |
-| `variables[].name` (climate)                                  | CF Standard Names (where practical)                                                                                                                         |
-| `contact[].role`                                              | Official STAC provider roles: `licensor`, `producer`, `processor`, `host`                                                                                   |
-| `media_type`                                                  | IANA media types                                                                                                                                            |
-| `resource_type`                                               | `vocab/resource_type.json`                                                                                                                                  |
-| `cdh.domain`                                                  | `vocab/domain.json` (CDH closed set)                                                                                                                        |
+| Field                                                         | Vocabulary                                                                                                                                                               |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `license`                                                     | SPDX License List                                                                                                                                                        |
+| dates (`created`, `updated`, `temporal.*`, `processing.date`) | ISO 8601 / RFC 3339                                                                                                                                                      |
+| `spatial.crs`                                                 | EPSG codes                                                                                                                                                               |
+| `spatial.geography`                                           | `vocab/geography.json` (UN M49; regions + countries)                                                                                                                     |
+| `variables[].unit`, grid `spatial.resolution[].unit`          | Unit of measurement, preferably UDUNITS-2 or UCUM (not strictly validated); non-grid spatial units may use clear labels such as `admin-level`                            |
+| `variables[].name` (climate)                                  | CF Standard Names (where practical)                                                                                                                                      |
+| `contact[].roles[]`                                           | `licensor`, `producer`, `processor` (STAC provider roles), `point-of-contact` (Contacts extension)                                                                       |
+| `media_type`                                                  | IANA media types                                                                                                                                                         |
+| `resource_type`                                               | `vocab/resource_type.json`                                                                                                                                               |
+| `cdh.domain`                                                  | `vocab/domain.json` (CDH closed set)                                                                                                                                     |
 | `keywords[].scheme` (linked items)                            | Open - any resolvable controlled-vocabulary URI (e.g., AGROVOC, GEMET). Do not link entries to `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/vocab/*`. |
-| `commodities`                                                 | `vocab/commodity.json` (AGROVOC-mapped); encoded as themes                                                                                                  |
-| `climate.mip_era`                                             | `CMIP5`, `CMIP6` (informal)                                                                                                                                 |
-| `climate.scenarios`                                           | SSP / RCP labels, `historic` (informal)                                                                                                                     |
-| `climate.models`                                              | CMIP source IDs (informal)                                                                                                                                  |
+| `commodities`                                                 | `vocab/commodity.json` (AGROVOC-mapped); encoded as themes                                                                                                               |
+| `climate.mip_era`                                             | `CMIP5`, `CMIP6` (informal)                                                                                                                                              |
+| `climate.scenarios`                                           | SSP / RCP labels, `historic` (informal)                                                                                                                                  |
+| `climate.models`                                              | CMIP source IDs (informal)                                                                                                                                               |
 
 ## 8. Validation Checklist
 
@@ -683,7 +694,7 @@ extension fields, not in `keywords` (see section 4.5).
 - [ ] `cdh.domain[]` includes at least one concept from `vocab/domain.json`
 - [ ] `keywords[]`
 - [ ] `license`
-- [ ] `contact[]` includes at least one `role: licensor`
+- [ ] `contact[]` includes at least one contact with `licensor` in `roles`
 - [ ] `citation`
 - [ ] `data[]` includes at least one entry
 

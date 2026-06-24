@@ -39,7 +39,7 @@ CGIAR Climate Data Hub governance: domain classification and use guidance.
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/cdh/schema.json
 cdh:
   domain: [agricultural-production] # primary first; rest are secondary
   use_cases:

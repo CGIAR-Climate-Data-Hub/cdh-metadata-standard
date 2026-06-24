@@ -1,12 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/extensions/climate/schema.json",
+  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/climate/schema.json",
   "title": "Climate Extension",
   "description": "Climate projection provenance: baseline, bias adjustment, downscaling, scenarios.",
   "type": "object",
   "$defs": {
     "nullableString": { "type": ["string", "null"] },
     "dateOrBlank": {
+      "description": "Date or date-time. Use YYYY-MM-DD (e.g. 2026-06-23) or an RFC 3339 date-time (e.g. 2026-06-23T00:00:00Z). May be left blank.",
+      "examples": ["2026-06-23", "2026-06-23T00:00:00Z"],
       "anyOf": [
         { "const": "" },
         { "type": "null" },
@@ -24,6 +26,7 @@
       "additionalProperties": false,
       "properties": {
         "baseline": {
+          "description": "Reference/baseline period the projections are expressed against.",
           "type": "object",
           "additionalProperties": false,
           "properties": {
@@ -32,30 +35,35 @@
           }
         },
         "bias_adjustment": {
+          "description": "Bias adjustment applied to the projections.",
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "method": { "$ref": "#/$defs/nullableString" },
-            "reference_dataset": { "$ref": "#/$defs/nullableString" }
+            "method": { "$ref": "#/$defs/nullableString", "description": "Bias-adjustment method." },
+            "reference_dataset": { "$ref": "#/$defs/nullableString", "description": "Reference dataset used for bias adjustment." }
           }
         },
         "downscaling": {
+          "description": "Downscaling applied to the projections.",
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "method": { "$ref": "#/$defs/nullableString" },
-            "resolution": { "$ref": "#/$defs/numberOrStringOrNull" }
+            "method": { "$ref": "#/$defs/nullableString", "description": "Downscaling method." },
+            "resolution": { "$ref": "#/$defs/numberOrStringOrNull", "description": "Target resolution of the downscaling." }
           }
         },
         "mip_era": {
+          "description": "CMIP era of the source models.",
           "oneOf": [{ "const": "" }, { "enum": ["CMIP5", "CMIP6"] }]
         },
         "models": {
+          "description": "Climate model source IDs; use 'ensemble' for a multi-model ensemble.",
           "type": "array",
           "uniqueItems": true,
           "items": { "type": "string" }
         },
         "scenarios": {
+          "description": "Scenario labels, e.g. SSP/RCP or historic.",
           "type": "array",
           "uniqueItems": true,
           "items": { "type": "string" }

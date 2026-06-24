@@ -72,8 +72,8 @@ STAC-only in the crosswalk.
 | `keywords[]` (linked items) | Plain-string keywords are emitted into `properties.keywords`. Linked-keyword entries (`{ term, scheme, uri }`) are also added to `properties.themes`, grouped by `scheme`. |
 | `properties.themes`         | Encoder output only - populated from `cdh.domain`, `commodities`, and any linked-keyword entries. Not an author-facing input field.                                        |
 | `license`                   | `properties.license`                                                                                                                                                       |
-| `contact[]`                 | `properties.contacts[]`. At least one contact must use `role=licensor`.                                                                                                    |
-| `citation`                  | `properties["cgiar-cdh:citation"]` (plain text)                                                                                                                            |
+| `contact[]`                 | `properties.contacts[]`. At least one contact must include `licensor` in `roles`.                                                                                          |
+| `citation`                  | `properties["cgiar-cdh:citation"]`                                                                                                                                         |
 | `doi`                       | `links[rel=cite-as]`                                                                                                                                                       |
 | `related_publications[]`    | `properties["cgiar-cdh:related_publications"]`                                                                                                                             |
 | `note`                      | `properties["cgiar-cdh:note"]`                                                                                                                                             |

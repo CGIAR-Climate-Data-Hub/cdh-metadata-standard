@@ -35,7 +35,7 @@ The CDH STAC profile uses the following extensions where applicable.
 | Classification      | Class values, labels, descriptions, bitfields                       |
 | Projection          | CRS, EPSG code, projection metadata                                 |
 | Processing          | Processing datetime, lineage, software                              |
-| Contacts            | People and organizations, using official STAC provider roles        |
+| Contacts            | People and organizations, including point-of-contact roles          |
 | Version             | Dataset version, predecessor/successor records                      |
 | File                | File size                                                           |
 | Alternate Assets    | Mirrors and alternate access paths                                  |
@@ -68,7 +68,7 @@ searchable structured facts.
 | `created` / `updated`       | `created` / `updated`                                                                                                                                                                           |
 | `keywords`                  | `keywords`                                                                                                                                                                                      |
 | `license`                   | `license` (SPDX preferred)                                                                                                                                                                      |
-| `contact[]`                 | `providers[]` and contacts extension `contacts[]` for additional contact info. At least one contact must use `role=licensor`, which maps to `providers[role=licensor]`.                         |
+| `contact[]`                 | `providers[]` and contacts extension `contacts[]` for additional contact info. At least one contact must include `licensor` in `roles`, which maps to a `licensor` provider.                    |
 | `citation`                  | `sci:citation`                                                                                                                                                                                  |
 | `doi`                       | `sci:doi` and `links[rel=cite-as]`                                                                                                                                                              |
 | `related_publications[]`    | `sci:publications[]`                                                                                                                                                                            |

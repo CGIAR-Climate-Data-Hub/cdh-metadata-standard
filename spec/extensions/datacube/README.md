@@ -46,8 +46,9 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
 - **Expected value per variable:**
   `{ name, dimensions, description, data_type, unit, note }`.
 - **Rules:**
-  - `unit` must be a UDUNITS-2 unit symbol (e.g., `ha`, `t`, `t ha-1`, `K`,
-    `kg m-2 s-1`). Use `1` or omit for dimensionless quantities.
+  - `unit` is the unit of measurement, preferably compliant with UDUNITS-2 or
+    UCUM (e.g., `ha`, `t`, `t ha-1`, `K`, `kg m-2 s-1`, `{head}/km2`) rather than
+    strictly validated. Use `1` or omit for dimensionless quantities.
   - Climate variables should use CF standard names where practical (e.g.,
     `precipitation_flux`, `air_temperature`).
   - `data_type` follows numpy-style names (`float32`, `int16`, …).
@@ -70,7 +71,7 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.2/extensions/datacube/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/datacube/schema.json
 dimensions:
   - name: crop
     type: crop
