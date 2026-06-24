@@ -9,9 +9,9 @@ and this project adheres to
 While the project is pre-1.0, the schema should be considered unstable and
 breaking changes may occur between minor versions.
 
-## \[Unreleased]
+## [Unreleased]
 
-## \[0.0.3] - 2026-06-24
+## [0.1.0] - 2026-06-24
 
 ### Changed
 
@@ -40,9 +40,9 @@ breaking changes may occur between minor versions.
 
 ## \[0.0.2] - 2026-06-22 \[YANKED]
 
-> Published as a pre-release, then withdrawn due to a bug/typo which) published
+> Published as a pre-release, then withdrawn due to a bug/typo that published
 > the schemas to the wrong path, so the versioned schema URLs returned 404.
-> Superseded by 0.0.3.
+> Superseded by 0.1.0.
 
 ### Changed
 
@@ -63,9 +63,15 @@ breaking changes may occur between minor versions.
 - `climate.hazards` field and its vocabulary.
 - `themes` from the authoring spec (it is encoder output only).
 
-## \[0.0.1] - 2026-06-03
+## [0.0.1] - 2026-06-03
 
 ### Added
 
 - Initial prototype of the core metadata specification, controlled vocabularies,
   and supporting build scripts.
+
+[Unreleased]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.1.0...HEAD
+
+[0.1.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.0.1...v0.1.0
+
+[0.0.1]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/releases/tag/v0.0.1

@@ -51,7 +51,7 @@ visible without walking the derivation chain. See
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.3/extensions/climate/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/climate/schema.json
 climate:
   mip_era: CMIP6
   scenarios: [ssp245, ssp585]

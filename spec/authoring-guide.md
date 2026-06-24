@@ -56,7 +56,7 @@ title: ""
 description: ""
 resource_type: ""
 extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.3/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/cdh/schema.json
 keywords: []
 license: ""
 contact:

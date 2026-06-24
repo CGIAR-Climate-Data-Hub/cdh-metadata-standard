@@ -1,13 +1,13 @@
 # yaml-language-server: $schema=../spec/schemas/profiles/cdh.schema.json
-cdh_schema_version: "v0.0.3"
+cdh_schema_version: "v0.1.0"
 
 # Extensions this record uses (pinned schema URLs).
 extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.3/extensions/cdh/schema.json
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.3/extensions/climate/schema.json
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.3/extensions/datacube/schema.json
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.3/extensions/classification/schema.json
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.0.3/extensions/agriculture/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/climate/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/datacube/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/classification/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/agriculture/schema.json
 
 # Core Metadata (required)
 id: ""
