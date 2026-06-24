@@ -10,6 +10,13 @@ occur between minor versions.
 
 ## [Unreleased]
 
+### Changed
+
+- Records may now use unquoted ISO dates (e.g. `created: 2026-06-23`). The validator parses YAML as
+  1.2 core, so dates remain strings instead of being rejected as date objects; quoting still works.
+- Repository formatting and linting moved from remark to Prettier (Markdown, JSON, YAML) and
+  markdownlint. Contributor-facing only — no change to the schema, vocabularies, or published URLs.
+
 ## [0.1.0] - 2026-06-24
 
 ### Changed
