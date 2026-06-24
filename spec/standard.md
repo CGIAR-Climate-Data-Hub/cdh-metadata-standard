@@ -1,6 +1,6 @@
 # Climate Data Hub Metadata Standard
 
-Status: draft
+Status: v0.1.0
 
 This document defines the metadata model used by the Climate Data Hub - the field definitions,
 requirement levels, and rules every Hub record conforms to. The model is self-contained and stands
