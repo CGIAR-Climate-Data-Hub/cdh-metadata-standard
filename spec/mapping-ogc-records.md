@@ -86,11 +86,11 @@ OGC Records is the non-spatial encoding path in CDH. Records that require geospa
 spatial resolution, or embedded geometry-column metadata should be serialized to STAC instead. OGC
 Records may still carry broad named geography labels and temporal metadata when they help discovery.
 
-| CDH                                | recordJSON placement                                               |
-| ---------------------------------- | ------------------------------------------------------------------ |
-| `spatial.geography[]`              | `properties["cgiar-cdh:geography"]` array                          |
-| `temporal.start_date` / `end_date` | `time` (interval form `{ interval: [start, end] }` per recordJSON) |
-| `temporal.resolution`              | `properties["cgiar-cdh:temporal_resolution"]`                      |
+| CDH                                | recordJSON placement                                                                                                                                                                       |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `spatial.geography[]`              | `properties["dct:spatial"]` (GeoDCAT spatial coverage). The encoder resolves each `geography` id to its place IRI; advertise GeoDCAT via `conformsTo`. (STAC keeps `cgiar-cdh:geography`.) |
+| `temporal.start_date` / `end_date` | `time` (interval form `{ interval: [start, end] }` per recordJSON)                                                                                                                         |
+| `temporal.resolution`              | `properties["cgiar-cdh:temporal_resolution"]`                                                                                                                                              |
 
 The following spatial fields are not emitted by the CDH OGC Records profile: `spatial.bbox`,
 `spatial.crs`, `spatial.geometry_column`, and `spatial.resolution[]`. A record carrying these has a

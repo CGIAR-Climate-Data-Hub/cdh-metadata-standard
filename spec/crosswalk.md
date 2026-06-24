@@ -37,15 +37,15 @@ indicated with an `N/A` in the table below.
 
 ## Spatial / Temporal
 
-| CDH field                          | Requirement                    | STAC                                                                                                          | OGC API Records                               |
-| ---------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| `spatial.bbox`                     | STAC required                  | Collection `extent.spatial.bbox`; Item `bbox`                                                                 | N/A                                           |
-| `spatial.geography[]`              | Optional                       | `cgiar-cdh:geography` array                                                                                   | `properties["cgiar-cdh:geography"]` array     |
-| `spatial.crs`                      | Geospatial conditional         | Projection Extension `proj:code` / `proj:epsg`                                                                | N/A                                           |
-| `spatial.geometry_column`          | Vector conditional             | Table Extension `table:primary_geometry`                                                                      | N/A                                           |
-| `spatial.resolution[]`             | Spatial-unit conditional       | Grid entries map to Datacube `cube:dimensions[].step`; full list also emits as `cgiar-cdh:spatial_resolution` | N/A                                           |
-| `temporal.start_date` / `end_date` | STAC required; OGC conditional | Collection `extent.temporal.interval`; Item `datetime` etc.                                                   | `time` interval                               |
-| `temporal.resolution`              | Temporal conditional           | `cube:dimensions[time].step` when applicable; also `cgiar-cdh:temporal_resolution`                            | `properties["cgiar-cdh:temporal_resolution"]` |
+| CDH field                          | Requirement                    | STAC                                                                                                          | OGC API Records                                   |
+| ---------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `spatial.bbox`                     | STAC required                  | Collection `extent.spatial.bbox`; Item `bbox`                                                                 | N/A                                               |
+| `spatial.geography[]`              | Optional                       | `cgiar-cdh:geography` array                                                                                   | `properties["dct:spatial"]` (place IRIs; GeoDCAT) |
+| `spatial.crs`                      | Geospatial conditional         | Projection Extension `proj:code` / `proj:epsg`                                                                | N/A                                               |
+| `spatial.geometry_column`          | Vector conditional             | Table Extension `table:primary_geometry`                                                                      | N/A                                               |
+| `spatial.resolution[]`             | Spatial-unit conditional       | Grid entries map to Datacube `cube:dimensions[].step`; full list also emits as `cgiar-cdh:spatial_resolution` | N/A                                               |
+| `temporal.start_date` / `end_date` | STAC required; OGC conditional | Collection `extent.temporal.interval`; Item `datetime` etc.                                                   | `time` interval                                   |
+| `temporal.resolution`              | Temporal conditional           | `cube:dimensions[time].step` when applicable; also `cgiar-cdh:temporal_resolution`                            | `properties["cgiar-cdh:temporal_resolution"]`     |
 
 ## Data fields
 
