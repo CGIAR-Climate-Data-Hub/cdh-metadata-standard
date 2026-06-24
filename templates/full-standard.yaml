@@ -15,6 +15,7 @@ title: ""
 description: >
   ""
 license: ""
+access: public # optional - one of: public | restricted | non-public; omit = public
 # Resource type - one of: dataset | document | tool | ai-skill
 resource_type: ""
 
