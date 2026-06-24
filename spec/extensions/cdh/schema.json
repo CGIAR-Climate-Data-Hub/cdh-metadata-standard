@@ -29,9 +29,18 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-              "reason": { "type": "string", "description": "Why this use is discouraged." },
-              "use": { "type": "string", "description": "The use being discouraged." },
-              "use_instead": { "type": ["string", "null"], "description": "Recommended alternative, if any." }
+              "reason": {
+                "type": "string",
+                "description": "Why this use is discouraged."
+              },
+              "use": {
+                "type": "string",
+                "description": "The use being discouraged."
+              },
+              "use_instead": {
+                "type": ["string", "null"],
+                "description": "Recommended alternative, if any."
+              }
             }
           }
         }

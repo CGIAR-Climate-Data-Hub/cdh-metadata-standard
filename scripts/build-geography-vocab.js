@@ -71,9 +71,7 @@ async function main() {
     }
     const clash = idToCode.get(node.id);
     if (clash && clash !== node.code) {
-      throw new Error(
-        `id "${node.id}" derived from two codes (${clash}, ${node.code})`,
-      );
+      throw new Error(`id "${node.id}" derived from two codes (${clash}, ${node.code})`);
     }
     idToCode.set(node.id, node.code);
     byCode.set(node.code, node);
@@ -89,15 +87,16 @@ async function main() {
       code: row[9],
       name: row[8],
       iso3: row[11] || undefined,
-      groups: GROUP_COLUMNS.filter((g) => row[g.index]?.trim() === "x").map(
-        (g) => g.name,
-      ),
+      groups: GROUP_COLUMNS.filter((g) => row[g.index]?.trim() === "x").map((g) => g.name),
       isCountry: true,
     }); // country
 
     chain.forEach((node, i) => {
       // parents: every ancestor, nearest first.
-      const parents = chain.slice(0, i).reverse().map((a) => slugify(a.name));
+      const parents = chain
+        .slice(0, i)
+        .reverse()
+        .map((a) => slugify(a.name));
       const concept = {
         id: slugify(node.name),
         label: node.name,
@@ -119,9 +118,7 @@ async function main() {
   for (const concept of concepts) {
     for (const parent of concept.parents ?? []) {
       if (!ids.has(parent)) {
-        throw new Error(
-          `concept "${concept.id}" references unknown parent "${parent}"`,
-        );
+        throw new Error(`concept "${concept.id}" references unknown parent "${parent}"`);
       }
     }
   }
@@ -146,9 +143,7 @@ async function main() {
   };
 
   await writeFile(TARGET, JSON.stringify(vocab, null, 2) + "\n", "utf-8");
-  console.log(
-    `Wrote ${concepts.length} concepts to ${TARGET.replace(ROOT + "/", "")}`,
-  );
+  console.log(`Wrote ${concepts.length} concepts to ${TARGET.replace(ROOT + "/", "")}`);
 }
 
 main().catch((err) => {

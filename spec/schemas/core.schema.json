@@ -46,9 +46,7 @@
           "uniqueItems": true
         }
       },
-      "required": [
-        "locations"
-      ],
+      "required": ["locations"],
       "type": "object"
     },
     "contact": {
@@ -62,9 +60,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "name"
-            ],
+            "required": ["name"],
             "type": "object"
           },
           "then": {
@@ -74,9 +70,7 @@
                 "type": "string"
               }
             },
-            "required": [
-              "organization"
-            ],
+            "required": ["organization"],
             "type": "object"
           }
         }
@@ -89,9 +83,7 @@
               "type": "string"
             }
           },
-          "required": [
-            "organization"
-          ],
+          "required": ["organization"],
           "type": "object"
         },
         {
@@ -103,10 +95,7 @@
               "const": ""
             }
           },
-          "required": [
-            "name",
-            "organization"
-          ],
+          "required": ["name", "organization"],
           "type": "object"
         }
       ],
@@ -132,12 +121,7 @@
           "description": "Roles this contact holds (one or more).",
           "type": "array",
           "items": {
-            "enum": [
-              "licensor",
-              "producer",
-              "processor",
-              "point-of-contact"
-            ]
+            "enum": ["licensor", "producer", "processor", "point-of-contact"]
           },
           "uniqueItems": true
         },
@@ -145,9 +129,7 @@
           "$ref": "#/$defs/nullableString"
         }
       },
-      "required": [
-        "roles"
-      ],
+      "required": ["roles"],
       "type": "object"
     },
     "dataAsset": {
@@ -188,9 +170,7 @@
         "href_template": {
           "type": "string",
           "description": "Optional. When present, each locations[].url is treated as a base path and this relative pattern is appended to it (base + filled template). Tokens in {braces} must match a dimensions[].name; the encoder expands the cross-product of those dimensions' values into one item per combination, using locations[0] for the canonical href and any other locations as alternates. When absent, locations[].url are full file URLs and the entry is a single asset.",
-          "examples": [
-            "mapspam_{crop}_{technology}_{variable}.tif"
-          ]
+          "examples": ["mapspam_{crop}_{technology}_{variable}.tif"]
         },
         "nodata": {
           "description": "No-data / fill value for the asset.",
@@ -214,9 +194,7 @@
           "type": "array"
         }
       },
-      "required": [
-        "locations"
-      ],
+      "required": ["locations"],
       "type": "object"
     },
     "bboxCoords": {
@@ -288,10 +266,7 @@
     },
     "dateOrBlank": {
       "description": "Date or date-time. Use YYYY-MM-DD (e.g. 2026-06-23) or an RFC 3339 date-time (e.g. 2026-06-23T00:00:00Z). May be left blank.",
-      "examples": [
-        "2026-06-23",
-        "2026-06-23T00:00:00Z"
-      ],
+      "examples": ["2026-06-23", "2026-06-23T00:00:00Z"],
       "anyOf": [
         {
           "const": ""
@@ -323,9 +298,7 @@
           "pattern": "^10\\.\\d{2,}(\\.\\d+)*/\\S+$"
         }
       ],
-      "examples": [
-        "10.7910/DVN/SWPENT"
-      ]
+      "examples": ["10.7910/DVN/SWPENT"]
     },
     "id": {
       "description": "Short, stable, URL-safe identifier (lowercase letters, digits, hyphens).",
@@ -369,9 +342,7 @@
           "$ref": "#/$defs/nullableString"
         }
       },
-      "required": [
-        "url"
-      ],
+      "required": ["url"],
       "type": "object"
     },
     "mediaType": {
@@ -409,10 +380,7 @@
       "type": "object"
     },
     "nullableString": {
-      "type": [
-        "string",
-        "null"
-      ]
+      "type": ["string", "null"]
     },
     "numberOrStringOrNull": {
       "anyOf": [
@@ -493,10 +461,7 @@
         "date": {
           "$ref": "#/$defs/nullableString",
           "description": "Publication date or year, e.g. 2024 or 2024-07-15.",
-          "examples": [
-            "2024",
-            "2024-07-15"
-          ]
+          "examples": ["2024", "2024-07-15"]
         },
         "publisher": {
           "$ref": "#/$defs/nullableString",
@@ -506,10 +471,7 @@
           "$ref": "#/$defs/nullableString"
         }
       },
-      "required": [
-        "authors",
-        "date"
-      ],
+      "required": ["authors", "date"],
       "type": "object"
     },
     "publication": {
@@ -546,13 +508,7 @@
               "const": ""
             },
             {
-              "enum": [
-                "xy",
-                "x",
-                "y",
-                "point",
-                "polygon"
-              ]
+              "enum": ["xy", "x", "y", "point", "polygon"]
             }
           ]
         },
@@ -583,19 +539,12 @@
               }
             }
           ],
-          "examples": [
-            [-180, -90, 180, 90],
-            [
-              [-180, -90, 180, 90]
-            ]
-          ]
+          "examples": [[-180, -90, 180, 90], [[-180, -90, 180, 90]]]
         },
         "crs": {
           "$ref": "#/$defs/nullableString",
           "description": "Coordinate reference system of the data: EPSG code, CRS URI, or PROJ string.",
-          "examples": [
-            "EPSG:4326"
-          ]
+          "examples": ["EPSG:4326"]
         },
         "geography": {
           "description": "Named places for discovery (vocab/geography.json ids, UN M49).",
@@ -629,10 +578,7 @@
         "step": {
           "$ref": "#/$defs/nullableString",
           "description": "ISO 8601 duration of one step.",
-          "examples": [
-            "P1D",
-            "P1M"
-          ]
+          "examples": ["P1D", "P1M"]
         },
         "unit": {
           "$ref": "#/$defs/nullableString",
@@ -666,18 +612,14 @@
       "properties": {
         "end_date": {
           "$ref": "#/$defs/dateOrBlank",
-          "examples": [
-            "2020-01-01"
-          ]
+          "examples": ["2020-01-01"]
         },
         "resolution": {
           "$ref": "#/$defs/temporalResolution"
         },
         "start_date": {
           "$ref": "#/$defs/dateOrBlank",
-          "examples": [
-            "2020-01-01"
-          ]
+          "examples": ["2020-01-01"]
         }
       },
       "type": "object"
@@ -721,9 +663,7 @@
             }
           }
         },
-        "required": [
-          "roles"
-        ]
+        "required": ["roles"]
       },
       "type": "array"
     },
@@ -778,9 +718,7 @@
           {
             "type": "object",
             "additionalProperties": false,
-            "required": [
-              "term"
-            ],
+            "required": ["term"],
             "properties": {
               "term": {
                 "type": "string",
@@ -807,11 +745,7 @@
     "license": {
       "type": "string",
       "description": "License of the data. SPDX identifier preferred.",
-      "examples": [
-        "CC-BY-4.0",
-        "CC-BY-SA-4.0",
-        "CC0-1.0"
-      ]
+      "examples": ["CC-BY-4.0", "CC-BY-SA-4.0", "CC0-1.0"]
     },
     "note": {
       "$ref": "#/$defs/nullableString",
@@ -829,9 +763,7 @@
             "const": "source"
           }
         },
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "type": "object"
       },
       "items": {
@@ -875,10 +807,7 @@
     "version": {
       "$ref": "#/$defs/nullableString",
       "description": "Version of the resource, when versioned.",
-      "examples": [
-        "v1.0",
-        "2.0-release-2"
-      ]
+      "examples": ["v1.0", "2.0-release-2"]
     }
   },
   "required": [
@@ -896,9 +825,7 @@
   ],
   "anyOf": [
     {
-      "required": [
-        "citation"
-      ]
+      "required": ["citation"]
     },
     {
       "properties": {
@@ -907,9 +834,7 @@
           "minLength": 1
         }
       },
-      "required": [
-        "doi"
-      ]
+      "required": ["doi"]
     }
   ],
   "title": "Climate Data Hub Metadata Input Schema",

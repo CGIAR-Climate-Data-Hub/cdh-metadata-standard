@@ -1,17 +1,15 @@
 # CDH Metadata Crosswalk
 
-Single-table view of how every CDH field maps to STAC and OGC API Records
-(recordJSON). For requirement levels, rules, and field definitions, see
-`standard.md`. For encoding-specific guidance, see `mapping-stac.md` and
-`mapping-ogc-records.md`.
+Single-table view of how every CDH field maps to STAC and OGC API Records (recordJSON). For
+requirement levels, rules, and field definitions, see `standard.md`. For encoding-specific guidance,
+see `mapping-stac.md` and `mapping-ogc-records.md`.
 
-The `cgiar-cdh:` prefix denotes fields defined by the CDH STAC Extension and the
-CDH OGC Records profile. Names, types, and allowed values are identical across
-both encodings.
+The `cgiar-cdh:` prefix denotes fields defined by the CDH STAC Extension and the CDH OGC Records
+profile. Names, types, and allowed values are identical across both encodings.
 
-Some of the mappings to OGC API Records are not relevant for the CDH (*e.g.,*
-`crs` and `geometry_column`) as records with these fields will always be
-serialized to STAC. These are indicated with an `N/A` in the table below.
+Some of the mappings to OGC API Records are not relevant for the CDH (_e.g.,_ `crs` and
+`geometry_column`) as records with these fields will always be serialized to STAC. These are
+indicated with an `N/A` in the table below.
 
 ## Core
 
@@ -93,7 +91,6 @@ serialized to STAC. These are indicated with an `N/A` in the table below.
 
 ## Link relations used
 
-`self`, `root`, `parent`, `child`, `collection`, `cite-as`, `describedby`,
-`describes`, `about`, `via`, `canonical`, `alternate`, `derived_from`,
-`enclosure`, `service`, `license`, `preview`, `icon`, `thumbnail`,
-`processing-expression`, `predecessor-version`, `successor-version`.
+`self`, `root`, `parent`, `child`, `collection`, `cite-as`, `describedby`, `describes`, `about`,
+`via`, `canonical`, `alternate`, `derived_from`, `enclosure`, `service`, `license`, `preview`,
+`icon`, `thumbnail`, `processing-expression`, `predecessor-version`, `successor-version`.

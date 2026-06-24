@@ -2,54 +2,57 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to
-[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
+adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-While the project is pre-1.0, the schema should be considered unstable and
-breaking changes may occur between minor versions.
+While the project is pre-1.0, the schema should be considered unstable and breaking changes may
+occur between minor versions.
 
 ## [Unreleased]
+
+### Changed
+
+- Records may now use unquoted ISO dates (e.g. `created: 2026-06-23`). The validator parses YAML as
+  1.2 core, so dates remain strings instead of being rejected as date objects; quoting still works.
+- Repository formatting and linting moved from remark to Prettier (Markdown, JSON, YAML) and
+  markdownlint. Contributor-facing only — no change to the schema, vocabularies, or published URLs.
 
 ## [0.1.0] - 2026-06-24
 
 ### Changed
 
-- **Breaking:** `contact[].role` (single string) is now `contact[].roles[]` (an
-  array), aligning with STAC `providers[].roles` and OGC Records
-  `contacts[].roles`. A contact may hold several roles, e.g.
-  `roles: [producer, licensor]`. The role vocabulary dropped `host` and added
+- **Breaking:** `contact[].role` (single string) is now `contact[].roles[]` (an array), aligning
+  with STAC `providers[].roles` and OGC Records `contacts[].roles`. A contact may hold several
+  roles, e.g. `roles: [producer, licensor]`. The role vocabulary dropped `host` and added
   `point-of-contact` (which maps to the Contacts extension, not `providers`).
 - **Breaking:** `citation` is now a structured object
   (`{ authors, date, title?, publisher?, url? }`) instead of a plain string, and
-  `related_publications[].citation` uses the same shape. `citation` is required
-  unless a `doi` is provided.
-- Relaxed the `unit` requirement from strict UDUNITS-2 to "preferably UDUNITS-2
-  or UCUM," allowing annotated units such as `{head}/km2`.
-- **Breaking:** `doi` (and `related_publications[].doi`) must now be a bare DOI
-  (e.g. `10.7910/DVN/SWPENT`); URL forms like `https://doi.org/…` are rejected.
-- `spatial.bbox` now also accepts a single box `[west, south, east, north]`, not
-  only an array of boxes.
+  `related_publications[].citation` uses the same shape. `citation` is required unless a `doi` is
+  provided.
+- Relaxed the `unit` requirement from strict UDUNITS-2 to "preferably UDUNITS-2 or UCUM," allowing
+  annotated units such as `{head}/km2`.
+- **Breaking:** `doi` (and `related_publications[].doi`) must now be a bare DOI (e.g.
+  `10.7910/DVN/SWPENT`); URL forms like `https://doi.org/…` are rejected.
+- `spatial.bbox` now also accepts a single box `[west, south, east, north]`, not only an array of
+  boxes.
 
 ### Added
 
-- Date fields document the expected format via descriptions and examples
-  (`YYYY-MM-DD` or RFC 3339 date-time).
-- Field `description`s (and a few `examples`) added across the core schema and
-  all extensions for in-editor hints; `media_type` suggests common values.
+- Date fields document the expected format via descriptions and examples (`YYYY-MM-DD` or RFC 3339
+  date-time).
+- Field `description`s (and a few `examples`) added across the core schema and all extensions for
+  in-editor hints; `media_type` suggests common values.
 
 ## \[0.0.2] - 2026-06-22 \[YANKED]
 
-> Published as a pre-release, then withdrawn due to a bug/typo that published
-> the schemas to the wrong path, so the versioned schema URLs returned 404.
-> Superseded by 0.1.0.
+> Published as a pre-release, then withdrawn due to a bug/typo that published the schemas to the
+> wrong path, so the versioned schema URLs returned 404. Superseded by 0.1.0.
 
 ### Changed
 
-- Restructured the schema into a small `core` plus opt-in extensions (`cdh`,
-  `climate`, `datacube`, `classification`, `agriculture`). Records declare the
-  extensions they use and validate against a composed profile; fields from
-  undeclared extensions are rejected.
+- Restructured the schema into a small `core` plus opt-in extensions (`cdh`, `climate`, `datacube`,
+  `classification`, `agriculture`). Records declare the extensions they use and validate against a
+  composed profile; fields from undeclared extensions are rejected.
 - `resource_type` now uses schema.org types instead of COAR.
 
 ### Added
@@ -67,11 +70,9 @@ breaking changes may occur between minor versions.
 
 ### Added
 
-- Initial prototype of the core metadata specification, controlled vocabularies,
-  and supporting build scripts.
+- Initial prototype of the core metadata specification, controlled vocabularies, and supporting
+  build scripts.
 
 [Unreleased]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.1.0...HEAD
-
 [0.1.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.0.1...v0.1.0
-
 [0.0.1]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/releases/tag/v0.0.1

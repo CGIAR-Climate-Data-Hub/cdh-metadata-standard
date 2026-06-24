@@ -2,20 +2,18 @@
 
 Class definitions for categorical, classified, or bitfield variables.
 
-- **Applies to:** classified, categorical, or bitfield variables (e.g., land
-  cover, suitability classes).- **Declared in** a record's `extensions[]`. See [the standard](../../standard.md),
-  §4.3, for the extension mechanism.
+- **Applies to:** classified, categorical, or bitfield variables (e.g., land cover, suitability
+  classes).- **Declared in** a record's `extensions[]`. See [the standard](../../standard.md), §4.3,
+  for the extension mechanism.
 
 ## `classes[]`
 
-- **Requirement:** Conditional. Required for classified, categorical, or
-  bitfield variables.
-- **Expected value:** List of
-  `{ variable, values: [ { value, label, description } ] }`.
+- **Requirement:** Conditional. Required for classified, categorical, or bitfield variables.
+- **Expected value:** List of `{ variable, values: [ { value, label, description } ] }`.
 - **Rules:**
   - Each entry must reference a declared variable name.
-  - For long class lists, prefer a sidecar asset linked with `rel=describedby`
-    and keep only summary information here.
+  - For long class lists, prefer a sidecar asset linked with `rel=describedby` and keep only summary
+    information here.
 
 ## Example
 

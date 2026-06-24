@@ -1,13 +1,12 @@
 # Contributing
 
-Thanks for your interest in contributing to the CGIAR CDH metadata standard.
-This project is still pre-1.0 and breaking changes to the schema and controlled
-vocabularies are expected.
+Thanks for your interest in contributing to the CGIAR CDH metadata standard. This project is still
+pre-1.0 and breaking changes to the schema and controlled vocabularies are expected.
 
 ## Reporting issues
 
-Please open an issue for bugs, unclear specifications, or proposed additions to
-the schema or controlled vocabularies. Include:
+Please open an issue for bugs, unclear specifications, or proposed additions to the schema or
+controlled vocabularies. Include:
 
 - a short description of the problem or proposal,
 - the affected schema, vocabulary, or document, and
@@ -27,34 +26,33 @@ Useful scripts:
 - `npm run check`: schema, vocab, and YAML validation only.
 - `npm run format-markdown`: auto-format Markdown files.
 
-This repository also uses [prek](https://prek.j178.dev/) (a faster, drop-in
-`pre-commit` replacement) to run hooks defined in `.pre-commit-config.yaml`,
-including JSON formatting and basic file checks. Install it once and enable the
-hooks:
+This repository also uses [prek](https://prek.j178.dev/) (a faster, drop-in `pre-commit`
+replacement) to run hooks defined in `.pre-commit-config.yaml`, including JSON formatting and basic
+file checks. Install it once and enable the hooks:
 
 ```sh
 prek install
 ```
 
-Hooks then run automatically on `git commit`. You can also run them on demand
-with `prek run --all-files`.
+Hooks then run automatically on `git commit`. You can also run them on demand with
+`prek run --all-files`.
 
 ## Making changes
 
 - Create a branch off `main` for your change.
 - Keep each pull request focused on a single logical change.
-- Use [Conventional Commits](https://www.conventionalcommits.org/) for commit
-  messages (e.g. `feat:`, `fix:`, `docs:`, `style:`, `chore:`).
+- Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages (e.g.
+  `feat:`, `fix:`, `docs:`, `style:`, `chore:`).
 - Add an entry under `## [Unreleased]` in `CHANGELOG.md` describing the change.
 - Run `npm test` before opening a pull request.
 
 ## Schema and vocabulary changes
 
-Changes to the schema or controlled vocabularies should explain the rationale in
-the pull request description. While the project is pre-1.0, breaking schema
-changes are allowed but will bump the minor version.
+Changes to the schema or controlled vocabularies should explain the rationale in the pull request
+description. While the project is pre-1.0, breaking schema changes are allowed but will bump the
+minor version.
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the
-terms of the project's [LICENSE](LICENSE).
+By contributing, you agree that your contributions will be licensed under the terms of the project's
+[LICENSE](LICENSE).

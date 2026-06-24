@@ -2,25 +2,24 @@
 
 Status: draft
 
-This document specifies how a CDH metadata input record (as defined by
-`standard.md` and validated by `schemas/core.schema.json`) is encoded
-as STAC. Field definitions and requirement levels are authoritative in
-`standard.md`; this document is authoritative for **placement**. Item level
-mappings are inlcuded for reference and possible future expansion. However, CDH
-yaml files are intended for collection-level metadata.
+This document specifies how a CDH metadata input record (as defined by `standard.md` and validated
+by `schemas/core.schema.json`) is encoded as STAC. Field definitions and requirement levels are
+authoritative in `standard.md`; this document is authoritative for **placement**. Item level
+mappings are inlcuded for reference and possible future expansion. However, CDH yaml files are
+intended for collection-level metadata.
 
 ## 1. When to use STAC
 
-Use STAC when the resource has meaningful spatial, temporal, asset-level,
-variable-level, or data-cube discovery needs. Typical cases:
+Use STAC when the resource has meaningful spatial, temporal, asset-level, variable-level, or
+data-cube discovery needs. Typical cases:
 
 - Rasters, COGs, Zarr, NetCDF, GeoParquet
 - Data cubes and gridded climate products
 - Spatial vector assets, spatial/temporal tabular assets
 - APIs for access to geospatial data
 
-This mapping applies to records routed to STAC: a `dataset` with a spatial
-footprint (see `standard.md` section 4.1). Routing is inferred, not author-set.
+This mapping applies to records routed to STAC: a `dataset` with a spatial footprint (see
+`standard.md` section 4.1). Routing is inferred, not author-set.
 
 ## 2. STAC Extensions
 
@@ -46,15 +45,15 @@ The CDH STAC profile uses the following extensions where applicable.
 
 Each field MUST be encoded in the most standard place available, in this order:
 
-1. Core STAC field (`id`, `title`, `description`, `license`, `keywords`,
-   `created`, `updated`, `providers`, `extent`, …)
+1. Core STAC field (`id`, `title`, `description`, `license`, `keywords`, `created`, `updated`,
+   `providers`, `extent`, …)
 2. A STAC Extension field from the table above
 3. An approved `cgiar-cdh:*` field
 4. A sidecar metadata asset linked with `rel=describedby`
 5. Free-text `description` or `cgiar-cdh:note`
 
-Free-text descriptions are valuable but MUST NOT be the only location for
-searchable structured facts.
+Free-text descriptions are valuable but MUST NOT be the only location for searchable structured
+facts.
 
 ## 4. Field-by-field placement
 
@@ -82,10 +81,9 @@ searchable structured facts.
 
 ### 4.2 Resource type
 
-STAC implies the resource type via the STAC object type (`Catalog`,
-`Collection`, `Item`) and asset media types. CDH records additionally SHOULD
-include `cgiar-cdh:resource_type` at the Collection level for cross-encoding
-consistency when the record could also be expressed as an OGC API Record.
+STAC implies the resource type via the STAC object type (`Catalog`, `Collection`, `Item`) and asset
+media types. CDH records additionally SHOULD include `cgiar-cdh:resource_type` at the Collection
+level for cross-encoding consistency when the record could also be expressed as an OGC API Record.
 
 ### 4.3 Spatial / Temporal
 
@@ -101,82 +99,76 @@ consistency when the record could also be expressed as an OGC API Record.
 
 Resolution placement, in order of preference:
 
-1. For gridded/array assets, `spatial.resolution[]` entries with `type: xy`,
-   `x`, or `y` are expanded to the relevant `cube:dimensions[]` `step`,
-   expressed in that dimension's native `unit` / `reference_system`. `type: xy`
-   is an authoring shorthand and serializes as separate x and y dimensions.
-2. `temporal.resolution.step` maps to `cube:dimensions[time].step` when the data
-   has a real time axis.
-3. The Collection-level `cgiar-cdh:spatial_resolution` mirrors the input
-   `spatial.resolution[]` list. This is the format-independent value for labels,
-   point/polygon reporting units, and non-metric spatial units.
-4. The Collection-level `cgiar-cdh:temporal_resolution` mirrors
-   `temporal.resolution` (`{ values, unit, step, note }`).
+1. For gridded/array assets, `spatial.resolution[]` entries with `type: xy`, `x`, or `y` are
+   expanded to the relevant `cube:dimensions[]` `step`, expressed in that dimension's native `unit`
+   / `reference_system`. `type: xy` is an authoring shorthand and serializes as separate x and y
+   dimensions.
+2. `temporal.resolution.step` maps to `cube:dimensions[time].step` when the data has a real time
+   axis.
+3. The Collection-level `cgiar-cdh:spatial_resolution` mirrors the input `spatial.resolution[]`
+   list. This is the format-independent value for labels, point/polygon reporting units, and
+   non-metric spatial units.
+4. The Collection-level `cgiar-cdh:temporal_resolution` mirrors `temporal.resolution`
+   (`{ values, unit, step, note }`).
 
 ### 4.4 Data fields, dimensions, variables
 
-The encoder does **not** choose between Datacube, Raster, and Table per asset.
-The only decision is **tabular or not**:
+The encoder does **not** choose between Datacube, Raster, and Table per asset. The only decision is
+**tabular or not**:
 
-- **Datacube by default for all array/grid data** (Zarr, NetCDF, GRIB, HDF5, and
-  COG/GeoTIFF - single-band or stacked). Datacube is the always-on descriptive
-  home for variables and dimensions:
+- **Datacube by default for all array/grid data** (Zarr, NetCDF, GRIB, HDF5, and COG/GeoTIFF -
+  single-band or stacked). Datacube is the always-on descriptive home for variables and dimensions:
 
   - `dimensions[]` -> `cube:dimensions`
   - `variables[]`-> `cube:variables`
 
-  A 2D raster is a valid cube: its x and y are horizontal spatial dimensions.
-  Use `spatial.resolution[]` grid entries to derive `cube:dimensions[].step` (+
-  `unit` / `reference_system`) for grid resolution; the step is expressed in the
-  dimension's native units, so geographic grids (degrees, arc-minutes) are
-  represented faithfully - unlike the meters-only `raster:spatial_resolution`
-  and core `gsd` (see section 4.3 and the `cgiar-cdh:spatial_resolution` note).
+  A 2D raster is a valid cube: its x and y are horizontal spatial dimensions. Use
+  `spatial.resolution[]` grid entries to derive `cube:dimensions[].step` (+ `unit` /
+  `reference_system`) for grid resolution; the step is expressed in the dimension's native units, so
+  geographic grids (degrees, arc-minutes) are represented faithfully - unlike the meters-only
+  `raster:spatial_resolution` and core `gsd` (see section 4.3 and the `cgiar-cdh:spatial_resolution`
+  note).
 
-- **Compose the Raster Extension on raster assets when band-level physical
-  metadata exists.** This is additive for additional stac raster tooling (i.e.
-  gdal `/STACIT/`, `odc-stac`, and `stackstac`)
+- **Compose the Raster Extension on raster assets when band-level physical metadata exists.** This
+  is additive for additional stac raster tooling (i.e. gdal `/STACIT/`, `odc-stac`, and `stackstac`)
 
-- **Tabular data uses the Table Extension.** Use Table Extension
-  `table:columns`; `table:primary_geometry` for `spatial.geometry_column`;
-  optional `table:row_count`. Variable/column metadata for tabular assets lives
-  in `table:columns`, not `cube:variables`.
+- **Tabular data uses the Table Extension.** Use Table Extension `table:columns`;
+  `table:primary_geometry` for `spatial.geometry_column`; optional `table:row_count`.
+  Variable/column metadata for tabular assets lives in `table:columns`, not `cube:variables`.
 
-`classes[]` -> Classification Extension `classification:classes` on the relevant
-asset or variable. Large class lists SHOULD be a sidecar asset with
-`roles=[metadata, describedby]` and a link with `rel=describedby` from the
-variable's containing object.
+`classes[]` -> Classification Extension `classification:classes` on the relevant asset or variable.
+Large class lists SHOULD be a sidecar asset with `roles=[metadata, describedby]` and a link with
+`rel=describedby` from the variable's containing object.
 
 ### 4.5 Collection vs Item vs Summaries vs Asset
 
 Decision rules:
 
-- **Collection-level field** when the value is an authoritative statement about
-  the whole resource (e.g., `title`, `license`, `extent`, `sci:citation`).
-- **`summaries`** when the value describes the set of values available across
-  Items / Assets / variables (e.g., available scenarios, available commodities,
-  per-Item resolutions). Required Collection metadata MUST NOT live only in
-  `summaries`.
-- **Item-level field** when the value varies per Item and Item-level discovery
-  is needed (`datetime`, `bbox`, `geometry`, per-Item variables). Items are
-  produced from a `data[]` entry carrying an `href_template` (see 5.2); broader
-  per-Item authoring beyond template expansion is not yet supported.
-- **Asset-level field** when the value describes a specific file or access
-  endpoint (`file:size`, asset `roles`, `type`).
+- **Collection-level field** when the value is an authoritative statement about the whole resource
+  (e.g., `title`, `license`, `extent`, `sci:citation`).
+- **`summaries`** when the value describes the set of values available across Items / Assets /
+  variables (e.g., available scenarios, available commodities, per-Item resolutions). Required
+  Collection metadata MUST NOT live only in `summaries`.
+- **Item-level field** when the value varies per Item and Item-level discovery is needed
+  (`datetime`, `bbox`, `geometry`, per-Item variables). Items are produced from a `data[]` entry
+  carrying an `href_template` (see 5.2); broader per-Item authoring beyond template expansion is not
+  yet supported.
+- **Asset-level field** when the value describes a specific file or access endpoint (`file:size`,
+  asset `roles`, `type`).
 
 ### 4.6 CDH-specific fields
 
-The `cdh.*`, `climate.*`, and `commodities` fields in the input record are
-encoded under the `cgiar-cdh:` namespace. `commodities` is expanded into
-`themes` entries by the encoder via the CDH commodity JSON lookup.
+The `cdh.*`, `climate.*`, and `commodities` fields in the input record are encoded under the
+`cgiar-cdh:` namespace. `commodities` is expanded into `themes` entries by the encoder via the CDH
+commodity JSON lookup.
 
-Other faceted/multi-valued fields (`scenarios`, `models`) live in `summaries` at
-the Collection level when the value applies across Items. `mip_era`, `baseline`,
-`bias_adjustment`, `downscaling`, `use_cases`, `not_recommended_for` are
-Collection top-level `cgiar-cdh:*` fields.
+Other faceted/multi-valued fields (`scenarios`, `models`) live in `summaries` at the Collection
+level when the value applies across Items. `mip_era`, `baseline`, `bias_adjustment`, `downscaling`,
+`use_cases`, `not_recommended_for` are Collection top-level `cgiar-cdh:*` fields.
 
-When a CDH faceted value is also a discoverable axis of the data (e.g., `crop`
-or `commodity` is a `cube:dimensions` axis), values will be included in both, as
-they serve different purposes (dataset discovery and data use/subsetting)
+When a CDH faceted value is also a discoverable axis of the data (e.g., `crop` or `commodity` is a
+`cube:dimensions` axis), values will be included in both, as they serve different purposes (dataset
+discovery and data use/subsetting)
 
 ## 5. Assets
 
@@ -194,35 +186,31 @@ Recommended file metadata:
 
 ### 5.1 Asset `locations[]`
 
-Each input `data[]` / `additional_assets[]` entry carries `locations[]` (one or
-more access paths to the **same content**). Encode as:
+Each input `data[]` / `additional_assets[]` entry carries `locations[]` (one or more access paths to
+the **same content**). Encode as:
 
 - `assets[*].href` ← `locations[0].url` (the canonical location).
-- Each additional `locations[]` entry -> an Alternate Assets Extension
-  `alternate` entry on the same asset, keyed by a short name (from
-  `locations[].title` when present, otherwise a generated key), carrying its
-  `href` and optional `title`.
-- The asset's `type` (media type) and `file:size` apply to all locations, since
-  they are the same content.
+- Each additional `locations[]` entry -> an Alternate Assets Extension `alternate` entry on the same
+  asset, keyed by a short name (from `locations[].title` when present, otherwise a generated key),
+  carrying its `href` and optional `title`.
+- The asset's `type` (media type) and `file:size` apply to all locations, since they are the same
+  content.
 
 ### 5.2 Templated assets (`href_template`)
 
-A `data[]` entry that carries an `href_template` does **not** serialize as a
-single asset. The encoder treats each `locations[].url` as a base path, appends
-the filled template (`base + filled-template`), and emits **one STAC Item per
-token combination**:
+A `data[]` entry that carries an `href_template` does **not** serialize as a single asset. The
+encoder treats each `locations[].url` as a base path, appends the filled template
+(`base + filled-template`), and emits **one STAC Item per token combination**:
 
-- Each `{token}` resolves against the `dimensions[]` entry of the same `name`;
-  the encoder iterates the cross-product of those dimensions' `values`.
-- For each combination, `locations[0]` + the filled template is the Item's
-  primary asset `href` (canonical); every additional `locations[]` entry + the
-  filled template becomes an Alternate Assets `alternate` entry on that asset
-  (so an HTTPS canonical + S3 alternate per slice fall out automatically).
-- The Item inherits the Collection's `dimensions` / `variables`; the token values
-  pin its position on those axes and SHOULD be emitted as Item properties so each
-  slice is independently searchable.
-- A `data[]` entry **without** `href_template` serializes as a single asset, per
-  5.1.
+- Each `{token}` resolves against the `dimensions[]` entry of the same `name`; the encoder iterates
+  the cross-product of those dimensions' `values`.
+- For each combination, `locations[0]` + the filled template is the Item's primary asset `href`
+  (canonical); every additional `locations[]` entry + the filled template becomes an Alternate
+  Assets `alternate` entry on that asset (so an HTTPS canonical + S3 alternate per slice fall out
+  automatically).
+- The Item inherits the Collection's `dimensions` / `variables`; the token values pin its position
+  on those axes and SHOULD be emitted as Item properties so each slice is independently searchable.
+- A `data[]` entry **without** `href_template` serializes as a single asset, per 5.1.
 
 ### 5.3 Asset roles
 
@@ -256,28 +244,26 @@ Multiple roles on one asset are allowed (e.g., `[metadata, describedby]`).
 | `license`                                           | License document                               |
 | `preview` / `icon` / `thumbnail`                    | Imagery                                        |
 
-Links SHOULD include `type` and `title` where useful. Extra fields on links MAY
-be used for CDH-defined attributes such as `cgiar-cdh:code_version`.
+Links SHOULD include `type` and `title` where useful. Extra fields on links MAY be used for
+CDH-defined attributes such as `cgiar-cdh:code_version`.
 
 ## 7. Processing and provenance
 
-The CDH `processing[]` block is a id-keyed list of processing steps. When
-`processing[]` is provided, at least one step MUST use `id: source` and describe
-the original/initial production of the data.
+The CDH `processing[]` block is a id-keyed list of processing steps. When `processing[]` is
+provided, at least one step MUST use `id: source` and describe the original/initial production of
+the data.
 
 Encoding rules:
 
-1. The `source` step maps to **Collection-level Provider** Processing Extension
-   fields:
+1. The `source` step maps to **Collection-level Provider** Processing Extension fields:
    - `description` -> `processing:lineage`
    - `date` -> `processing:datetime`
    - `{ <code.url basename>: code.version }` -> `processing:software`
-2. The any `code.url` maps to `links[rel=processing-expression]` on the
+2. The any `code.url` maps to `links[rel=processing-expression]` on the Collection.
+3. The `source` step's `derived_from[].url` entries map to `links[rel=derived_from]` on the
    Collection.
-3. The `source` step's `derived_from[].url` entries map to
-   `links[rel=derived_from]` on the Collection.
-4. Subsequent steps map to **Asset-level** Processing Extension fields on the
-   assets that reference them in `processing_steps[]`.
+4. Subsequent steps map to **Asset-level** Processing Extension fields on the assets that reference
+   them in `processing_steps[]`.
 5. `derived_from[]` entries are external URLs/STAC Metadata links and map to
    `links[rel=derived_from]`.
 
@@ -286,6 +272,6 @@ Encoding rules:
 For STAC validation to pass:
 
 - Every declared extension URI in `stac_extensions` MUST be valid and pinned.
-- Every `cgiar-cdh:*` field MUST be defined in the CDH STAC Extension schema.
-  Adding undefined `cgiar-cdh:*` fields will fail validation.
+- Every `cgiar-cdh:*` field MUST be defined in the CDH STAC Extension schema. Adding undefined
+  `cgiar-cdh:*` fields will fail validation.
 - File sizes and projection codes SHOULD be present on assets that need them.

@@ -89,9 +89,7 @@ function vocabErrors(doc) {
     for (const [broaderIndex, id] of concept.broader.entries()) {
       if (typeof id !== "string") continue;
       if (!conceptIds.has(id)) {
-        errors.push(
-          `/concepts/${index}/broader/${broaderIndex}: unknown concept id "${id}"`,
-        );
+        errors.push(`/concepts/${index}/broader/${broaderIndex}: unknown concept id "${id}"`);
       }
     }
   }

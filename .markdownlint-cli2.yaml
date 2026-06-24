@@ -1,0 +1,16 @@
+# markdownlint-cli2 config. Prettier owns formatting; these are the semantic and
+# structural lint rules we keep.
+config:
+  default: true
+  MD013: false # line length — Prettier handles wrapping
+  MD024:
+    siblings_only: true # Keep a Changelog repeats ### Added/Changed/Removed per release
+  MD034: false # bare URLs are intentional (extension schema URL lists)
+globs:
+  - "**/*.md"
+ignores:
+  - "**/node_modules/**"
+  - "_decisions.md"
+  - ".codex/**"
+  - ".claude/**"
+  - ".agents/**"

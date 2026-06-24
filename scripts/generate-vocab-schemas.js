@@ -15,11 +15,8 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 // The published schema $id is version-tagged (…/v<version>/schemas/…). Pull the
 // version from package.json so a release bump flows through to the generated
 // fragments automatically (run `npm run gen-schemas` after bumping).
-const { version } = JSON.parse(
-  await readFile(resolve(ROOT, "package.json"), "utf-8"),
-);
-const SCHEMA_BASE =
-  `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v${version}/schemas/vocab`;
+const { version } = JSON.parse(await readFile(resolve(ROOT, "package.json"), "utf-8"));
+const SCHEMA_BASE = `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v${version}/schemas/vocab`;
 
 const VOCABS = {
   domain: {
@@ -46,9 +43,7 @@ const VOCABS = {
 
 async function conceptIds(path) {
   const data = JSON.parse(await readFile(path, "utf-8"));
-  const ids = (data.concepts ?? [])
-    .filter((c) => "id" in c)
-    .map((c) => c.id);
+  const ids = (data.concepts ?? []).filter((c) => "id" in c).map((c) => c.id);
 
   if (ids.length === 0) {
     throw new Error(`No concepts[].id values found in ${path}`);
@@ -60,9 +55,7 @@ async function conceptIds(path) {
     seen.add(id);
   }
   if (duplicates.size > 0) {
-    throw new Error(
-      `Duplicate concept ids in ${path}: ${[...duplicates].sort().join(", ")}`,
-    );
+    throw new Error(`Duplicate concept ids in ${path}: ${[...duplicates].sort().join(", ")}`);
   }
   return ids;
 }
@@ -89,14 +82,10 @@ async function main() {
   const changed = [];
 
   for (const [name, cfg] of Object.entries(VOCABS)) {
-    const output = render(
-      schemaFor(name, await conceptIds(cfg.source), cfg.title),
-    );
+    const output = render(schemaFor(name, await conceptIds(cfg.source), cfg.title));
 
     if (check) {
-      const current = existsSync(cfg.target)
-        ? await readFile(cfg.target, "utf-8")
-        : null;
+      const current = existsSync(cfg.target) ? await readFile(cfg.target, "utf-8") : null;
       if (current !== output) changed.push(cfg.target);
       continue;
     }

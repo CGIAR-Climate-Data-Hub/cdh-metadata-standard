@@ -5,10 +5,7 @@
   "description": "Validates the JSON source files in vocab/.",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "scheme",
-    "concepts"
-  ],
+  "required": ["scheme", "concepts"],
   "properties": {
     "$schema": {
       "type": "string"
@@ -16,12 +13,7 @@
     "scheme": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "id",
-        "title",
-        "description",
-        "source_scheme"
-      ],
+      "required": ["id", "title", "description", "source_scheme"],
       "properties": {
         "id": {
           "$ref": "#/$defs/id"
@@ -37,11 +29,7 @@
         "source_scheme": {
           "type": "object",
           "additionalProperties": false,
-          "required": [
-            "id",
-            "uri",
-            "title"
-          ],
+          "required": ["id", "uri", "title"],
           "properties": {
             "id": {
               "$ref": "#/$defs/id"
@@ -64,12 +52,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": [
-          "id",
-          "label",
-          "code",
-          "uri"
-        ],
+        "required": ["id", "label", "code", "uri"],
         "allOf": [
           {
             "if": {
@@ -78,14 +61,10 @@
                   "const": null
                 }
               },
-              "required": [
-                "uri"
-              ]
+              "required": ["uri"]
             },
             "then": {
-              "required": [
-                "description"
-              ],
+              "required": ["description"],
               "properties": {
                 "description": {
                   "type": "string",
