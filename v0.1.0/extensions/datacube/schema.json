@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.1.0/extensions/datacube/schema.json",
+  "title": "Datacube Extension",
+  "description": "Dimensions and variables for gridded, multidimensional, or tabular data.",
+  "type": "object",
+  "$defs": {
+    "nullableString": { "type": ["string", "null"] },
+    "scalarOrNull": {
+      "anyOf": [
+        { "type": "string" },
+        { "type": "number" },
+        { "type": "boolean" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "properties": {
+    "dimensions": {
+      "description": "Cube axes, e.g. lat, lon, time, or a domain axis like crop.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string", "description": "What the dimension is; define coded values here, or via reference_system or a sidecar." },
+          "type": { "type": "string", "description": "Dimension type: spatial, temporal, bands, or a domain axis (e.g. crop, scenario)." },
+          "reference_system": { "$ref": "#/$defs/nullableString", "description": "Controlled-vocabulary URI or label defining the dimension's values, when coded." },
+          "values": {
+            "description": "Allowed values along the dimension.",
+            "type": "array",
+            "items": { "$ref": "#/$defs/scalarOrNull" }
+          }
+        }
+      }
+    },
+    "variables": {
+      "description": "Measurement variables, bands, or columns.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string", "description": "Stable definition and reading guidance for the variable." },
+          "data_type": { "$ref": "#/$defs/nullableString", "description": "Data type, numpy-style (e.g. float32, int16)." },
+          "dimensions": {
+            "description": "Axes this variable spans; omit when it spans all declared dimensions.",
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "unit": { "$ref": "#/$defs/nullableString", "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM.", "examples": ["t ha-1", "{head}/km2"] },
+          "note": { "$ref": "#/$defs/nullableString", "description": "Variable-specific caveats, limitations, or warnings." }
+        }
+      }
+    }
+  }
+}
