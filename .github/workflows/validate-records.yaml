@@ -54,8 +54,8 @@ jobs:
       - name: Check out caller repo
         uses: actions/checkout@v6
         with:
-          # changed-only needs history to diff the PR/push base against HEAD.
-          fetch-depth: ${{ inputs.changed-only && 0 || 1 }}
+          # Full history so changed-only can diff the PR/push base against HEAD.
+          fetch-depth: 0
 
       - name: Check out CDH tooling
         uses: actions/checkout@v6
