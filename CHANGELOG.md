@@ -10,8 +10,19 @@ occur between minor versions.
 
 ## [Unreleased]
 
+### Added
+
+- `access` field (optional; values `public` / `restricted` / `non-public`, default `public`) to
+  declare data access conditions separately from `license` — an embargo (data not yet released) is
+  `restricted`, not a separate value. Encodes as `cgiar-cdh:access` in STAC and `dct:accessRights`
+  (EU accessRights vocabulary, via GeoDCAT) in OGC Records.
+
 ### Changed
 
+- OGC Records mapping now prefers a recognized GeoDCAT / `dct:` term over a `cgiar-cdh:*` field
+  wherever one exists — each encoding uses its own ecosystem's standard term. First application:
+  `spatial.geography[]` → `dct:spatial`. STAC continues to use its native extensions and
+  `cgiar-cdh:*`.
 - Records may now use unquoted ISO dates (e.g. `created: 2026-06-23`). The validator parses YAML as
   1.2 core, so dates remain strings instead of being rejected as date objects; quoting still works.
 - Repository formatting and linting moved from remark to Prettier (Markdown, JSON, YAML) and

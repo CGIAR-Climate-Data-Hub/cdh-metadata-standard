@@ -225,8 +225,25 @@ the CDH extensions (section 5.5, declared in `extensions[]`). For each field: **
 - **Rules:**
   - Prefer SPDX identifiers.
   - Data must be licensed to be included in the Hub.
-  - Access restrictions are separate from license.
+  - Access restrictions are separate from license (see `access`).
 - **Examples:** `CC-BY-4.0`, `CC0-1.0`, `MIT`.
+
+#### `access`
+
+- **Requirement:** Optional. Defaults to `public` when omitted.
+- **Definition:** Access condition for the resource's data, distinct from `license` (which sets
+  reuse terms, not who may obtain the data).
+- **Vocabulary:** Closed set, aligned to the DCAT / EU accessRights vocabulary:
+  - `public` - openly accessible; the data can be obtained directly.
+  - `restricted` - discoverable, but obtaining the data requires a request or authentication (e.g.
+    contact the producer, or credentialed/presigned access).
+  - `non-public` - catalogued for discovery but not available through public channels.
+- **Rules:**
+  - Omit (or set `public`) for openly accessible data.
+  - An embargo (data not yet released) is `restricted`, not a separate value.
+  - For `restricted` / `non-public` records, the primary `data[].locations[].url` should point at an
+    access/request path rather than a dead direct download.
+- **Example:** `restricted`
 
 #### `resource_type`
 

@@ -627,6 +627,11 @@
   },
   "description": "JSON Schema for validating CDH metadata input YAML records before serialization to STAC or OGC API Records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
   "properties": {
+    "access": {
+      "description": "Access condition for the resource's data, distinct from license. Omitting it means public. Aligned to the DCAT / EU accessRights vocabulary: public (openly accessible); restricted (discoverable, but obtaining the data requires a request or authentication); non-public (catalogued but not available through public channels).",
+      "default": "public",
+      "enum": ["public", "restricted", "non-public"]
+    },
     "additional_assets": {
       "description": "Sidecar or auxiliary assets, e.g. metadata files or thumbnails.",
       "items": {
