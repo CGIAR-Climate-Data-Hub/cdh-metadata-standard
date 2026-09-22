@@ -671,6 +671,10 @@
               "type": "null"
             }
           ]
+        },
+        "update_frequency": {
+          "description": "How often this resource gains new data. Recommended while a series is still growing; omit for a finished one.",
+          "enum": ["daily", "weekly", "monthly", "quarterly", "semiannual", "annual", "irregular"]
         }
       },
       "dependentRequired": {

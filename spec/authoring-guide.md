@@ -499,6 +499,11 @@ Common fields:
 Use `start_date` and `end_date` for a span, with `end_date: null` for an open-ended series. Do not
 combine `date` with `start_date` or `end_date`.
 
+For a series that is still growing, add `update_frequency` (`daily`, `weekly`, `monthly`,
+`quarterly`, `semiannual`, `annual`, or `irregular`). It says how often _this_ resource gains new
+data: a Hub copy of CHIRPS refreshed once a year is `annual`, even though CHIRPS itself appends
+monthly. Give such a copy its real `end_date` rather than `null`, and move it at each refresh.
+
 These fields can be precise to the year (_e.g._ `date: "1981"`), month (_e.g._ `date: "1981-01"`),
 day (_e.g._ `date: "1981-01-01"`), or datetime (_e.g._ `date: "1981-01-01T00:00:00"`).
 

@@ -76,6 +76,7 @@ terms are used where available, e.g. `access` -> `dct:accessRights`.
 | `version`                   | `properties.version`. Superseded releases get record id `<id>-<version>`; the current release keeps the bare `id`.                                                         |
 | `deprecated`                | `properties["cgiar-cdh:deprecated"]`                                                                                                                                       |
 | `previous_version`          | `links[rel=predecessor-version]`                                                                                                                                           |
+| `temporal.update_frequency` | `properties["dct:accrualPeriodicity"]`, as the matching EU frequency vocabulary URI (`daily` -> `DAILY`, `semiannual` -> `ANNUAL_2`, `irregular` -> `IRREG`).              |
 | `funding[]`                 | `properties["cgiar-cdh:funding"]`                                                                                                                                          |
 | `series`                    | `properties["dcat:inSeries"]` (`{ name, url }`, DCAT 3 dataset series). Advertise DCAT 3 via `conformsTo`.                                                                 |
 

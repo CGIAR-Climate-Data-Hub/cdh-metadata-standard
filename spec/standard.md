@@ -175,7 +175,8 @@ Use this rule when a resource changes:
 - **Metadata fix or enrichment** (typo, better description, added contact) - update the existing
   record in place. `updated` reflects the revision.
 - **Routinely extended time series** (e.g., a monthly-updated observation product) - same record;
-  use an open-ended `temporal` interval. This is not a version.
+  state `temporal.update_frequency`, and use an open-ended `temporal` interval only when this
+  resource itself grows continuously. This is not a version.
 - **Same values, new packaging** (new file format, chunking, or lossless compression) - update the
   existing record with the additional URLs and the processing code version. If any value changes, it
   is a revision.
@@ -661,6 +662,21 @@ temporal cadence is not stored here (see "Temporal cadence" below).
   - **A reduced-precision `end_date` is inclusive through the end of its period** (`end_date: 2010`
     means through 2010-12-31). Starts expand to the beginning of the period, which naive parsing
     already does; only ends need the end-of-period expansion.
+  - **`end_date: null` means this resource itself is extended continuously.** A copy refreshed on a
+    schedule states its real `end_date` and moves it at each refresh.
+
+#### `temporal.update_frequency`
+
+- **Requirement:** Optional. Recommended while the series is still growing.
+- **Expected value:** One of `daily`, `weekly`, `monthly`, `quarterly`, `semiannual`, `annual`,
+  `irregular`.
+- **Rules:**
+  - How often _this resource_ gains new data, not how often its source does. A Hub mirror refreshed
+    once a year says `annual` even when the source publishes monthly; the source cadence is
+    provenance (`processing[]`).
+  - Not the data cadence: a daily series refreshed monthly has a daily `step` and a `monthly`
+    `update_frequency`.
+  - Omit it on a finished series.
 
 #### Temporal cadence
 

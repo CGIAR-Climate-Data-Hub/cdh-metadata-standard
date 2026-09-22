@@ -140,6 +140,10 @@
       "description": "Caveats, warnings, or interpretation-critical context that is not part of the description.",
       "$ref": "#/definitions/nonEmptyString"
     },
+    "cgiar-cdh:update_frequency": {
+      "description": "How often this resource gains new data.",
+      "enum": ["daily", "weekly", "monthly", "quarterly", "semiannual", "annual", "irregular"]
+    },
     "cgiar-cdh:funding": {
       "description": "Funding sources for the resource.",
       "type": "array",
@@ -322,6 +326,9 @@
         "cgiar-cdh:note": {
           "$ref": "#/definitions/cgiar-cdh:note"
         },
+        "cgiar-cdh:update_frequency": {
+          "$ref": "#/definitions/cgiar-cdh:update_frequency"
+        },
         "cgiar-cdh:mip_era": {
           "$ref": "#/definitions/cgiar-cdh:mip_era"
         },
@@ -463,6 +470,9 @@
         },
         "cgiar-cdh:note": {
           "$ref": "#/definitions/cgiar-cdh:note"
+        },
+        "cgiar-cdh:update_frequency": {
+          "$ref": "#/definitions/cgiar-cdh:update_frequency"
         },
         "cgiar-cdh:mip_era": {
           "$ref": "#/definitions/cgiar-cdh:mip_era"
