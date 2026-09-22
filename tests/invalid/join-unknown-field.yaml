@@ -34,3 +34,6 @@ data:
   - name: table
     locations:
       - url: https://cdh.example/data/population.parquet
+
+created: 2026-01-01
+updated: 2026-01-01

@@ -23,3 +23,6 @@ data:
 # series requires name; url alone is not enough to group records.
 series:
   url: https://example.org/series
+
+created: 2026-01-01
+updated: 2026-01-01

@@ -211,12 +211,12 @@ and its metadata - typically whoever authored or submitted the record and mainta
 are allowed to list multiple roles.
 
 For `citation`, provide structured fields - `authors` and `date` (required), plus optional `title`,
-`publisher`, and `url`. You may omit `citation` when a `doi` is provided, as fields can be derived.
+`publisher`, and `url`. You may omit `citation` when a `doi` is provided.
 
 ### `created` and `updated`
 
-These timestamps are optional when authoring - provide them if you want, or leave them out and they
-are filled in at publication. If updating a resource, please provide a new `updated` date.
+Both are required. Set `created` when you first write the record and a new `updated` date each time
+you change it.
 
 ### `data`
 
@@ -235,9 +235,17 @@ data:
 ```
 
 Each asset's `locations` lists access paths to the same content. The first is the primary access
-pattern (most often an https url). Alternate locations can be provided if applicable, such as if the
-same file is hosted on multiple storage platforms. Data in different formats (csv, parquet) or
-services (such as an API or GEE asset) should be listed as separate `data` entries.
+pattern (most often an https url). A location is the data itself - a file, a bucket prefix, a Zarr
+root, a service endpoint - never a landing page. A Zenodo or Dataverse record page goes in
+`citation.url` or `doi`; a project website goes in `additional_links[]`. Alternate locations can be
+provided if applicable, such as if the same file is hosted on multiple storage platforms. Data in
+different formats (csv, parquet) or services (such as an API or GEE asset) should be listed as
+separate `data` entries.
+
+Omitting `fields` means the asset contains all fields declared in `dimensions[]` and `variables[]`.
+If an asset contains only a subset, list that complete subset in `fields`, using the declared names.
+Verify each asset's field membership before publication, either from the source or with an
+inspection tool.
 
 Every asset needs a `name`, and names must be unique across both `data` and `additional_assets`. Use
 `nodata` when an asset has a sentinel value for missing or invalid observations. When `processing`
@@ -291,17 +299,85 @@ Rules:
   expands over `variables[].name` for files split per variable.
 - The matching dimension's `values` (or the variable names) are substituted verbatim and must match
   file-name tokens.
-- Every token dimension must list `values`
+- When a file name spells a date differently from the ISO value, give the token a strftime format:
+  `chirps-v2.0.{date:%Y.%m.%d}.tif`. Only `%Y %m %d %H %M %j` are allowed, and only on a
+  `type: temporal` dimension. The same token may repeat with different formats, so hive-partitioned
+  days are `year={date:%Y}/month={date:%m}/ptot_{date:%Y%m%d}.tif`. Month or season names are
+  labels, not formats: declare them as a domain axis with the labels in `values`.
+- Every token dimension must list `values`, or for a regular temporal axis give `extent` and `step`
+  (`extent: ["1981", "2025"]`, `step: P1Y`) instead of writing out every year.
 - The template assumes every value combination exists.
 - Each file URL is `locations[0].url` + filled template; additional locations become alternates.
-- Without `href_template`, `locations[].url` are full file URLs.
+- Without `href_template` or `file_index`, `locations[].url` are full file URLs.
 - A templated entry shares one `description`, `nodata`, `media_type`, and `file_size` across every
-  generated file; split into separate `data[]` entries (e.g. one per variable) when those differ.
-  `file_size` is the size of a single generated file, not the set - omit it where slices differ
-  materially in size rather than averaging them.
+  file; split into separate `data[]` entries (e.g. one per variable) when those differ. `file_size`
+  is the size of a single file, not the set - omit it where slices differ materially in size rather
+  than averaging them.
 
 Only the file-partitioning dimensions go in the template. Dimensions stored inside each file (e.g.
 bands of a multi-band COG) stay out of it.
+
+#### Irregular or very large file sets with `file_index`
+
+A template assumes two things: every combination of token values exists, and the file name can be
+computed from the coordinates. When either is false, or there are thousands of files, point at an
+index instead. `file_index` is a list of indexes of the same files, each with a `format`:
+
+- `stac-geoparquet`: STAC items in Parquet. Preferred for large tiled products; STAC clients,
+  DuckDB, and GDAL open it.
+- `gti` or `vrt`: GDAL opens all the tiles as one raster.
+- `kerchunk` or `icechunk`: xarray opens many NetCDF/HDF files as one dataset. An Icechunk store
+  that holds its own data is a `data[]` entry instead.
+- `cdh-inventory`: a CSV with one row per file: a required `href` column, relative to every
+  `locations[].url` (a directory base ending in `/`), plus one column per declared dimension giving
+  that file's coordinate, and `variable` when each file holds a single variable. The only format CDH
+  checks; use it when you have a spreadsheet and nothing else.
+
+Any one index is enough. List the one people should open first.
+
+```yaml
+dimensions:
+  - name: time
+    type: temporal
+    extent: ["2020-02-01", "2020-02-29"]
+    step: P1D
+data:
+  - name: daily-rainfall
+    locations:
+      - url: https://example.org/rainfall/
+    file_index:
+      - format: cdh-inventory
+        locations:
+          - url: https://example.org/rainfall/files.csv
+```
+
+Gaps and a naming change mid-series. A template would claim 02-02 exists and spell 02-04 wrong:
+
+```csv
+href,time
+2020/CHIRPS-v2.0.2020.02.01.tif,2020-02-01
+2020/CHIRPS-v2.0.2020.02.03.tif,2020-02-03
+2020/chirps_20200204_prelim.tif,2020-02-04
+```
+
+Opaque names and an incomplete grid. There is no wheat/ssp585 file, and without the `crop` and
+`scenario` columns nobody can tell what `a1f3.tif` is:
+
+```csv
+href,crop,scenario
+a1f3.tif,maize,ssp245
+b7c9.tif,maize,ssp585
+c002.tif,wheat,ssp245
+```
+
+Include a column for every dimension the record declares. An inventory with only `href` is valid but
+leaves consumers unable to select files without opening them. Several rows may share a coordinate,
+e.g. tiles observed on the same date. Add a `variable` column when files hold one variable each and
+the names do not follow a `{variable}` token.
+
+Use either `file_index` or `href_template` on an entry. Inventory rows enumerate the files present,
+so omitted dates do not imply missing rows that a consumer should fill. See the
+[file index rules](standard.md#file-indexes-file_index) for the formats and the CSV columns.
 
 ## Additional fields (Conditional/Optional)
 
@@ -537,9 +613,15 @@ asset entries for different files.
 
 For `additional_assets`, provide `media_type` and `file_size` when known.
 
-`roles` is open; the suggested values are `metadata`, `validation`, `describedby`, `thumbnail`,
-`overview`, `visual`, and `example`. Use `example` for a runnable usage example - worth adding when
-consuming the data needs a query that the data itself cannot carry, such as a required join:
+A small metadata file can live beside the record instead of at a URL. Commit it next to the YAML and
+give its `url` as a relative path, such as `./README.md` or `docs/legend.csv`. Validation checks the
+file exists. This is for documentation, code lists, legends, and thumbnails, not for data. Data URLs
+must be absolute.
+
+`roles` is open; the suggested values are `metadata`, `validation`, `describedby`, `agents`,
+`thumbnail`, `overview`, `visual`, and `example`. Use `example` for a runnable usage example - worth
+adding when consuming the data needs a query that the data itself cannot carry, such as a required
+join:
 
 ```yaml
 additional_assets:
@@ -555,6 +637,36 @@ additional_assets:
     description: class codes for the dataset.
     locations:
       - url: https://example.org/rasterClasses.csv
+```
+
+#### Optional: a README and an agent guide
+
+You can add two Markdown files beside the record. Neither is required.
+
+- A **README** (`roles: [describedby]`) for a person deciding whether to use the data: what it is,
+  numbers that build trust, links to methods and sources.
+- An **agent guide** (`roles: [agents]`) for an AI agent or analyst who has already decided to use
+  it and needs to get the first query right: which column is the stable key and what it joins to,
+  quirks and caveats, what the coordinate system means for distance and area, and a few tested
+  queries with their expected results.
+
+Leave out anything the record already states, such as extent, license, or row counts. Duplicated
+facts drift.
+
+```yaml
+additional_assets:
+  - name: readme
+    roles: [describedby]
+    media_type: text/markdown
+    description: Human-readable overview.
+    locations:
+      - url: ./README.md
+  - name: agent-guide
+    roles: [agents]
+    media_type: text/markdown
+    description: Keys, join columns, quirks, and tested queries.
+    locations:
+      - url: ./AGENTS.md
 ```
 
 ### Additional links
@@ -578,10 +690,17 @@ additional_links:
 
 ## Where The Record Lives
 
-Put the record in a directory named for the resource. Superseded snapshots sit beside it. When a
-representation exists only because of that resource - an admin-level aggregation, a point
-extraction, a convenience reformat nobody would look for on its own - give it a subdirectory, and it
-becomes a child you can enter from the parent:
+Put the record in a directory named for the resource. Superseded releases can sit beside it, and
+related representations can use subdirectories for filing. Catalog hierarchy is expressed by
+`parent`, independently of directory layout. For an admin-level aggregation of one product, the
+child record includes:
+
+```yaml
+id: example-crop-suitability-admin2
+parent: example-crop-suitability
+```
+
+One possible directory layout is:
 
 ```text
 example-crop-suitability/
@@ -592,13 +711,16 @@ example-crop-suitability/
 ```
 
 Nothing is inherited. Each record still states its own `license`, `contact`, `citation`, `spatial`,
-and `temporal`, even where the parent repeats it word for word - the position only adds navigation
+and `temporal`, even where the parent repeats it word for word - `parent` only adds navigation
 links, and a child still records `processing[].derived_from` if it was derived from its parent.
 
 If the thing has standing of its own - its own DOI, its own funding, inputs from several products -
-it is not a child. Give it its own directory and link it with `derived_from`. Do not group by theme
-or program either: a subject area is `cdh.domain` and a program is `series`, and both stay filters
-rather than folders. See `standard.md` section 4.8.
+omit `parent` and link its sources with `processing[].derived_from`. A subject area is `cdh.domain`
+and a program is `series`; neither establishes parenthood. Moving a file never changes its parent.
+
+Before publication, check the complete catalog. Every parent must exist, ids must be unique, and
+self-parenting and cycles are prohibited. A single-file check cannot establish the integrity of the
+whole hierarchy. See `standard.md` section 4.8.
 
 ## Superseding a Record
 
@@ -655,7 +777,7 @@ Avoid inventing new fields. If the template has no place for something, use `add
 - [ ] `cdh_schema_version`
 - [ ] `$schema`
 - [ ] `id`, `title`, `description`
-- [ ] `created`, `updated` (filled in at publication if omitted)
+- [ ] `created`, `updated`
 - [ ] `resource_type`
 - [ ] `cdh.domain[]` includes at least one concept from `vocab/domain.json`
 - [ ] `keywords[]`

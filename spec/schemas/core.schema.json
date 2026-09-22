@@ -23,7 +23,7 @@
           ]
         },
         "locations": {
-          "description": "Access paths to the same content; the first is canonical.",
+          "description": "Access paths to the same content; the first is canonical. An absolute URL, or a path relative to the record file for a small metadata file committed beside it (README, agent guide, code list, thumbnail).",
           "items": {
             "$ref": "#/$defs/location"
           },
@@ -36,10 +36,10 @@
         "name": {
           "type": "string",
           "minLength": 1,
-          "description": "Asset name; becomes the asset key in serialized output, so it must be unique across data[] and additional_assets[]."
+          "description": "Asset name; must be unique across data[] and additional_assets[]."
         },
         "roles": {
-          "description": "Asset roles. Suggested values, not a closed set: `metadata`, `validation`, `describedby`, `thumbnail`, `overview`, `visual`, `example` (a runnable usage example, e.g. a notebook or SQL file).",
+          "description": "Asset roles. Suggested values, not a closed set: `metadata`, `validation`, `describedby` (human documentation such as a README), `agents` (a Markdown guide for AI agents: keys and join columns, quirks, CRS consequences, tested queries), `thumbnail`, `overview`, `visual`, `example` (a runnable usage example, e.g. a notebook or SQL file).",
           "items": {
             "type": "string",
             "minLength": 1,
@@ -47,6 +47,7 @@
               "metadata",
               "validation",
               "describedby",
+              "agents",
               "thumbnail",
               "overview",
               "visual",
@@ -127,12 +128,7 @@
           ]
         },
         "locations": {
-          "description": "Access paths to the same content; the first is canonical.",
-          "items": {
-            "$ref": "#/$defs/location"
-          },
-          "minItems": 1,
-          "type": "array"
+          "$ref": "#/$defs/locations"
         },
         "media_type": {
           "$ref": "#/$defs/mediaType"
@@ -140,13 +136,68 @@
         "name": {
           "type": "string",
           "minLength": 1,
-          "description": "Asset name; becomes the asset key in serialized output, so it must be unique across data[] and additional_assets[]."
+          "description": "Asset name; must be unique across data[] and additional_assets[]."
+        },
+        "fields": {
+          "description": "Names of the dimensions[]/variables[] entries this asset contains. Omission means the asset contains all declared fields. An explicit list must name the asset's complete subset of declared fields and is required whenever the asset does not contain them all (e.g. tables at several admin levels). Field membership must be verified before publication.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "href_template": {
           "type": "string",
-          "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name (requires the datacube extension); the entry expands to one item per combination of the tokens' values. When absent, locations[].url are full file URLs and the entry is a single asset.",
-          "examples": ["mapspam_{crop}_{technology}_{variable}.tif"],
+          "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name (requires the datacube extension); the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d %H %M %j only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset.",
+          "examples": [
+            "mapspam_{crop}_{technology}_{variable}.tif",
+            "chirps-v2.0.{date:%Y.%m.%d}.tif"
+          ],
           "minLength": 1
+        },
+        "file_index": {
+          "description": "Indexes that list or open this entry's files as one dataset, per the File indexes section of standard.md. Each entry is one index file; its locations[] are the same file at several addresses. format names the specification the file follows; cdh-inventory (the CDH column contract, CSV or Parquet) may appear once and is the only one CDH validates. Mutually exclusive with href_template.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["format", "locations"],
+            "properties": {
+              "format": {
+                "enum": ["stac-geoparquet", "gti", "vrt", "kerchunk", "icechunk", "cdh-inventory"]
+              },
+              "locations": {
+                "$ref": "#/$defs/locations"
+              },
+              "title": {
+                "description": "Optional label, e.g. which scheme the index's internal paths use.",
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "media_type": {
+                "description": "IANA media type of the index file itself, when it has one. Optional; useful for gti (GeoPackage, FlatGeobuf, or Parquet) and cdh-inventory (CSV or Parquet).",
+                "$ref": "#/$defs/nonEmptyString"
+              }
+            }
+          },
+          "contains": { "properties": { "format": { "const": "cdh-inventory" } } },
+          "minContains": 0,
+          "maxContains": 1
+        },
+        "spatial": {
+          "description": "Coverage of this asset alone, for selecting files by area. Same shapes as the top-level spatial. Omit when unknown; the top-level bbox is not copied down.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bbox": {
+              "$ref": "#/$defs/spatial/properties/bbox"
+            },
+            "geography": {
+              "$ref": "#/$defs/spatial/properties/geography"
+            }
+          }
         },
         "nodata": {
           "description": "No-data / fill value for the asset.",
@@ -161,7 +212,22 @@
           "type": "array"
         }
       },
-      "required": ["name", "locations"],
+      "required": ["name"],
+      "anyOf": [
+        { "required": ["locations"] },
+        {
+          "$comment": "locations may be omitted when a file_index carries the file locations itself (any format but cdh-inventory).",
+          "required": ["file_index"],
+          "properties": {
+            "file_index": {
+              "not": { "contains": { "properties": { "format": { "const": "cdh-inventory" } } } }
+            }
+          }
+        }
+      ],
+      "not": {
+        "required": ["href_template", "file_index"]
+      },
       "type": "object"
     },
     "bboxCoords": {
@@ -314,6 +380,14 @@
       "required": ["rel", "url"],
       "type": "object"
     },
+    "locations": {
+      "description": "Access paths to the same content; the first is canonical. URLs are always absolute and machine-actionable: a data file, a store or directory prefix, or a service endpoint - never a landing page or DOI (those go in citation.url, doi, or additional_links).",
+      "items": {
+        "allOf": [{ "$ref": "#/$defs/location" }, { "properties": { "url": { "format": "uri" } } }]
+      },
+      "minItems": 1,
+      "type": "array"
+    },
     "location": {
       "additionalProperties": false,
       "properties": {
@@ -323,7 +397,8 @@
           "minLength": 1
         },
         "url": {
-          "$ref": "#/$defs/nonEmptyString"
+          "$ref": "#/$defs/nonEmptyString",
+          "description": "Absolute URL. In additional_assets[] it may instead be a path relative to the record file."
         }
       },
       "required": ["url"],
@@ -497,7 +572,7 @@
       "additionalProperties": false,
       "properties": {
         "bbox": {
-          "description": "Spatial extent. A single bounding box, or a list of boxes for disjoint coverage - each box is a real area covered, in any order; the overall/union extent is derived when serializing, not authored. 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+          "description": "Spatial extent. A single bounding box, or a list of boxes for disjoint coverage - each box is a real area covered, in any order; do not include an overall/union box. 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
           "oneOf": [
             {
               "$ref": "#/$defs/bboxCoords"
@@ -609,7 +684,7 @@
       "type": "object"
     }
   },
-  "description": "JSON Schema for validating CDH metadata input YAML records before serialization to STAC or OGC API Records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
+  "description": "JSON Schema for CDH metadata records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
   "patternProperties": {
     "^\\$schema$": {
       "description": "Canonical JSON Schema URL for validating this metadata record.",
@@ -670,7 +745,7 @@
     },
     "created": {
       "$ref": "#/$defs/date",
-      "description": "Date the record was first published to the Hub - the metadata record, not the data file. Optional when authoring; filled in at publication if omitted."
+      "description": "Date the metadata record was created - the record, not the data file."
     },
     "data": {
       "description": "Data assets for the resource; at least one entry.",
@@ -712,7 +787,7 @@
       "$ref": "#/$defs/id"
     },
     "keywords": {
-      "description": "Free-text search terms. Each item is either a plain string, or an object linking the term to an external vocabulary/ontology (e.g., AGROVOC, GEMET). Linked-keyword items are also emitted as ontology themes in the serialized output, grouped by `scheme`.",
+      "description": "Free-text search terms. Each item is either a plain string, or an object linking the term to an external vocabulary/ontology (e.g., AGROVOC, GEMET).",
       "type": "array",
       "uniqueItems": true,
       "items": {
@@ -731,7 +806,7 @@
                 "minLength": 1
               },
               "scheme": {
-                "description": "Resolvable URI of the controlled vocabulary or ontology this term comes from. CDH vocab schemes (.../cdh-metadata-standard/vocab/) are reserved for encoder expansion of cdh.domain / commodities - link an external vocabulary instead.",
+                "description": "Resolvable URI of the controlled vocabulary or ontology this term comes from. CDH vocab schemes (.../cdh-metadata-standard/vocab/) belong to cdh.domain / commodities - link an external vocabulary instead.",
                 "type": "string",
                 "format": "uri",
                 "not": {
@@ -762,6 +837,10 @@
     "note": {
       "$ref": "#/$defs/nonEmptyString",
       "description": "Caveats, warnings, or interpretation-critical remarks not captured in description."
+    },
+    "parent": {
+      "$ref": "#/$defs/id",
+      "description": "id of the parent record, when this record is a child representation of it. Omit on top-level records. Must resolve to exactly one catalog record, must not equal this record's id, and must not create a parent cycle."
     },
     "previous_version": {
       "$ref": "#/$defs/nonEmptyString",
@@ -813,7 +892,7 @@
     },
     "updated": {
       "$ref": "#/$defs/date",
-      "description": "Date the record was last revised - the metadata record, not the data file. Optional when authoring; filled in at publication if omitted."
+      "description": "Date the metadata record was last updated - the record, not the data file."
     },
     "version": {
       "$ref": "#/$defs/nonEmptyString",
@@ -826,6 +905,8 @@
     "id",
     "title",
     "description",
+    "created",
+    "updated",
     "license",
     "resource_type",
     "keywords",

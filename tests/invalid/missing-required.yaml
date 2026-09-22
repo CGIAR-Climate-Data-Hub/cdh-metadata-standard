@@ -16,3 +16,6 @@ data:
   - name: primary
     locations:
       - url: https://example.org/data.tif
+
+created: 2026-01-01
+updated: 2026-01-01

@@ -28,8 +28,9 @@
 // Directories are walked recursively for *.yaml and *.yml files. Files of any
 // other extension are accepted as-is (so explicit non-.yaml paths still work).
 
+import { existsSync } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
-import { extname, resolve, sep } from "node:path";
+import { dirname, extname, resolve, sep } from "node:path";
 
 import yaml from "js-yaml";
 import validateSpdxExpression from "spdx-expression-validate";
@@ -292,7 +293,32 @@ function validateFile(file, doc) {
     }
   }
   if (seen.size) return { draft, errors: [...seen] };
-  return { draft, errors: checkCrossFieldRules(target, { isSpdx: validateSpdxExpression }) };
+  return {
+    draft,
+    errors: [
+      ...checkCrossFieldRules(target, { isSpdx: validateSpdxExpression }),
+      ...missingRelativeAssets(file, target),
+    ],
+  };
+}
+
+// A relative additional_assets[] url names a file committed beside the record
+// (standard.md 5.6). Only this script can see the filesystem, so the check
+// lives here rather than in cross-field.js.
+function missingRelativeAssets(file, doc) {
+  const out = [];
+  list(doc?.additional_assets).forEach((asset, i) => {
+    list(asset?.locations).forEach((loc, j) => {
+      const url = loc?.url;
+      if (typeof url !== "string" || /^[a-z][a-z0-9+.-]*:/i.test(url)) return;
+      if (!existsSync(resolve(dirname(file), url))) {
+        out.push(
+          `/additional_assets/${i}/locations/${j}/url: relative path "${url}" not found beside the record`,
+        );
+      }
+    });
+  });
+  return out;
 }
 
 let failures = 0;

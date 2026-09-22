@@ -2,8 +2,10 @@
 cdh_schema_version: "v0.3.0"
 extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/datacube/schema.json
 id: fixture-record
-title: Temporal with both date and a span
+version: "1"
+title: Format on a non-temporal template token
 description: A deliberately broken record for the negative test suite.
 license: CC-BY-4.0
 resource_type: dataset
@@ -17,14 +19,16 @@ citation:
   authors: [Doe, J.]
   date: "2026"
 data:
-  - name: primary
+  - name: cogs
     locations:
-      - url: https://example.org/data.tif
-# date and start_date/end_date are mutually exclusive.
-temporal:
-  date: "2020"
-  start_date: "2000"
-  end_date: "2020"
+      - url: https://example.org/cogs/
+    # A format is only allowed on a type: temporal token; crop is a domain axis.
+    href_template: "file_{crop:%Y}.tif"
+dimensions:
+  - name: crop
+    type: crop
+    description: Crop code.
+    values: [maiz, rice]
 
 created: 2026-01-01
 updated: 2026-01-01

@@ -23,3 +23,6 @@ additional_assets:
   - name: primary
     locations:
       - url: https://example.org/readme.md
+
+created: 2026-01-01
+updated: 2026-01-01

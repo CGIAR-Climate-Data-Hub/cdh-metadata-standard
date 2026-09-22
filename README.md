@@ -16,6 +16,8 @@ templates. Records are validated against the schema and mapped to STAC or OGC AP
 - [Standard](./spec/standard.md) - formal field definitions and validation expectations.
 - [Extending & adopting](./spec/extending.md) - add your own extension, build a profile, or adopt
   the core standard outside the Hub.
+- [File indexes](./spec/standard.md#file-indexes-file_index) - GTI, VRT, stac-geoparquet, kerchunk,
+  Icechunk, or CSV lists over many files.
 
 ## Mappings
 

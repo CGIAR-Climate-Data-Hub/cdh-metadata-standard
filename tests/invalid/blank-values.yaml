@@ -20,3 +20,6 @@ data:
     locations:
       - url: https://example.org/data.tif
 note: null
+
+created: 2026-01-01
+updated: 2026-01-01

@@ -45,24 +45,42 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
   if (typeof doc?.license === "string" && !validateSpdxExpression(doc.license)) {
     out.push(`/license: must be a valid SPDX license expression`);
   }
-  const dims = new Map(list(doc?.dimensions).map((d) => [d?.name, list(d?.values).length]));
+  // A temporal dimension may give extent + step instead of listing values.
+  const dims = new Map(
+    list(doc?.dimensions).map((d) => [
+      d?.name,
+      { count: list(d?.values).length + list(d?.extent).length, temporal: d?.type === "temporal" },
+    ]),
+  );
   const namedVariables = list(doc?.variables).filter((v) => typeof v?.name === "string").length;
   list(doc?.data).forEach((asset, i) => {
     const tpl = asset?.href_template;
     if (typeof tpl !== "string" || tpl === "") return;
-    for (const [, token] of tpl.matchAll(/\{([^}]+)\}/g)) {
+    // {token} or {token:strftime}; the spec spells a temporal value the way the file name does.
+    for (const [, token, spec] of tpl.matchAll(/\{([^}:]+)(?::([^}]*))?\}/g)) {
+      const dim = dims.get(token);
       if (token === "variable") {
         if (namedVariables === 0) {
           out.push(
             `/data/${i}/href_template: token {variable} expands over variables[].name, but no named variables are declared (requires the datacube extension)`,
           );
         }
-      } else if (!dims.has(token)) {
+      } else if (!dim) {
         out.push(
           `/data/${i}/href_template: token {${token}} has no matching dimensions[].name (requires the datacube extension)`,
         );
-      } else if (dims.get(token) === 0) {
-        out.push(`/data/${i}/href_template: dimension "${token}" must list its values`);
+      } else if (dim.count === 0) {
+        out.push(`/data/${i}/href_template: dimension "${token}" must list its values or extent`);
+      }
+      if (spec === undefined) continue;
+      if (!dim?.temporal) {
+        out.push(
+          `/data/${i}/href_template: token {${token}:${spec}} carries a format, which is only allowed on a type: temporal dimension`,
+        );
+      } else if (!/^(%[YmdHMj]|[^%])+$/.test(spec)) {
+        out.push(
+          `/data/${i}/href_template: token {${token}:${spec}} format may use only %Y %m %d %H %M %j`,
+        );
       }
     }
   });
@@ -86,10 +104,9 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       }
     }
   });
-  // dimensions[] and variables[] share one namespace: cube:dimensions and
-  // cube:variables are keyed by name, so a duplicate silently overwrites its
-  // twin on encode and an axis or measure disappears without an error. They are
-  // also the columns of one table, and the tokens href_template resolves.
+  // dimensions[] and variables[] share one namespace: they are the columns of
+  // one table and the tokens href_template resolves, so a name must be unique
+  // across both.
   const declaredNames = new Set();
   for (const [field, entries] of [
     ["dimensions", doc?.dimensions],
@@ -99,12 +116,21 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       if (typeof entry?.name !== "string") return;
       if (declaredNames.has(entry.name)) {
         out.push(
-          `/${field}/${i}/name: duplicate name "${entry.name}" - dimensions[] and variables[] share one namespace, and a duplicate would overwrite its twin when serialized`,
+          `/${field}/${i}/name: duplicate name "${entry.name}" - dimensions[] and variables[] share one namespace`,
         );
       }
       declaredNames.add(entry.name);
     });
   }
+  list(doc?.data).forEach((asset, i) => {
+    list(asset?.fields).forEach((f, k) => {
+      if (typeof f === "string" && !declaredNames.has(f)) {
+        out.push(
+          `/data/${i}/fields/${k}: "${f}" does not match any declared dimensions[]/variables[] name`,
+        );
+      }
+    });
+  });
   const varNames = new Set(list(doc?.variables).map((v) => v?.name));
   list(doc?.classes).forEach((cls, i) => {
     if (cls?.variable != null && !varNames.has(cls.variable)) {

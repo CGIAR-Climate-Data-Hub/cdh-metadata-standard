@@ -43,11 +43,12 @@ The fields in the table below can be used in these parts of STAC documents:
 - [x] Links (incl. Link Templates)
 - [ ] Bands
 
-Catalogs are excluded on purpose: a CDH catalog node is a grouping directory that carries no
-description of its own ([`standard.md`](../../standard.md) section 4.8). An asset carries exactly
-one field, `cgiar-cdh:partition`, because it describes a single file; per-asset provenance uses the
-Processing extension. The schema closes the namespace everywhere, so a stray or misplaced
-`cgiar-cdh:` field fails validation instead of passing silently.
+Catalogs are excluded on purpose: the root Catalog provides navigation, while resource nodes are
+records linked by explicit `parent` references; directories have no catalog meaning
+([`standard.md`](../../standard.md) section 4.8). An asset carries exactly one field,
+`cgiar-cdh:partition`, because it describes a single file; per-asset provenance uses the Processing
+extension. The schema closes the namespace everywhere, so a stray or misplaced `cgiar-cdh:` field
+fails validation instead of passing silently.
 
 | Field Name                    | Type                                                 | Description                                                                                                                                          |
 | ----------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |

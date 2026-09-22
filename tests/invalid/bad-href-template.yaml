@@ -23,3 +23,6 @@ data:
     locations:
       - url: https://example.org/cogs/
     href_template: "file_{crop}.tif"
+
+created: 2026-01-01
+updated: 2026-01-01

@@ -10,6 +10,33 @@ occur between minor versions.
 
 ## [Unreleased]
 
+### Added
+
+- Added `extent` to `type: temporal` dimensions (datacube extension): `[first, last]` plus `step` in
+  place of listing every value on a regular axis, so a 45-year `href_template` token no longer needs
+  45 hand-written values. Requires `step`, excludes `values`. Extent values must be calendar-valid
+  ISO 8601 (an instant needs a `T` and a zone) and `step` must have a nonzero component.
+- `href_template` tokens on a `type: temporal` dimension may carry a strftime format,
+  `{date:%Y.%m.%d}`, for file names that spell the date differently from the ISO value. Directives
+  are limited to `%Y %m %d %H %M %j`; a token may repeat with different formats for hive-partitioned
+  paths. Domain-axis tokens stay verbatim.
+
+- Added `data[].file_index`: a list of `{ format, locations, title, media_type }` indexes over an
+  entry's files, for file sets a template cannot describe. An entry's `locations[]` are one index
+  file at several addresses. `format` is one of `stac-geoparquet`, `gti`, `vrt`, `kerchunk`,
+  `icechunk`, or `cdh-inventory` (a CSV or Parquet column contract defined in the standard, with
+  STAC and OGC Records mappings). Any one index is enough; `cdh-inventory` may appear once and is
+  the only format CDH validates. Indexes are emitted as STAC assets with role `file_index` and as
+  OGC Records `describedby` links.
+
+### Changed
+
+- Omitted `data[].fields` means the asset contains all declared dimensions and variables. Assets
+  containing a subset must list that complete subset explicitly, and field membership must be
+  verified before publication.
+- Aligned hierarchy guidance with explicit `parent` references and specified catalog-wide
+  requirements for unique ids, existing parents, and absence of self-parenting and cycles.
+
 ## [0.3.0] - 2026-08-20
 
 ### Added

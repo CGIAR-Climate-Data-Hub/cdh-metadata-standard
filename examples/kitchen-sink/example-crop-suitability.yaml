@@ -256,6 +256,13 @@ data:
     processing_steps: [cloud-optimize]
 
 additional_assets:
+  # Optional agent guide, committed beside the record and referenced by relative path.
+  - name: agent guide
+    description: Keys, join columns, quirks, and a tested query for agents and analysts.
+    locations:
+      - url: ./AGENTS.md
+    media_type: text/markdown
+    roles: [agents]
   - name: dimension codes
     description: Code-to-label lists for the crop and scenario dimensions.
     locations:

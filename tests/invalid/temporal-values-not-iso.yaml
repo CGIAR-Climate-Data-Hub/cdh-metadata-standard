@@ -29,3 +29,6 @@ dimensions:
     description: Meteorological season.
     values: [DJF, MAM, JJA, SON]
     step: P3M
+
+created: 2026-01-01
+updated: 2026-01-01

@@ -5,7 +5,7 @@
   "description": "CDH policy schema: the core composed with all CDH-maintained extensions, requiring the cdh extension on every Hub record. Applied as the policy layer (validate-yaml --profile) on top of the per-record mechanism check (core + declared extensions only), and bound by editors via the yaml-language-server modeline for autocomplete. A single-file bundled copy is published alongside as cdh.schema.bundled.json.",
   "allOf": [
     {
-      "description": "JSON Schema for validating CDH metadata input YAML records before serialization to STAC or OGC API Records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
+      "description": "JSON Schema for CDH metadata records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
       "patternProperties": {
         "^\\$schema$": {
           "description": "Canonical JSON Schema URL for validating this metadata record.",
@@ -47,7 +47,7 @@
                 ]
               },
               "locations": {
-                "description": "Access paths to the same content; the first is canonical.",
+                "description": "Access paths to the same content; the first is canonical. An absolute URL, or a path relative to the record file for a small metadata file committed beside it (README, agent guide, code list, thumbnail).",
                 "items": {
                   "additionalProperties": false,
                   "properties": {
@@ -57,6 +57,7 @@
                       "minLength": 1
                     },
                     "url": {
+                      "description": "Absolute URL. In additional_assets[] it may instead be a path relative to the record file.",
                       "minLength": 1,
                       "type": "string"
                     }
@@ -85,10 +86,10 @@
               "name": {
                 "type": "string",
                 "minLength": 1,
-                "description": "Asset name; becomes the asset key in serialized output, so it must be unique across data[] and additional_assets[]."
+                "description": "Asset name; must be unique across data[] and additional_assets[]."
               },
               "roles": {
-                "description": "Asset roles. Suggested values, not a closed set: `metadata`, `validation`, `describedby`, `thumbnail`, `overview`, `visual`, `example` (a runnable usage example, e.g. a notebook or SQL file).",
+                "description": "Asset roles. Suggested values, not a closed set: `metadata`, `validation`, `describedby` (human documentation such as a README), `agents` (a Markdown guide for AI agents: keys and join columns, quirks, CRS consequences, tested queries), `thumbnail`, `overview`, `visual`, `example` (a runnable usage example, e.g. a notebook or SQL file).",
                 "items": {
                   "type": "string",
                   "minLength": 1,
@@ -96,6 +97,7 @@
                     "metadata",
                     "validation",
                     "describedby",
+                    "agents",
                     "thumbnail",
                     "overview",
                     "visual",
@@ -281,22 +283,34 @@
                 ]
               },
               "locations": {
-                "description": "Access paths to the same content; the first is canonical.",
+                "description": "Access paths to the same content; the first is canonical. URLs are always absolute and machine-actionable: a data file, a store or directory prefix, or a service endpoint - never a landing page or DOI (those go in citation.url, doi, or additional_links).",
                 "items": {
-                  "additionalProperties": false,
-                  "properties": {
-                    "title": {
-                      "type": "string",
-                      "description": "Optional access label, e.g. HTTPS or S3.",
-                      "minLength": 1
+                  "allOf": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "description": "Optional access label, e.g. HTTPS or S3.",
+                          "minLength": 1
+                        },
+                        "url": {
+                          "description": "Absolute URL. In additional_assets[] it may instead be a path relative to the record file.",
+                          "minLength": 1,
+                          "type": "string"
+                        }
+                      },
+                      "required": ["url"],
+                      "type": "object"
                     },
-                    "url": {
-                      "minLength": 1,
-                      "type": "string"
+                    {
+                      "properties": {
+                        "url": {
+                          "format": "uri"
+                        }
+                      }
                     }
-                  },
-                  "required": ["url"],
-                  "type": "object"
+                  ]
                 },
                 "minItems": 1,
                 "type": "array"
@@ -319,13 +333,565 @@
               "name": {
                 "type": "string",
                 "minLength": 1,
-                "description": "Asset name; becomes the asset key in serialized output, so it must be unique across data[] and additional_assets[]."
+                "description": "Asset name; must be unique across data[] and additional_assets[]."
+              },
+              "fields": {
+                "description": "Names of the dimensions[]/variables[] entries this asset contains. Omission means the asset contains all declared fields. An explicit list must name the asset's complete subset of declared fields and is required whenever the asset does not contain them all (e.g. tables at several admin levels). Field membership must be verified before publication.",
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
               },
               "href_template": {
                 "type": "string",
-                "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name (requires the datacube extension); the entry expands to one item per combination of the tokens' values. When absent, locations[].url are full file URLs and the entry is a single asset.",
-                "examples": ["mapspam_{crop}_{technology}_{variable}.tif"],
+                "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name (requires the datacube extension); the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d %H %M %j only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset.",
+                "examples": [
+                  "mapspam_{crop}_{technology}_{variable}.tif",
+                  "chirps-v2.0.{date:%Y.%m.%d}.tif"
+                ],
                 "minLength": 1
+              },
+              "file_index": {
+                "description": "Indexes that list or open this entry's files as one dataset, per the File indexes section of standard.md. Each entry is one index file; its locations[] are the same file at several addresses. format names the specification the file follows; cdh-inventory (the CDH column contract, CSV or Parquet) may appear once and is the only one CDH validates. Mutually exclusive with href_template.",
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["format", "locations"],
+                  "properties": {
+                    "format": {
+                      "enum": [
+                        "stac-geoparquet",
+                        "gti",
+                        "vrt",
+                        "kerchunk",
+                        "icechunk",
+                        "cdh-inventory"
+                      ]
+                    },
+                    "locations": {
+                      "description": "Access paths to the same content; the first is canonical. URLs are always absolute and machine-actionable: a data file, a store or directory prefix, or a service endpoint - never a landing page or DOI (those go in citation.url, doi, or additional_links).",
+                      "items": {
+                        "allOf": [
+                          {
+                            "additionalProperties": false,
+                            "properties": {
+                              "title": {
+                                "type": "string",
+                                "description": "Optional access label, e.g. HTTPS or S3.",
+                                "minLength": 1
+                              },
+                              "url": {
+                                "description": "Absolute URL. In additional_assets[] it may instead be a path relative to the record file.",
+                                "minLength": 1,
+                                "type": "string"
+                              }
+                            },
+                            "required": ["url"],
+                            "type": "object"
+                          },
+                          {
+                            "properties": {
+                              "url": {
+                                "format": "uri"
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "minItems": 1,
+                      "type": "array"
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Optional label, e.g. which scheme the index's internal paths use."
+                    },
+                    "media_type": {
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "IANA media type of the index file itself, when it has one. Optional; useful for gti (GeoPackage, FlatGeobuf, or Parquet) and cdh-inventory (CSV or Parquet)."
+                    }
+                  }
+                },
+                "contains": {
+                  "properties": {
+                    "format": {
+                      "const": "cdh-inventory"
+                    }
+                  }
+                },
+                "minContains": 0,
+                "maxContains": 1
+              },
+              "spatial": {
+                "description": "Coverage of this asset alone, for selecting files by area. Same shapes as the top-level spatial. Omit when unknown; the top-level bbox is not copied down.",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "bbox": {
+                    "description": "Spatial extent. A single bounding box, or a list of boxes for disjoint coverage - each box is a real area covered, in any order; do not include an overall/union box. 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+                    "oneOf": [
+                      {
+                        "description": "A single bounding box: 2D [west, south, east, north], or 3D [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+                        "oneOf": [
+                          {
+                            "title": "2D box",
+                            "type": "array",
+                            "minItems": 4,
+                            "maxItems": 4,
+                            "prefixItems": [
+                              {
+                                "title": "West",
+                                "type": "number",
+                                "minimum": -180,
+                                "maximum": 180
+                              },
+                              {
+                                "title": "South",
+                                "type": "number",
+                                "minimum": -90,
+                                "maximum": 90
+                              },
+                              {
+                                "title": "East",
+                                "type": "number",
+                                "minimum": -180,
+                                "maximum": 180
+                              },
+                              {
+                                "title": "North",
+                                "type": "number",
+                                "minimum": -90,
+                                "maximum": 90
+                              }
+                            ],
+                            "items": false
+                          },
+                          {
+                            "title": "3D box",
+                            "type": "array",
+                            "minItems": 6,
+                            "maxItems": 6,
+                            "prefixItems": [
+                              {
+                                "title": "West",
+                                "type": "number",
+                                "minimum": -180,
+                                "maximum": 180
+                              },
+                              {
+                                "title": "South",
+                                "type": "number",
+                                "minimum": -90,
+                                "maximum": 90
+                              },
+                              {
+                                "title": "Min elevation",
+                                "type": "number"
+                              },
+                              {
+                                "title": "East",
+                                "type": "number",
+                                "minimum": -180,
+                                "maximum": 180
+                              },
+                              {
+                                "title": "North",
+                                "type": "number",
+                                "minimum": -90,
+                                "maximum": 90
+                              },
+                              {
+                                "title": "Max elevation",
+                                "type": "number"
+                              }
+                            ],
+                            "items": false
+                          }
+                        ]
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "description": "A single bounding box: 2D [west, south, east, north], or 3D [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+                          "oneOf": [
+                            {
+                              "title": "2D box",
+                              "type": "array",
+                              "minItems": 4,
+                              "maxItems": 4,
+                              "prefixItems": [
+                                {
+                                  "title": "West",
+                                  "type": "number",
+                                  "minimum": -180,
+                                  "maximum": 180
+                                },
+                                {
+                                  "title": "South",
+                                  "type": "number",
+                                  "minimum": -90,
+                                  "maximum": 90
+                                },
+                                {
+                                  "title": "East",
+                                  "type": "number",
+                                  "minimum": -180,
+                                  "maximum": 180
+                                },
+                                {
+                                  "title": "North",
+                                  "type": "number",
+                                  "minimum": -90,
+                                  "maximum": 90
+                                }
+                              ],
+                              "items": false
+                            },
+                            {
+                              "title": "3D box",
+                              "type": "array",
+                              "minItems": 6,
+                              "maxItems": 6,
+                              "prefixItems": [
+                                {
+                                  "title": "West",
+                                  "type": "number",
+                                  "minimum": -180,
+                                  "maximum": 180
+                                },
+                                {
+                                  "title": "South",
+                                  "type": "number",
+                                  "minimum": -90,
+                                  "maximum": 90
+                                },
+                                {
+                                  "title": "Min elevation",
+                                  "type": "number"
+                                },
+                                {
+                                  "title": "East",
+                                  "type": "number",
+                                  "minimum": -180,
+                                  "maximum": 180
+                                },
+                                {
+                                  "title": "North",
+                                  "type": "number",
+                                  "minimum": -90,
+                                  "maximum": 90
+                                },
+                                {
+                                  "title": "Max elevation",
+                                  "type": "number"
+                                }
+                              ],
+                              "items": false
+                            }
+                          ]
+                        },
+                        "minItems": 1
+                      }
+                    ],
+                    "examples": [[-180, -90, 180, 90], [[-180, -90, 180, 90]]]
+                  },
+                  "geography": {
+                    "description": "Named places for discovery (vocab/geography.json ids, UN M49).",
+                    "items": {
+                      "title": "CDH Geography Vocabulary",
+                      "description": "Generated from vocab/geography.json. Do not edit this file directly; update the JSON vocabulary and regenerate schemas.",
+                      "type": "string",
+                      "enum": [
+                        "afghanistan",
+                        "africa",
+                        "aland-islands",
+                        "albania",
+                        "algeria",
+                        "american-samoa",
+                        "americas",
+                        "andorra",
+                        "angola",
+                        "anguilla",
+                        "antarctica",
+                        "antigua-and-barbuda",
+                        "argentina",
+                        "armenia",
+                        "aruba",
+                        "asia",
+                        "australia",
+                        "australia-and-new-zealand",
+                        "austria",
+                        "azerbaijan",
+                        "bahamas",
+                        "bahrain",
+                        "bangladesh",
+                        "barbados",
+                        "belarus",
+                        "belgium",
+                        "belize",
+                        "benin",
+                        "bermuda",
+                        "bhutan",
+                        "bolivia-plurinational-state-of",
+                        "bonaire-sint-eustatius-and-saba",
+                        "bosnia-and-herzegovina",
+                        "botswana",
+                        "bouvet-island",
+                        "brazil",
+                        "british-indian-ocean-territory",
+                        "british-virgin-islands",
+                        "brunei-darussalam",
+                        "bulgaria",
+                        "burkina-faso",
+                        "burundi",
+                        "cabo-verde",
+                        "cambodia",
+                        "cameroon",
+                        "canada",
+                        "caribbean",
+                        "cayman-islands",
+                        "central-african-republic",
+                        "central-america",
+                        "central-asia",
+                        "chad",
+                        "chile",
+                        "china",
+                        "china-hong-kong-special-administrative-region",
+                        "china-macao-special-administrative-region",
+                        "christmas-island",
+                        "cocos-keeling-islands",
+                        "colombia",
+                        "comoros",
+                        "congo",
+                        "cook-islands",
+                        "costa-rica",
+                        "cote-d-ivoire",
+                        "croatia",
+                        "cuba",
+                        "curacao",
+                        "cyprus",
+                        "czechia",
+                        "democratic-people-s-republic-of-korea",
+                        "democratic-republic-of-the-congo",
+                        "denmark",
+                        "djibouti",
+                        "dominica",
+                        "dominican-republic",
+                        "eastern-africa",
+                        "eastern-asia",
+                        "eastern-europe",
+                        "ecuador",
+                        "egypt",
+                        "el-salvador",
+                        "equatorial-guinea",
+                        "eritrea",
+                        "estonia",
+                        "eswatini",
+                        "ethiopia",
+                        "europe",
+                        "falkland-islands-malvinas",
+                        "faroe-islands",
+                        "fiji",
+                        "finland",
+                        "france",
+                        "french-guiana",
+                        "french-polynesia",
+                        "french-southern-territories",
+                        "gabon",
+                        "gambia",
+                        "georgia",
+                        "germany",
+                        "ghana",
+                        "gibraltar",
+                        "greece",
+                        "greenland",
+                        "grenada",
+                        "guadeloupe",
+                        "guam",
+                        "guatemala",
+                        "guernsey",
+                        "guinea",
+                        "guinea-bissau",
+                        "guyana",
+                        "haiti",
+                        "heard-island-and-mcdonald-islands",
+                        "holy-see",
+                        "honduras",
+                        "hungary",
+                        "iceland",
+                        "india",
+                        "indonesia",
+                        "iran-islamic-republic-of",
+                        "iraq",
+                        "ireland",
+                        "isle-of-man",
+                        "israel",
+                        "italy",
+                        "jamaica",
+                        "japan",
+                        "jersey",
+                        "jordan",
+                        "kazakhstan",
+                        "kenya",
+                        "kiribati",
+                        "kuwait",
+                        "kyrgyzstan",
+                        "lao-people-s-democratic-republic",
+                        "latin-america-and-the-caribbean",
+                        "latvia",
+                        "lebanon",
+                        "lesotho",
+                        "liberia",
+                        "libya",
+                        "liechtenstein",
+                        "lithuania",
+                        "luxembourg",
+                        "madagascar",
+                        "malawi",
+                        "malaysia",
+                        "maldives",
+                        "mali",
+                        "malta",
+                        "marshall-islands",
+                        "martinique",
+                        "mauritania",
+                        "mauritius",
+                        "mayotte",
+                        "melanesia",
+                        "mexico",
+                        "micronesia",
+                        "micronesia-federated-states-of",
+                        "middle-africa",
+                        "monaco",
+                        "mongolia",
+                        "montenegro",
+                        "montserrat",
+                        "morocco",
+                        "mozambique",
+                        "myanmar",
+                        "namibia",
+                        "nauru",
+                        "nepal",
+                        "netherlands-kingdom-of-the",
+                        "new-caledonia",
+                        "new-zealand",
+                        "nicaragua",
+                        "niger",
+                        "nigeria",
+                        "niue",
+                        "norfolk-island",
+                        "north-macedonia",
+                        "northern-africa",
+                        "northern-america",
+                        "northern-europe",
+                        "northern-mariana-islands",
+                        "norway",
+                        "oceania",
+                        "oman",
+                        "pakistan",
+                        "palau",
+                        "panama",
+                        "papua-new-guinea",
+                        "paraguay",
+                        "peru",
+                        "philippines",
+                        "pitcairn",
+                        "poland",
+                        "polynesia",
+                        "portugal",
+                        "puerto-rico",
+                        "qatar",
+                        "republic-of-korea",
+                        "republic-of-moldova",
+                        "reunion",
+                        "romania",
+                        "russian-federation",
+                        "rwanda",
+                        "saint-barthelemy",
+                        "saint-helena",
+                        "saint-kitts-and-nevis",
+                        "saint-lucia",
+                        "saint-martin-french-part",
+                        "saint-pierre-and-miquelon",
+                        "saint-vincent-and-the-grenadines",
+                        "samoa",
+                        "san-marino",
+                        "sao-tome-and-principe",
+                        "saudi-arabia",
+                        "senegal",
+                        "serbia",
+                        "seychelles",
+                        "sierra-leone",
+                        "singapore",
+                        "sint-maarten-dutch-part",
+                        "slovakia",
+                        "slovenia",
+                        "solomon-islands",
+                        "somalia",
+                        "south-africa",
+                        "south-america",
+                        "south-eastern-asia",
+                        "south-georgia-and-the-south-sandwich-islands",
+                        "south-sudan",
+                        "southern-africa",
+                        "southern-asia",
+                        "southern-europe",
+                        "spain",
+                        "sri-lanka",
+                        "state-of-palestine",
+                        "sub-saharan-africa",
+                        "sudan",
+                        "suriname",
+                        "svalbard-and-jan-mayen-islands",
+                        "sweden",
+                        "switzerland",
+                        "syrian-arab-republic",
+                        "tajikistan",
+                        "thailand",
+                        "timor-leste",
+                        "togo",
+                        "tokelau",
+                        "tonga",
+                        "trinidad-and-tobago",
+                        "tunisia",
+                        "turkiye",
+                        "turkmenistan",
+                        "turks-and-caicos-islands",
+                        "tuvalu",
+                        "uganda",
+                        "ukraine",
+                        "united-arab-emirates",
+                        "united-kingdom-of-great-britain-and-northern-ireland",
+                        "united-republic-of-tanzania",
+                        "united-states-minor-outlying-islands",
+                        "united-states-of-america",
+                        "united-states-virgin-islands",
+                        "uruguay",
+                        "uzbekistan",
+                        "vanuatu",
+                        "venezuela-bolivarian-republic-of",
+                        "viet-nam",
+                        "wallis-and-futuna-islands",
+                        "western-africa",
+                        "western-asia",
+                        "western-europe",
+                        "western-sahara",
+                        "world",
+                        "yemen",
+                        "zambia",
+                        "zimbabwe"
+                      ]
+                    },
+                    "type": "array",
+                    "uniqueItems": true
+                  }
+                }
               },
               "nodata": {
                 "description": "No-data / fill value for the asset.",
@@ -348,7 +914,32 @@
                 "type": "array"
               }
             },
-            "required": ["name", "locations"],
+            "required": ["name"],
+            "anyOf": [
+              {
+                "required": ["locations"]
+              },
+              {
+                "$comment": "locations may be omitted when a file_index carries the file locations itself (any format but cdh-inventory).",
+                "required": ["file_index"],
+                "properties": {
+                  "file_index": {
+                    "not": {
+                      "contains": {
+                        "properties": {
+                          "format": {
+                            "const": "cdh-inventory"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ],
+            "not": {
+              "required": ["href_template", "file_index"]
+            },
             "type": "object"
           },
           "minItems": 1,
@@ -403,7 +994,7 @@
           "examples": ["example-crop-suitability", "spam2020"]
         },
         "keywords": {
-          "description": "Free-text search terms. Each item is either a plain string, or an object linking the term to an external vocabulary/ontology (e.g., AGROVOC, GEMET). Linked-keyword items are also emitted as ontology themes in the serialized output, grouped by `scheme`.",
+          "description": "Free-text search terms. Each item is either a plain string, or an object linking the term to an external vocabulary/ontology (e.g., AGROVOC, GEMET).",
           "type": "array",
           "uniqueItems": true,
           "items": {
@@ -422,7 +1013,7 @@
                     "minLength": 1
                   },
                   "scheme": {
-                    "description": "Resolvable URI of the controlled vocabulary or ontology this term comes from. CDH vocab schemes (.../cdh-metadata-standard/vocab/) are reserved for encoder expansion of cdh.domain / commodities - link an external vocabulary instead.",
+                    "description": "Resolvable URI of the controlled vocabulary or ontology this term comes from. CDH vocab schemes (.../cdh-metadata-standard/vocab/) belong to cdh.domain / commodities - link an external vocabulary instead.",
                     "type": "string",
                     "format": "uri",
                     "not": {
@@ -454,6 +1045,12 @@
           "minLength": 1,
           "type": "string",
           "description": "Caveats, warnings, or interpretation-critical remarks not captured in description."
+        },
+        "parent": {
+          "description": "Short, stable, URL-safe identifier (lowercase letters, digits, hyphens).",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "type": "string",
+          "examples": ["example-crop-suitability", "spam2020"]
         },
         "previous_version": {
           "minLength": 1,
@@ -618,7 +1215,7 @@
           "additionalProperties": false,
           "properties": {
             "bbox": {
-              "description": "Spatial extent. A single bounding box, or a list of boxes for disjoint coverage - each box is a real area covered, in any order; the overall/union extent is derived when serializing, not authored. 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+              "description": "Spatial extent. A single bounding box, or a list of boxes for disjoint coverage - each box is a real area covered, in any order; do not include an overall/union box. 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
               "oneOf": [
                 {
                   "description": "A single bounding box: 2D [west, south, east, north], or 3D [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
@@ -1286,6 +1883,8 @@
         "id",
         "title",
         "description",
+        "created",
+        "updated",
         "license",
         "resource_type",
         "keywords",
@@ -1571,7 +2170,7 @@
               },
               "type": {
                 "type": "string",
-                "description": "Dimension type. Reserved values change how the dimension is read: `temporal` (an axis of ISO 8601 dates or instants - the only type that may carry a step, and a record may declare several, e.g. a year axis files are split on plus a day column inside them) and `z` (a vertical axis - depth, height, or pressure level - at most one per record, serialized as a spatial dimension on the z axis). `location` names a column identifying a place, such as an admin or station code. Any other value names a domain axis after what it varies (crop, scenario, season). `spatial` and `geometry` are rejected: the horizontal grid is derived from the top-level spatial field and never declared here, and STAC forbids both words as custom dimension types. Lowercase; aliases of `temporal` are rejected so a time axis cannot silently become a domain axis.",
+                "description": "Dimension type. Reserved values change how the dimension is read: `temporal` (an axis of ISO 8601 dates or instants - the only type that may carry a step, and a record may declare several, e.g. a year axis files are split on plus a day column inside them) and `z` (a vertical axis - depth, height, or pressure level - at most one per record). `location` names a column identifying a place, such as an admin or station code. Any other value names a domain axis after what it varies (crop, scenario, season). `spatial` and `geometry` are rejected: the horizontal grid is derived from the top-level spatial field and never declared here, and STAC forbids both words as custom dimension types. Lowercase; aliases of `temporal` are rejected so a time axis cannot silently become a domain axis.",
                 "minLength": 1,
                 "pattern": "^[a-z][a-z0-9_-]*$",
                 "not": {
@@ -1613,9 +2212,30 @@
               },
               "step": {
                 "type": "string",
-                "format": "duration",
-                "description": "Spacing of one step, as an ISO 8601 duration. Only valid on a type: temporal dimension.",
+                "pattern": "^P(?=.*[1-9])(\\d+Y)?(\\d+M)?(\\d+W)?(\\d+D)?(T(?!$)(\\d+H)?(\\d+M)?(\\d+S)?)?$",
+                "description": "Spacing of one step, as an ISO 8601 duration (P1Y, P3M, PT6H) with at least one nonzero component. Only valid on a type: temporal dimension.",
                 "examples": ["P3M", "P20Y"]
+              },
+              "extent": {
+                "description": "First and last value of a regular temporal axis, as ISO 8601 strings, in place of listing every value. Only valid on a type: temporal dimension with a step, and not alongside values. The values are every step from start to end inclusive, written at the precision of the extent strings, so [\"1981\", \"2025\"] with step P1Y is 1981, 1982, ... 2025.",
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": {
+                  "type": "string",
+                  "anyOf": [
+                    {
+                      "pattern": "^\\d{4}(-(0[1-9]|1[0-2]))?$"
+                    },
+                    {
+                      "format": "date"
+                    },
+                    {
+                      "format": "date-time"
+                    }
+                  ]
+                },
+                "examples": [["1981", "2025"]]
               },
               "unit": {
                 "description": "Unit of measurement for the values, preferably compliant with UDUNITS-2 or UCUM. Needed on a `z` dimension (m, cm, hPa) and useful on any numeric domain axis; not a substitute for reference_system, which names the vocabulary or vertical CRS the values are coded against.",
@@ -1631,6 +2251,17 @@
                   "type": {
                     "const": "temporal"
                   }
+                }
+              },
+              "extent": {
+                "properties": {
+                  "type": {
+                    "const": "temporal"
+                  }
+                },
+                "required": ["step"],
+                "not": {
+                  "required": ["values"]
                 }
               }
             },
@@ -1687,7 +2318,7 @@
                 "type": "string"
               },
               "dimensions": {
-                "description": "Axes this variable spans; omit when it spans all declared dimensions.",
+                "description": "Axes this variable spans; omit when it spans all declared dimensions. Not meaningful for table columns; omit it there.",
                 "type": "array",
                 "items": {
                   "type": "string",
@@ -1695,7 +2326,7 @@
                 }
               },
               "unit": {
-                "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM.",
+                "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM. Required for measurements; omit for text or code columns.",
                 "examples": ["t ha-1", "{head}/km2"],
                 "minLength": 1,
                 "type": "string"
@@ -1718,7 +2349,7 @@
                 "description": "Variable-specific caveats, limitations, or warnings."
               }
             },
-            "required": ["name", "description", "unit"]
+            "required": ["name", "description"]
           }
         },
         "joins": {

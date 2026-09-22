@@ -47,7 +47,7 @@
           },
           "type": {
             "type": "string",
-            "description": "Dimension type. Reserved values change how the dimension is read: `temporal` (an axis of ISO 8601 dates or instants - the only type that may carry a step, and a record may declare several, e.g. a year axis files are split on plus a day column inside them) and `z` (a vertical axis - depth, height, or pressure level - at most one per record, serialized as a spatial dimension on the z axis). `location` names a column identifying a place, such as an admin or station code. Any other value names a domain axis after what it varies (crop, scenario, season). `spatial` and `geometry` are rejected: the horizontal grid is derived from the top-level spatial field and never declared here, and STAC forbids both words as custom dimension types. Lowercase; aliases of `temporal` are rejected so a time axis cannot silently become a domain axis.",
+            "description": "Dimension type. Reserved values change how the dimension is read: `temporal` (an axis of ISO 8601 dates or instants - the only type that may carry a step, and a record may declare several, e.g. a year axis files are split on plus a day column inside them) and `z` (a vertical axis - depth, height, or pressure level - at most one per record). `location` names a column identifying a place, such as an admin or station code. Any other value names a domain axis after what it varies (crop, scenario, season). `spatial` and `geometry` are rejected: the horizontal grid is derived from the top-level spatial field and never declared here, and STAC forbids both words as custom dimension types. Lowercase; aliases of `temporal` are rejected so a time axis cannot silently become a domain axis.",
             "minLength": 1,
             "pattern": "^[a-z][a-z0-9_-]*$",
             "not": {
@@ -77,9 +77,24 @@
           },
           "step": {
             "type": "string",
-            "format": "duration",
-            "description": "Spacing of one step, as an ISO 8601 duration. Only valid on a type: temporal dimension.",
+            "pattern": "^P(?=.*[1-9])(\\d+Y)?(\\d+M)?(\\d+W)?(\\d+D)?(T(?!$)(\\d+H)?(\\d+M)?(\\d+S)?)?$",
+            "description": "Spacing of one step, as an ISO 8601 duration (P1Y, P3M, PT6H) with at least one nonzero component. Only valid on a type: temporal dimension.",
             "examples": ["P3M", "P20Y"]
+          },
+          "extent": {
+            "description": "First and last value of a regular temporal axis, as ISO 8601 strings, in place of listing every value. Only valid on a type: temporal dimension with a step, and not alongside values. The values are every step from start to end inclusive, written at the precision of the extent strings, so [\"1981\", \"2025\"] with step P1Y is 1981, 1982, ... 2025.",
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "string",
+              "anyOf": [
+                { "pattern": "^\\d{4}(-(0[1-9]|1[0-2]))?$" },
+                { "format": "date" },
+                { "format": "date-time" }
+              ]
+            },
+            "examples": [["1981", "2025"]]
           },
           "unit": {
             "$ref": "#/$defs/nonEmptyString",
@@ -94,6 +109,17 @@
               "type": {
                 "const": "temporal"
               }
+            }
+          },
+          "extent": {
+            "properties": {
+              "type": {
+                "const": "temporal"
+              }
+            },
+            "required": ["step"],
+            "not": {
+              "required": ["values"]
             }
           }
         },
@@ -149,7 +175,7 @@
             "description": "Data type, numpy-style (e.g. float32, int16)."
           },
           "dimensions": {
-            "description": "Axes this variable spans; omit when it spans all declared dimensions.",
+            "description": "Axes this variable spans; omit when it spans all declared dimensions. Not meaningful for table columns; omit it there.",
             "type": "array",
             "items": {
               "type": "string",
@@ -158,7 +184,7 @@
           },
           "unit": {
             "$ref": "#/$defs/nonEmptyString",
-            "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM.",
+            "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM. Required for measurements; omit for text or code columns.",
             "examples": ["t ha-1", "{head}/km2"]
           },
           "nodata": {
@@ -177,7 +203,7 @@
             "description": "Variable-specific caveats, limitations, or warnings."
           }
         },
-        "required": ["name", "description", "unit"]
+        "required": ["name", "description"]
       }
     },
     "joins": {

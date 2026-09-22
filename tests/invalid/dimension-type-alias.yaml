@@ -28,3 +28,6 @@ dimensions:
     type: time
     description: Projection horizon.
     values: [2030, 2050]
+
+created: 2026-01-01
+updated: 2026-01-01

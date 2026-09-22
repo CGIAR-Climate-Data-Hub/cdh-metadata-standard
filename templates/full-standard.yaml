@@ -61,9 +61,9 @@ related_publications: # optional
       url: ""
     doi: ""
 
-# metadata tracking - optional; filled in at publication if omitted.
-# created: 2026-01-01
-# updated: 2026-01-01
+# metadata record dates (required) - when this record was written / last changed
+created: ""
+updated: ""
 
 # Version (conditional - if version exists already, or multiple versions are expected)
 version: ""
@@ -183,8 +183,8 @@ data:
         title: "" # optional an access label (e.g., "HTTPS", "S3")
     # Optional: split one dataset into many files. With href_template, the
     # locations[].url above become base paths and this pattern is appended to
-    # each. Tokens in {braces} must match a dimensions[].name; the encoder emits
-    # one item per value combination. Omit for a single file.
+    # each. Tokens in {braces} must match a dimensions[].name; one file exists
+    # per value combination. Omit for a single file.
     # href_template: "name_{dim_a}_{dim_b}.tif"
     processing_steps: [] # conditional, if processing metadata exists / steps are needed
     description: ""

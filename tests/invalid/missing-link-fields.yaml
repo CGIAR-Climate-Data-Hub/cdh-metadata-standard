@@ -22,3 +22,6 @@ data:
       - url: https://example.org/data.tif
 additional_links:
   - name: Project page without a relation or URL
+
+created: 2026-01-01
+updated: 2026-01-01

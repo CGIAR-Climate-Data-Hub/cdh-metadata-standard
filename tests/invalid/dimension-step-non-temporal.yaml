@@ -28,3 +28,6 @@ dimensions:
     description: Crop code.
     values: [maiz, rice]
     step: P1Y
+
+created: 2026-01-01
+updated: 2026-01-01

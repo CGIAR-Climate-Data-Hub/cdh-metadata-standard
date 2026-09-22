@@ -30,6 +30,8 @@ const base = {
   id: "fixture-record",
   title: "Fixture record",
   description: "A deliberately small record for profile-bundle checks.",
+  created: "2026-01-01",
+  updated: "2026-01-01",
   license: "CC-BY-4.0",
   resource_type: "dataset",
   keywords: ["fixture"],

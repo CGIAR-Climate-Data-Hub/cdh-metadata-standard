@@ -3,13 +3,13 @@
 #
 # ============================================================================
 # SAMPLE RECORD - NOT REAL DATA.
-# The admin-2 aggregation of example-crop-suitability, in a SUBDIRECTORY of the
-# grid it comes from, so it is a CHILD of that record (standard.md section 4.8).
-# It is nested because it has no standing on its own: nobody looks for these
-# aggregates without knowing the product they came from.
-# Note what the position does NOT do - this record repeats its own license,
+# The admin-2 aggregation of example-crop-suitability. It is a CHILD of that
+# record through `parent` (standard.md section 4.8), because it has no standing
+# on its own: nobody looks for these aggregates without knowing the product
+# they came from. Its place in this subdirectory is filing only.
+# Note what `parent` does NOT do - this record repeats its own license,
 # contact, citation, spatial, and temporal, and sets its own `access`, because
-# nothing is inherited from a parent. Containment implies nothing either: the
+# nothing is inherited from a parent. Nesting implies nothing either: the
 # derivation is stated explicitly in processing[].derived_from.
 # Aggregating a grid to polygons is lossy, which is why this is its own record
 # rather than a second spatial.resolution entry on the parent.
@@ -21,6 +21,7 @@ extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/agriculture/schema.json
 
 id: example-crop-suitability-admin2
+parent: example-crop-suitability
 title: "Example Crop Suitability, Admin-2 Aggregates (SAMPLE - NOT REAL DATA)"
 version: "2.0"
 # Same program grouping as its sibling: a series is a facet, not the family.

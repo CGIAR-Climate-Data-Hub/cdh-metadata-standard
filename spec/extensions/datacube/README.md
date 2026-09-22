@@ -11,7 +11,7 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
 - **Requirement:** Conditional. Required for data cubes, tabular data with axes, or any dataset
   whose meaning depends on axes/codes.
 - **Expected value per dimension:**
-  `{ name, type, description, values, reference_system, step, unit }`.
+  `{ name, type, description, values, extent, reference_system, step, unit }`.
 - **Rules:**
   - `type` is either a **reserved** value or a domain axis name:
     - `temporal` - an axis of ISO 8601 dates or instants. The only type that may carry a `step`, and
@@ -25,20 +25,18 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
     - Anything else names a domain axis after what it varies (`crop`, `technology`, `scenario`).
       Lowercase, digits, `-` and `_`.
   - **Bands are not a dimension.** The datacube extension has no band dimension type; a multi-band
-    file's bands are `variables[]`, which serialize as `cube:variables` and, for COG-style rasters,
-    `raster:bands`. `bands` is still an accepted axis name if a resource genuinely varies along
-    something it calls a band, but it gets no special treatment.
-  - **`spatial` and `geometry` are rejected.** The horizontal lat/lon grid is derived from the
-    top-level `spatial` field and is never declared here, and the STAC datacube extension forbids
-    both words as custom dimension types. Use `z` for a vertical axis and `location` for a place
-    key.
+    file's bands are `variables[]`. `bands` is still an accepted axis name if a resource genuinely
+    varies along something it calls a band, but it gets no special treatment.
+  - **`spatial` and `geometry` are rejected.** The horizontal lat/lon grid comes from the top-level
+    `spatial` field and is never declared here. Use `z` for a vertical axis and `location` for a
+    place key.
   - `unit` is the unit of measurement for the values, preferably UDUNITS-2 or UCUM. Give one on a
     `z` dimension (`cm`, `m`, `hPa`) and on any numeric domain axis whose values are not
     self-describing. It is not a substitute for `reference_system`, which names the vocabulary or
     vertical CRS the values are coded against - a `z` dimension can carry both.
   - **Do not declare the horizontal lat/lon grid here.** It comes from the top-level `spatial`
-    field, and encoders derive the `x`/`y` cube dimensions from it. `variables[].dimensions` may
-    still reference `lat`/`lon` even though they are not listed here.
+    field. `variables[].dimensions` may still reference `lat`/`lon` even though they are not listed
+    here.
   - **Declare every temporal axis here** as `type: temporal` with a `step`. The top-level `temporal`
     field carries only the coverage extent (start/end); all temporal cadence lives on these
     dimensions. A record may declare **several** - files split by year with a day column inside each
@@ -47,14 +45,19 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
     numbers (`2030`) and range labels (`2020-2040`) are rejected. A **binned** axis lists each bin's
     start and states its length in `step`, exactly as a monthly axis lists month starts: a 30-year
     projection axis is `values: ["2021", "2051"]` with `step: P30Y`. The readable form (`2021-2050`)
-    is derived from the value and the step, not authored.
+    follows from the value and the step; do not write it.
   - **A cyclic label axis is not temporal.** `DJF`/`MAM`/`JJA`/`SON` repeats every year, while a
     temporal axis runs in one direction, so a season is a domain axis named `season`. Its `P3M` was
     never a step along an axis - it is how long each label covers - so state that in `description`
     alongside the code list in `reference_system`.
   - `step` is the spacing of one step, always an ISO 8601 duration (`P3M`, `P20Y`), and valid **only
     on a `type: temporal` dimension**. It is the only cadence field a dimension carries; a domain
-    axis describes its cadence in prose, because STAC has no slot for it.
+    axis describes its cadence in prose.
+  - `extent` is `[first, last]` on a regular temporal axis, in place of listing every value. It
+    requires `step` and excludes `values`. The values are every step from first to last inclusive,
+    written at the precision of the extent strings: `extent: ["1981", "2025"]` with `step: P1Y` is
+    `1981, 1982, ... 2025`. Write the extent at the precision the values need, e.g. the precision
+    file names use when the dimension is an `href_template` token.
   - `values` lists the allowed values along the dimension. Omit it for a high-cardinality key column
     (you would not enumerate every household id or admin code).
   - `reference_system` is the vocabulary the values are coded against; prefer a resolvable URI when
@@ -62,7 +65,7 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
   - Define coded values. Use `reference_system`, a short inline explanation in `description`, or a
     sidecar code list linked with `rel=describedby`.
   - `name` MUST be unique across `dimensions[]` and `variables[]` together: they share one
-    namespace, and a duplicate would overwrite its twin when serialized.
+    namespace.
   - Do not add custom fields such as `value_definitions` to `dimensions[]`.
 
 ## `variables[]`
@@ -72,9 +75,11 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
 - **Expected value per variable:**
   `{ name, dimensions, description, data_type, unit, nodata, note }`.
 - **Rules:**
+  - `dimensions` lists the axes an array variable spans. Omit it when the variable spans every
+    declared dimension. It is not meaningful for table columns; omit it there.
   - `unit` is the unit of measurement, preferably compliant with UDUNITS-2 or UCUM (e.g., `ha`, `t`,
-    `t ha-1`, `K`, `kg m-2 s-1`, `{head}/km2`) rather than strictly validated. Use `1` or omit for
-    dimensionless quantities.
+    `t ha-1`, `K`, `kg m-2 s-1`, `{head}/km2`) rather than strictly validated. Required for
+    measurements. Use `1` for dimensionless quantities; omit for text or code columns.
   - Climate variables should use CF standard names where practical (e.g., `precipitation_flux`,
     `air_temperature`).
   - `data_type` follows numpy-style names (`float32`, `int16`, …).

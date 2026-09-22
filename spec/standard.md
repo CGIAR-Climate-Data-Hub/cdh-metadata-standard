@@ -53,9 +53,10 @@ The standard follows RFC 2119-style requirement levels.
 | Conditional | Required only for certain resource classes. |
 | Optional    | Useful, but not required.                   |
 
-The schema rejects blank values (`""`, `null`, empty required lists). Omit unknown values. The only
-allowed `null` is an open-ended `temporal` interval. Files under `templates/` validate in draft mode
-so blank placeholders do not weaken the published schema.
+The schema rejects blank values (`""`, `null`, empty required lists). Optional fields may be omitted
+when unknown unless omission has a defined meaning, as with `data[].fields` (all declared fields).
+The only allowed `null` is an open-ended `temporal` interval. Files under `templates/` validate in
+draft mode so blank placeholders do not weaken the published schema.
 
 ## 4. Authoring Rules
 
@@ -112,11 +113,11 @@ Search, filter, facet, and programmatic facts MUST be structured fields, not onl
 `cdh.domain` and `keywords` serve different purposes.
 
 - **`cdh.domain` (required, closed vocab)** - the CDH-controlled high-level classification used for
-  structured browse, filtering, grouping, and STAC sub-catalog placement. Values come from
-  `vocab/domain.json`. See the [CDH extension](extensions/cdh/README.md).
+  structured browse, filtering, and grouping. Values come from `vocab/domain.json`. See the
+  [CDH extension](extensions/cdh/README.md).
 - **`keywords` (required, open)** - discovery terms for full-text search. Each entry is either a
   plain string OR a linked object `{ term, scheme, uri, description? }` pointing the term at an
-  external vocabulary or ontology (e.g., AGROVOC, GEMET). Linked entries are emitted as themes;
+  external vocabulary or ontology (e.g., AGROVOC, GEMET). Linked entries carry an ontology concept;
   plain strings are full-text only.
 
 Decision rule:
@@ -136,10 +137,10 @@ detailed table schemas, and detailed [classification legends](extensions/classif
 Every field a record can hold is either machine-derivable or directly authored. This implies who is
 expected to provide each field.
 
-| Tier                  | Supplied by                                 | Fields                                                                                                                                                                     |
-| --------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Machine-derivable** | Readable from the data itself               | `media_type`, `file_size`, `spatial.bbox`, `spatial.crs`, `spatial.resolution`, `spatial.geometry_column`, `nodata`, `variables[].data_type`, table columns                |
-| **Authored**          | A person, always - no tool can supply these | `title`, `description`, `note`, `keywords`, `resource_type`, `license`, `access`, `contact`, `citation`, `series`, units, reading guidance, caveats, and every `cdh` field |
+| Tier                  | Supplied by                                 | Fields                                                                                                                                                                                  |
+| --------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Machine-derivable** | Readable from the data itself               | `media_type` (assets and `file_index[]`), `file_size`, `spatial.bbox`, `spatial.crs`, `spatial.resolution`, `spatial.geometry_column`, `nodata`, `variables[].data_type`, table columns |
+| **Authored**          | A person, always - no tool can supply these | `title`, `description`, `note`, `keywords`, `resource_type`, `license`, `access`, `contact`, `citation`, `series`, units, reading guidance, caveats, and every `cdh` field              |
 
 Three rules govern how the tiers interact:
 
@@ -156,8 +157,10 @@ Three rules govern how the tiers interact:
 
 Values may be filled in at any time before publication - by the author, by review, or by a tool that
 reads the data - but they are filled **into the record**. A published record is complete on its own
-and never resolves values from another record, a parent (section 4.8), or an external file at read
-time.
+and never resolves descriptive field values from another record, a parent (section 4.8), or an
+external file at read time. File enumeration through `file_index` is the explicit exception: the
+file list may be external, while all field definitions remain in the record. See the
+[File indexes](#file-indexes-file_index).
 
 ### 4.7 Versioning a resource
 
@@ -186,51 +189,41 @@ provenance, not a version chain - use `processing[].derived_from` or a `via` lin
 superseded by something outside the Hub can carry an `additional_links[]` entry with
 `rel: successor-version`; a changelog can be linked with `rel: version-history`.
 
-### 4.8 Catalog position
+### 4.8 Catalog hierarchy
 
-A record's position in the catalog is expressed by where its file sits, not by a field on the
-record:
+A record's place in the catalog is stated by the record, not by where its file sits. A record with
+no `parent` is a top-level entry. A record whose `parent` names another record's `id` is that
+record's _child_. Directory layout in a repository is a filing convention with no catalog meaning:
+the catalog has no nodes other than records.
 
-- The record in a directory is that directory's node.
-- Records in subdirectories beneath it are its _children_.
-- Version snapshots of a record sit beside it in the same directory. They belong to the version
-  chain (section 4.7), never to the hierarchy.
-- A directory that holds no record of its own, only subdirectories, is a pure grouping: it becomes a
-  navigation node carrying an identifier and title from the directory name, with no extent,
-  citation, or license.
-
-```text
-example-crop-suitability/
-  example-crop-suitability.yaml       # the node
-  example-crop-suitability-v1.yaml    # superseded snapshot - version chain, not a child
-  admin2/
-    example-crop-suitability-admin2.yaml   # child of the record above
-chirps/                               # pure grouping - no record of its own
-  daily/
-    chirps-daily.yaml
-  seasonal/
-    chirps-seasonal.yaml
-```
+Version snapshots (section 4.7) are linked by `previous_version`, never by `parent`. They belong to
+the version chain, not the hierarchy.
 
 Rules:
 
-- **Position determines links, never values.** Each record carries its own `license`, `contact`,
+- **`parent` determines links, never values.** Each record carries its own `license`, `contact`,
   `spatial`, `temporal`, and every other field it needs. Nothing is inherited from a parent, a
-  child, or a sibling (section 4.6). Position adds parent and child links to the published record,
-  and nothing else.
+  child, or a sibling (section 4.6). `parent` states where the record sits in the catalog, and
+  nothing else.
 - **Nest a child only when it has no standing outside its parent.** An extraction, aggregation, or
   convenience representation of one product is a child: nobody looks for it without knowing the
   product. A resource with its own standing - its own DOI, its own funding, or inputs from several
-  products - is a record at its own position, linked by `processing[].derived_from`.
-- **Containment never implies derivation.** Where a child is derived from its parent, say so with
-  `processing[].derived_from` (section 5.6), exactly as a non-nested record would.
-- **`id` is not namespaced by position.** Every `id` MUST stay unique across the Hub regardless of
-  which directory holds it (section 5.1).
+  products - is a top-level record, linked by `processing[].derived_from`.
+- **Nesting never implies derivation.** Where a child is derived from its parent, say so with
+  `processing[].derived_from` (section 5.6), exactly as a top-level record would.
 - **Nest families, not themes.** Cross-cutting groupings - a program or initiative (`series`), a
   subject area (`cdh.domain`) - are facets. They MUST NOT drive hierarchy, because their members are
-  heterogeneous and each one has to stay individually listed and filterable.
+  heterogeneous and each one has to stay individually listed and filterable. Do not create a record
+  just to group others under it.
 - One level of nesting is normally enough. Deeper trees SHOULD be justified by navigation, not by
   tidiness.
+- **Validate the complete catalog before publication.** Record ids MUST be unique. Every `parent`
+  MUST resolve to exactly one record, MUST NOT equal the child's own `id`, and MUST NOT create a
+  cycle through other parents. Directory layout cannot supply or repair a missing parent.
+
+Self-parenting can be checked from one record. Missing parents, duplicate ids, and cycles require
+the complete catalog, including records already published. A record passing JSON Schema validation
+alone does not establish that its parent exists or that the hierarchy is acyclic.
 
 ## 5. Field Reference
 
@@ -308,7 +301,6 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
 - **Requirement:** Optional
 - **Definition:** Free-text caveats, warnings, or interpretation-critical remarks that a reader of
   `description` alone could miss.
-- **Encodes as:** `cgiar-cdh:note`.
 - **Rules:**
   - Must not duplicate `description`.
   - Must not be used as a second free-form description.
@@ -352,8 +344,6 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
 - **Requirement:** Required when `access` is `restricted` or `non-public`.
 - **Definition:** Human-readable access conditions or instructions, including embargo details,
   request steps, authentication requirements, or why the data is catalogued but unavailable.
-- **Encoding:** Maps to schema.org `conditionsOfAccess`; maps to `cgiar-cdh:access_note` in STAC and
-  OGC Records.
 - **Examples:**
   - `Embargoed until 2027-01-01. Contact the data custodian for early access.`
   - `Request access using the linked form. Approval is limited to research use.`
@@ -398,11 +388,11 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
     [`variables[]`](extensions/datacube/README.md).
   - Filter/group-by values belong in `cdh.domain`, not here. See section 4.4.
   - Should use consistent spelling and capitalization.
-  - Linked items must include both `scheme` and `uri` to be expanded as themes; a `term`-only object
-    is equivalent to a plain string.
+  - Linked items must include both `scheme` and `uri`; a `term`-only object is equivalent to a plain
+    string.
   - Do not link entries to the
-    `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/vocab/*` schemes - those are
-    reserved for encoder expansion from `cdh.domain` and `commodities`.
+    `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/vocab/*` schemes - those values
+    belong in `cdh.domain` and `commodities`.
 
 Authoring YAML:
 
@@ -418,14 +408,13 @@ keywords:
 
 #### `created`, `updated`
 
-- **Requirement:** Required in serialized records; optional in input YAML.
+- **Requirement:** Required
 - **Definition:** Date the metadata record was created / last updated.
 - **Expected value:** ISO 8601 / RFC 3339 date or datetime.
 - **Rules:**
   - `updated` must be ≥ `created`.
   - Refers to the metadata record, not the underlying dataset.
-  - Authors MAY provide these; when omitted, they are filled in at publication. Serialized records
-    MUST include both values.
+  - Set a new `updated` date each time the record changes.
 
 #### `version`, `previous_version`, `deprecated`
 
@@ -436,10 +425,21 @@ keywords:
 - **Rules:**
   - Identify the resource version, not the metadata schema version.
   - Semantic versions, release names, years, source versions, or commit hashes are all acceptable.
-  - `previous_version` is the `id` of the predecessor record. See section 4.7 for when to snapshot
-    and what the encoder derives from the chain.
+  - `previous_version` is the `id` of the predecessor record. See section 4.7 for when to snapshot.
   - `deprecated: true` marks a superseded snapshot. Snapshots are frozen and are surfaced only
     through the version chain, not catalog listings.
+
+#### `parent`
+
+- **Requirement:** Optional. Required when the record is a child of another record.
+- **Expected value:** The `id` of the parent record.
+- **Rules:**
+  - Must name an existing Hub record. Omit it on top-level records.
+  - Must not equal this record's `id` or form a cycle. Resolve and validate parents against the
+    complete catalog before publication (section 4.8).
+  - Use it only for a representation that has no standing outside its parent; see section 4.8.
+  - Not a provenance statement. A derived child still records `processing[].derived_from`.
+  - Not a version pointer. Snapshots use `previous_version`.
 
 #### `series`
 
@@ -496,8 +496,7 @@ keywords:
 
 - **Requirement:** Conditional. Required when a DOI exists; a DOI also satisfies the citation
   requirement on its own.
-- **Expected value:** Bare DOI (e.g. `10.7910/DVN/SWPENT`), not a URL. The resolvable
-  `https://doi.org/…` link is built downstream.
+- **Expected value:** Bare DOI (e.g. `10.7910/DVN/SWPENT`), not a URL.
 
 #### `related_publications[]`
 
@@ -528,8 +527,7 @@ precise footprint.
 
   Single-region datasets use a flat box, e.g. `[-180, -90, 180, 90]`. For **disjoint** coverage
   (separate areas with a large gap between them), pass a list of boxes (`[[...], [...]]`), each a
-  real area covered, in any order. Do not author an overall/union box - the encoder derives it when
-  serializing (STAC, for example, wants the union as the first extent entry).
+  real area covered, in any order. Do not include an overall/union box.
 
 - **Rules:**
   - Coordinates MUST be in WGS84 regardless of `spatial.crs` (which describes the underlying assets,
@@ -560,7 +558,7 @@ spatial:
 
 ```yaml
 spatial:
-  bbox: # disjoint coverage; no overall/union box - the encoder derives it
+  bbox: # disjoint coverage; no overall/union box
     - [5.9, 47.3, 15.0, 55.1] # Germany
     - [-75.6, -55.9, -66.4, -17.5] # Chile
 ```
@@ -612,7 +610,6 @@ spatial:
 
 - **Requirement:** Conditional. For vector tables with an embedded geometry column.
 - **Expected value:** Name of the geometry column.
-- **Encoding:** STAC Table Extension `table:primary_geometry`.
 
 ### 5.4 Temporal
 
@@ -625,20 +622,20 @@ temporal cadence is not stored here (see "Temporal cadence" below).
   (`2020-06-23`), or an instant (`2020-06-23T00:00:00Z`). Nothing looser is accepted.
 - **Rules:**
   - Use `date` for a single instant or period, or `start_date` + `end_date` for a span. They are
-    **mutually exclusive**, and this maps 1:1 onto STAC:
+    **mutually exclusive**:
 
-    | Meaning                  | Encoding                        | STAC                            |
-    | ------------------------ | ------------------------------- | ------------------------------- |
-    | Single instant or period | `date`                          | `datetime`                      |
-    | Span                     | `start_date` + `end_date`       | `start_datetime`/`end_datetime` |
-    | Open-ended series        | `start_date` + `end_date: null` | open interval                   |
+    | Meaning                  | Fields                          |
+    | ------------------------ | ------------------------------- |
+    | Single instant or period | `date`                          |
+    | Span                     | `start_date` + `end_date`       |
+    | Open-ended series        | `start_date` + `end_date: null` |
 
   - **Precision states the granularity.** `date: 2020` is the whole year 2020 (a static reference
     year); `date: 2020-06-23T10:00:00Z` is an instant. To say "all of 2020" you write `2020`, not
     `2020-01-01`.
   - **A reduced-precision `end_date` is inclusive through the end of its period** (`end_date: 2010`
     means through 2010-12-31). Starts expand to the beginning of the period, which naive parsing
-    already does; only ends need the end-of-period expansion. Encoders apply this when serializing.
+    already does; only ends need the end-of-period expansion.
 
 #### Temporal cadence
 
@@ -658,8 +655,8 @@ entry. See the [datacube extension](extensions/datacube/README.md).
 
 CDH extension fields are declared in `extensions[]` and validated with the core (see section 4.2).
 Each extension is documented alongside its schema (linked below); all are optional except the `cdh`
-extension, which the CDH profile requires (`cdh.domain`). Encode values you filter or facet on in
-these extension fields, not in `keywords` (see section 4.4).
+extension, which the CDH profile requires (`cdh.domain`). Put values you filter or facet on in these
+extension fields, not in `keywords` (see section 4.4).
 
 | Extension                                             | Fields                                                 | Applies to                            |
 | ----------------------------------------------------- | ------------------------------------------------------ | ------------------------------------- |
@@ -692,14 +689,24 @@ these extension fields, not in `keywords` (see section 4.4).
 
 - **Requirement:** Required - at least one entry.
 - **Expected value per entry:**
-  `{ name, locations, description, media_type, file_size, nodata, processing_steps }`.
+  `{ name, locations, description, media_type, file_size, nodata, processing_steps, fields, href_template, file_index, spatial }`.
 - **Vocabulary:** `media_type` must be an
   [IANA media type](https://www.iana.org/assignments/media-types/) (e.g.,
   `application/vnd.zarr; version=3`, `image/tiff; application=geotiff; profile=cloud-optimized`).
-- **`locations[]`:** Access location(s) for the asset. Required for at least one entry. Each entry
-  is `{ url, title? }`, where `title` is an optional access label describing the access path (e.g.,
-  `HTTPS`, `S3`), not the content.
+- **`locations[]`:** Access location(s) for the asset. Required, unless the entry has a `file_index`
+  whose formats carry their own file locations (any format but `cdh-inventory`); then Recommended
+  when the files share a prefix, since a prefix is listable and is what a bucket policy or mirror
+  points at. Omit it only when the files genuinely share none. Each entry is `{ url, title? }`,
+  where `title` is an optional access label describing the access path (e.g., `HTTPS`, `S3`), not
+  the content.
   - The first entry is canonical.
+  - `url` MUST be an absolute URL. Data never lives beside the record.
+  - `url` MUST be machine-actionable: a data file, a store or directory prefix (with
+    `href_template`, a `file_index`, or a Zarr-family root), a service endpoint that returns the
+    data, or for software the repository or tool URL. A landing page, DOI, Zenodo or Dataverse
+    record, or documentation page is not a location; use `citation.url`, `doi`, or
+    `additional_links[]`. Only when the data has no URL at all (non-public, by request) may `url` be
+    the access-request page, and `access_note` MUST say so.
   - List more than one entry only when the additional entries point at the same content via a
     different access path (e.g., an HTTPS and an S3 URL for the same file). All `locations[]` share
     the asset's `media_type`, `file_size`, and `nodata`.
@@ -707,21 +714,76 @@ these extension fields, not in `keywords` (see section 4.4).
 - **`href_template` (optional):** Use when one dataset is split into many files along its dimensions
   (e.g., one COG per crop, production system, and variable). Each `locations[].url` becomes a base
   path with the template appended. Each `{token}` must match a `dimensions[].name`, or be the
-  reserved `{variable}` token, which expands over `variables[].name` for files split per variable
-  (`variable` is therefore not allowed as a dimension name). The entry serializes as one item per
-  combination of the tokens' values. Values are substituted verbatim; every combination is assumed
-  to exist. Omit it for a single file. On a templated entry, `file_size` describes **one generated
-  file**, not the set; where slices differ materially in size, omit it rather than averaging. See
-  the [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
+  reserved `{variable}` token for files split per variable (`variable` is therefore not allowed as a
+  dimension name). `{variable}` expands over the variables named in `fields` when present, otherwise
+  over all declared `variables[].name`. The entry describes one file per combination of the tokens'
+  values. Values are substituted verbatim; every combination is assumed to exist. A token on a
+  `type: temporal` dimension may carry a strftime format, `{date:%Y.%m.%d}`, when the file name
+  spells the date differently from the ISO 8601 value. Only `%Y`, `%m`, `%d`, `%H`, `%M`, and `%j`
+  are allowed; a token may repeat with different formats (`year={date:%Y}/{date:%Y%m%d}.tif`). A
+  format may not be finer than the axis precision (a yearly axis takes only `%Y`) and must spell
+  every value distinctly. Names the directives cannot spell use `file_index`. Omit it for a single
+  file. On a templated entry, `file_size` describes **one file**, not the set; where slices differ
+  materially in size, omit it rather than averaging. See the
+  [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
+- **`file_index` (optional):** Use instead of `href_template` when the files do not follow a regular
+  pattern, or when there are too many to open one by one. A list of
+  `{ format, locations, title, media_type }` indexes that list or open this entry's files as one
+  dataset. An index opens files this entry already holds; a store that carries its own data is a
+  `data[]` entry, not an index. `cdh-inventory` may appear once. The index is the one part of a
+  record that may live outside it; every field definition stays in the record. Mutually exclusive
+  with `href_template`. Formats and rules: [File indexes](#file-indexes-file_index).
+- **`fields` (optional):** Names of the `dimensions[]`/`variables[]` entries this asset contains.
+  Omission means the asset contains all declared fields. An explicit list MUST name the asset's
+  complete subset of declared fields; provide it whenever the asset does not contain them all, e.g.
+  one table per admin level sharing country columns. Authors or inspection tools MUST verify field
+  membership before publication.
+- **`spatial` (optional):** `{ bbox, geography }` covering this asset alone, for selecting files by
+  area. Same shapes as the top-level `spatial`. Omit when unknown; the top-level bbox is not copied
+  down to assets.
 - **Rules:**
-  - `name` is required; it becomes the asset key in serialized output and must be unique across
-    `data[]` and `additional_assets[]`.
-  - `locations[].url` must point to the described resource and should be stable.
-  - For restricted resources, `locations[].url` should point to a landing page or access
-    instructions.
+  - `name` is required and must be unique across `data[]` and `additional_assets[]`.
+  - `locations[].url` should be stable, and points at the data even when access is restricted; the
+    URL may require credentials. Request forms and instructions go in `access_note` and
+    `additional_links[]`.
   - Provide `media_type` and `file_size` when known; otherwise review may add them (see section
     4.6).
   - `processing_steps` references `processing[].id` values.
+
+#### File indexes (`file_index[]`)
+
+Each entry names one index file and the specification it follows. Its `locations[]` are that file at
+several addresses; an index whose internal paths use a different scheme is a separate entry. No
+format is required and any one is a complete index. Only `cdh-inventory` is validated by CDH; the
+others are trusted to their own specifications. An index may live anywhere; the entry's
+`locations[]` describe the files, not the index.
+
+| `format`          | Specification                                                                                           | Internal paths resolve against              | Opened by                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------- |
+| `stac-geoparquet` | [stac-geoparquet](https://github.com/stac-utils/stac-geoparquet/blob/main/spec/stac-geoparquet-spec.md) | As written in the item assets               | STAC clients, DuckDB, GDAL   |
+| `gti`             | [GDAL Tile Index](https://gdal.org/en/stable/drivers/raster/gti.html)                                   | The index file's own location               | GDAL, QGIS, rasterio         |
+| `vrt`             | [GDAL VRT](https://gdal.org/en/stable/drivers/raster/vrt.html)                                          | The index file's own location               | GDAL, QGIS, rasterio         |
+| `kerchunk`        | [kerchunk](https://fsspec.github.io/kerchunk/spec.html)                                                 | As written in the references                | xarray via fsspec            |
+| `icechunk`        | [Icechunk](https://icechunk.io/) with virtual chunks                                                    | As written; containers within `locations[]` | xarray via icechunk          |
+| `cdh-inventory`   | Below                                                                                                   | Every `locations[].url`                     | CDH validation, spreadsheets |
+
+Prefer `stac-geoparquet` for large tiled products. An Icechunk or Zarr store that holds its own
+chunks is a `data[]` entry, not an index. For `kerchunk` and `icechunk` the location may be a
+directory prefix; omit `media_type` then.
+
+**`cdh-inventory`** is a CSV (RFC 4180, UTF-8, header row) or a Parquet file with the same columns,
+one row per file:
+
+- `href` - required. A relative reference (RFC 3986) resolved against every `locations[].url`, each
+  of which MUST be a directory ending in `/`. Must stay beneath the base; no duplicates.
+- One column per declared `dimensions[].name` - that file's coordinate on the axis. A cell MUST
+  equal a declared value exactly as written in the record, or a valid ISO 8601 date on a temporal
+  axis. Include a column for every dimension the record declares.
+- `variable` - the single declared variable the file holds, when files are split per variable. Must
+  be within the entry's `fields`.
+
+No other columns. Rows list files that exist; nothing is inferred. Use an immutable,
+version-specific inventory URL for a release.
 
 #### `additional_assets[]`
 
@@ -730,12 +792,23 @@ these extension fields, not in `keywords` (see section 4.4).
   additional metadata files).
 - **Expected value per entry:** `{ name, locations, description, media_type, roles, file_size }`.
 - **`locations[]`:** Same shape and rules as `data[].locations` - required, at least one entry;
-  first is canonical; multiple entries only for the same content via a different access path.
+  first is canonical; multiple entries only for the same content via a different access path - with
+  one difference: `url` MAY be a path relative to the record file (`./README.md`,
+  `docs/legend.csv`). Use this only for a small, versioned metadata file committed beside the
+  record. The file MUST exist at that path, and whoever publishes the record publishes the file with
+  it, so the path resolves the same way from the published record.
 - **Vocabulary for `roles`:** Suggested, not closed - `metadata`, `validation`, `describedby`,
-  `thumbnail`, `overview`, `visual`, `example`. Use `example` for a runnable usage example (a
-  notebook, script, or SQL file), which is the place for a query a consumer needs but the data
+  `agents`, `thumbnail`, `overview`, `visual`, `example`. Use `example` for a runnable usage example
+  (a notebook, script, or SQL file), which is the place for a query a consumer needs but the data
   cannot carry - a required join, or a non-obvious column meaning.
-- **Rules:** Same as `data[]`.
+- **Documentation files (optional):** A record MAY carry a human-readable README
+  (`roles: [describedby]`, `media_type: text/markdown`) and a guide for AI agents and analysts
+  (`roles: [agents]`, same media type). The agent guide holds what no structured field can: the
+  stable key and join columns, quirks and caveats, what the coordinate system implies for distance
+  and area, and tested queries. Leave out what the record already states. `agents` is not an IANA
+  relation or a standard STAC role; it follows the Portolan convention, the only one in use for this
+  purpose.
+- **Rules:** Same as `data[]`, except the relative-path allowance above.
 
 #### `additional_links[]`
 
@@ -767,6 +840,9 @@ these extension fields, not in `keywords` (see section 4.4).
 | `preview` / `icon` / `thumbnail`                | Imagery                                   | IANA / STAC          |
 | `processing-expression`                         | Code or workflow that produced the data   | STAC Processing Ext. |
 
+Catalog navigation and version-chain relations follow from `parent` (section 4.8) and
+`previous_version` (section 4.7). Do not repeat them in `additional_links[]`.
+
 ## 7. Controlled Vocabularies Summary
 
 | Field                                                         | Vocabulary                                                                                                                                                               |
@@ -782,7 +858,7 @@ these extension fields, not in `keywords` (see section 4.4).
 | `resource_type`                                               | `vocab/resource_type.json`                                                                                                                                               |
 | `cdh.domain`                                                  | `vocab/domain.json` (CDH closed set)                                                                                                                                     |
 | `keywords[].scheme` (linked items)                            | Open - any resolvable controlled-vocabulary URI (e.g., AGROVOC, GEMET). Do not link entries to `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/vocab/*`. |
-| `commodities`                                                 | `vocab/commodity.json` (AGROVOC-mapped); encoded as themes                                                                                                               |
+| `commodities`                                                 | `vocab/commodity.json` (AGROVOC-mapped)                                                                                                                                  |
 | `climate.mip_era`                                             | `CMIP5`, `CMIP6` (informal)                                                                                                                                              |
 | `climate.scenarios`                                           | SSP / RCP labels, `historic` (informal)                                                                                                                                  |
 | `climate.models`                                              | CMIP source IDs (informal)                                                                                                                                               |
