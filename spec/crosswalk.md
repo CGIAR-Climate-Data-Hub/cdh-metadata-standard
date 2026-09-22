@@ -32,7 +32,7 @@ schema.
 | `doi`                   | Conditional    | Scientific Extension `sci:doi`; `links[rel=cite-as]`                                                                                    | `links[rel=cite-as]`                                                                                  |
 | `related_publications`  | Optional       | Scientific Extension `sci:publications`                                                                                                 | `properties["cgiar-cdh:related_publications"]`                                                        |
 | `note`                  | Optional       | `cgiar-cdh:note`                                                                                                                        | `properties["cgiar-cdh:note"]`                                                                        |
-| `version`               | Conditional    | Version Extension `version`                                                                                                             | `properties.version`                                                                                  |
+| `version`               | Required       | Version Extension `version`; superseded releases get output id `<id>-<version>` so ids stay unique                                      | `properties.version`; same output id rule                                                             |
 | `deprecated`            | Conditional    | Version Extension `deprecated`                                                                                                          | `properties["cgiar-cdh:deprecated"]`                                                                  |
 | `previous_version`      | Conditional    | `links[rel=predecessor-version]`                                                                                                        | `links[rel=predecessor-version]`                                                                      |
 | version chain (derived) | Derived output | Superseded records get `links[rel=successor-version]` and `links[rel=latest-version]`                                                   | Same links on superseded records                                                                      |
@@ -74,13 +74,14 @@ schema.
 
 ## Provenance / Processing
 
-| CDH field                         | Requirement                             | STAC                                                                                                      | OGC API Records                                        |
-| --------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| `processing[].id = "source"`      | Required when `processing[]` is present | Collection-level Processing Extension: `processing:lineage`, `processing:datetime`, `processing:software` | Same fields under `properties["cgiar-cdh:processing"]` |
-| `processing[]` (subsequent)       | Conditional                             | Asset-level `processing:datetime`, `processing:lineage`                                                   | Appended to `properties["cgiar-cdh:processing"]`       |
-| `processing[].code.url`           | Conditional                             | `links[rel=processing-expression]`                                                                        | `links[rel=processing-expression]`                     |
-| `processing[].code.version`       | Conditional                             | Link `cgiar-cdh:code_version` field                                                                       | Link `cgiar-cdh:code_version` field                    |
-| `processing[].derived_from[].url` | Conditional                             | `links[rel=derived_from]`                                                                                 | `links[rel=derived_from]`                              |
+| CDH field                             | Requirement                             | STAC                                                                                                      | OGC API Records                                        |
+| ------------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `processing[].id = "source"`          | Required when `processing[]` is present | Collection-level Processing Extension: `processing:lineage`, `processing:datetime`, `processing:software` | Same fields under `properties["cgiar-cdh:processing"]` |
+| `processing[]` (subsequent)           | Conditional                             | Asset-level `processing:datetime`, `processing:lineage`                                                   | Appended to `properties["cgiar-cdh:processing"]`       |
+| `processing[].code.url`               | Conditional                             | `links[rel=processing-expression]`                                                                        | `links[rel=processing-expression]`                     |
+| `processing[].code.version`           | Conditional                             | Link `cgiar-cdh:code_version` field                                                                       | Link `cgiar-cdh:code_version` field                    |
+| `processing[].derived_from[].url`     | Conditional                             | `links[rel=derived_from]`                                                                                 | `links[rel=derived_from]`                              |
+| `processing[].derived_from[].version` | Conditional                             | Link `cgiar-cdh:source_version` field                                                                     | Link `cgiar-cdh:source_version` field                  |
 
 ## Assets and Links
 

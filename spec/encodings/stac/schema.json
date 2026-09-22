@@ -277,6 +277,10 @@
       "description": "Version of the code or workflow a processing-expression link points at.",
       "$ref": "#/definitions/nonEmptyString"
     },
+    "cgiar-cdh:source_version": {
+      "description": "Version of the source release a derived_from link points at, as the source labels it.",
+      "$ref": "#/definitions/nonEmptyString"
+    },
     "cgiar-cdh:left_fields": {
       "description": "Key columns in this resource, paired positionally with cgiar-cdh:right_fields on a link to the joined resource.",
       "type": "array",
@@ -362,6 +366,9 @@
       "properties": {
         "cgiar-cdh:code_version": {
           "$ref": "#/definitions/cgiar-cdh:code_version"
+        },
+        "cgiar-cdh:source_version": {
+          "$ref": "#/definitions/cgiar-cdh:source_version"
         },
         "cgiar-cdh:left_fields": {
           "$ref": "#/definitions/cgiar-cdh:left_fields"

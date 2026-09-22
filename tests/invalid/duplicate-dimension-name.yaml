@@ -4,6 +4,7 @@ extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/datacube/schema.json
 id: fixture-record
+version: "1"
 title: Two dimensions sharing a name
 description: A deliberately broken record for the negative test suite.
 license: CC-BY-4.0

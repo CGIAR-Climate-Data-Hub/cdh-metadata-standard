@@ -73,7 +73,7 @@ terms are used where available, e.g. `access` -> `dct:accessRights`.
 | `doi`                       | `links[rel=cite-as]`                                                                                                                                                       |
 | `related_publications[]`    | `properties["cgiar-cdh:related_publications"]`                                                                                                                             |
 | `note`                      | `properties["cgiar-cdh:note"]`                                                                                                                                             |
-| `version`                   | `properties.version`                                                                                                                                                       |
+| `version`                   | `properties.version`. Superseded releases get record id `<id>-<version>`; the current release keeps the bare `id`.                                                         |
 | `deprecated`                | `properties["cgiar-cdh:deprecated"]`                                                                                                                                       |
 | `previous_version`          | `links[rel=predecessor-version]`                                                                                                                                           |
 | `funding[]`                 | `properties["cgiar-cdh:funding"]`                                                                                                                                          |
@@ -204,7 +204,7 @@ Encoding rules:
 2. The `source` step's `code.url` maps to `links[rel=processing-expression]` on the record. Include
    `cgiar-cdh:code_version` as a link extra field.
 3. Each step's `derived_from[].url` entries (always external URLs) map to `links[rel=derived_from]`
-   on the record.
+   on the record, with `version` carried as a `cgiar-cdh:source_version` link extra field.
 4. Per-asset processing chains live in the corresponding link's `cgiar-cdh:processing_steps` extra
    field (mirroring `data[].processing_steps[]` in the YAML).
 

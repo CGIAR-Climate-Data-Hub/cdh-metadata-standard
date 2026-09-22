@@ -65,7 +65,8 @@ related_publications: # optional
 created: ""
 updated: ""
 
-# Version (conditional - if version exists already, or multiple versions are expected)
+# Version (required) - the source's own label, or "1" when the source does not version.
+# previous_version: the version label this release supersedes (same id); omit on a first release.
 version: ""
 previous_version: ""
 
@@ -167,6 +168,7 @@ processing:
     derived_from:
       - url: ""
         title: ""
+        version: "" # the source release used, as the source labels it
 
 # Data Urls (required)
 data:

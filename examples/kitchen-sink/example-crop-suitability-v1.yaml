@@ -3,11 +3,10 @@
 #
 # ============================================================================
 # SAMPLE RECORD - NOT REAL DATA.
-# The DEPRECATED v1.0 snapshot of example-crop-suitability. Kept frozen so the
-# earlier release stays citable; the current release lives in
-# example-crop-suitability.yaml and points back here via previous_version.
-# Snapshots are never edited again and are surfaced only through the version
-# chain, not catalog listings (see standard.md section 4.7).
+# The DEPRECATED 1.0 release of example-crop-suitability. Same id as the
+# current release (version 2.0, in example-crop-suitability.yaml), which points
+# back here via previous_version: "1.0". Kept so the earlier release stays
+# citable as id + version (see standard.md section 4.7).
 # ============================================================================
 cdh_schema_version: "v0.3.0"
 extensions:
@@ -17,7 +16,7 @@ extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/classification/schema.json
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/agriculture/schema.json
 
-id: example-crop-suitability-v1
+id: example-crop-suitability
 title: "Example Gridded Crop Suitability Projections (SAMPLE - NOT REAL DATA), v1.0"
 version: "1.0"
 deprecated: true
@@ -25,9 +24,9 @@ series:
   name: Example Suitability Atlas
   url: https://example.org/atlas
 description: >
-  FICTIONAL SAMPLE RECORD - superseded snapshot. The first release of the example suitability cube
-  for the imaginary region of Farland, covering two crops under a single scenario. Retained frozen
-  for citation; use the current release (example-crop-suitability) instead.
+  FICTIONAL SAMPLE RECORD - superseded release. The first release of the example suitability cube
+  for the imaginary region of Farland, covering two crops under a single scenario. Retained for
+  citation; use the current release (example-crop-suitability, version 2.0) instead.
 license: CC-BY-4.0
 resource_type: dataset
 

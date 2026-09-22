@@ -28,6 +28,7 @@ const base = {
   cdh_schema_version: "v0.3.0",
   extensions: [EXTENSIONS.cdh],
   id: "fixture-record",
+  version: "1",
   title: "Fixture record",
   description: "A deliberately small record for profile-bundle checks.",
   created: "2026-01-01",

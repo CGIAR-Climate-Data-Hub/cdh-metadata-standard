@@ -235,6 +235,7 @@ processing:
     derived_from:
       - url: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/SWPENT
         title: Source MAPSPAM dataset
+        version: v2r2
   - id: cloud-optimize
     description: Conversion of source MAPSPAM files to a consolidated Zarr data cube.
     code:

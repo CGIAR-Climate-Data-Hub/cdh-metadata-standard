@@ -164,30 +164,46 @@ file list may be external, while all field definitions remain in the record. See
 
 ### 4.7 Versioning a resource
 
+`id` names the resource across all of its releases. `version` names one release. Together they
+identify one record, and `id` + `version` is what a citation or a derived record pins. A DOI, when
+present, is the persistent identifier of that release; the Hub does not mint identifiers. The `id`
+on its own always resolves to the current release, so every bare `id` reference (`parent`, a catalog
+URL) follows the resource forward.
+
 Use this rule when a resource changes:
 
 - **Metadata fix or enrichment** (typo, better description, added contact) - update the existing
   record in place. `updated` reflects the revision.
 - **Routinely extended time series** (e.g., a monthly-updated observation product) - same record;
   use an open-ended `temporal` interval. This is not a version.
-- **New/updated data format** (e.g., new file format, updated chunk structure, re-compressed) -
-  update the existing record with any additional urls and update the processing code commit/version.
-- **New release of the data** (values change, new time span or coverage, new DOI or citation) -
-  snapshot, then update in place. Copy the current record to a new record whose `id` appends the
-  version (e.g. `spam2020-v2`) and set `deprecated: true` on the snapshot. Then update the original
-  record to the new release: set the new `version` and point `previous_version` at the snapshot's
-  `id`. The unversioned `id` always describes the current release. Snapshots are frozen - never edit
-  them again.
+- **Same values, new packaging** (new file format, chunking, or lossless compression) - update the
+  existing record with the additional URLs and the processing code version. If any value changes, it
+  is a revision.
+- **Revision of the same product** (the publisher issues a new version: corrected or regenerated
+  values, same reference period and scope, usually a new DOI; e.g. MapSPAM 2020 v2r0 to v2r2) - a
+  new record with the same `id`. Copy the current record, set the new `version`, and point
+  `previous_version` at the old record's `version`. Set `deprecated: true` on the old record. The
+  old record now describes a superseded release: keep its data description as it was, but metadata
+  fixes (broken link, typo) are still allowed.
+- **New edition of a product line** (new reference year or generation with its own name, landing
+  page, or DOI; e.g. MapSPAM 2010 to 2020, GLW3 to GLW4) - a distinct resource with its own `id`,
+  grouped by `series`. Not a version. Follow the publisher's naming: what they call a version is a
+  revision, what they give a new name is an edition.
 - **Structural change or lossy transform** (dimension added or removed, resolution or extent change,
   aggregation, reclassification) - a distinct resource, not a version. Create a separate record
   linked through `processing[].derived_from`.
 
-Author the chain backward only: each new record points at its predecessor.
+Author the chain backward only: each new record points at its predecessor. Version labels carry no
+order; the chain does.
 
 `previous_version` only points at Hub records. A predecessor that was never catalogued is
 provenance, not a version chain - use `processing[].derived_from` or a `via` link. A resource
 superseded by something outside the Hub can carry an `additional_links[]` entry with
 `rel: successor-version`; a changelog can be linked with `rel: version-history`.
+
+Superseding a record never rewrites other records. A child keeps its `parent` and follows the
+resource to the new release. A derived record keeps its `processing[].derived_from` entry; the
+`version` it recorded says which release it used.
 
 ### 4.8 Catalog hierarchy
 
@@ -196,8 +212,9 @@ no `parent` is a top-level entry. A record whose `parent` names another record's
 record's _child_. Directory layout in a repository is a filing convention with no catalog meaning:
 the catalog has no nodes other than records.
 
-Version snapshots (section 4.7) are linked by `previous_version`, never by `parent`. They belong to
-the version chain, not the hierarchy.
+Superseded releases (section 4.7) are linked by `previous_version`, never by `parent`. They belong
+to the version chain, not the hierarchy. `parent` names an `id`, so a child always hangs under the
+current release; children are not copied when a parent is superseded.
 
 Rules:
 
@@ -217,13 +234,15 @@ Rules:
   just to group others under it.
 - One level of nesting is normally enough. Deeper trees SHOULD be justified by navigation, not by
   tidiness.
-- **Validate the complete catalog before publication.** Record ids MUST be unique. Every `parent`
-  MUST resolve to exactly one record, MUST NOT equal the child's own `id`, and MUST NOT create a
-  cycle through other parents. Directory layout cannot supply or repair a missing parent.
+- **Validate the complete catalog before publication.** `id` + `version` MUST be unique, and exactly
+  one record per `id` MUST be current (no `deprecated`). Every `parent` MUST resolve to exactly one
+  current record, MUST NOT equal the child's own `id`, and MUST NOT create a cycle through other
+  parents. Directory layout cannot supply or repair a missing parent.
 
-Self-parenting can be checked from one record. Missing parents, duplicate ids, and cycles require
-the complete catalog, including records already published. A record passing JSON Schema validation
-alone does not establish that its parent exists or that the hierarchy is acyclic.
+Self-parenting can be checked from one record. Missing parents, duplicate releases, two current
+records for one `id`, and cycles require the complete catalog, including records already published.
+A record passing JSON Schema validation alone does not establish that its parent exists or that the
+hierarchy is acyclic.
 
 ## 5. Field Reference
 
@@ -259,16 +278,16 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
 #### `id`
 
 - **Requirement:** Required
-- **Definition:** A persistent, unique identifier for the metadata record.
+- **Definition:** A persistent identifier for the resource, shared by all of its releases.
 - **Expected value:** Short, stable, URL-safe string.
 - **Rules:**
-  - Must be unique in the Hub catalog.
+  - `id` + `version` must be unique in the Hub catalog.
   - Must be lowercase.
   - Must not contain `/`, `:`, `?`, `#`, `&`, spaces, or other URL/path-reserved characters.
   - Should use hyphens, not underscores.
   - Should not change when the title changes.
-  - Must not include the version; the unversioned `id` always identifies the current release. Only
-    deprecated snapshots append the version (e.g. `spam2020-v2`). See section 4.7.
+  - Must not include the version. Every release of a resource carries the same `id`; `version` tells
+    them apart. See section 4.7.
 - **Example:** `spam2020`
 
 #### `title`
@@ -418,28 +437,33 @@ keywords:
 
 #### `version`, `previous_version`, `deprecated`
 
-- **Requirement:** Conditional. Required when the resource is versioned; `previous_version` is
-  required when the record supersedes an existing Hub record; `deprecated: true` is required on
-  version snapshots.
-- **Expected value:** Stable version label; `deprecated` is boolean.
+- **Requirement:** `version` is Recommended in the core schema and Required by the CDH profile.
+  `previous_version` is required when the record supersedes an existing Hub record;
+  `deprecated: true` is required on superseded releases.
+- **Expected value:** Version label; `deprecated` is boolean.
 - **Rules:**
-  - Identify the resource version, not the metadata schema version.
-  - Semantic versions, release names, years, source versions, or commit hashes are all acceptable.
-  - `previous_version` is the `id` of the predecessor record. See section 4.7 for when to snapshot.
-  - `deprecated: true` marks a superseded snapshot. Snapshots are frozen and are surfaced only
-    through the version chain, not catalog listings.
+  - Identify the resource release, not the metadata schema version.
+  - Copy the source's own label when it has one (`v2r2`, `2.1`, `2020`). When the source does not
+    version, or the resource is Hub-produced, count from `1`.
+  - Labels are opaque. Never parse or sort them; order comes from the `previous_version` chain.
+  - `previous_version` is the `version` of the predecessor record, which shares this record's `id`.
+    See section 4.7.
+  - `deprecated: true` marks a superseded release. Superseded records stay searchable so a cited
+    release can be found, and are flagged as superseded wherever they are shown.
+  - Show and cite `version` together with `id` on every release, including the first. A label only
+    pins a release if people copy it before a second release exists.
 
 #### `parent`
 
 - **Requirement:** Optional. Required when the record is a child of another record.
 - **Expected value:** The `id` of the parent record.
 - **Rules:**
-  - Must name an existing Hub record. Omit it on top-level records.
+  - Must name an existing Hub record; resolves to its current release. Omit it on top-level records.
   - Must not equal this record's `id` or form a cycle. Resolve and validate parents against the
     complete catalog before publication (section 4.8).
   - Use it only for a representation that has no standing outside its parent; see section 4.8.
   - Not a provenance statement. A derived child still records `processing[].derived_from`.
-  - Not a version pointer. Snapshots use `previous_version`.
+  - Not a version pointer. Superseded releases use `previous_version`.
 
 #### `series`
 
@@ -457,7 +481,8 @@ keywords:
   - `name` is the grouping key: use the exact same spelling on every record in the series.
   - `url` is the series landing page, when one exists.
   - A series is not a version chain (section 4.7) and not provenance (`processing[].derived_from`).
-    A record derived from a series member belongs to its own series, if any.
+    Editions of a product line (MapSPAM 2010, MapSPAM 2020) are separate members of one series. A
+    record derived from a series member belongs to its own series, if any.
 
 ### 5.2 Contact and Citation
 
@@ -676,10 +701,11 @@ extension fields, not in `keywords` (see section 4.4).
 - **Rules:**
   - `id` must be unique within `processing[]`.
   - At least one step must use `id: source` whenever `processing[]` is present.
-  - `derived_from[]` entries are external `{ url, title }` references. When the source is versioned,
-    point `url` at the version-specific URL (e.g. a snapshot record or versioned landing page), not
-    at a URL that tracks the latest release. Step order is the array order; asset-specific chains
-    use `data[].processing_steps[]`.
+  - `derived_from[]` entries are `{ url, title, version }` references to the data used. Record
+    `version` whenever the source is versioned, as the source labels it; for a Hub record that is
+    its `version`. `url` may then point at the source's landing page or Hub record even when that
+    URL tracks the latest release. Step order is the array order; asset-specific chains use
+    `data[].processing_steps[]`.
   - `date` is ISO 8601 / RFC 3339.
   - Put `source` first unless the processing order requires otherwise.
 

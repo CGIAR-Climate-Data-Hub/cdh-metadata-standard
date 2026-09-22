@@ -9,6 +9,7 @@ extensions:
 
 id: glw4-2020
 title: Gridded livestock density for 2020 (GLW4)
+version: "1"
 series:
   name: Gridded Livestock of the World (GLW)
   url: https://www.fao.org/livestock-systems/global-distributions/en/

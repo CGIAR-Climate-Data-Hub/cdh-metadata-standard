@@ -478,6 +478,10 @@
               },
               "url": {
                 "$ref": "#/$defs/nonEmptyString"
+              },
+              "version": {
+                "$ref": "#/$defs/nonEmptyString",
+                "description": "Version label of the source release that was used, as the source publishes it."
               }
             },
             "type": "object"
@@ -757,7 +761,7 @@
     },
     "deprecated": {
       "type": "boolean",
-      "description": "true when a newer release supersedes this record. Set on version snapshots."
+      "description": "true when a newer release (same id) supersedes this record."
     },
     "description": {
       "type": "string",
@@ -844,7 +848,7 @@
     },
     "previous_version": {
       "$ref": "#/$defs/nonEmptyString",
-      "description": "id of the predecessor record, when this supersedes an earlier version."
+      "description": "version of the predecessor record (same id), when this supersedes an earlier release."
     },
     "processing": {
       "description": "Ordered processing/provenance steps; at least one must have id: source.",
@@ -896,8 +900,8 @@
     },
     "version": {
       "$ref": "#/$defs/nonEmptyString",
-      "description": "Version of the resource, when versioned.",
-      "examples": ["v1.0", "2.0-release-2"]
+      "description": "Version label of this release of the resource. The source's own label when it has one; otherwise a counter from 1. Not compared or sorted - order comes from previous_version.",
+      "examples": ["1", "v2r2", "2.1"]
     }
   },
   "required": [

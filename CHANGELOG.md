@@ -21,6 +21,8 @@ occur between minor versions.
   are limited to `%Y %m %d %H %M %j`; a token may repeat with different formats for hive-partitioned
   paths. Domain-axis tokens stay verbatim.
 
+- Added `processing[].derived_from[].version` so a derived record pins the source release it used,
+  even when `url` tracks the latest release. Maps to a `cgiar-cdh:source_version` link field.
 - Added `data[].file_index`: a list of `{ format, locations, title, media_type }` indexes over an
   entry's files, for file sets a template cannot describe. An entry's `locations[]` are one index
   file at several addresses. `format` is one of `stac-geoparquet`, `gti`, `vrt`, `kerchunk`,
@@ -31,6 +33,12 @@ occur between minor versions.
 
 ### Changed
 
+- **Breaking:** `version` is required by the CDH profile. Every release of a resource now shares one
+  `id`; `version` tells releases apart and `id` + `version` is the citable identity. Superseded
+  releases keep their `id` and get `deprecated: true` instead of a renamed snapshot copy.
+  `previous_version` is now the predecessor's `version`, not its `id`. Catalog uniqueness is `id` +
+  `version` with one current release per `id`. Encoders emit `<id>-<version>` for superseded
+  releases so output ids stay unique.
 - Omitted `data[].fields` means the asset contains all declared dimensions and variables. Assets
   containing a subset must list that complete subset explicitly, and field membership must be
   verified before publication.

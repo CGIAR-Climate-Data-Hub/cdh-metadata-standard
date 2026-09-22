@@ -6,8 +6,8 @@
 # A deliberately fictional record that fills in (almost) every field the CDH
 # standard and its extensions offer, so authors can see the full shape in one
 # place. Names, orgs, URLs, DOIs, and numbers are all invented.
-# This is the CURRENT release (v2.0); its predecessor snapshot lives in
-# example-crop-suitability-v1.yaml and is referenced via previous_version.
+# This is the CURRENT release (version 2.0); the superseded 1.0 release shares
+# its id and lives in example-crop-suitability-v1.yaml (previous_version: "1.0").
 # admin2/example-crop-suitability-admin2.yaml is its child: the admin-2
 # aggregation of this grid (standard.md section 4.8).
 # ============================================================================
@@ -22,7 +22,7 @@ extensions:
 id: example-crop-suitability
 title: "Example Gridded Crop Suitability Projections (SAMPLE - NOT REAL DATA)"
 version: "2.0"
-previous_version: example-crop-suitability-v1
+previous_version: "1.0"
 series:
   name: Example Suitability Atlas
   url: https://example.org/atlas
@@ -223,6 +223,7 @@ processing:
     derived_from:
       - url: https://example.org/data/example-climate-projections
         title: Example downscaled climate projections
+        version: "3"
   - id: cloud-optimize
     description: Conversion of model output to a consolidated Zarr cube and COGs.
     code:

@@ -8,6 +8,7 @@ extensions:
 
 id: ""
 title: ""
+version: "" # required - the source's own label, or "1"
 description: >
   ""
 license: ""
@@ -88,6 +89,7 @@ processing:
     derived_from:
       - url: ""
         title: ""
+        version: ""
 
 data:
   - name: ""

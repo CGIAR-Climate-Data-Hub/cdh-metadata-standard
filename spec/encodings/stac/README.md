@@ -75,11 +75,12 @@ fails validation instead of passing silently.
 
 These appear on a link object, never in Collection or Item properties.
 
-| Field Name             | Type      | Description                                                                      |
-| ---------------------- | --------- | -------------------------------------------------------------------------------- |
-| cgiar-cdh:code_version | string    | Version of the code or workflow a `processing-expression` link points at.        |
-| cgiar-cdh:left_fields  | \[string] | Key columns in this resource, paired positionally with `cgiar-cdh:right_fields`. |
-| cgiar-cdh:right_fields | \[string] | Matching columns in the joined resource. Same length as `cgiar-cdh:left_fields`. |
+| Field Name               | Type      | Description                                                                      |
+| ------------------------ | --------- | -------------------------------------------------------------------------------- |
+| cgiar-cdh:code_version   | string    | Version of the code or workflow a `processing-expression` link points at.        |
+| cgiar-cdh:source_version | string    | Version of the source release a `derived_from` link points at.                   |
+| cgiar-cdh:left_fields    | \[string] | Key columns in this resource, paired positionally with `cgiar-cdh:right_fields`. |
+| cgiar-cdh:right_fields   | \[string] | Matching columns in the joined resource. Same length as `cgiar-cdh:left_fields`. |
 
 ### Additional Field Information
 

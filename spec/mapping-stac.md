@@ -364,7 +364,9 @@ Encoding rules:
 4. Subsequent steps map to **Asset-level** Processing Extension fields on the assets that reference
    them in `processing_steps[]`.
 5. `derived_from[]` entries are external URLs/STAC Metadata links and map to
-   `links[rel=derived_from]`.
+   `links[rel=derived_from]`, with `version` carried as a `cgiar-cdh:source_version` link field.
+6. Releases share a YAML `id`. The current release keeps it as the Collection id; superseded
+   releases are emitted as `<id>-<version>` so Collection ids stay unique.
 
 ## 8. Validation expectations
 

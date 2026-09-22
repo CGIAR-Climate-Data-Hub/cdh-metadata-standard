@@ -87,7 +87,7 @@
       "then": { "$ref": "#/$defs/declaresAgricultureExtension" }
     }
   ],
-  "required": ["$schema", "cdh", "extensions"],
+  "required": ["$schema", "cdh", "extensions", "version"],
   "patternProperties": {
     "^\\$schema$": {
       "description": "CDH profile schema URL for any released version; its version segment must match cdh_schema_version (checked by validate-yaml).",

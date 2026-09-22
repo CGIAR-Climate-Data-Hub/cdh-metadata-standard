@@ -1,9 +1,9 @@
+# The CDH profile requires version on every record; core leaves it optional.
 cdh_schema_version: "v0.3.0"
+"$schema": https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/schemas/profiles/cdh.schema.json
 extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/datacube/schema.json
 id: fixture-record
-version: "1"
 title: Fixture record
 description: A deliberately broken record for the negative test suite.
 license: CC-BY-4.0
@@ -17,16 +17,6 @@ contact:
 citation:
   authors: [Doe, J.]
   date: "2026"
-dimensions:
-  # "variable" is a reserved dimension name; measures belong in variables[].
-  - name: variable
-    type: bands
-    description: Reserved name that must fail validation.
-    values: [yield, production]
-variables:
-  - name: yield
-    description: Crop yield per grid cell.
-    unit: t ha-1
 data:
   - name: primary
     locations:

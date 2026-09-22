@@ -58,8 +58,19 @@ Use lowercase words with hyphens:
 id: banana-climate-risk-indicators
 ```
 
-Generally, do not put the version in the `id`; the unversioned `id` always describes the current
-release (see [Superseding a record & versioning](#superseding-a-record)).
+Do not put the version in the `id`. Every release of a resource shares one `id`; `version` tells
+them apart, and the bare `id` always resolves to the current release (see
+[Superseding a record](#superseding-a-record)).
+
+### `version`
+
+Required. Copy the source's own label when it has one (`v2r2`, `2.1`, `2020`). If the source does
+not version, or the resource is Hub-produced, start at `"1"`. Labels are never parsed or sorted, so
+any scheme works; the `previous_version` chain gives the order. Quote labels that YAML would read as
+numbers.
+
+Cite and display `version` with `id` on every release, including the first. Version navigation only
+needs to appear once a record has a `previous_version` or is `deprecated`.
 
 ### `title`
 
@@ -578,6 +589,7 @@ processing:
     derived_from:
       - title: NEX-GDDP-CMIP6
         url: https://example.org/nex-gddp-cmip6
+        version: "1.5" # the source release used, as the source labels it
 ```
 
 ### Climate Fields
@@ -718,21 +730,25 @@ If the thing has standing of its own - its own DOI, its own funding, inputs from
 omit `parent` and link its sources with `processing[].derived_from`. A subject area is `cdh.domain`
 and a program is `series`; neither establishes parenthood. Moving a file never changes its parent.
 
-Before publication, check the complete catalog. Every parent must exist, ids must be unique, and
-self-parenting and cycles are prohibited. A single-file check cannot establish the integrity of the
-whole hierarchy. See `standard.md` section 4.8.
+Before publication, check the complete catalog. Every parent must exist, `id` + `version` must be
+unique with one current release per `id`, and self-parenting and cycles are prohibited. A
+single-file check cannot establish the integrity of the whole hierarchy. See `standard.md` section
+4.8.
 
 ## Superseding a Record
 
-When a new release of the data ships, snapshot first, then update in place:
+When the publisher issues a revision of the same product (MapSPAM 2020 v2r0 to v2r2, not MapSPAM
+2010 to 2020, which is a new resource in the same `series`):
 
-1. Copy the current record to a new file. Append the version to the snapshot's `id` (e.g.
-   `spam2020-v2`) and set `deprecated: true`. Never edit the snapshot again.
-2. Update the original record to the new release: set the new `version` and point `previous_version`
-   at the snapshot's `id`.
+1. Copy the current record to a new file. Keep the `id`, set the new `version`, and set
+   `previous_version` to the old record's `version`.
+2. Set `deprecated: true` on the old record. Leave its data description as it was; link and typo
+   fixes are still fine.
 
-The unversioned `id` always describes the current release. Metadata-only fixes are not releases -
-update in place without a snapshot. See `standard.md` section 4.7 for the full rules.
+A file name of `<id>-<version>.yaml` for superseded releases keeps them easy to find, but file names
+carry no meaning. Metadata-only fixes are not releases - update in place. Other records are never
+rewritten: children keep their `parent`, and derived records keep the `version` they recorded in
+`derived_from`. See `standard.md` section 4.7 for the full rules.
 
 ## What Review Cannot Decide
 
@@ -777,6 +793,7 @@ Avoid inventing new fields. If the template has no place for something, use `add
 - [ ] `cdh_schema_version`
 - [ ] `$schema`
 - [ ] `id`, `title`, `description`
+- [ ] `version`
 - [ ] `created`, `updated`
 - [ ] `resource_type`
 - [ ] `cdh.domain[]` includes at least one concept from `vocab/domain.json`
@@ -795,9 +812,9 @@ Avoid inventing new fields. If the template has no place for something, use `add
 
 - [ ] `temporal.start_date` / `end_date` for resources with temporal coverage
 - [ ] `variables[]` and `dimensions[]` for data-cube or multi-variable data
-- [ ] `version` for versioned resources
 - [ ] `previous_version` when the record supersedes an existing Hub record
-- [ ] `deprecated: true` on version snapshots
+- [ ] `deprecated: true` on superseded releases
+- [ ] `derived_from[].version` when the source is versioned
 - [ ] `doi` when a DOI exists
 - [ ] `processing[]` for derived products
 - [ ] `commodities[]` for commodity-specific resources

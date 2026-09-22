@@ -153,6 +153,7 @@ processing:
     derived_from:
       - url: https://example.org/atlas/example-crop-suitability
         title: Example Gridded Crop Suitability Projections (the sibling grid)
+        version: "2.0" # pins the parent release this aggregate was computed from
   - id: zonal-aggregate
     description: >
       Area-weighted zonal mean of the gridded suitability cube over admin-2 units, one row per unit,

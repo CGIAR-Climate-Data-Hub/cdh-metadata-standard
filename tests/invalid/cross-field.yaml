@@ -4,6 +4,7 @@ updated: "2026-04-01"
 extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
 id: fixture-record
+version: "1"
 title: Fixture record
 description: A deliberately broken record for the negative test suite.
 license: CC-BY-4.0
