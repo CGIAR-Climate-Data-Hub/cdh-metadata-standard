@@ -158,10 +158,43 @@
             "authors": {
               "type": "array",
               "items": {
-                "type": "string",
-                "minLength": 1
+                "description": "A citation author: either a person or an organization.",
+                "oneOf": [
+                  {
+                    "additionalProperties": false,
+                    "required": ["family"],
+                    "properties": {
+                      "family": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "Family name(s). A person with a single name uses this field alone.",
+                        "examples": ["Smith", "Carreño Quiñones", "Suharto"]
+                      },
+                      "given": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "Given name(s) or initials.",
+                        "examples": ["Jane", "J.", "María José"]
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "required": ["organization"],
+                    "properties": {
+                      "organization": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "Full name of an organization credited as an author.",
+                        "examples": ["Food and Agriculture Organization of the United Nations"]
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
               },
-              "description": "Names in citation order.",
+              "description": "Authors in citation order. A person gives family (and usually given); an organization gives organization.",
               "minItems": 1
             },
             "date": {
@@ -1158,10 +1191,45 @@
                   "authors": {
                     "type": "array",
                     "items": {
-                      "type": "string",
-                      "minLength": 1
+                      "description": "A citation author: either a person or an organization.",
+                      "oneOf": [
+                        {
+                          "additionalProperties": false,
+                          "required": ["family"],
+                          "properties": {
+                            "family": {
+                              "minLength": 1,
+                              "type": "string",
+                              "description": "Family name(s). A person with a single name uses this field alone.",
+                              "examples": ["Smith", "Carreño Quiñones", "Suharto"]
+                            },
+                            "given": {
+                              "minLength": 1,
+                              "type": "string",
+                              "description": "Given name(s) or initials.",
+                              "examples": ["Jane", "J.", "María José"]
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "additionalProperties": false,
+                          "required": ["organization"],
+                          "properties": {
+                            "organization": {
+                              "minLength": 1,
+                              "type": "string",
+                              "description": "Full name of an organization credited as an author.",
+                              "examples": [
+                                "Food and Agriculture Organization of the United Nations"
+                              ]
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
                     },
-                    "description": "Names in citation order.",
+                    "description": "Authors in citation order. A person gives family (and usually given); an organization gives organization.",
                     "minItems": 1
                   },
                   "date": {

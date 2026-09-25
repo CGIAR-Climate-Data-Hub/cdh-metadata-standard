@@ -28,8 +28,10 @@ contact:
     url: ""
 
 citation:
+  # each author is a person (family, given) or an organization
   authors:
-    - ""
+    - family: ""
+      given: ""
   date: ""
   publisher: ""
 

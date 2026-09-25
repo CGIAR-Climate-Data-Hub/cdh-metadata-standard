@@ -52,7 +52,7 @@ citation:
   title:
     Global Spatially-Disaggregated Crop Production Statistics Data for 2020 Version 2.0 Release 2
   authors:
-    - International Food Policy Research Institute (IFPRI)
+    - organization: International Food Policy Research Institute (IFPRI)
   date: "2026"
   publisher: Harvard Dataverse
 doi: 10.7910/DVN/SWPENT
@@ -60,10 +60,14 @@ related_publications:
   - citation:
       title: "Generating global crop distribution maps: From census to grid"
       authors:
-        - You, L.
-        - Wood, S.
-        - Wood-Sichra, U.
-        - Wu, W.
+        - family: You
+          given: L.
+        - family: Wood
+          given: S.
+        - family: Wood-Sichra
+          given: U.
+        - family: Wu
+          given: W.
       date: "2014"
       publisher: Agricultural Systems
     doi: 10.1016/j.agsy.2014.01.002

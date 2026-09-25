@@ -57,7 +57,7 @@ contact:
 citation:
   title: "GLW 4: Gridded Livestock Density (Global - 2020 - 10 km)"
   authors:
-    - Food and Agriculture Organization of the United Nations
+    - organization: Food and Agriculture Organization of the United Nations
   date: "2024"
   publisher: FAO Agro-Informatic Data Catalog
   url: https://data.apps.fao.org/catalog/dataset/9d1e149b-d63f-4213-978b-317a8eb42d02

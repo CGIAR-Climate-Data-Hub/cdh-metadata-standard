@@ -224,6 +224,21 @@ are allowed to list multiple roles.
 For `citation`, provide structured fields - `authors` and `date` (required), plus optional `title`,
 `publisher`, and `url`. You may omit `citation` when a `doi` is provided.
 
+Each author is either a person or an organization, and the two can be mixed in citation order:
+
+```yaml
+citation:
+  authors:
+    - family: Smith
+      given: Jane
+    - organization: Food and Agriculture Organization of the United Nations
+    - family: Suharto # a single name goes in family, with no given
+  date: "2024-07-15"
+```
+
+Put multiple surnames together in `family` (`family: Carreño Quiñones`). `family` and `given` say
+which part of the name is which; the citation style decides which comes first when it is displayed.
+
 ### `created` and `updated`
 
 Both are required. Set `created` when you first write the record and a new `updated` date each time

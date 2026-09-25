@@ -38,7 +38,7 @@ const base = {
   keywords: ["fixture"],
   cdh: { domain: ["climate"] },
   contact: [{ organization: "Test Org", roles: ["licensor"] }],
-  citation: { authors: ["Doe, J."], date: "2026" },
+  citation: { authors: [{ family: "Doe", given: "J." }], date: "2026" },
   data: [{ name: "primary", locations: [{ url: "https://example.org/data.tif" }] }],
 };
 

@@ -62,7 +62,8 @@ contact:
 citation:
   title: "Example Crop Suitability, Admin-2 Aggregates"
   authors:
-    - Placeholder, A.
+    - family: Placeholder
+      given: A.
   date: "2026"
   publisher: Example Data Repository
   url: https://example.org/atlas/example-crop-suitability-admin2

@@ -514,7 +514,12 @@ keywords:
   `publisher`, `url`.
 - **Rules:**
   - Cite the resource described by the record, not only a source dataset.
-  - `authors` is an ordered list of name strings.
+  - `authors` is an ordered list. Each entry is either a person, `{ family, given? }`, or an
+    organization, `{ organization }`. The two forms may be mixed; citation order is preserved.
+  - A person with a single name puts it in `family` and omits `given`. Multiple surnames all go in
+    `family`.
+  - `family`/`given` record which part of the name is which, not the order it is displayed in;
+    citation styles decide display order.
   - `title` defaults to the record's top-level `title`; set it only when the cite-as title differs.
   - `publisher` holds the data publisher/repository for datasets, or the journal for articles.
 

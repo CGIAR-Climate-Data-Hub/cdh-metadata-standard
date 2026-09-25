@@ -48,7 +48,8 @@ contact:
 citation:
   title: "Example Gridded Crop Suitability Projections, v1.0"
   authors:
-    - Placeholder, A.
+    - family: Placeholder
+      given: A.
   date: "2024"
   publisher: Example Data Repository
   url: https://example.org/atlas/example-crop-suitability-v1

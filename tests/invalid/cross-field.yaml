@@ -16,7 +16,9 @@ contact:
   - organization: Test Org
     roles: [licensor]
 citation:
-  authors: [Doe, J.]
+  authors:
+    - family: Doe
+      given: J.
   date: "2026"
 data:
   - name: primary

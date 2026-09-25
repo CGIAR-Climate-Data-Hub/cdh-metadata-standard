@@ -499,6 +499,40 @@
       },
       "type": "object"
     },
+    "author": {
+      "description": "A citation author: either a person or an organization.",
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "required": ["family"],
+          "properties": {
+            "family": {
+              "$ref": "#/$defs/nonEmptyString",
+              "description": "Family name(s). A person with a single name uses this field alone.",
+              "examples": ["Smith", "Carreño Quiñones", "Suharto"]
+            },
+            "given": {
+              "$ref": "#/$defs/nonEmptyString",
+              "description": "Given name(s) or initials.",
+              "examples": ["Jane", "J.", "María José"]
+            }
+          },
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "required": ["organization"],
+          "properties": {
+            "organization": {
+              "$ref": "#/$defs/nonEmptyString",
+              "description": "Full name of an organization credited as an author.",
+              "examples": ["Food and Agriculture Organization of the United Nations"]
+            }
+          },
+          "type": "object"
+        }
+      ]
+    },
     "citation": {
       "additionalProperties": false,
       "description": "Structured citation for the resource.",
@@ -511,10 +545,9 @@
         "authors": {
           "type": "array",
           "items": {
-            "type": "string",
-            "minLength": 1
+            "$ref": "#/$defs/author"
           },
-          "description": "Names in citation order.",
+          "description": "Authors in citation order. A person gives family (and usually given); an organization gives organization.",
           "minItems": 1
         },
         "date": {

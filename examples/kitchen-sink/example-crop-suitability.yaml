@@ -76,8 +76,9 @@ contact:
 citation:
   title: "Example Gridded Crop Suitability Projections"
   authors:
-    - Placeholder, A.
-    - Sample, S.
+    - family: Placeholder
+      given: A.
+    - organization: Example Research Institute
   date: "2026"
   publisher: Example Data Repository
   url: https://example.org/atlas/example-crop-suitability
@@ -87,8 +88,10 @@ related_publications:
   - citation:
       title: "A worked example of a suitability modelling workflow"
       authors:
-        - Placeholder, A.
-        - Example, E.
+        - family: Placeholder
+          given: A.
+        - family: Example
+          given: E.
       date: "2025"
       publisher: Journal of Example Studies
       url: https://example.org/papers/suitability-workflow
