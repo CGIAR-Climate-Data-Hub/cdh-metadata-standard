@@ -842,6 +842,8 @@ one row per file:
   axis. Include a column for every dimension in the entry's `fields`.
 - `variable` - the single declared variable the file holds, when files are split per variable. Must
   be within the entry's `fields`.
+- `checksum` - optional. The file's digest as `<algorithm>:<hex>`, e.g. `md5:9e107d9d…` or
+  `sha256:…`. One algorithm per inventory; a producer's `md5sum` listing joins in directly.
 
 No other columns. Rows list files that exist; nothing is inferred. Use an immutable,
 version-specific inventory URL for a release.

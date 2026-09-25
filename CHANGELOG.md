@@ -33,6 +33,8 @@ occur between minor versions.
 - Added `attribution`: a credit line reusers should reproduce, for sources that mandate wording
   (Copernicus, OpenStreetMap) or producers who ask to be credited. Keeps such text out of `note`.
   Maps to `cgiar-cdh:attribution`, OGC Records `rights`, and schema.org `creditText`.
+- `cdh-inventory` accepts an optional `checksum` column (`<algorithm>:<hex>`), emitted as STAC
+  `file:checksum`.
 - Added `temporal.update_frequency` (`daily` … `annual`, `irregular`): how often this resource gains
   new data, as distinct from the source's cadence or the data's `step`. `end_date: null` now means
   the resource itself grows continuously; a scheduled mirror states its real end date. Maps to

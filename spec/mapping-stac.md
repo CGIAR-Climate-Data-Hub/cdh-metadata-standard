@@ -50,7 +50,7 @@ The CDH STAC profile uses the following extensions where applicable.
 | Processing          | Processing datetime, lineage, software                              |
 | Contacts            | People and organizations, including point-of-contact roles          |
 | Version             | Dataset version, predecessor/successor records                      |
-| File                | File size                                                           |
+| File                | File size, checksum                                                 |
 | Alternate Assets    | Mirrors and alternate access paths                                  |
 | Themes              | Controlled-vocabulary thematic classification                       |
 | **CDH (cgiar-cdh)** | Hub-specific approved fields not covered by the above               |
@@ -303,6 +303,8 @@ entry describes a file family; do not pass its base URL through the single-asset
 
 - Resolve each row's `href` against each location. The first result becomes the file asset's `href`;
   the others become Alternate Assets entries. The CSV URL is supporting metadata only.
+- A `checksum` cell becomes the asset's `file:checksum`, re-encoded as a multihash (the File
+  extension's form); the algorithm prefix selects the multihash code.
 - With exactly one temporal coordinate column, emit one Item per row, including when several rows
   share a date. Derive its time from that coordinate, preserving its precision: a year, month, or
   day denotes an interval; an instant denotes `datetime`. Do not invent midnight for a period. Other

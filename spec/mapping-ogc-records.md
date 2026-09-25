@@ -184,11 +184,12 @@ links titles that identify the entry and relative file path, plus the access lab
 alternates can be associated with their canonical file.
 
 The entry's media type and description apply to each file link; include `length` only when the
-entry's per-file size is valid for every row. Shared field definitions remain in the record. The
-inventory retains the mapping of file paths to supplied coordinates and selected fields; link the
-CSV with `rel: describedby`, `type: text/csv`, and a title identifying the asset's file inventory.
-Do not turn the inventory URL or base directory into an `enclosure` link, expand missing rows, or
-promote one row's time or bbox to the dataset extent.
+entry's per-file size is valid for every row. Records links carry no checksum; a `checksum` column
+stays in the linked inventory. Shared field definitions remain in the record. The inventory retains
+the mapping of file paths to supplied coordinates and selected fields; link the CSV with
+`rel: describedby`, `type: text/csv`, and a title identifying the asset's file inventory. Do not
+turn the inventory URL or base directory into an `enclosure` link, expand missing rows, or promote
+one row's time or bbox to the dataset extent.
 
 Unavailable or invalid inventories prevent a complete file-link export. Report that condition
 instead of silently exporting a partial list. Consumers can still display descriptive metadata with

@@ -363,8 +363,9 @@ index instead. `file_index` is a list of indexes of the same files, each with a 
   that holds its own data is a `data[]` entry instead.
 - `cdh-inventory`: a CSV with one row per file: a required `href` column, relative to every
   `locations[].url` (a directory base ending in `/`), plus one column per declared dimension giving
-  that file's coordinate, and `variable` when each file holds a single variable. The only format CDH
-  checks; use it when you have a spreadsheet and nothing else.
+  that file's coordinate, and `variable` when each file holds a single variable. An optional
+  `checksum` column (`md5:<hex>`, `sha256:<hex>`) carries file digests. The only format CDH checks;
+  use it when you have a spreadsheet and nothing else.
 
 Any one index is enough. List the one people should open first.
 
