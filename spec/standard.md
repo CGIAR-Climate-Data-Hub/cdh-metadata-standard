@@ -839,7 +839,7 @@ one row per file:
   of which MUST be a directory ending in `/`. Must stay beneath the base; no duplicates.
 - One column per declared `dimensions[].name` - that file's coordinate on the axis. A cell MUST
   equal a declared value exactly as written in the record, or a valid ISO 8601 date on a temporal
-  axis. Include a column for every dimension the record declares.
+  axis. Include a column for every dimension in the entry's `fields`.
 - `variable` - the single declared variable the file holds, when files are split per variable. Must
   be within the entry's `fields`.
 
