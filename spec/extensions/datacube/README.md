@@ -57,8 +57,7 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
     requires `step` and excludes `values`. Both strings are written at the step's precision (`P1Y`:
     `1981`; `P1M`: `1981-01`; `P1D`: `1981-01-01`; `PT6H`: a date-time), start before end. The
     values are `first, first + step, …` while `<= last`, at that same precision:
-    `extent: ["1981", "2025"]` with `step: P1Y` is `1981, 1982, ... 2025`. What is in the record is
-    the first and last value, verbatim; nothing is inferred.
+    `extent: ["1981", "2025"]` with `step: P1Y` is `1981, 1982, ... 2025`.
   - `values` lists the allowed values along the dimension. Omit it for a high-cardinality key column
     (you would not enumerate every household id or admin code).
   - `reference_system` is the vocabulary the values are coded against; prefer a resolvable URI when

@@ -326,8 +326,7 @@ In the above example, the full paths would look something like:
 
 Rules:
 
-- Using `href_template` for multiple files
-  requires[Variables and dimensions](#variables-and-dimensions) to also be declared.
+- `href_template` requires [variables and dimensions](#variables-and-dimensions) to be declared.
 - Each `{token}` must match a declared `dimensions[].name`, except the `{variable}` token, which
   expands over `variables[].name` for files split per variable.
 - The matching dimension's `values` (or the variable names) are substituted verbatim and must match
@@ -340,8 +339,6 @@ Rules:
 - Every token dimension must list `values`, or for a regular temporal axis give `extent` and `step`
   (`extent: ["1981", "2025"]`, `step: P1Y`) instead of writing out every year.
 - The template assumes every value combination exists.
-- Each file URL is `locations[0].url` + filled template; additional locations become alternates.
-- Without `href_template` or `file_index`, `locations[].url` are full file URLs.
 - A templated entry shares one `description`, `nodata`, `media_type`, and `file_size` across every
   file; split into separate `data[]` entries (e.g. one per variable) when those differ. `file_size`
   is the size of a single file, not the set - omit it where slices differ materially in size rather

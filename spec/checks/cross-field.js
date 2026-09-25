@@ -56,7 +56,7 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
   list(doc?.dimensions).forEach((d, i) => {
     const extent = list(d?.extent);
     const unit = typeof d?.step === "string" ? stepUnit(d.step) : undefined;
-    if (unit && extent.length === 2 && extent.every((s) => typeof s === "string")) {
+    if (unit && extent.length === 2) {
       if (!extent.every((s) => SHAPE[unit].test(s))) {
         out.push(`/dimensions/${i}/extent: must be written at the step's precision (${unit})`);
       } else if (extent[0] > extent[1]) {
@@ -96,7 +96,7 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
         out.push(
           `/data/${i}/href_template: token {${token}:${spec}} carries a format, which is only allowed on a type: temporal dimension`,
         );
-      } else if (!/^(%[YmdHMj]|[^%])+$/.test(spec) || !spec.includes("%")) {
+      } else if (!/^(?=.*%)(%[YmdHMj]|[^%])+$/.test(spec)) {
         out.push(
           `/data/${i}/href_template: token {${token}:${spec}} format must use at least one of %Y %m %d %H %M %j and nothing else`,
         );
@@ -180,11 +180,6 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       assetNames.add(asset.name);
     });
   }
-  const columnNames = new Set(
-    [...list(doc?.dimensions), ...list(doc?.variables)]
-      .map((c) => c?.name)
-      .filter((n) => typeof n === "string"),
-  );
   list(doc?.joins).forEach((join, i) => {
     const left = list(join?.left_fields);
     const right = list(join?.right_fields);
@@ -194,7 +189,7 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       );
     }
     left.forEach((f, k) => {
-      if (typeof f === "string" && !columnNames.has(f)) {
+      if (typeof f === "string" && !declaredNames.has(f)) {
         out.push(
           `/joins/${i}/left_fields/${k}: "${f}" does not match any declared dimensions[]/variables[] name`,
         );

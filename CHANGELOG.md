@@ -14,10 +14,8 @@ occur between minor versions.
 
 - Added `extent` to `type: temporal` dimensions (datacube extension): `[first, last]` plus `step` in
   place of listing every value on a regular axis, so a 45-year `href_template` token no longer needs
-  45 hand-written values. Requires `step`, excludes `values`. Extent values must be calendar-valid
-  ISO 8601 (an instant needs a `T` and a zone), written at the step's precision with start before
-  end, and `step` must have a nonzero component. A token format may not be finer than the axis and
-  must carry a directive.
+  45 hand-written values. Requires `step`, excludes `values`. Both ends are calendar-valid ISO 8601
+  at the step's precision, start before end. A token format may not be finer than the axis.
 - `href_template` tokens on a `type: temporal` dimension may carry a strftime format,
   `{date:%Y.%m.%d}`, for file names that spell the date differently from the ISO value. Directives
   are limited to `%Y %m %d %H %M %j`; a token may repeat with different formats for hive-partitioned
@@ -44,14 +42,10 @@ occur between minor versions.
 
 ### Changed
 
-- **Breaking:** `citation.authors` entries are objects, not strings. A person is
-  `{ family, given? }`; an organization is `{ organization }`. The two forms mix in citation order,
-  so an organization credited as an author (FAO, IFPRI) is now stated as one rather than being
-  mistaken for a personal name by citation exporters - BibTeX needs `{{...}}` for a corporate
-  author, and no string convention distinguishes the two reliably. A person with a single name uses
-  `family` alone; multiple surnames all go in `family`. Matches CSL-JSON, the Citation File Format,
-  DataCite, and schema.org, which all draw the same structural distinction. Applies to
-  `related_publications[].citation` too, which shares the definition.
+- **Breaking:** `citation.authors` entries are objects: a person is `{ family, given? }`, an
+  organization is `{ organization }`, mixed in citation order. Plain strings gave citation exporters
+  no way to tell FAO from a surname (BibTeX needs `{{...}}` for a corporate author). Same shape as
+  CSL-JSON, CFF, and DataCite. Applies to `related_publications[].citation` too.
 - **Breaking:** `version` is required by the CDH profile. Every release of a resource now shares one
   `id`; `version` tells releases apart and `id` + `version` is the citable identity. Superseded
   releases keep their `id` and get `deprecated: true` instead of a renamed snapshot copy.
