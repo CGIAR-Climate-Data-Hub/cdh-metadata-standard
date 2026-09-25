@@ -743,6 +743,11 @@
       "$ref": "#/$defs/nonEmptyString",
       "description": "Human-readable access conditions or instructions. Required when access is restricted or non-public; maps to schema.org conditionsOfAccess."
     },
+    "attribution": {
+      "$ref": "#/$defs/nonEmptyString",
+      "description": "Credit line reusers should reproduce: wording a license or upstream source requires, or the credit the producer asks for. One short statement; do not restate citation. Maps to schema.org creditText.",
+      "examples": ["Contains modified Copernicus Emergency Management Service information [year]"]
+    },
     "additional_assets": {
       "description": "Sidecar or auxiliary assets, e.g. metadata files or thumbnails.",
       "items": {

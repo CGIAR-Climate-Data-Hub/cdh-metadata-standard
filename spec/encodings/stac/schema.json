@@ -136,6 +136,10 @@
       "description": "What a user must do to obtain the data: request steps, authentication, or why it is catalogued but unavailable.",
       "$ref": "#/definitions/nonEmptyString"
     },
+    "cgiar-cdh:attribution": {
+      "description": "Credit line reusers should reproduce: wording a license or upstream source requires, or the credit the producer asks for.",
+      "$ref": "#/definitions/nonEmptyString"
+    },
     "cgiar-cdh:note": {
       "description": "Caveats, warnings, or interpretation-critical context that is not part of the description.",
       "$ref": "#/definitions/nonEmptyString"
@@ -323,6 +327,9 @@
         "cgiar-cdh:access_note": {
           "$ref": "#/definitions/cgiar-cdh:access_note"
         },
+        "cgiar-cdh:attribution": {
+          "$ref": "#/definitions/cgiar-cdh:attribution"
+        },
         "cgiar-cdh:note": {
           "$ref": "#/definitions/cgiar-cdh:note"
         },
@@ -467,6 +474,9 @@
         },
         "cgiar-cdh:access_note": {
           "$ref": "#/definitions/cgiar-cdh:access_note"
+        },
+        "cgiar-cdh:attribution": {
+          "$ref": "#/definitions/cgiar-cdh:attribution"
         },
         "cgiar-cdh:note": {
           "$ref": "#/definitions/cgiar-cdh:note"

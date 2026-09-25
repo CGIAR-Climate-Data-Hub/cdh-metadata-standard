@@ -189,6 +189,13 @@ chosen before submission (see [Choose a License](https://choosealicense.com/) fo
 custom license, use `LicenseRef-*` and add an `additional_links[]` entry with `rel: license` and a
 URL for the license terms.
 
+A CC-BY license needs nothing beyond `citation`. When a source mandates specific credit wording
+(Copernicus, OpenStreetMap), or the producer asks to be credited, quote it in `attribution`:
+
+```yaml
+attribution: Contains modified Copernicus Emergency Management Service information [year]
+```
+
 Use `access_note` when `access` is `restricted` or `non-public`. It should say how to request
 access, what authentication is needed, or whether the data is embargoed. In `additional_links[]`,
 link to request forms with `rel: create-form`; link access help pages or `mailto:` contacts with
@@ -792,6 +799,12 @@ Leave a field out when:
 - The value would only repeat another field.
 - The information is unknown and not required.
 - The detail belongs in a sidecar file because it is long, nested, or likely to change.
+
+`note` is not a catch-all. Use it only for a caveat a reader would miss (a known artefact, a region
+where values are invalid, a source version mismatch). Credit lines go in `attribution`; source
+provenance in `processing[].derived_from`; how an axis is labelled in that dimension's
+`description`; which files exist in the template extent or `file_index`. If another field already
+says it, delete it.
 
 Avoid inventing new fields. If the template has no place for something, use `additional_links`,
 `additional_assets`, a sidecar file, or an extension (see `standard.md` section 4.2).

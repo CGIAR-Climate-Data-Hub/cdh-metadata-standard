@@ -327,6 +327,8 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
   - Should be omitted when nothing important is at stake - empty notes add noise.
   - Use when there is a genuine caveat (e.g., known artifact, data version mismatch, restricted
     geographic validity, sensitive aggregation behavior).
+  - Not a home for facts other fields hold: credit lines go in `attribution`, source provenance in
+    `processing[].derived_from`, how an axis is labelled in that dimension's `description`.
 
 #### `license`
 
@@ -341,6 +343,18 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
   - Data must be licensed to be included in the Hub.
   - Access restrictions are separate from license (see `access`).
 - **Examples:** `CC-BY-4.0`, `CC0-1.0`, `MIT`, `LicenseRef-CGIAR-Restricted`.
+
+#### `attribution`
+
+- **Requirement:** Optional
+- **Definition:** Credit line reusers should reproduce: wording a license or upstream source
+  requires, or the credit the producer asks for.
+- **Expected value:** One short statement.
+- **Rules:**
+  - Quote required wording as the source states it.
+  - Do not restate `citation`; a CC-BY license is satisfied by citing the record.
+  - Omit when nothing beyond `citation` and `license` is asked of a reuser.
+- **Example:** `Contains modified Copernicus Emergency Management Service information [year]`
 
 #### `access`
 

@@ -30,6 +30,9 @@ occur between minor versions.
   STAC and OGC Records mappings). Any one index is enough; `cdh-inventory` may appear once and is
   the only format CDH validates. Indexes are emitted as STAC assets with role `file_index` and as
   OGC Records `describedby` links.
+- Added `attribution`: a credit line reusers should reproduce, for sources that mandate wording
+  (Copernicus, OpenStreetMap) or producers who ask to be credited. Keeps such text out of `note`.
+  Maps to `cgiar-cdh:attribution`, OGC Records `rights`, and schema.org `creditText`.
 - Added `temporal.update_frequency` (`daily` … `annual`, `irregular`): how often this resource gains
   new data, as distinct from the source's cadence or the data's `step`. `end_date: null` now means
   the resource itself grows continuously; a scheduled mirror states its real end date. Maps to

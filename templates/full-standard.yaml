@@ -16,6 +16,7 @@ title: ""
 description: >
   ""
 license: ""
+attribution: "" # optional - credit wording a license or source requires; omit if citation suffices
 access: public # optional - one of: public | restricted | non-public; omit = public
 access_note: > # required when access is restricted or non-public
   ""
