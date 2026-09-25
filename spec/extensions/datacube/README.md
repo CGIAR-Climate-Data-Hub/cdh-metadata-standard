@@ -54,10 +54,11 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
     on a `type: temporal` dimension**. It is the only cadence field a dimension carries; a domain
     axis describes its cadence in prose.
   - `extent` is `[first, last]` on a regular temporal axis, in place of listing every value. It
-    requires `step` and excludes `values`. The values are every step from first to last inclusive,
-    written at the precision of the extent strings: `extent: ["1981", "2025"]` with `step: P1Y` is
-    `1981, 1982, ... 2025`. Write the extent at the precision the values need, e.g. the precision
-    file names use when the dimension is an `href_template` token.
+    requires `step` and excludes `values`. Both strings are written at the step's precision (`P1Y`:
+    `1981`; `P1M`: `1981-01`; `P1D`: `1981-01-01`; `PT6H`: a date-time), start before end. The
+    values are `first, first + step, …` while `<= last`, at that same precision:
+    `extent: ["1981", "2025"]` with `step: P1Y` is `1981, 1982, ... 2025`. What is in the record is
+    the first and last value, verbatim; nothing is inferred.
   - `values` lists the allowed values along the dimension. Omit it for a high-cardinality key column
     (you would not enumerate every household id or admin code).
   - `reference_system` is the vocabulary the values are coded against; prefer a resolvable URI when

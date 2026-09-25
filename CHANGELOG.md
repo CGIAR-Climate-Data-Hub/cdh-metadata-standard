@@ -15,7 +15,9 @@ occur between minor versions.
 - Added `extent` to `type: temporal` dimensions (datacube extension): `[first, last]` plus `step` in
   place of listing every value on a regular axis, so a 45-year `href_template` token no longer needs
   45 hand-written values. Requires `step`, excludes `values`. Extent values must be calendar-valid
-  ISO 8601 (an instant needs a `T` and a zone) and `step` must have a nonzero component.
+  ISO 8601 (an instant needs a `T` and a zone), written at the step's precision with start before
+  end, and `step` must have a nonzero component. A token format may not be finer than the axis and
+  must carry a directive.
 - `href_template` tokens on a `type: temporal` dimension may carry a strftime format,
   `{date:%Y.%m.%d}`, for file names that spell the date differently from the ISO value. Directives
   are limited to `%Y %m %d %H %M %j`; a token may repeat with different formats for hive-partitioned

@@ -46,12 +46,31 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
     out.push(`/license: must be a valid SPDX license expression`);
   }
   // A temporal dimension may give extent + step instead of listing values.
-  const dims = new Map(
-    list(doc?.dimensions).map((d) => [
-      d?.name,
-      { count: list(d?.values).length + list(d?.extent).length, temporal: d?.type === "temporal" },
-    ]),
-  );
+  // Both extent strings are written at the step's finest unit, so the first and
+  // last values appear verbatim and "start <= end" is a string compare.
+  const UNITS = ["year", "month", "day", "time"];
+  const SHAPE = { year: /^\d{4}$/, month: /^\d{4}-\d{2}$/, day: /^\d{4}-\d{2}-\d{2}$/, time: /T/ };
+  const stepUnit = (step) =>
+    /T/.test(step) ? "time" : /[DW]/.test(step) ? "day" : /M/.test(step) ? "month" : "year";
+  const dims = new Map();
+  list(doc?.dimensions).forEach((d, i) => {
+    const extent = list(d?.extent);
+    const unit = typeof d?.step === "string" ? stepUnit(d.step) : undefined;
+    if (unit && extent.length === 2 && extent.every((s) => typeof s === "string")) {
+      if (!extent.every((s) => SHAPE[unit].test(s))) {
+        out.push(`/dimensions/${i}/extent: must be written at the step's precision (${unit})`);
+      } else if (extent[0] > extent[1]) {
+        out.push(`/dimensions/${i}/extent: start ${extent[0]} is after end ${extent[1]}`);
+      }
+    }
+    dims.set(d?.name, {
+      count: list(d?.values).length + extent.length,
+      temporal: d?.type === "temporal",
+      unit,
+    });
+  });
+  // Coarsest unit a strftime directive spells; a format may not go finer than the axis.
+  const DIRECTIVE_UNIT = { Y: "year", m: "month", j: "day", d: "day", H: "time", M: "time" };
   const namedVariables = list(doc?.variables).filter((v) => typeof v?.name === "string").length;
   list(doc?.data).forEach((asset, i) => {
     const tpl = asset?.href_template;
@@ -77,10 +96,19 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
         out.push(
           `/data/${i}/href_template: token {${token}:${spec}} carries a format, which is only allowed on a type: temporal dimension`,
         );
-      } else if (!/^(%[YmdHMj]|[^%])+$/.test(spec)) {
+      } else if (!/^(%[YmdHMj]|[^%])+$/.test(spec) || !spec.includes("%")) {
         out.push(
-          `/data/${i}/href_template: token {${token}:${spec}} format may use only %Y %m %d %H %M %j`,
+          `/data/${i}/href_template: token {${token}:${spec}} format must use at least one of %Y %m %d %H %M %j and nothing else`,
         );
+      } else if (dim.unit) {
+        const finest = Math.max(
+          ...[...spec.matchAll(/%([YmdHMj])/g)].map(([, c]) => UNITS.indexOf(DIRECTIVE_UNIT[c])),
+        );
+        if (finest > UNITS.indexOf(dim.unit)) {
+          out.push(
+            `/data/${i}/href_template: token {${token}:${spec}} is finer than the axis precision (${dim.unit}); never invent a month, day, or time`,
+          );
+        }
       }
     }
   });

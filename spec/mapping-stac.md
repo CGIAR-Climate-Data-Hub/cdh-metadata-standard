@@ -151,11 +151,11 @@ gives each one's `extent` and `spatial.resolution[]` its `step`.
 | `temporal`              | `{ type: temporal }`, carrying `values` and `step`            |
 | `location`, any other   | Additional Dimension: `{ type: <the CDH value> }`             |
 
-Every dimension object requires an `extent`, which CDH does not author. It is derived from the
-dimension's own `values` (first and last) where they are listed, and otherwise from the top-level
-`temporal` coverage for a temporal axis or `spatial.bbox` for a horizontal one. That is what lets a
-high-cardinality axis - a `day` column with no enumerated values - serialize at all. A record may
-carry several temporal dimensions, each getting its own extent this way.
+Every dimension object requires an `extent`. It is derived, not copied from the CDH field of the
+same name: from the dimension's `values` (first and last) or its authored `extent`, and otherwise
+from the top-level `temporal` coverage for a temporal axis or `spatial.bbox` for a horizontal one.
+That is what lets a high-cardinality axis - a `day` column with no enumerated values - serialize at
+all. A record may carry several temporal dimensions, each getting its own extent this way.
 
 `unit` maps to `cube:dimensions[].unit`, which the datacube extension defines on every dimension
 flavour. `spatial` and `geometry` are not accepted as authored types: the first is derived and the
