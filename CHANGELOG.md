@@ -42,6 +42,8 @@ occur between minor versions.
 
 ### Changed
 
+- **Breaking:** `data[]` and `file_index[]` `locations[].url` must be an absolute URI; the schema
+  previously accepted any string.
 - **Breaking:** `citation.authors` entries are objects: a person is `{ family, given? }`, an
   organization is `{ organization }`, mixed in citation order. Plain strings gave citation exporters
   no way to tell FAO from a surname (BibTeX needs `{{...}}` for a corporate author). Same shape as

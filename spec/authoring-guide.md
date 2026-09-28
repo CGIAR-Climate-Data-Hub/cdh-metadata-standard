@@ -273,7 +273,9 @@ root, a service endpoint - never a landing page. A Zenodo or Dataverse record pa
 `citation.url` or `doi`; a project website goes in `additional_links[]`. Alternate locations can be
 provided if applicable, such as if the same file is hosted on multiple storage platforms. Data in
 different formats (csv, parquet) or services (such as an API or GEE asset) should be listed as
-separate `data` entries.
+separate `data` entries. For a service, use the URL of the endpoint that returns the data (for a GEE
+asset, `https://earthengine.googleapis.com/v1/<asset id>`), and omit `media_type` when it returns no
+file.
 
 Omitting `fields` means the asset contains all fields declared in `dimensions[]` and `variables[]`.
 If an asset contains only a subset, list that complete subset in `fields`, using the declared names.
