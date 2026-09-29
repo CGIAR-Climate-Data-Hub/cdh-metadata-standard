@@ -71,6 +71,8 @@ occur between minor versions.
   codes.
 - `data[].locations` may be omitted when a `file_index` other than `cdh-inventory` carries the file
   locations.
+- `joins[].target` accepts a catalog record id as well as an absolute URI (datacube extension). An
+  id survives a catalog move and must resolve to exactly one catalog record.
 
 ## [0.3.0] - 2026-08-20
 

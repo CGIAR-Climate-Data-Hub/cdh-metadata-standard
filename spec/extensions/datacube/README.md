@@ -168,7 +168,9 @@ geometry/boundary set rather than embedding geometry.
 - **Requirement:** Optional.
 - **Expected value per join:** `{ target, left_fields, right_fields }`.
 - **Rules:**
-  - `target` is the resolvable URI of the dataset joined to (its own record).
+  - `target` is the dataset joined to: its catalog record id, or an absolute URI for a dataset
+    outside the catalog. Prefer the id, which survives a catalog move. An id MUST resolve to exactly
+    one catalog record.
   - `left_fields` are this record's key columns; each MUST be a declared
     `dimensions[]`/`variables[]` name. `right_fields` are the matching columns in the target.
   - The two arrays pair **positionally** and MUST be the same length, so composite keys (e.g.

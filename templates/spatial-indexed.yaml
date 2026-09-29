@@ -75,7 +75,7 @@ variables:
 # key columns with the target's, positionally; composite keys and differing
 # column names are fine.
 joins:
-  - target: "" # resolvable URI of the boundary/station dataset
+  - target: "" # record id, or absolute URI if outside the catalog
     left_fields: [] # key columns in this record, e.g. [adm0_code, adm2_code]
     right_fields: [] # matching columns in the target, e.g. [ADM0_CODE, ADM2_CODE]
 

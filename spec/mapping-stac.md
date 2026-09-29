@@ -168,8 +168,9 @@ second is a shape CDH does not emit, and the extension forbids both as custom ty
 - Use Raster Extension on raster assets when band-level physical metadata exists.
 
 - Tabular data uses Table Extension `table:columns`; `spatial.geometry_column` maps to
-  `table:primary_geometry`. Each `joins[]` entry emits a link to its `target` so the join is
-  followable, with the `left_fields`/`right_fields` pairing carried as `cgiar-cdh:` link fields.
+  `table:primary_geometry`. Each `joins[]` entry emits a link to its `target` (an id resolves to
+  that record's URL) so the join is followable, with the `left_fields`/`right_fields` pairing
+  carried as `cgiar-cdh:` link fields.
 
 `classes[]` -> Classification Extension `classification:classes` on the relevant asset or variable.
 Large class lists SHOULD be a sidecar asset with `roles=[metadata, describedby]` and a link with
