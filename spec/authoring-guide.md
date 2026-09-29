@@ -643,9 +643,7 @@ Use values from `vocab/commodity.json`.
 ### Additional assets
 
 Use `additional_assets` for supporting files that accompany the primary data, such as documentation,
-previews, schemas, QA/QC output, code lists, thumbnails, or runnable examples. Different formats of
-the data may also be listed here when they are supplementary rather than a primary way of accessing
-the resource.
+previews, schemas, QA/QC output, code lists, thumbnails, or runnable examples.
 
 Like entries in `data`, every additional asset needs a unique `name` and at least one location. Use
 multiple `locations` only when they provide different ways to access the same file; use separate
