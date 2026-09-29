@@ -50,6 +50,10 @@ occur between minor versions.
 - **Breaking:** removed `$schema`. Nothing read it: the validating catalog picks the profile, and
   `cdh_schema_version` already names the release. Editors bind the profile through the
   `yaml-language-server` comment.
+- **Breaking:** the reusable `validate-records` workflow checks each record with the release its
+  `cdh_schema_version` names, so one catalog can hold records of mixed versions. `tooling-ref` no
+  longer defaults to `main`; set, it validates every record at that ref instead. A new `versions`
+  input lists the accepted release series, one per line (`v1` or `v0.3`).
 - **Breaking:** contact role `custodian` is renamed `maintainer` (`schema:maintainer`), and the CDH
   profile requires at least one. ISO 19115's `custodian` cares for the resource, not the record, so
   it did not fit federated records; every Hub record needs someone accountable for it.
