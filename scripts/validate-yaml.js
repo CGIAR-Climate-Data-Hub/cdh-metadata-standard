@@ -23,7 +23,8 @@
 //   --draft                  validate every target as a fillable draft: prune
 //                            blank placeholders and relax presence rules
 //   --expect-fail            invert the outcome: every file MUST be invalid;
-//                            used for the negative fixtures in tests/invalid/
+//                            used for the negative fixtures in tests/invalid/,
+//                            each merged over the valid tests/base.yaml
 //
 // Directories are walked recursively for *.yaml and *.yml files. Files of any
 // other extension are accepted as-is (so explicit non-.yaml paths still work).
@@ -321,14 +322,34 @@ function missingRelativeAssets(file, doc) {
   return out;
 }
 
+// Parse as YAML 1.2 / JSON-style: bare dates stay strings (matching the
+// editor and the JSON output) instead of becoming JS Date objects.
+const loadYaml = async (file) =>
+  yaml.load(await readFile(file, "utf-8"), { schema: yaml.CORE_SCHEMA });
+const isObject = (v) => v && typeof v === "object" && !Array.isArray(v);
+const merge = (base, over) =>
+  isObject(base) && isObject(over)
+    ? {
+        ...base,
+        ...Object.fromEntries(Object.entries(over).map(([k, v]) => [k, merge(base[k], v)])),
+      }
+    : over;
+
+// Negative fixtures hold only what breaks; the rest comes from a valid base.
+const BASE_FILE = resolve(ROOT, "tests/base.yaml");
+const base = expectFail ? await loadYaml(BASE_FILE) : undefined;
+// An invalid base would make every fixture fail for the wrong reason.
+if (base && validateFile(BASE_FILE, base).errors.length) {
+  console.error(`error: ${rel(BASE_FILE)} must be valid`);
+  process.exit(2);
+}
+
 let failures = 0;
 for (const file of files) {
   let result;
   try {
-    // Parse as YAML 1.2 / JSON-style: bare dates stay strings (matching the
-    // editor and the JSON output) instead of becoming JS Date objects.
-    const doc = yaml.load(await readFile(file, "utf-8"), { schema: yaml.CORE_SCHEMA });
-    result = validateFile(file, doc);
+    const doc = await loadYaml(file);
+    result = validateFile(file, base ? merge(base, doc) : doc);
   } catch (err) {
     result = { draft: false, errors: [err.message] };
   }

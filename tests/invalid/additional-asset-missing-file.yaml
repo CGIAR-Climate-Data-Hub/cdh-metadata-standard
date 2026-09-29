@@ -1,35 +1,7 @@
-cdh_schema_version: "v0.3.0"
-"$schema": https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/schemas/profiles/cdh.schema.json
-extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
-id: fixture-record
-version: "1"
-title: Fixture record
-description: A deliberately broken record for the negative test suite.
-license: CC-BY-4.0
-resource_type: dataset
-keywords: [fixture]
-cdh:
-  domain: [climate]
-contact:
-  - organization: Test Org
-    roles: [licensor, maintainer]
-citation:
-  authors:
-    - family: Doe
-      given: J.
-  date: "2026"
-data:
-  - name: primary
-    locations:
-      - url: https://example.org/data.tif
+# A relative asset path must name a file committed beside the record.
 additional_assets:
   - name: agent-guide
     roles: [agents]
     media_type: text/markdown
     locations:
-      # relative path to a file that is not committed beside this record
       - url: ./AGENTS.md
-
-created: 2026-01-01
-updated: 2026-01-01
