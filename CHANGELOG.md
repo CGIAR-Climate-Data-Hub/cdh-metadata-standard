@@ -20,7 +20,6 @@ occur between minor versions.
   `{date:%Y.%m.%d}`, for file names that spell the date differently from the ISO value. Directives
   are limited to `%Y %m %d %H %M %j`; a token may repeat with different formats for hive-partitioned
   paths. Domain-axis tokens stay verbatim.
-
 - Added `processing[].derived_from[].version` so a derived record pins the source release it used,
   even when `url` tracks the latest release. Maps to a `cgiar-cdh:source_version` link field.
 - Added `data[].file_index`: a list of `{ format, locations, title, media_type }` indexes over an
@@ -39,6 +38,12 @@ occur between minor versions.
   new data, as distinct from the source's cadence or the data's `step`. `end_date: null` now means
   the resource itself grows continuously; a scheduled mirror states its real end date. Maps to
   `cgiar-cdh:update_frequency` and DCAT `dct:accrualPeriodicity`.
+- Added `data[].fields`: the dimensions and variables an asset contains. Omitted means all of them;
+  an asset holding a subset lists that complete subset, verified before publication.
+- Added `data[].spatial`: coverage of one asset alone, for selecting files by area. Same shapes as
+  the top-level `spatial`, and never copied down from it.
+- Added `parent`: the id of the record this one is a child representation of.
+- Added the `agents` asset role, for a Markdown guide written for AI agents.
 
 ### Changed
 
@@ -57,11 +62,15 @@ occur between minor versions.
   `previous_version` is now the predecessor's `version`, not its `id`. Catalog uniqueness is `id` +
   `version` with one current release per `id`. Encoders emit `<id>-<version>` for superseded
   releases so output ids stay unique.
-- Omitted `data[].fields` means the asset contains all declared dimensions and variables. Assets
-  containing a subset must list that complete subset explicitly, and field membership must be
-  verified before publication.
-- Aligned hierarchy guidance with explicit `parent` references and specified catalog-wide
-  requirements for unique ids, existing parents, and absence of self-parenting and cycles.
+- **Breaking:** `created` and `updated` are required.
+- **Breaking:** catalog hierarchy comes from `parent`, not file position. Directories no longer
+  create nodes or parent links, and there are no grouping nodes. A `parent` must resolve to one
+  record, never itself, and never form a cycle.
+- **Breaking:** `dimensions[].step` must have a nonzero component; `P0D` is rejected.
+- `variables[].unit` is optional (datacube extension). Omit it for unitless values such as class
+  codes.
+- `data[].locations` may be omitted when a `file_index` other than `cdh-inventory` carries the file
+  locations.
 
 ## [0.3.0] - 2026-08-20
 
