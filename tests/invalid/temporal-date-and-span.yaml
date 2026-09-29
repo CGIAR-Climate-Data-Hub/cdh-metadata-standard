@@ -1,5 +1,0 @@
-# date and start_date/end_date are mutually exclusive.
-temporal:
-  date: "2020"
-  start_date: "2000"
-  end_date: "2020"

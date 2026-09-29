@@ -1,6 +1,4 @@
-# updated before created, and a duplicate processing id.
-created: "2026-05-01"
-updated: "2026-04-01"
+# Duplicate processing id.
 processing:
   - id: source
     description: Original generation.

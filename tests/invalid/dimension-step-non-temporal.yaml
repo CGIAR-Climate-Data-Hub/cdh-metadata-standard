@@ -1,7 +1,0 @@
-# step is only valid on a type: temporal dimension.
-dimensions:
-  - name: crop
-    type: crop
-    description: Crop code.
-    values: [maiz, rice]
-    step: P1Y
