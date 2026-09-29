@@ -82,17 +82,10 @@ async function expand(path) {
   return st.isDirectory() ? walk(abs, YAML_EXTS) : [abs];
 }
 
-async function defaultTargets() {
-  const targets = [];
-  for (const name of ["templates", "examples"]) {
-    try {
-      targets.push(...(await walk(resolve(ROOT, name), YAML_EXTS)));
-    } catch (err) {
-      if (err.code !== "ENOENT") throw err;
-    }
-  }
-  return targets;
-}
+const defaultTargets = async () =>
+  (
+    await Promise.all(["templates", "examples"].map((name) => walk(resolve(ROOT, name), YAML_EXTS)))
+  ).flat();
 
 const argPaths = [];
 const extraSchemaPaths = [];
