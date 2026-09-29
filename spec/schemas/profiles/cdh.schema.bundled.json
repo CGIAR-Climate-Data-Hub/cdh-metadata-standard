@@ -6,13 +6,6 @@
   "allOf": [
     {
       "description": "JSON Schema for CDH metadata records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
-      "patternProperties": {
-        "^\\$schema$": {
-          "description": "Canonical JSON Schema URL for validating this metadata record.",
-          "format": "uri",
-          "type": "string"
-        }
-      },
       "properties": {
         "access": {
           "description": "Access condition for the resource's data, distinct from license. Omitting it means public. Aligned to the DCAT / EU accessRights vocabulary: public (openly accessible); restricted (discoverable, but obtaining the data requires a request or authentication); non-public (catalogued but not available through public channels).",
@@ -2729,14 +2722,7 @@
       }
     }
   ],
-  "required": ["$schema", "cdh", "extensions", "version"],
-  "patternProperties": {
-    "^\\$schema$": {
-      "description": "CDH profile schema URL for any released version; its version segment must match cdh_schema_version (checked by validate-yaml).",
-      "type": "string",
-      "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/schemas/profiles/cdh\\.schema\\.json$"
-    }
-  },
+  "required": ["cdh", "extensions", "version"],
   "properties": {
     "extensions": {
       "contains": {

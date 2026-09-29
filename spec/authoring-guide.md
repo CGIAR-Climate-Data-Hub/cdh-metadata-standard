@@ -7,10 +7,10 @@ refined and finalized during review, so mistakes and purposeful omissions are ex
 not prevent or delay submission.
 
 The formal standard is `standard.md`. Fillable YAML starting points live in `../templates/`; each
-CDH template declares the CDH profile in `$schema` and binds YAML-aware editors to the same profile
-(`schemas/profiles/cdh.schema.json` = the core plus all CDH extensions) for autocomplete and field
-hints in code editors (VScode, positron, Neovim, etc.). Teams wanting to customize the metadata
-standard for other projects can modify and generate a new profile and declare their own schema URL.
+CDH template binds YAML-aware editors to the CDH profile (`schemas/profiles/cdh.schema.json` = the
+core plus all CDH extensions) for autocomplete and field hints in code editors (VScode, positron,
+Neovim, etc.). Teams wanting to customize the metadata standard for other projects can modify and
+generate a new profile and validate their records against it.
 
 ## Key Questions a Record Should Answer
 
@@ -826,7 +826,6 @@ Avoid inventing new fields. If the template has no place for something, use `add
 ### Required for every record
 
 - [ ] `cdh_schema_version`
-- [ ] `$schema`
 - [ ] `id`, `title`, `description`
 - [ ] `version`
 - [ ] `created`, `updated`

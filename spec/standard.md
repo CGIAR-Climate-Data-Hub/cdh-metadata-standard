@@ -79,13 +79,9 @@ CDH metadata is a generic core plus optional extensions. Validation has two laye
   five CDH-maintained extensions: `cdh`, `climate`, `datacube`, `classification`, and `agriculture`
   (section 5.5).
 
-Records may declare their validation schema in the top-level `$schema` field. The core schema
-accepts any schema URI and does not require a profile-specific value. Profiles can make `$schema`
-required and constrain it to their own canonical schema URL. The CDH profile accepts its schema URL
-for any released version - the record's `cdh_schema_version` names the release it targets - so
-existing records stay valid when a new version is released. The CDH templates set `$schema` and also
-bind the same profile for editor hints. A bundled copy (`cdh.schema.bundled.json`) is published for
-validators that need a single schema file.
+A profile is applied by the catalog that validates a record; the record does not name it. The CDH
+templates bind the CDH profile for editor hints in a `yaml-language-server` comment. A bundled copy
+(`cdh.schema.bundled.json`) is published for validators that need a single schema file.
 
 To carry metadata the standard does not yet cover:
 
@@ -253,27 +249,15 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
 
 ### 5.1 Record and core fields
 
-#### `$schema`
-
-- **Requirement:** Optional in the core schema; required by the CDH profile.
-- **Definition:** The canonical JSON Schema URL for validating this metadata record.
-- **Expected value:**
-  - Core-only records: any profile or schema URI, when present.
-  - CDH profile records: the CDH profile schema URL for the release the record targets, e.g.
-    `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/schemas/profiles/cdh.schema.json`.
-    Any released version is accepted; the version segment must match `cdh_schema_version`.
-- **Rules:**
-  - The version segment of every CDH-hosted schema URL in the record (`$schema` and `extensions[]`)
-    must match `cdh_schema_version`, so a record references one release throughout. Validators
-    enforce this as a cross-field rule.
-  - Identifies the validation schema or profile. Continue using `extensions[]` for the extension
-    schemas the record uses.
-
 #### `cdh_schema_version`
 
 - **Requirement:** Required
 - **Definition:** The version of the CDH standard this record targets.
 - **Expected value:** The release tag, `v<MAJOR>.<MINOR>.<PATCH>` (see section 2).
+- **Rules:**
+  - The version segment of every CDH-hosted schema URL in `extensions[]` must match
+    `cdh_schema_version`, so a record references one release throughout. Validators enforce this as
+    a cross-field rule.
 - **Example:** `v0.3.0`
 
 #### `id`

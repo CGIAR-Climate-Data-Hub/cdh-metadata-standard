@@ -28,10 +28,7 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
   const validateSpdxExpression = isSpdx;
   const out = [];
   if (typeof doc?.cdh_schema_version === "string") {
-    const refs = [
-      ["$schema", doc?.["$schema"]],
-      ...list(doc?.extensions).map((url, i) => [`extensions/${i}`, url]),
-    ];
+    const refs = list(doc?.extensions).map((url, i) => [`extensions/${i}`, url]);
     for (const [path, url] of refs) {
       if (typeof url !== "string") continue;
       const urlVersion = url.match(CDH_VERSIONED_URL)?.[2];

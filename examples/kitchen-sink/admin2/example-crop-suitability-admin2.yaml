@@ -1,5 +1,4 @@
 # yaml-language-server: $schema=../../../spec/schemas/profiles/cdh.schema.json
-"$schema": https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/schemas/profiles/cdh.schema.json
 #
 # ============================================================================
 # SAMPLE RECORD - NOT REAL DATA.

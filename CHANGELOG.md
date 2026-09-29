@@ -47,6 +47,9 @@ occur between minor versions.
 
 ### Changed
 
+- **Breaking:** removed `$schema`. Nothing read it: the validating catalog picks the profile, and
+  `cdh_schema_version` already names the release. Editors bind the profile through the
+  `yaml-language-server` comment.
 - **Breaking:** contact role `custodian` is renamed `maintainer` (`schema:maintainer`), and the CDH
   profile requires at least one. ISO 19115's `custodian` cares for the resource, not the record, so
   it did not fit federated records; every Hub record needs someone accountable for it.

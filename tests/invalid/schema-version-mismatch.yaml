@@ -1,3 +1,5 @@
-# $schema pins v9.9.9 while cdh_schema_version says v0.3.0. v9.9.9 is unreal,
-# so the release bump never rewrites it.
-"$schema": https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v9.9.9/schemas/profiles/cdh.schema.json
+# An extension URL pins v9.9.9 while cdh_schema_version says v0.3.0. v9.9.9 is
+# unreal, so the release bump never rewrites it.
+extensions:
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v9.9.9/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/datacube/schema.json
