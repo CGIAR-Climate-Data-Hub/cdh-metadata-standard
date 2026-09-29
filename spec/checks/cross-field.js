@@ -45,31 +45,32 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
   if (typeof doc?.license === "string" && !validateSpdxExpression(doc.license)) {
     out.push(`/license: must be a valid SPDX license expression`);
   }
-  // A temporal dimension may give extent + step instead of listing values.
-  // Both extent strings are written at the step's finest unit, so the first and
-  // last values appear verbatim and "start <= end" is a string compare.
+  // A temporal axis's precision is how its values are written; the schema keeps
+  // one precision per axis, so the first string's length gives it.
   const UNITS = ["year", "month", "day", "time"];
-  const SHAPE = { year: /^\d{4}$/, month: /^\d{4}-\d{2}$/, day: /^\d{4}-\d{2}-\d{2}$/, time: /T/ };
+  const unitOf = (s) =>
+    typeof s === "string" ? ({ 4: "year", 7: "month", 10: "day" }[s.length] ?? "time") : undefined;
   const stepUnit = (step) =>
     /T/.test(step) ? "time" : /[DW]/.test(step) ? "day" : /M/.test(step) ? "month" : "year";
   const dims = new Map();
   list(doc?.dimensions).forEach((d, i) => {
     const extent = list(d?.extent);
-    const unit = typeof d?.step === "string" ? stepUnit(d.step) : undefined;
+    const temporal = d?.type === "temporal";
+    const unit = temporal ? unitOf(extent[0] ?? list(d?.values)[0]) : undefined;
     if (unit && extent.length === 2) {
-      if (!extent.every((s) => SHAPE[unit].test(s))) {
-        out.push(`/dimensions/${i}/extent: must be written at the step's precision (${unit})`);
-      } else if (extent[0] > extent[1]) {
+      if (typeof d?.step === "string" && UNITS.indexOf(stepUnit(d.step)) > UNITS.indexOf(unit)) {
+        out.push(`/dimensions/${i}/extent: written as ${unit}, coarser than step ${d.step}`);
+      } else if (Date.parse(extent[0]) > Date.parse(extent[1])) {
         out.push(`/dimensions/${i}/extent: start ${extent[0]} is after end ${extent[1]}`);
       }
     }
     dims.set(d?.name, {
       count: list(d?.values).length + extent.length,
-      temporal: d?.type === "temporal",
+      temporal,
       unit,
     });
   });
-  // Coarsest unit a strftime directive spells; a format may not go finer than the axis.
+  // Unit a strftime directive spells; a format may not go finer than the axis values.
   const DIRECTIVE_UNIT = { Y: "year", m: "month", j: "day", d: "day", H: "time", M: "time" };
   const namedVariables = list(doc?.variables).filter((v) => typeof v?.name === "string").length;
   list(doc?.data).forEach((asset, i) => {
@@ -106,7 +107,7 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
         );
         if (finest > UNITS.indexOf(dim.unit)) {
           out.push(
-            `/data/${i}/href_template: token {${token}:${spec}} is finer than the axis precision (${dim.unit}); never invent a month, day, or time`,
+            `/data/${i}/href_template: token {${token}:${spec}} is finer than the axis values (${dim.unit}); never invent a month, day, or time`,
           );
         }
       }
