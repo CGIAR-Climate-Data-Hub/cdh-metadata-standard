@@ -1,22 +1,24 @@
 name: Validate CDH records
 
-# Reusable workflow that validates one or more CDH metadata YAML records
-# against the CDH input schema.
+# Reusable workflow that validates CDH metadata YAML records. Each record is
+# checked with the tooling from the release its cdh_schema_version names, so a
+# catalog can hold records of mixed versions.
 #
 # Usage from another repo:
 #
 #   jobs:
 #     validate:
-#       uses: CGIAR-Climate-Data-Hub/cdh-metadata-standard/.github/workflows/validate-records.yaml@main
+#       uses: CGIAR-Climate-Data-Hub/cdh-metadata-standard/.github/workflows/validate-records.yaml@<tag>
 #       with:
 #         path: ./metadata-records          # directory or file to validate
+#         versions: "v0.3 v0.4"             # optional: release series accepted
 #         extra-schemas: ./my-extensions    # optional: your own extension schemas
 #         profile: ./my-profile.schema.json # optional: your own policy schema
 #                                           # (default "cdh"; "" = mechanism only)
 #         draft: true                        # optional: allow blank template placeholders
 #
-# Pin both refs to a release tag (e.g. @v0.0.1 above and tooling-ref: v0.0.1)
-# to validate against a fixed version of the standard instead of latest.
+# Pin the workflow ref to a release tag. It sets the workflow's inputs, not
+# the schema version records are checked against.
 #
 on:
   workflow_call:
@@ -34,10 +36,20 @@ on:
         required: false
         default: false
         type: boolean
-      tooling-ref:
-        description: Git ref (tag, branch, or SHA) of the CDH standard repo to use as tooling.
+      versions:
+        description: |
+          Space-separated release series accepted, e.g. "v0.3 v0.4". A record
+          whose cdh_schema_version is outside them fails. Empty = any release.
         required: false
-        default: main
+        default: ""
+        type: string
+      tooling-ref:
+        description: |
+          Override: validate every record with this ref (tag, branch, or SHA)
+          instead of the release each record names. For testing unreleased
+          schemas in this repo or a fork.
+        required: false
+        default: ""
         type: string
       tooling-repository:
         description: |
@@ -87,63 +99,61 @@ jobs:
           # Full history so changed-only can diff the PR/push base against HEAD.
           fetch-depth: 0
 
-      - name: Check out CDH tooling
-        uses: actions/checkout@v6
-        with:
-          repository: ${{ inputs.tooling-repository }}
-          ref: ${{ inputs.tooling-ref }}
-          path: _cdh-tooling
-
       - uses: actions/setup-node@v6
         with:
           node-version: 24
-          cache: npm
-          cache-dependency-path: _cdh-tooling/package-lock.json
-
-      - name: Install tooling
-        working-directory: _cdh-tooling
-        run: npm ci
 
       - name: Validate records
-        if: ${{ !inputs.changed-only }}
         env:
-          EXTRA_SCHEMAS: ${{ inputs.extra-schemas }}
-          PROFILE: ${{ inputs.profile }}
-          DRAFT: ${{ inputs.draft }}
-        run: |
-          flags=()
-          [ -n "$EXTRA_SCHEMAS" ] && flags+=(--schemas "$EXTRA_SCHEMAS")
-          [ "$PROFILE" = "cdh" ] && PROFILE=_cdh-tooling/spec/schemas/profiles/cdh.schema.json
-          [ -n "$PROFILE" ] && flags+=(--profile "$PROFILE")
-          [ "$DRAFT" = "true" ] && flags+=(--draft)
-          node _cdh-tooling/scripts/validate-yaml.js "${flags[@]}" "${{ inputs.path }}"
-
-      - name: List changed records
-        id: changed
-        if: ${{ inputs.changed-only }}
-        env:
-          # base.sha for pull_request, before for push; quoted path scopes the diff.
+          TARGET: ${{ inputs.path }}
+          CHANGED_ONLY: ${{ inputs.changed-only }}
+          # base.sha for pull_request, before for push.
           BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: |
-          files=$(git diff --name-only --diff-filter=ACMR \
-            "$BASE" HEAD -- "${{ inputs.path }}" | grep -E '\.ya?ml$' || true)
-          {
-            echo "files<<EOF"
-            echo "$files"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Validate changed records
-        if: ${{ inputs.changed-only && steps.changed.outputs.files != '' }}
-        env:
-          FILES: ${{ steps.changed.outputs.files }}
+          VERSIONS: ${{ inputs.versions }}
+          TOOLING_REF: ${{ inputs.tooling-ref }}
+          TOOLING_REPO: ${{ inputs.tooling-repository }}
           EXTRA_SCHEMAS: ${{ inputs.extra-schemas }}
           PROFILE: ${{ inputs.profile }}
           DRAFT: ${{ inputs.draft }}
         run: |
-          flags=()
-          [ -n "$EXTRA_SCHEMAS" ] && flags+=(--schemas "$EXTRA_SCHEMAS")
-          [ "$PROFILE" = "cdh" ] && PROFILE=_cdh-tooling/spec/schemas/profiles/cdh.schema.json
-          [ -n "$PROFILE" ] && flags+=(--profile "$PROFILE")
-          [ "$DRAFT" = "true" ] && flags+=(--draft)
-          echo "$FILES" | xargs node _cdh-tooling/scripts/validate-yaml.js "${flags[@]}"
+          if [ "$CHANGED_ONLY" = "true" ]; then
+            files=$(git diff --name-only --diff-filter=ACMR "$BASE" HEAD -- "$TARGET" | grep -E '\.ya?ml$' || true)
+          else
+            files=$(find "$TARGET" -type f \( -name '*.yaml' -o -name '*.yml' \) | sort)
+          fi
+          [ -z "$files" ] && { echo "No records to validate."; exit 0; }
+
+          # Group files by the tooling ref that validates them.
+          declare -A groups
+          status=0
+          while IFS= read -r f; do
+            v=$(sed -nE 's/^cdh_schema_version: *["'"'"']?([^"'"'"' ]+).*/\1/p' "$f" | head -1)
+            if [ -z "$TOOLING_REF" ] && [ -z "$v" ]; then
+              echo "::error file=$f::no cdh_schema_version"; status=1; continue
+            fi
+            if [ -n "$VERSIONS" ] && [ -n "$v" ] && [[ " $VERSIONS " != *" ${v%.*} "* ]]; then
+              echo "::error file=$f::$v is not an accepted release series ($VERSIONS)"; status=1; continue
+            fi
+            ref=${TOOLING_REF:-$v}
+            groups[$ref]+="$f"$'\n'
+          done <<< "$files"
+
+          for ref in "${!groups[@]}"; do
+            echo "::group::Validating with $TOOLING_REPO@$ref"
+            dir="_cdh-tooling/$ref"
+            mkdir -p "$dir"
+            git -C "$dir" init -q
+            git -C "$dir" fetch -q --depth 1 "https://github.com/$TOOLING_REPO" "$ref"
+            git -C "$dir" checkout -q FETCH_HEAD
+            npm ci --prefix "$dir" --silent
+
+            flags=()
+            [ -n "$EXTRA_SCHEMAS" ] && flags+=(--schemas "$EXTRA_SCHEMAS")
+            profile=$PROFILE
+            [ "$profile" = "cdh" ] && profile="$dir/spec/schemas/profiles/cdh.schema.json"
+            [ -n "$profile" ] && flags+=(--profile "$profile")
+            [ "$DRAFT" = "true" ] && flags+=(--draft)
+            printf '%s' "${groups[$ref]}" | xargs -d '\n' node "$dir/scripts/validate-yaml.js" "${flags[@]}" || status=1
+            echo "::endgroup::"
+          done
+          exit $status
