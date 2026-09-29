@@ -38,7 +38,7 @@ on:
         type: boolean
       versions:
         description: |
-          Space-separated release series accepted, e.g. "v0.3 v0.4". A record
+          Space-separated release series accepted, e.g. "v0.3 v0.4" or "v1". A record
           whose cdh_schema_version is outside them fails. Empty = any release.
         required: false
         default: ""
@@ -131,7 +131,9 @@ jobs:
             if [ -z "$TOOLING_REF" ] && [ -z "$v" ]; then
               echo "::error file=$f::no cdh_schema_version"; status=1; continue
             fi
-            if [ -n "$VERSIONS" ] && [ -n "$v" ] && [[ " $VERSIONS " != *" ${v%.*} "* ]]; then
+            # A series matches as a prefix at a dot: "v1" takes v1.x.y, "v0.3" takes v0.3.y.
+            ok=; for s in $VERSIONS; do [[ "$v." == "$s."* ]] && ok=1; done
+            if [ -n "$VERSIONS" ] && [ -n "$v" ] && [ -z "$ok" ]; then
               echo "::error file=$f::$v is not an accepted release series ($VERSIONS)"; status=1; continue
             fi
             ref=${TOOLING_REF:-$v}
