@@ -11,7 +11,9 @@ name: Validate CDH records
 #       uses: CGIAR-Climate-Data-Hub/cdh-metadata-standard/.github/workflows/validate-records.yaml@<tag>
 #       with:
 #         path: ./metadata-records          # directory or file to validate
-#         versions: "v0.3 v0.4"             # optional: release series accepted
+#         versions: |                       # optional: release series accepted
+#           v0.3
+#           v0.4
 #         extra-schemas: ./my-extensions    # optional: your own extension schemas
 #         profile: ./my-profile.schema.json # optional: your own policy schema
 #                                           # (default "cdh"; "" = mechanism only)
@@ -38,8 +40,9 @@ on:
         type: boolean
       versions:
         description: |
-          Space-separated release series accepted, e.g. "v0.3 v0.4" or "v1". A record
-          whose cdh_schema_version is outside them fails. Empty = any release.
+          Release series accepted, one per line: a major (v1) or major.minor
+          (v0.3). A record whose cdh_schema_version is outside them fails.
+          Empty = any release.
         required: false
         default: ""
         type: string
@@ -134,7 +137,7 @@ jobs:
             # A series matches as a prefix at a dot: "v1" takes v1.x.y, "v0.3" takes v0.3.y.
             ok=; for s in $VERSIONS; do [[ "$v." == "$s."* ]] && ok=1; done
             if [ -n "$VERSIONS" ] && [ -n "$v" ] && [ -z "$ok" ]; then
-              echo "::error file=$f::$v is not an accepted release series ($VERSIONS)"; status=1; continue
+              echo "::error file=$f::$v is not an accepted release series ($(echo $VERSIONS))"; status=1; continue
             fi
             ref=${TOOLING_REF:-$v}
             groups[$ref]+="$f"$'\n'
