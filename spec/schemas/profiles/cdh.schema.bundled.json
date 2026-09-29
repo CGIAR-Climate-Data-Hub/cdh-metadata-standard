@@ -261,7 +261,7 @@
                 "description": "Roles this contact holds (one or more).",
                 "type": "array",
                 "items": {
-                  "enum": ["licensor", "producer", "processor", "point-of-contact", "custodian"]
+                  "enum": ["licensor", "producer", "processor", "point-of-contact", "maintainer"]
                 },
                 "uniqueItems": true
               },
@@ -2310,7 +2310,7 @@
                 "examples": ["P3M", "P20Y"]
               },
               "extent": {
-                "description": "First and last value of a regular temporal axis, as ISO 8601 strings, in place of listing every value. Only valid on a type: temporal dimension with a step, and not alongside values. The values are every step from start to end inclusive, written at the precision of the extent strings, so [\"1981\", \"2025\"] with step P1Y is 1981, 1982, ... 2025.",
+                "description": "First and last value of a regular temporal axis, as ISO 8601 strings, in place of listing every value. Only valid on a type: temporal dimension with a step, and not alongside values. Both strings are written at the step's precision (PnY: YYYY, PnM: YYYY-MM, PnD/PnW: YYYY-MM-DD, PT…: a date-time), start before end. The values are start, start + step, … while <= end, at that same precision, so [\"1981\", \"2025\"] with step P1Y is 1981, 1982, ... 2025.",
                 "type": "array",
                 "minItems": 2,
                 "maxItems": 2,
@@ -2699,6 +2699,19 @@
       "contains": {
         "type": "string",
         "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/cdh/schema\\.json$"
+      }
+    },
+    "contact": {
+      "description": "Every Hub record names at least one maintainer.",
+      "contains": {
+        "required": ["roles"],
+        "properties": {
+          "roles": {
+            "contains": {
+              "const": "maintainer"
+            }
+          }
+        }
       }
     }
   },

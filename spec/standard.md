@@ -503,16 +503,23 @@ keywords:
 
 #### `contact[]`
 
-- **Requirement:** Required. At least one contact MUST list `licensor` in `roles`.
+- **Requirement:** Required. At least one contact MUST list `licensor` in `roles`. The CDH profile
+  also requires at least one `maintainer`.
 - **Expected value:** List of objects with `name`, `roles`, `email`, `organization`, `url`.
 - **Vocabulary for `roles`:** `licensor`, `producer`, `processor`, `point-of-contact`, and
-  `custodian`. The first three are STAC provider roles; `point-of-contact` and `custodian` map to
-  the Contacts extension instead. A `custodian` is the party accountable for the resource and its
-  metadata - typically the person who authored or submitted the record and maintains it. `roles` is
-  an array, so one contact may hold several (e.g., `[producer, licensor]`).
+  `maintainer`. The first three are STAC provider roles; `point-of-contact` and `maintainer` map to
+  the Contacts extension instead. `roles` is an array, so one contact may hold several (e.g.,
+  `[producer, licensor]`).
+  - `point-of-contact`: the party who can be contacted for knowledge about or acquisition of the
+    resource (ISO 19115). Questions and errors in the data go here.
+  - `maintainer`: the party accountable for the record and any copy of the data the publishing
+    catalog hosts (`schema:maintainer`). It keeps both current and passes data errors to the
+    `point-of-contact`.
 - **Rules:**
   - Must identify at least one responsible party.
   - Must identify at least one licensing party by including `licensor` in `roles`.
+  - CDH records must identify at least one `maintainer`. An organization-level maintainer is
+    allowed.
   - A `licensor` contact is the party that holds or administers the right to license the resource.
   - Each contact MUST include `roles` and `organization`.
   - Use `organization` on its own for organization-level contacts when no specific person should be
@@ -916,7 +923,7 @@ Catalog navigation and version-chain relations follow from `parent` (section 4.8
 | `spatial.geography`                                           | `vocab/geography.json` (UN M49; regions + countries)                                                                                                                     |
 | `variables[].unit`, grid `spatial.resolution[].unit`          | Unit of measurement, preferably UDUNITS-2 or UCUM (not strictly validated); non-grid spatial units may use clear labels such as `admin-level`                            |
 | `variables[].name` (climate)                                  | CF Standard Names (where practical)                                                                                                                                      |
-| `contact[].roles[]`                                           | `licensor`, `producer`, `processor` (STAC provider roles), `point-of-contact`, `custodian` (Contacts extension)                                                          |
+| `contact[].roles[]`                                           | `licensor`, `producer`, `processor` (STAC provider roles), `point-of-contact`, `maintainer` (Contacts extension)                                                         |
 | `media_type`                                                  | IANA media types                                                                                                                                                         |
 | `resource_type`                                               | `vocab/resource_type.json`                                                                                                                                               |
 | `cdh.domain`                                                  | `vocab/domain.json` (CDH closed set)                                                                                                                                     |

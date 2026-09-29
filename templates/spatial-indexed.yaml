@@ -26,6 +26,9 @@ contact:
     roles: [licensor]
     email: ""
     url: ""
+  - organization: ""
+    roles: [maintainer]
+    email: ""
 
 citation:
   # each author is a person (family, given) or an organization

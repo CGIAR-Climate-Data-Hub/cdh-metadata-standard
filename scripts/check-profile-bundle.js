@@ -37,7 +37,7 @@ const base = {
   resource_type: "dataset",
   keywords: ["fixture"],
   cdh: { domain: ["climate"] },
-  contact: [{ organization: "Test Org", roles: ["licensor"] }],
+  contact: [{ organization: "Test Org", roles: ["licensor", "maintainer"] }],
   citation: { authors: [{ family: "Doe", given: "J." }], date: "2026" },
   data: [{ name: "primary", locations: [{ url: "https://example.org/data.tif" }] }],
 };

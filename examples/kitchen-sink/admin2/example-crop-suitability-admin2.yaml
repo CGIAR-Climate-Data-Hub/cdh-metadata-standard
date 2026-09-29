@@ -55,6 +55,10 @@ contact:
     email: ada.placeholder@example.org
     organization: Institute for Example Data
     url: https://example.org
+  - name: Jan Itor
+    roles: [maintainer]
+    email: jan.itor@example.org
+    organization: Institute for Example Data
   - organization: Institute for Example Data
     roles: [licensor]
     url: https://example.org

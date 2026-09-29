@@ -50,7 +50,7 @@ contact:
     email: giuseppina.cinardi@fao.org
     organization: Food and Agriculture Organization of the United Nations
   - name: Brayden Youngberg
-    roles: [processor, custodian]
+    roles: [processor, maintainer]
     email: b.youngberg@cgiar.org
     organization: Alliance of Bioversity International and CIAT
 

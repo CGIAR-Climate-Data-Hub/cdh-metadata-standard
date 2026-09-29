@@ -47,6 +47,10 @@ contact:
   - organization: International Food Policy Research Institute (IFPRI)
     roles: [licensor]
     url: https://www.ifpri.org/
+  - name: Brayden Youngberg
+    roles: [maintainer]
+    email: b.youngberg@cgiar.org
+    organization: Alliance of Bioversity International and CIAT
 
 citation:
   title:

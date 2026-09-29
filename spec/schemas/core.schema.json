@@ -96,7 +96,7 @@
           "description": "Roles this contact holds (one or more).",
           "type": "array",
           "items": {
-            "enum": ["licensor", "producer", "processor", "point-of-contact", "custodian"]
+            "enum": ["licensor", "producer", "processor", "point-of-contact", "maintainer"]
           },
           "uniqueItems": true
         },

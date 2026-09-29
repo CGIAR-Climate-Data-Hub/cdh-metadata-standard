@@ -99,6 +99,13 @@
       "contains": {
         "$ref": "#/$defs/cdhExtensionUrl"
       }
+    },
+    "contact": {
+      "description": "Every Hub record names at least one maintainer.",
+      "contains": {
+        "required": ["roles"],
+        "properties": { "roles": { "contains": { "const": "maintainer" } } }
+      }
     }
   },
   "unevaluatedProperties": false

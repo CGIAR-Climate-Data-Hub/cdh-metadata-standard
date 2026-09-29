@@ -32,15 +32,15 @@ keywords: []
 note: > # Optional
   ""
 
-# Contact Metadata (required). At least one contact MUST list licensor in roles.
+# Contact Metadata (required). List at least one licensor and one maintainer.
 contact:
   - name: "" # optional when organization is present; required for person-level contacts
-    roles: [licensor] # any of: licensor | producer | processor | point-of-contact | custodian
+    roles: [licensor] # any of: licensor | producer | processor | point-of-contact | maintainer
     email: ""
     organization: "" # required when name is present; may be used on its own
     url: ""
   - name: ""
-    roles: []
+    roles: [maintainer]
     email: ""
     organization: ""
     url: ""

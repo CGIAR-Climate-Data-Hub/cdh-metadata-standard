@@ -42,6 +42,9 @@ occur between minor versions.
 
 ### Changed
 
+- **Breaking:** contact role `custodian` is renamed `maintainer` (`schema:maintainer`), and the CDH
+  profile requires at least one. ISO 19115's `custodian` cares for the resource, not the record, so
+  it did not fit federated records; every Hub record needs someone accountable for it.
 - **Breaking:** `data[]` and `file_index[]` `locations[].url` must be an absolute URI; the schema
   previously accepted any string.
 - **Breaking:** `citation.authors` entries are objects: a person is `{ family, given? }`, an

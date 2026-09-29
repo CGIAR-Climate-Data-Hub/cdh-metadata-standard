@@ -65,7 +65,7 @@ contact:
     organization: Institute for Example Data
     url: https://example.org
   - name: Jan Itor
-    roles: [custodian]
+    roles: [maintainer]
     email: jan.itor@example.org
     organization: Institute for Example Data
     url: https://example.org

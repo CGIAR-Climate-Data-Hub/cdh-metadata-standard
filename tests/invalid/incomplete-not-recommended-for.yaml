@@ -16,7 +16,7 @@ cdh:
       - use: operational field-scale decisions
 contact:
   - organization: Test Org
-    roles: [licensor]
+    roles: [licensor, maintainer]
 citation:
   authors:
     - family: Doe

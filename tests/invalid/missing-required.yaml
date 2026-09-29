@@ -9,7 +9,7 @@ resource_type: dataset
 keywords: [fixture]
 contact:
   - organization: Test Org
-    roles: [licensor]
+    roles: [licensor, maintainer]
 citation:
   authors:
     - family: Doe

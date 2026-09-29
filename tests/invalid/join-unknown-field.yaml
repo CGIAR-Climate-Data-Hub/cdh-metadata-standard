@@ -14,7 +14,7 @@ cdh:
   domain: [agricultural-production]
 contact:
   - organization: Example Org
-    roles: [licensor]
+    roles: [licensor, maintainer]
 citation:
   authors:
     - family: Doe

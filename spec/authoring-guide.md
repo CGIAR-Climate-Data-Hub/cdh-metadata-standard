@@ -203,6 +203,7 @@ link to request forms with `rel: create-form`; link access help pages or `mailto
 
 For `contact`, use either an organization contact or a person contact. Every record must include at
 least one contact with `licensor` in `roles`; that contact is the licensing party for the resource.
+CDH records also need at least one `maintainer`.
 
 Organization contact:
 
@@ -224,9 +225,9 @@ contact:
 ```
 
 If `name` is used, include `organization` too. `organization` on its own is OK. Roles: `licensor`,
-`producer`, `processor`, `point-of-contact`, or `custodian` (the party accountable for the resource
-and its metadata - typically whoever authored or submitted the record and maintains it). Contacts
-are allowed to list multiple roles.
+`producer`, `processor`, `point-of-contact` (who to ask about the data, and where data errors go),
+or `maintainer` (who keeps the record and any hosted copy current, and passes data errors to the
+point of contact). Contacts are allowed to list multiple roles.
 
 For `citation`, provide structured fields - `authors` and `date` (required), plus optional `title`,
 `publisher`, and `url`. You may omit `citation` when a `doi` is provided.
