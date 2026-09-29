@@ -679,6 +679,9 @@ additional_assets:
       - url: https://example.org/rasterClasses.csv
 ```
 
+Common types for examples: `application/x-ipynb+json` (Jupyter notebook), `text/x-python`,
+`text/x-r`, and `application/sql`.
+
 #### Optional: a README and an agent guide
 
 You can add two Markdown files beside the record. Neither is required.

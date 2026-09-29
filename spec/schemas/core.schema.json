@@ -39,7 +39,7 @@
           "description": "Asset name; must be unique across data[] and additional_assets[]."
         },
         "roles": {
-          "description": "Asset roles. Suggested values, not a closed set: `metadata`, `validation`, `describedby` (human documentation such as a README), `agents` (a Markdown guide for AI agents: keys and join columns, quirks, CRS consequences, tested queries), `thumbnail`, `overview`, `visual`, `example` (a runnable usage example, e.g. a notebook or SQL file).",
+          "description": "Asset roles. Suggested values, not a closed set: `metadata`, `validation`, `describedby` (human documentation such as a README), `agents` (a Markdown guide for AI agents: keys and join columns, quirks, CRS consequences, tested queries), `thumbnail`, `overview`, `visual`, `example` (a code file: a runnable usage example, e.g. a notebook or SQL file).",
           "items": {
             "type": "string",
             "minLength": 1,
