@@ -254,10 +254,10 @@ you change it.
 
 ### `data`
 
-At least one link to the resource. It is understood that sometimes the resource may need to be
-uploaded to the climate data hub before this can be filled. As such, the url can be a placeholder
-for the upload location or be left blank to be filled in on final review. Embargoed or restricted
-data should still include a link, such as a request page, an embargoed dataverse entry, etc.
+At least one location for the data itself. If the data will be uploaded to the Hub during review,
+leave `url` blank; it is filled in before publication. Restricted or embargoed data with no URL of
+its own uses the page where access is requested or the data will be released, such as the Dataverse
+record, and `access_note` must say so.
 
 ```yaml
 data:

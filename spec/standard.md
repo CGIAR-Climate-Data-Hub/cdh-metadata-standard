@@ -379,7 +379,7 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
 - **Definition:** Human-readable access conditions or instructions, including embargo details,
   request steps, authentication requirements, or why the data is catalogued but unavailable.
 - **Examples:**
-  - `Embargoed until 2027-01-01. Contact the data custodian for early access.`
+  - `Embargoed until 2027-01-01. Contact the maintainer for early access.`
   - `Request access using the linked form. Approval is limited to research use.`
 
 #### `resource_type`
@@ -773,8 +773,9 @@ extension fields, not in `keywords` (see section 4.4).
     `href_template`, a `file_index`, or a Zarr-family root), a service endpoint that returns the
     data, or for software the repository or tool URL. A landing page, DOI, Zenodo or Dataverse
     record, or documentation page is not a location; use `citation.url`, `doi`, or
-    `additional_links[]`. Only when the data has no URL at all (non-public, by request) may `url` be
-    the access-request page, and `access_note` MUST say so.
+    `additional_links[]`. Only when the data has no URL of its own (`access: restricted`, including
+    embargoes) may `url` be the page where access is requested or the data will be released, such as
+    an embargoed Dataverse record, and `access_note` MUST say so.
   - List more than one entry only when the additional entries point at the same content via a
     different access path (e.g., an HTTPS and an S3 URL for the same file). All `locations[]` share
     the asset's `media_type`, `file_size`, and `nodata`.
