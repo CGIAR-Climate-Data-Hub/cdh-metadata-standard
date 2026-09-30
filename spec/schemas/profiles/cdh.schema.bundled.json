@@ -1137,17 +1137,35 @@
                 ]
               },
               "derived_from": {
-                "description": "Upstream sources this step derived from - the data (e.g. a Zenodo/Dataverse landing page), not code.",
+                "description": "Upstream sources this step derived from - the data (e.g. a Zenodo/Dataverse landing page), not code. Each entry has an id (a Hub record) or a url (anything else), not both.",
                 "items": {
                   "additionalProperties": false,
+                  "anyOf": [
+                    {
+                      "required": ["id"]
+                    },
+                    {
+                      "required": ["url"]
+                    }
+                  ],
+                  "not": {
+                    "required": ["id", "url"]
+                  },
                   "properties": {
+                    "id": {
+                      "description": "id of the Hub record used. Must resolve to exactly one catalog record.",
+                      "pattern": "^[a-z0-9][a-z0-9-]*$",
+                      "type": "string",
+                      "examples": ["example-crop-suitability", "spam2020"]
+                    },
                     "title": {
                       "minLength": 1,
                       "type": "string"
                     },
                     "url": {
                       "minLength": 1,
-                      "type": "string"
+                      "type": "string",
+                      "description": "URL of a source outside the Hub."
                     },
                     "version": {
                       "minLength": 1,

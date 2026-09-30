@@ -20,6 +20,9 @@ occur between minor versions.
   `{date:%Y.%m.%d}`, for file names that spell the date differently from the ISO value. Directives
   are limited to `%Y %m %d %H %M %j`; a token may repeat with different formats for hive-partitioned
   paths. Domain-axis tokens stay verbatim.
+- Added `processing[].derived_from[].id`: names a Hub record as a source, in place of a storage URL.
+  An entry has an `id` or a `url`, not both; an `id` must resolve to exactly one catalog record.
+  Encoded as a `derived_from` link to that record's URL.
 - Added `processing[].derived_from[].version` so a derived record pins the source release it used,
   even when `url` tracks the latest release. Maps to a `cgiar-cdh:source_version` link field.
 - Added `data[].file_index`: a list of `{ format, locations, title, media_type }` indexes over an

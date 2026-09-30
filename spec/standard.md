@@ -730,11 +730,12 @@ extension fields, not in `keywords` (see section 4.4).
 - **Rules:**
   - `id` must be unique within `processing[]`.
   - At least one step must use `id: source` whenever `processing[]` is present.
-  - `derived_from[]` entries are `{ url, title, version }` references to the data used. Record
-    `version` whenever the source is versioned, as the source labels it; for a Hub record that is
-    its `version`. `url` may then point at the source's landing page or Hub record even when that
-    URL tracks the latest release. Step order is the array order; asset-specific chains use
-    `data[].processing_steps[]`.
+  - `derived_from[]` entries are `{ id, url, title, version }` references to the data used. A Hub
+    record is named by its `id`, which MUST resolve to exactly one catalog record; any other source
+    by its `url`. An entry has one or the other, not both. Record `version` whenever the source is
+    versioned, as the source labels it; for a Hub record that is its `version`. `url` may then point
+    at the source's landing page even when that URL tracks the latest release. Step order is the
+    array order; asset-specific chains use `data[].processing_steps[]`.
   - `date` is ISO 8601 / RFC 3339.
   - Put `source` first unless the processing order requires otherwise.
 

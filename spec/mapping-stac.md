@@ -369,12 +369,11 @@ Encoding rules:
    - `date` -> `processing:datetime`
    - `{ <code.url basename>: code.version }` -> `processing:software`
 2. Any `code.url` maps to `links[rel=processing-expression]` on the Collection.
-3. The `source` step's `derived_from[].url` entries map to `links[rel=derived_from]` on the
-   Collection.
+3. The `source` step's `derived_from[]` entries map to `links[rel=derived_from]` on the Collection.
 4. Subsequent steps map to **Asset-level** Processing Extension fields on the assets that reference
    them in `processing_steps[]`.
-5. `derived_from[]` entries are external URLs/STAC Metadata links and map to
-   `links[rel=derived_from]`, with `version` carried as a `cgiar-cdh:source_version` link field.
+5. `derived_from[]` entries map to `links[rel=derived_from]`, with `version` carried as a
+   `cgiar-cdh:source_version` link field. An `id` resolves to that record's URL.
 6. Releases share a YAML `id`. The current release keeps it as the Collection id; superseded
    releases are emitted as `<id>-<version>` so Collection ids stay unique.
 

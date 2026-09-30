@@ -82,6 +82,7 @@ schema.
 | `processing[]` (subsequent)           | Conditional                             | Asset-level `processing:datetime`, `processing:lineage`                                                   | Appended to `properties["cgiar-cdh:processing"]`       |
 | `processing[].code.url`               | Conditional                             | `links[rel=processing-expression]`                                                                        | `links[rel=processing-expression]`                     |
 | `processing[].code.version`           | Conditional                             | Link `cgiar-cdh:code_version` field                                                                       | Link `cgiar-cdh:code_version` field                    |
+| `processing[].derived_from[].id`      | Conditional                             | `links[rel=derived_from]` to the record's URL                                                             | `links[rel=derived_from]`                              |
 | `processing[].derived_from[].url`     | Conditional                             | `links[rel=derived_from]`                                                                                 | `links[rel=derived_from]`                              |
 | `processing[].derived_from[].version` | Conditional                             | Link `cgiar-cdh:source_version` field                                                                     | Link `cgiar-cdh:source_version` field                  |
 

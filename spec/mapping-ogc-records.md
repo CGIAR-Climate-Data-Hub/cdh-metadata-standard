@@ -207,8 +207,9 @@ Encoding rules:
    schema mirrors the YAML.
 2. The `source` step's `code.url` maps to `links[rel=processing-expression]` on the record. Include
    `cgiar-cdh:code_version` as a link extra field.
-3. Each step's `derived_from[].url` entries (always external URLs) map to `links[rel=derived_from]`
-   on the record, with `version` carried as a `cgiar-cdh:source_version` link extra field.
+3. Each step's `derived_from[]` entries map to `links[rel=derived_from]` on the record, with
+   `version` carried as a `cgiar-cdh:source_version` link extra field. An `id` resolves to that
+   record's URL.
 4. Per-asset processing chains live in the corresponding link's `cgiar-cdh:processing_steps` extra
    field (mirroring `data[].processing_steps[]` in the YAML).
 
