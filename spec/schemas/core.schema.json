@@ -73,6 +73,10 @@
           "type": "string",
           "minLength": 1
         },
+        "orcid": {
+          "$ref": "#/$defs/orcid",
+          "description": "ORCID iD of the named person."
+        },
         "organization": {
           "type": "string",
           "minLength": 1,
@@ -91,6 +95,10 @@
             "International Water Management Institute (IWMI)",
             "WorldFish"
           ]
+        },
+        "ror": {
+          "$ref": "#/$defs/ror",
+          "description": "ROR id of the organization."
         },
         "roles": {
           "description": "Roles this contact holds (one or more).",
@@ -506,6 +514,18 @@
       },
       "type": "object"
     },
+    "orcid": {
+      "description": "ORCID iD of the person, as its https://orcid.org/ URL.",
+      "type": "string",
+      "pattern": "^https://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\d{3}[\\dX]$",
+      "examples": ["https://orcid.org/0000-0002-1825-0097"]
+    },
+    "ror": {
+      "description": "ROR id of the organization, as its https://ror.org/ URL.",
+      "type": "string",
+      "pattern": "^https://ror\\.org/0[0-9a-hjkmnp-tv-z]{6}[0-9]{2}$",
+      "examples": ["https://ror.org/04xsxqp89"]
+    },
     "author": {
       "description": "A citation author: either a person or an organization.",
       "oneOf": [
@@ -522,7 +542,8 @@
               "$ref": "#/$defs/nonEmptyString",
               "description": "Given name(s) or initials.",
               "examples": ["Jane", "J.", "María José"]
-            }
+            },
+            "orcid": { "$ref": "#/$defs/orcid" }
           },
           "type": "object"
         },
@@ -534,7 +555,8 @@
               "$ref": "#/$defs/nonEmptyString",
               "description": "Full name of an organization credited as an author.",
               "examples": ["Food and Agriculture Organization of the United Nations"]
-            }
+            },
+            "ror": { "$ref": "#/$defs/ror" }
           },
           "type": "object"
         }

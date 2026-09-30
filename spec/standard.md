@@ -492,7 +492,8 @@ keywords:
 
 - **Requirement:** Required. At least one contact MUST list `licensor` in `roles`. The CDH profile
   also requires at least one `maintainer`.
-- **Expected value:** List of objects with `name`, `roles`, `email`, `organization`, `url`.
+- **Expected value:** List of objects with `name`, `orcid`, `roles`, `email`, `organization`, `ror`,
+  `url`.
 - **Vocabulary for `roles`:** `licensor`, `producer`, `processor`, `point-of-contact`, and
   `maintainer`. The first three are STAC provider roles; `point-of-contact` and `maintainer` map to
   the Contacts extension instead. `roles` is an array, so one contact may hold several (e.g.,
@@ -513,6 +514,8 @@ keywords:
     named.
   - Use `name` plus `organization` for person-level contacts.
   - Email, URL, or org contact page when public.
+  - `orcid` is the named person's ORCID iD and `ror` the organization's ROR id, each as its full URL
+    (`https://orcid.org/…`, `https://ror.org/…`). Optional; give them when known.
 
 #### `citation`
 
@@ -522,8 +525,9 @@ keywords:
   `publisher`, `url`.
 - **Rules:**
   - Cite the resource described by the record, not only a source dataset.
-  - `authors` is an ordered list. Each entry is either a person, `{ family, given? }`, or an
-    organization, `{ organization }`. The two forms may be mixed; citation order is preserved.
+  - `authors` is an ordered list. Each entry is either a person, `{ family, given?, orcid? }`, or an
+    organization, `{ organization, ror? }`. `orcid` and `ror` are full URLs, as on `contact[]`. The
+    two forms may be mixed; citation order is preserved.
   - A person with a single name puts it in `family` and omits `given`. Multiple surnames all go in
     `family`.
   - `family`/`given` record which part of the name is which, not the order it is displayed in;

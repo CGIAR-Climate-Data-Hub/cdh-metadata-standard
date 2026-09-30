@@ -69,7 +69,7 @@ terms are used where available, e.g. `access` -> `dct:accessRights`.
 | `attribution`               | `properties.rights`; also suitable for schema.org `creditText` on generated landing pages.                                                                                 |
 | `access`                    | `properties["dct:accessRights"]` using the EU accessRights NAL URI. Omitted = `public`; `public` MAY be left unencoded. Advertise GeoDCAT via `conformsTo`.                |
 | `access_note`               | `properties["cgiar-cdh:access_note"]`; also suitable for schema.org `conditionsOfAccess` on generated landing pages.                                                       |
-| `contact[]`                 | `properties.contacts[]`. At least one contact must include `licensor` in `roles`.                                                                                          |
+| `contact[]`                 | `properties.contacts[]`, with `orcid` or `ror` as `identifier`. At least one contact must include `licensor` in `roles`.                                                   |
 | `citation`                  | `properties["cgiar-cdh:citation"]`                                                                                                                                         |
 | `doi`                       | `links[rel=cite-as]`                                                                                                                                                       |
 | `related_publications[]`    | `properties["cgiar-cdh:related_publications"]`                                                                                                                             |

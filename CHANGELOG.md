@@ -48,6 +48,9 @@ occur between minor versions.
   once and may sit in several structures. With structures, every asset names the structures it
   holds, and holds each variable in only one of them. Encoded as asset-level `cube:dimensions` and
   `cube:variables`.
+- Added optional `orcid` (people) and `ror` (organizations) to `citation.authors[]` and `contact[]`,
+  as full `https://orcid.org/` and `https://ror.org/` URLs, as DataCite, CFF, and schema.org carry
+  them. Contacts encode as STAC and OGC Records `contacts[].identifier`.
 - Added `data[].spatial`: coverage of one asset alone, for selecting files by area. Same shapes as
   the top-level `spatial`, and never copied down from it.
 - Added `parent`: the id of the record this one is a child representation of.
