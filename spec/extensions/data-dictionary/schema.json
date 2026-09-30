@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/datacube/schema.json",
-  "title": "Datacube Extension",
+  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/data-dictionary/schema.json",
+  "title": "Data Dictionary Extension",
   "description": "Dimensions and variables for gridded, multidimensional, or tabular data.",
   "type": "object",
   "$defs": {

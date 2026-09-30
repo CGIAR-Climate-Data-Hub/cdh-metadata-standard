@@ -76,7 +76,8 @@ CDH metadata is a generic core plus optional extensions. Validation has two laye
 - **Mechanism:** core plus exactly the extensions declared in `extensions[]`. Fields from undeclared
   extensions are rejected.
 - **Profile:** policy rules on top. The CDH profile requires the `cdh` extension and composes the
-  four CDH-maintained extensions: `cdh`, `climate`, `datacube`, and `agriculture` (section 5.5).
+  four CDH-maintained extensions: `cdh`, `climate`, `data-dictionary`, and `agriculture` (section
+  5.5).
 
 A profile is applied by the catalog that validates a record; the record does not name it. The CDH
 templates bind the CDH profile for editor hints in a `yaml-language-server` comment. A bundled copy
@@ -91,8 +92,8 @@ To carry metadata the standard does not yet cover:
    [`extensions/_template/`](extensions/_template/README.md); see [`extending.md`](./extending.md).
 
 A new extension SHOULD nest fields under one top-level key named after the extension. The older
-`datacube` and `agriculture` extensions keep their existing top-level fields. Fields that outlive
-one project should move into a shared extension.
+`data-dictionary` and `agriculture` extensions keep their existing top-level fields. Fields that
+outlive one project should move into a shared extension.
 
 ### 4.3 Description, note, and free text
 
@@ -123,8 +124,8 @@ Decision rule:
 ### 4.5 Sidecar metadata
 
 Use sidecar files (linked with `rel=describedby`) for large, nested, or frequently changing content
-such as long code lists, full [variable dictionaries](extensions/datacube/README.md), QA/QC outputs,
-detailed table schemas, and long category lists.
+such as long code lists, full [variable dictionaries](extensions/data-dictionary/README.md), QA/QC
+outputs, detailed table schemas, and long category lists.
 
 ### 4.6 Author-supplied vs machine-derived
 
@@ -405,7 +406,7 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
   - Do not duplicate structured values. Geography belongs in `spatial.geography`; commodities in
     [`commodities`](extensions/agriculture/README.md); scenarios, models, baselines, and MIP eras in
     [`climate.*`](extensions/climate/README.md); variables, bands, indicators, and columns in
-    [`variables[]`](extensions/datacube/README.md).
+    [`variables[]`](extensions/data-dictionary/README.md).
   - Filter/group-by values belong in `cdh.domain`, not here. See section 4.4.
   - Should use consistent spelling and capitalization.
   - Linked items must include both `scheme` and `uri`; a `term`-only object is equivalent to a plain
@@ -693,8 +694,9 @@ temporal cadence is not stored here (see "Temporal cadence" below).
 #### Temporal cadence
 
 Temporal cadence (daily, monthly, projection periods, ...) is **not** a `temporal` field. Express it
-as a `type: temporal` dimension in the datacube extension, with an ISO 8601 `step` - one dimension
-per temporal axis, and a record may have several (files split by year, each holding a day column).
+as a `type: temporal` dimension in the data dictionary extension, with an ISO 8601 `step` - one
+dimension per temporal axis, and a record may have several (files split by year, each holding a day
+column).
 
 A temporal dimension's values are ISO 8601 dates or instants. A binned axis lists each bin's start
 and gives its length as the `step`, so 20-year projection windows are `values: ["2021", "2041"]`
@@ -702,7 +704,7 @@ with `step: P20Y`. A **cyclic** label axis - `DJF`/`MAM`/`JJA`/`SON` - is not te
 every year rather than running in one direction, so it is a domain axis named after what it varies,
 and how long each label covers is stated in its `description`. This mirrors `spatial`: the
 horizontal grid comes from `spatial`, and every other axis - time and domain - is a `dimensions[]`
-entry. See the [datacube extension](extensions/datacube/README.md).
+entry. See the [data dictionary extension](extensions/data-dictionary/README.md).
 
 ### 5.5 Extension fields
 
@@ -711,12 +713,12 @@ Each extension is documented alongside its schema (linked below); all are option
 extension, which the CDH profile requires (`cdh.domain`). Put values you filter or facet on in these
 extension fields, not in `keywords` (see section 4.4).
 
-| Extension                                       | Fields                                                   | Applies to                            |
-| ----------------------------------------------- | -------------------------------------------------------- | ------------------------------------- |
-| [CDH](extensions/cdh/README.md)                 | `cdh.domain`, `cdh.usage`                                | all records (required by the profile) |
-| [Climate](extensions/climate/README.md)         | `climate.*` - scenarios, models, baseline, downscaling   | climate / CMIP / adaptation           |
-| [Datacube](extensions/datacube/README.md)       | `dimensions[]`, `variables[]`, `structures[]`, `joins[]` | gridded / multidimensional / tabular  |
-| [Agriculture](extensions/agriculture/README.md) | `commodities[]`                                          | agriculture / food-systems / crops    |
+| Extension                                               | Fields                                                   | Applies to                            |
+| ------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------- |
+| [CDH](extensions/cdh/README.md)                         | `cdh.domain`, `cdh.usage`                                | all records (required by the profile) |
+| [Climate](extensions/climate/README.md)                 | `climate.*` - scenarios, models, baseline, downscaling   | climate / CMIP / adaptation           |
+| [Data dictionary](extensions/data-dictionary/README.md) | `dimensions[]`, `variables[]`, `structures[]`, `joins[]` | gridded / multidimensional / tabular  |
+| [Agriculture](extensions/agriculture/README.md)         | `commodities[]`                                          | agriculture / food-systems / crops    |
 
 ### 5.6 Processing and Provenance
 
@@ -789,11 +791,11 @@ extension fields, not in `keywords` (see section 4.4).
   `data[]` entry, not an index. `cdh-inventory` may appear once. The index is the one part of a
   record that may live outside it; every field definition stays in the record. Mutually exclusive
   with `href_template`. Formats and rules: [File indexes](#file-indexes-file_index).
-- **`structures` (conditional):** Names of the `structures[]` this asset holds (datacube extension).
-  Required on every asset when the record declares `structures[]`; omitted otherwise. An asset holds
-  the dimensions and variables of its structures; in a record without `structures[]`, every asset
-  holds every declared one. Authors or inspection tools MUST verify structure membership before
-  publication.
+- **`structures` (conditional):** Names of the `structures[]` this asset holds (data dictionary
+  extension). Required on every asset when the record declares `structures[]`; omitted otherwise. An
+  asset holds the dimensions and variables of its structures; in a record without `structures[]`,
+  every asset holds every declared one. Authors or inspection tools MUST verify structure membership
+  before publication.
 - **`spatial` (optional):** `{ bbox, geography }` covering this asset alone, for selecting files by
   area. Same shapes as the top-level `spatial`. Omit when unknown; the top-level bbox is not copied
   down to assets.

@@ -132,12 +132,12 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       if (token === "variable") {
         if (namedVariables === 0) {
           out.push(
-            `/data/${i}/href_template: token {variable} expands over variables[].name, but no named variables are declared (requires the datacube extension)`,
+            `/data/${i}/href_template: token {variable} expands over variables[].name, but no named variables are declared (requires the data dictionary extension)`,
           );
         }
       } else if (!dim) {
         out.push(
-          `/data/${i}/href_template: token {${token}} has no matching dimensions[].name (requires the datacube extension)`,
+          `/data/${i}/href_template: token {${token}} has no matching dimensions[].name (requires the data dictionary extension)`,
         );
       } else if (dim.count === 0) {
         out.push(`/data/${i}/href_template: dimension "${token}" must list its values or extent`);

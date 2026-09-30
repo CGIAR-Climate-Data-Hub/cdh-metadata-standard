@@ -1,4 +1,4 @@
-# Datacube Extension
+# Data Dictionary Extension
 
 Dimensions and variables for gridded, multidimensional, or tabular data.
 
@@ -24,9 +24,9 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
       station code. It is a key, not an axis of space.
     - Anything else names a domain axis after what it varies (`crop`, `technology`, `scenario`).
       Lowercase, digits, `-` and `_`.
-  - **Bands are not a dimension.** The datacube extension has no band dimension type; a multi-band
-    file's bands are `variables[]`. `bands` is still an accepted axis name if a resource genuinely
-    varies along something it calls a band, but it gets no special treatment.
+  - **Bands are not a dimension.** This extension has no band dimension type; a multi-band file's
+    bands are `variables[]`. `bands` is still an accepted axis name if a resource genuinely varies
+    along something it calls a band, but it gets no special treatment.
   - **`spatial` and `geometry` are rejected.** The horizontal lat/lon grid comes from the top-level
     `spatial` field and is never declared here. Use `z` for a vertical axis and `location` for a
     place key.
@@ -102,7 +102,7 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/datacube/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/data-dictionary/schema.json
 dimensions:
   - name: crop
     type: crop

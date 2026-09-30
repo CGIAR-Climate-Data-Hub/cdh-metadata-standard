@@ -26,8 +26,8 @@ const cases = [
     field: { climate: { mip_era: "CMIP6" } },
   },
   {
-    name: "datacube",
-    extension: extensionUrl("datacube"),
+    name: "data-dictionary",
+    extension: extensionUrl("data-dictionary"),
     field: {
       dimensions: [
         {

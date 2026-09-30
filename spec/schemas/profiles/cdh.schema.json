@@ -12,9 +12,9 @@
       "type": "string",
       "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/climate/schema\\.json$"
     },
-    "datacubeExtensionUrl": {
+    "dataDictionaryExtensionUrl": {
       "type": "string",
-      "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/datacube/schema\\.json$"
+      "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/data-dictionary/schema\\.json$"
     },
     "agricultureExtensionUrl": {
       "type": "string",
@@ -28,11 +28,11 @@
         }
       }
     },
-    "declaresDatacubeExtension": {
+    "declaresDataDictionaryExtension": {
       "required": ["extensions"],
       "properties": {
         "extensions": {
-          "contains": { "$ref": "#/$defs/datacubeExtensionUrl" }
+          "contains": { "$ref": "#/$defs/dataDictionaryExtensionUrl" }
         }
       }
     },
@@ -49,7 +49,7 @@
     { "$ref": "../core.schema.json" },
     { "$ref": "../../extensions/cdh/schema.json" },
     { "$ref": "../../extensions/climate/schema.json" },
-    { "$ref": "../../extensions/datacube/schema.json" },
+    { "$ref": "../../extensions/data-dictionary/schema.json" },
     { "$ref": "../../extensions/agriculture/schema.json" },
     {
       "if": { "required": ["climate"] },
@@ -59,7 +59,7 @@
       "if": {
         "anyOf": [{ "required": ["dimensions"] }, { "required": ["variables"] }]
       },
-      "then": { "$ref": "#/$defs/declaresDatacubeExtension" }
+      "then": { "$ref": "#/$defs/declaresDataDictionaryExtension" }
     },
     {
       "if": { "required": ["commodities"] },

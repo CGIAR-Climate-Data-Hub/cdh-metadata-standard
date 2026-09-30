@@ -370,7 +370,7 @@
                 "description": "Asset name; must be unique across data[] and additional_assets[]."
               },
               "structures": {
-                "description": "Names of the structures[] this asset holds (requires the datacube extension). Required on every asset when the record declares structures[]. Structure membership must be verified before publication.",
+                "description": "Names of the structures[] this asset holds (requires the data dictionary extension). Required on every asset when the record declares structures[]. Structure membership must be verified before publication.",
                 "type": "array",
                 "minItems": 1,
                 "uniqueItems": true,
@@ -381,7 +381,7 @@
               },
               "href_template": {
                 "type": "string",
-                "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name (requires the datacube extension); the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d %H %M %j only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset.",
+                "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name (requires the data dictionary extension); the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d %H %M %j only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset.",
                 "examples": [
                   "mapspam_{crop}_{technology}_{variable}.tif",
                   "chirps-v2.0.{date:%Y.%m.%d}.tif"
@@ -1852,7 +1852,7 @@
           "type": "object"
         },
         "temporal": {
-          "description": "Coverage extent, precision-aware. Use `date` for a single instant or period (date: 2020 = the year 2020), or `start_date` + `end_date` for a span (end_date: null = open-ended). `date` and `start_date`/`end_date` are mutually exclusive. Temporal cadence is not recorded here - declare a type: temporal dimension (datacube extension) instead.",
+          "description": "Coverage extent, precision-aware. Use `date` for a single instant or period (date: 2020 = the year 2020), or `start_date` + `end_date` for a span (end_date: null = open-ended). `date` and `start_date`/`end_date` are mutually exclusive. Temporal cadence is not recorded here - declare a type: temporal dimension (data dictionary extension) instead.",
           "additionalProperties": false,
           "properties": {
             "date": {
@@ -2248,7 +2248,7 @@
       }
     },
     {
-      "title": "Datacube Extension",
+      "title": "Data Dictionary Extension",
       "description": "Dimensions and variables for gridded, multidimensional, or tabular data.",
       "type": "object",
       "properties": {
@@ -2732,7 +2732,7 @@
           "extensions": {
             "contains": {
               "type": "string",
-              "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/datacube/schema\\.json$"
+              "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/data-dictionary/schema\\.json$"
             }
           }
         }

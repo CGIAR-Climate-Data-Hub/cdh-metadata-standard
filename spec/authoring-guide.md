@@ -280,9 +280,9 @@ file.
 
 By default every asset holds every declared dimension and variable. When assets differ, such as
 monthly and seasonal file sets or tables with different columns, declare
-[`structures`](./extensions/datacube/README.md#structures) and name each asset's structures in
-`data[].structures`. Verify what each asset holds before publication, either from the source or with
-an inspection tool.
+[`structures`](./extensions/data-dictionary/README.md#structures) and name each asset's structures
+in `data[].structures`. Verify what each asset holds before publication, either from the source or
+with an inspection tool.
 
 Every asset needs a `name`, and names must be unique across both `data` and `additional_assets`. Use
 `nodata` when an asset has a sentinel value for missing or invalid observations. When `processing`

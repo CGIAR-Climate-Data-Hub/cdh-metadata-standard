@@ -12,10 +12,11 @@ occur between minor versions.
 
 ### Added
 
-- Added `extent` to `type: temporal` dimensions (datacube extension): `[first, last]` plus `step` in
-  place of listing every value on a regular axis, so a 45-year `href_template` token no longer needs
-  45 hand-written values. Requires `step`, excludes `values`. Both ends are calendar-valid ISO 8601
-  at the step's precision, start before end. A token format may not be finer than the axis.
+- Added `extent` to `type: temporal` dimensions (data dictionary extension): `[first, last]` plus
+  `step` in place of listing every value on a regular axis, so a 45-year `href_template` token no
+  longer needs 45 hand-written values. Requires `step`, excludes `values`. Both ends are
+  calendar-valid ISO 8601 at the step's precision, start before end. A token format may not be finer
+  than the axis.
 - `href_template` tokens on a `type: temporal` dimension may carry a strftime format,
   `{date:%Y.%m.%d}`, for file names that spell the date differently from the ISO value. Directives
   are limited to `%Y %m %d %H %M %j`; a token may repeat with different formats for hive-partitioned
@@ -41,11 +42,11 @@ occur between minor versions.
   new data, as distinct from the source's cadence or the data's `step`. `end_date: null` now means
   the resource itself grows continuously; a scheduled mirror states its real end date. Maps to
   `cgiar-cdh:update_frequency` and DCAT `dct:accrualPeriodicity`.
-- Added `structures[]` (datacube extension) and `data[].structures`, for records whose assets hold
-  different dimensions and variables: monthly and seasonal file sets of one product, or tables with
-  different columns. A structure groups variables that share dimensions. Variables are defined once
-  and may sit in several structures. With structures, every asset names the structures it holds, and
-  holds each variable in only one of them. Encoded as asset-level `cube:dimensions` and
+- Added `structures[]` (data dictionary extension) and `data[].structures`, for records whose assets
+  hold different dimensions and variables: monthly and seasonal file sets of one product, or tables
+  with different columns. A structure groups variables that share dimensions. Variables are defined
+  once and may sit in several structures. With structures, every asset names the structures it
+  holds, and holds each variable in only one of them. Encoded as asset-level `cube:dimensions` and
   `cube:variables`.
 - Added `data[].spatial`: coverage of one asset alone, for selecting files by area. Same shapes as
   the top-level `spatial`, and never copied down from it.
@@ -81,6 +82,9 @@ occur between minor versions.
   create nodes or parent links, and there are no grouping nodes. A `parent` must resolve to one
   record, never itself, and never form a cycle.
 - **Breaking:** `dimensions[].step` must have a nonzero component; `P0D` is rejected.
+- **Breaking:** the datacube extension is renamed `data-dictionary`, at
+  `extensions/data-dictionary/schema.json`. It describes tables and categories as well as cubes.
+  STAC output still uses the STAC Datacube extension.
 - **Breaking:** removed the classification extension. Class codes move onto their variable as
   `variables[].categories` (`{ value, label, description? }`, after Frictionless `categories`), so
   nothing links codes to a variable by name. `value` and `label` are now required. Encoded as STAC
@@ -88,15 +92,15 @@ occur between minor versions.
 - **Breaking:** `variables[].data_type` is a closed list: the STAC `raster:data_type` names plus
   `decimal`, `boolean`, `string`, `binary`, `date`, `time`, `datetime`, and `other` for nested
   types.
-- **Breaking:** removed `variables[].dimensions` (datacube extension). A variable has every declared
-  dimension, or those of the structures that hold it. Variables on different axes in one asset are
-  two structures on that asset.
-- `variables[].unit` is optional (datacube extension). Omit it for unitless values such as class
-  codes.
+- **Breaking:** removed `variables[].dimensions` (data dictionary extension). A variable has every
+  declared dimension, or those of the structures that hold it. Variables on different axes in one
+  asset are two structures on that asset.
+- `variables[].unit` is optional (data dictionary extension). Omit it for unitless values such as
+  class codes.
 - `data[].locations` may be omitted when a `file_index` other than `cdh-inventory` carries the file
   locations.
-- `joins[].target` accepts a catalog record id as well as an absolute URI (datacube extension). An
-  id survives a catalog move and must resolve to exactly one catalog record.
+- `joins[].target` accepts a catalog record id as well as an absolute URI (data dictionary
+  extension). An id survives a catalog move and must resolve to exactly one catalog record.
 
 ### Fixed
 
