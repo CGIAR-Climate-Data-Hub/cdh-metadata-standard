@@ -77,8 +77,7 @@ async function expand(path) {
   return st.isDirectory() ? walk(abs, YAML_EXTS) : [abs];
 }
 
-const defaultTargets = async () =>
-  (await Promise.all(["examples"].map((name) => walk(resolve(ROOT, name), YAML_EXTS)))).flat();
+const defaultTargets = () => walk(resolve(ROOT, "examples"), YAML_EXTS);
 
 const argPaths = [];
 const extraSchemaPaths = [];
@@ -115,14 +114,13 @@ if (files.length === 0) {
 }
 
 const ajv = newAjv();
-const loaded = await loadAllSchemas(ajv);
+await loadAllSchemas(ajv);
 for (const path of extraSchemaPaths) {
   const abs = resolve(process.cwd(), path);
   const jsonFiles = (await stat(abs)).isDirectory() ? await walk(abs, [".json"]) : [abs];
   for (const file of jsonFiles) {
     const schema = JSON.parse(await readFile(file, "utf-8"));
     ajv.addSchema(schema);
-    loaded.push({ file, schema });
   }
 }
 if (!ajv.getSchema(CORE_ID)) {
@@ -140,7 +138,6 @@ if (profilePath) {
   }
   if (!ajv.getSchema(profileId)) {
     ajv.addSchema(schema);
-    loaded.push({ file: profilePath, schema });
   }
 }
 

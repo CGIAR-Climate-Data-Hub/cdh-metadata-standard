@@ -819,7 +819,7 @@ provenance in `processing[].derived_from`; how an axis is labelled in that dimen
 `description`; which files exist in the template extent or `file_index`. If another field already
 says it, delete it.
 
-Avoid inventing new fields. If the template has no place for something, use `additional_links`,
+Avoid inventing new fields. If the schema has no place for something, use `additional_links`,
 `additional_assets`, a sidecar file, or an extension (see `standard.md` section 4.2).
 
 ## Practical Authoring Order

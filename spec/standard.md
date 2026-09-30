@@ -77,8 +77,8 @@ CDH metadata is a generic core plus optional extensions. Validation has two laye
   four CDH-maintained extensions: `cdh`, `climate`, `data-dictionary`, and `agriculture` (section
   5.5).
 
-A profile is applied by the catalog that validates a record; the record does not name it. The CDH
-templates bind the CDH profile for editor hints in a `yaml-language-server` comment. A bundled copy
+A profile is applied by the catalog that validates a record; the record does not name it. Authors
+can select the CDH profile for editor hints in a `yaml-language-server` comment. A bundled copy
 (`cdh.schema.bundled.json`) is published for validators that need a single schema file.
 
 To carry metadata the standard does not yet cover:
@@ -383,7 +383,7 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
 - **Rules:**
   - The record is validated against the core composed with exactly these extensions (see section
     4.2); fields from an undeclared extension are rejected.
-  - The CDH template pre-lists the CDH-maintained extensions; authors rarely edit this by hand.
+  - When copying an example, update this list to match the extensions the new record uses.
 
 #### `keywords`
 

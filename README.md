@@ -1,7 +1,7 @@
 # Climate Data Hub Metadata Standard
 
-This repository defines the Climate Data Hub metadata standard, input schema, and authoring
-templates. Records are validated against the schema and mapped to STAC or OGC API Records.
+This repository defines the Climate Data Hub metadata standard, input schema, and example records.
+Records are validated against the schema and mapped to STAC or OGC API Records.
 
 > \[!WARNING] This standard is still a draft. Breaking changes are expected while it is being tested
 > and refined.
