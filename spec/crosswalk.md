@@ -57,6 +57,7 @@ schema.
 | -------------- | ---------------------- | ---------------------------------------------------------------------------------- | ------------------------------------ |
 | `dimensions[]` | Data conditional       | Datacube Extension `cube:dimensions`                                               | `properties["cgiar-cdh:dimensions"]` |
 | `variables[]`  | Data conditional       | Datacube Extension `cube:variables`; Raster Extension `raster:bands` for COG-style | `properties["cgiar-cdh:variables"]`  |
+| `structures[]` | Optional               | Asset-level Datacube `cube:dimensions` and `cube:variables`                        | `properties["cgiar-cdh:structures"]` |
 | `classes[]`    | Classified conditional | Classification Extension `classification:classes`                                  | `links[rel=describedby]` to sidecar  |
 
 ## CDH-specific

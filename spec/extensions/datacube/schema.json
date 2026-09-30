@@ -178,14 +178,6 @@
             "$ref": "#/$defs/nonEmptyString",
             "description": "Data type, numpy-style (e.g. float32, int16)."
           },
-          "dimensions": {
-            "description": "Axes this variable spans; omit when it spans all declared dimensions. Not meaningful for table columns; omit it there.",
-            "type": "array",
-            "items": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
           "unit": {
             "$ref": "#/$defs/nonEmptyString",
             "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM. Required for measurements; omit for text or code columns.",
@@ -208,6 +200,35 @@
           }
         },
         "required": ["name", "description"]
+      }
+    },
+    "structures": {
+      "description": "Layouts for records whose assets hold different dimensions and variables. Each structure is a cube: every variable in it has every one of its dimensions. Without structures, every variable has every declared dimension.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "dimensions", "variables"],
+        "properties": {
+          "name": {
+            "$ref": "#/$defs/nonEmptyString",
+            "description": "Structure name, unique within structures[]; data[].structures refers to it."
+          },
+          "dimensions": {
+            "description": "Names of the dimensions[] every variable here has. Empty when the variables have no dimensions beyond the horizontal grid.",
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/nonEmptyString" }
+          },
+          "variables": {
+            "description": "Names of the variables[] in this structure.",
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/nonEmptyString" }
+          }
+        }
       }
     },
     "joins": {

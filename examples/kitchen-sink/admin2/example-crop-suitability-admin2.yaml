@@ -121,13 +121,11 @@ variables:
   - name: suitability_index_mean
     description: Area-weighted mean of the gridded suitability index over the reporting unit.
     data_type: float32
-    dimensions: [adm0_code, adm2_code, crop, scenario, time]
     unit: "1"
     note: Dimensionless index; do not sum across units.
   - name: cells_counted
     description: Number of grid cells with data inside the reporting unit.
     data_type: int32
-    dimensions: [adm0_code, adm2_code, crop, scenario, time]
     unit: "1"
     note: Low counts mean the mean rests on very few cells.
 

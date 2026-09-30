@@ -62,7 +62,6 @@ dimensions:
 
 variables:
   - name: ""
-    dimensions: []
     description: ""
     data_type: ""
     unit: ""

@@ -132,6 +132,11 @@ Array/grid data uses Datacube by default; tabular data uses Table.
 
 - `dimensions[]` -> `cube:dimensions`
 - `variables[]` -> `cube:variables`
+- `structures[]` -> asset-level `cube:dimensions` and `cube:variables`
+
+Each `cube:variables` entry's `dimensions` comes from the structure that holds the variable, or
+every declared dimension when the record has no `structures[]`. An asset with `data[].structures`
+carries its own `cube:dimensions` and `cube:variables`, listing only what its structures hold.
 
 Each `dimensions[]` entry becomes a `cube:dimensions` member. A `type: temporal` dimension
 serializes as a temporal cube dimension, carrying its `step` (an ISO 8601 duration) as

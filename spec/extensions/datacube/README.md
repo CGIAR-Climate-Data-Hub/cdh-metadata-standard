@@ -35,8 +35,7 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
     self-describing. It is not a substitute for `reference_system`, which names the vocabulary or
     vertical CRS the values are coded against - a `z` dimension can carry both.
   - **Do not declare the horizontal lat/lon grid here.** It comes from the top-level `spatial`
-    field. `variables[].dimensions` may still reference `lat`/`lon` even though they are not listed
-    here.
+    field.
   - **Declare every temporal axis here** as `type: temporal` with a `step`. The top-level `temporal`
     field carries only the coverage extent (start/end); all temporal cadence lives on these
     dimensions. A record may declare **several** - files split by year with a day column inside each
@@ -72,11 +71,9 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
 
 - **Requirement:** Conditional. Required when the resource has measurement variables, bands, or
   columns.
-- **Expected value per variable:**
-  `{ name, dimensions, description, data_type, unit, nodata, note }`.
+- **Expected value per variable:** `{ name, description, data_type, unit, nodata, note }`.
 - **Rules:**
-  - `dimensions` lists the axes an array variable spans. Omit it when the variable spans every
-    declared dimension. It is not meaningful for table columns; omit it there.
+  - Every variable has every declared dimension, unless the record declares `structures[]`.
   - `unit` is the unit of measurement, preferably compliant with UDUNITS-2 or UCUM (e.g., `ha`, `t`,
     `t ha-1`, `K`, `kg m-2 s-1`, `{head}/km2`) rather than strictly validated. Required for
     measurements. Use `1` for dimensionless quantities; omit for text or code columns.
@@ -105,7 +102,6 @@ dimensions:
     reference_system: https://example.org/crop-codes
 variables:
   - name: yield
-    dimensions: [lat, lon, crop, technology]
     description: Crop yield for each grid cell. Higher values indicate more output.
     data_type: float32
     unit: t ha-1
@@ -139,7 +135,6 @@ dimensions:
     values: [DJF, MAM, JJA, SON]
 variables:
   - name: tas
-    dimensions: [lat, lon, period, season]
     description: Near-surface air temperature.
     data_type: float32
     unit: K
@@ -158,6 +153,83 @@ dimensions:
     type: temporal
     description: Day of observation within each file. High cardinality, so values are not listed.
     step: P1D
+```
+
+## `structures[]`
+
+Layouts for a record whose assets hold different dimensions and variables, such as monthly and
+seasonal file sets of one product, or several tables with different columns.
+
+- **Requirement:** Optional. Omit it when every variable has every declared dimension.
+- **Expected value per structure:** `{ name, dimensions, variables }`.
+- **Rules:**
+  - A structure is a cube: every variable in it has every one of its dimensions. `dimensions` may be
+    empty when the variables vary only over the horizontal grid.
+  - `dimensions` and `variables` name declared `dimensions[]` and `variables[]` entries. A variable
+    is defined once and may appear in several structures.
+  - With `structures[]`, every variable MUST appear in at least one structure.
+  - `name` MUST be unique within `structures[]`.
+  - An asset names the structures it holds in `data[].structures`. Omitted, it holds all of them.
+  - Within one asset, a variable appears in only one of its structures.
+  - Each `href_template` token other than `{variable}` MUST be a dimension of every structure the
+    asset holds.
+  - For a table, the dimensions are its key columns and the variables its value columns.
+
+Monthly and seasonal file sets of the same variables:
+
+```yaml
+dimensions:
+  - name: time
+    type: temporal
+    description: Month.
+    extent: ["2018-01", "2025-12"]
+    step: P1M
+  - name: season
+    type: season
+    description: Rainy season.
+    values: [MAM, OND]
+  - name: year
+    type: temporal
+    description: Year of the season.
+    extent: ["2018", "2025"]
+    step: P1Y
+variables:
+  - name: flooded
+    description: Flood occurrence; 0 = dry, 1 = flooded.
+    data_type: uint8
+  - name: nobs
+    description: Valid observation count.
+    data_type: uint16
+structures:
+  - name: monthly
+    dimensions: [time]
+    variables: [flooded, nobs]
+  - name: seasonal
+    dimensions: [season, year]
+    variables: [flooded, nobs]
+data:
+  - name: monthly
+    structures: [monthly]
+    href_template: "monthly/{variable}-{time}.tif"
+  - name: seasonal
+    structures: [seasonal]
+    href_template: "seasonal/{variable}_{season}_{year}.tif"
+```
+
+One store holding variables with different dimensions, such as daily rainfall beside a static land
+mask, is one asset with two structures:
+
+```yaml
+structures:
+  - name: daily
+    dimensions: [time]
+    variables: [precipitation]
+  - name: static
+    dimensions: []
+    variables: [land_mask]
+data:
+  - name: store
+    structures: [daily, static]
 ```
 
 ## `joins[]`

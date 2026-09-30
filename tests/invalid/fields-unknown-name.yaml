@@ -1,9 +1,0 @@
-# fields must reference declared dimensions[]/variables[] names; iso_a3 is not declared.
-variables:
-  - name: nam_0
-    description: Country name.
-data:
-  - name: adm0
-    fields: [nam_0, iso_a3]
-    locations:
-      - url: https://example.org/adm0.parquet

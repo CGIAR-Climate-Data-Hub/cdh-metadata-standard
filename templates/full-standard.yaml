@@ -116,7 +116,6 @@ dimensions:
 
 variables:
   - name: ""
-    dimensions: []
     # Put the stable definition here. Add the normal reading rule here too when
     # direction matters.
     description: ""

@@ -54,7 +54,7 @@ The standard follows RFC 2119-style requirement levels.
 | Optional    | Useful, but not required.                   |
 
 The schema rejects blank values (`""`, `null`, empty required lists). Optional fields may be omitted
-when unknown unless omission has a defined meaning, as with `data[].fields` (all declared fields).
+when unknown unless omission has a defined meaning, as with `data[].structures` (every structure).
 The only allowed `null` is an open-ended `temporal` interval. Files under `templates/` validate in
 draft mode so blank placeholders do not weaken the published schema.
 
@@ -744,7 +744,7 @@ extension fields, not in `keywords` (see section 4.4).
 
 - **Requirement:** Required - at least one entry.
 - **Expected value per entry:**
-  `{ name, locations, description, media_type, file_size, nodata, processing_steps, fields, href_template, file_index, spatial }`.
+  `{ name, locations, description, media_type, file_size, nodata, processing_steps, structures, href_template, file_index, spatial }`.
 - **Vocabulary:** `media_type` must be an
   [IANA media type](https://www.iana.org/assignments/media-types/) (e.g.,
   `application/vnd.zarr; version=3`, `image/tiff; application=geotiff; profile=cloud-optimized`).
@@ -771,18 +771,18 @@ extension fields, not in `keywords` (see section 4.4).
   (e.g., one COG per crop, production system, and variable). Each `locations[].url` becomes a base
   path with the template appended. Each `{token}` must match a `dimensions[].name`, or be the
   reserved `{variable}` token for files split per variable (`variable` is therefore not allowed as a
-  dimension name). `{variable}` expands over the variables named in `fields` when present, otherwise
-  over all declared `variables[].name`. The entry describes one file per combination of the tokens'
-  values. Values are substituted verbatim; every combination is assumed to exist. When some
-  combinations do not exist, list the files in a `file_index` instead. A token on a `type: temporal`
-  dimension may carry a strftime format, `{date:%Y.%m.%d}`, when the file name spells the date
-  differently from the ISO 8601 value. Only `%Y`, `%m`, `%d`, `%H`, `%M`, and `%j` are allowed; a
-  token may repeat with different formats (`year={date:%Y}/{date:%Y%m%d}.tif`). A format may not be
-  finer than the axis values are written (a year axis takes only `%Y`) and must spell every value
-  distinctly. Names the directives cannot spell use `file_index`. Omit it for a single file. On a
-  templated entry, `file_size` describes **one file**, not the set; where slices differ materially
-  in size, omit it rather than averaging. See the
-  [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
+  dimension name). `{variable}` expands over the variables the entry holds. With `structures[]`,
+  each other token must be a dimension of every structure the entry holds. The entry describes one
+  file per combination of the tokens' values. Values are substituted verbatim; every combination is
+  assumed to exist. When some combinations do not exist, list the files in a `file_index` instead. A
+  token on a `type: temporal` dimension may carry a strftime format, `{date:%Y.%m.%d}`, when the
+  file name spells the date differently from the ISO 8601 value. Only `%Y`, `%m`, `%d`, `%H`, `%M`,
+  and `%j` are allowed; a token may repeat with different formats
+  (`year={date:%Y}/{date:%Y%m%d}.tif`). A format may not be finer than the axis values are written
+  (a year axis takes only `%Y`) and must spell every value distinctly. Names the directives cannot
+  spell use `file_index`. Omit it for a single file. On a templated entry, `file_size` describes
+  **one file**, not the set; where slices differ materially in size, omit it rather than averaging.
+  See the [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
 - **`file_index` (optional):** Use instead of `href_template` when the files do not follow a regular
   pattern, or when there are too many to open one by one. A list of
   `{ format, locations, title, media_type }` indexes that list or open this entry's files as one
@@ -790,11 +790,10 @@ extension fields, not in `keywords` (see section 4.4).
   `data[]` entry, not an index. `cdh-inventory` may appear once. The index is the one part of a
   record that may live outside it; every field definition stays in the record. Mutually exclusive
   with `href_template`. Formats and rules: [File indexes](#file-indexes-file_index).
-- **`fields` (optional):** Names of the `dimensions[]`/`variables[]` entries this asset contains.
-  Omission means the asset contains all declared fields. An explicit list MUST name the asset's
-  complete subset of declared fields; provide it whenever the asset does not contain them all, e.g.
-  one table per admin level sharing country columns. Authors or inspection tools MUST verify field
-  membership before publication.
+- **`structures` (optional):** Names of the `structures[]` this asset holds (datacube extension).
+  Omit when the asset holds every structure. An asset holds the dimensions and variables of its
+  structures; in a record without `structures[]`, every asset holds every declared one. Authors or
+  inspection tools MUST verify structure membership before publication.
 - **`spatial` (optional):** `{ bbox, geography }` covering this asset alone, for selecting files by
   area. Same shapes as the top-level `spatial`. Omit when unknown; the top-level bbox is not copied
   down to assets.
@@ -835,9 +834,9 @@ one row per file:
   of which MUST be a directory ending in `/`. Must stay beneath the base; no duplicates.
 - One column per declared `dimensions[].name` - that file's coordinate on the axis. A cell MUST
   equal a declared value exactly as written in the record, or a valid ISO 8601 date on a temporal
-  axis. Include a column for every dimension in the entry's `fields`.
+  axis. Include a column for every dimension the entry holds.
 - `variable` - the single declared variable the file holds, when files are split per variable. Must
-  be within the entry's `fields`.
+  be one the entry holds.
 - `checksum` - optional. The file's digest as `<algorithm>:<hex>`, e.g. `md5:9e107d9d…` or
   `sha256:…`. One algorithm per inventory; a producer's `md5sum` listing joins in directly.
 

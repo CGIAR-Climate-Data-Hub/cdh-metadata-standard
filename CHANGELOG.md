@@ -38,8 +38,12 @@ occur between minor versions.
   new data, as distinct from the source's cadence or the data's `step`. `end_date: null` now means
   the resource itself grows continuously; a scheduled mirror states its real end date. Maps to
   `cgiar-cdh:update_frequency` and DCAT `dct:accrualPeriodicity`.
-- Added `data[].fields`: the dimensions and variables an asset contains. Omitted means all of them;
-  an asset holding a subset lists that complete subset, verified before publication.
+- Added `structures[]` (datacube extension) and `data[].structures`, for records whose assets hold
+  different dimensions and variables: monthly and seasonal file sets of one product, or tables with
+  different columns. A structure is a cube of named dimensions and variables; every variable in it
+  has all of its dimensions. Variables are defined once and may sit in several structures. An asset
+  names the structures it holds; omitted, it holds them all. Encoded as asset-level
+  `cube:dimensions` and `cube:variables`.
 - Added `data[].spatial`: coverage of one asset alone, for selecting files by area. Same shapes as
   the top-level `spatial`, and never copied down from it.
 - Added `parent`: the id of the record this one is a child representation of.
@@ -74,6 +78,9 @@ occur between minor versions.
   create nodes or parent links, and there are no grouping nodes. A `parent` must resolve to one
   record, never itself, and never form a cycle.
 - **Breaking:** `dimensions[].step` must have a nonzero component; `P0D` is rejected.
+- **Breaking:** removed `variables[].dimensions` (datacube extension). A variable has every declared
+  dimension, or those of the structures that hold it. Variables on different axes in one asset are
+  two structures on that asset.
 - `variables[].unit` is optional (datacube extension). Omit it for unitless values such as class
   codes.
 - `data[].locations` may be omitted when a `file_index` other than `cdh-inventory` carries the file
