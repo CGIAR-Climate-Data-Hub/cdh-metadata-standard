@@ -81,6 +81,9 @@ occur between minor versions.
   create nodes or parent links, and there are no grouping nodes. A `parent` must resolve to one
   record, never itself, and never form a cycle.
 - **Breaking:** `dimensions[].step` must have a nonzero component; `P0D` is rejected.
+- **Breaking:** `variables[].data_type` is a closed list: the STAC `raster:data_type` names plus
+  `decimal`, `boolean`, `string`, `binary`, `date`, `time`, `datetime`, and `other` for nested
+  types.
 - **Breaking:** removed `variables[].dimensions` (datacube extension). A variable has every declared
   dimension, or those of the structures that hold it. Variables on different axes in one asset are
   two structures on that asset.

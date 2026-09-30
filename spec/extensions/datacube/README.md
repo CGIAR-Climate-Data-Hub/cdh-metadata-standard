@@ -79,7 +79,12 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
     measurements. Use `1` for dimensionless quantities; omit for text or code columns.
   - Climate variables should use CF standard names where practical (e.g., `precipitation_flux`,
     `air_temperature`).
-  - `data_type` follows numpy-style names (`float32`, `int16`, …).
+  - `data_type` is one of a closed list. Numeric types follow STAC `raster:data_type`: `int8`,
+    `int16`, `int32`, `int64`, `uint8`, `uint16`, `uint32`, `uint64`, `float16`, `float32`,
+    `float64`, and the complex `cint16`, `cint32`, `cfloat32`, `cfloat64`. Table columns may also be
+    `decimal` (exact fixed-point), `boolean`, `string`, `binary`, `date`, `time`, or `datetime`. Use
+    `other` for nested types such as lists or structs. A geometry column is not a variable; name it
+    in `spatial.geometry_column`.
   - `nodata` is the fill value for this variable, and is only needed where it differs from the
     asset's `data[].nodata` - which stays the default for every variable that does not state one.
     Use it when one store holds variables of different types (a `float32` measure filled with

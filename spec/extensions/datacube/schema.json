@@ -175,8 +175,32 @@
             "minLength": 1
           },
           "data_type": {
-            "$ref": "#/$defs/nonEmptyString",
-            "description": "Data type, numpy-style (e.g. float32, int16)."
+            "description": "Data type of the stored values. Numeric names follow STAC raster:data_type; the rest cover table columns. other is for nested types (list, map, struct).",
+            "enum": [
+              "int8",
+              "int16",
+              "int32",
+              "int64",
+              "uint8",
+              "uint16",
+              "uint32",
+              "uint64",
+              "float16",
+              "float32",
+              "float64",
+              "cint16",
+              "cint32",
+              "cfloat32",
+              "cfloat64",
+              "decimal",
+              "boolean",
+              "string",
+              "binary",
+              "date",
+              "time",
+              "datetime",
+              "other"
+            ]
           },
           "unit": {
             "$ref": "#/$defs/nonEmptyString",

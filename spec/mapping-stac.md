@@ -172,6 +172,9 @@ second is a shape CDH does not emit, and the extension forbids both as custom ty
 
 - Use Raster Extension on raster assets when band-level physical metadata exists.
 
+- `variables[].data_type` maps to `raster:data_type` on raster bands and to `table:columns[].type`
+  on tables; `decimal`, `boolean`, `string`, `binary`, `date`, `time`, and `datetime` are
+  table-only.
 - Tabular data uses Table Extension `table:columns`; `spatial.geometry_column` maps to
   `table:primary_geometry`. Each `joins[]` entry emits a link to its `target` (an id resolves to
   that record's URL) so the join is followable, with the `left_fields`/`right_fields` pairing
