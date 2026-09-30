@@ -139,7 +139,7 @@
           "description": "Asset name; must be unique across data[] and additional_assets[]."
         },
         "structures": {
-          "description": "Names of the structures[] this asset holds (requires the datacube extension). Omit when the asset holds every structure. Structure membership must be verified before publication.",
+          "description": "Names of the structures[] this asset holds (requires the datacube extension). Required on every asset when the record declares structures[]. Structure membership must be verified before publication.",
           "type": "array",
           "minItems": 1,
           "uniqueItems": true,

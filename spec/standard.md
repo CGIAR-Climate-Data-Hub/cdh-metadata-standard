@@ -54,9 +54,9 @@ The standard follows RFC 2119-style requirement levels.
 | Optional    | Useful, but not required.                   |
 
 The schema rejects blank values (`""`, `null`, empty required lists). Optional fields may be omitted
-when unknown unless omission has a defined meaning, as with `data[].structures` (every structure).
-The only allowed `null` is an open-ended `temporal` interval. Files under `templates/` validate in
-draft mode so blank placeholders do not weaken the published schema.
+when unknown unless omission has a defined meaning. The only allowed `null` is an open-ended
+`temporal` interval. Files under `templates/` validate in draft mode so blank placeholders do not
+weaken the published schema.
 
 ## 4. Authoring Rules
 
@@ -791,10 +791,11 @@ extension fields, not in `keywords` (see section 4.4).
   `data[]` entry, not an index. `cdh-inventory` may appear once. The index is the one part of a
   record that may live outside it; every field definition stays in the record. Mutually exclusive
   with `href_template`. Formats and rules: [File indexes](#file-indexes-file_index).
-- **`structures` (optional):** Names of the `structures[]` this asset holds (datacube extension).
-  Omit when the asset holds every structure. An asset holds the dimensions and variables of its
-  structures; in a record without `structures[]`, every asset holds every declared one. Authors or
-  inspection tools MUST verify structure membership before publication.
+- **`structures` (conditional):** Names of the `structures[]` this asset holds (datacube extension).
+  Required on every asset when the record declares `structures[]`; omitted otherwise. An asset holds
+  the dimensions and variables of its structures; in a record without `structures[]`, every asset
+  holds every declared one. Authors or inspection tools MUST verify structure membership before
+  publication.
 - **`spatial` (optional):** `{ bbox, geography }` covering this asset alone, for selecting files by
   area. Same shapes as the top-level `spatial`. Omit when unknown; the top-level bbox is not copied
   down to assets.

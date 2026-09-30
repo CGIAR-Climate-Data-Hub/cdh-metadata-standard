@@ -8,3 +8,8 @@ structures:
   - name: monthly
     dimensions: []
     variables: [flooded]
+data:
+  - name: primary
+    structures: [monthly]
+    locations:
+      - url: https://example.org/data.tif

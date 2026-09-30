@@ -163,17 +163,19 @@ seasonal file sets of one product, or several tables with different columns.
 - **Requirement:** Optional. Omit it when every variable has every declared dimension.
 - **Expected value per structure:** `{ name, dimensions, variables }`.
 - **Rules:**
-  - A structure is a cube: every variable in it has every one of its dimensions. `dimensions` may be
-    empty when the variables vary only over the horizontal grid.
+  - A structure groups variables that share dimensions: every variable in it has every one of its
+    dimensions. It does not promise every combination of values exists. `dimensions` may be empty
+    when the variables vary only over the horizontal grid.
   - `dimensions` and `variables` name declared `dimensions[]` and `variables[]` entries. A variable
     is defined once and may appear in several structures.
   - With `structures[]`, every variable MUST appear in at least one structure.
   - `name` MUST be unique within `structures[]`.
-  - An asset names the structures it holds in `data[].structures`. Omitted, it holds all of them.
+  - With `structures[]`, every asset MUST name the structures it holds in `data[].structures`.
   - Within one asset, a variable appears in only one of its structures.
   - Each `href_template` token other than `{variable}` MUST be a dimension of every structure the
     asset holds.
-  - For a table, the dimensions are its key columns and the variables its value columns.
+  - For a table, the dimensions are its identifier columns and the variables its value columns.
+    Listing a column as a dimension does not mean its values are unique.
 
 Monthly and seasonal file sets of the same variables:
 

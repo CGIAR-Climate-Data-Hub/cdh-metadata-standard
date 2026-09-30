@@ -43,10 +43,10 @@ occur between minor versions.
   `cgiar-cdh:update_frequency` and DCAT `dct:accrualPeriodicity`.
 - Added `structures[]` (datacube extension) and `data[].structures`, for records whose assets hold
   different dimensions and variables: monthly and seasonal file sets of one product, or tables with
-  different columns. A structure is a cube of named dimensions and variables; every variable in it
-  has all of its dimensions. Variables are defined once and may sit in several structures. An asset
-  names the structures it holds; omitted, it holds them all. Encoded as asset-level
-  `cube:dimensions` and `cube:variables`.
+  different columns. A structure groups variables that share dimensions. Variables are defined once
+  and may sit in several structures. With structures, every asset names the structures it holds, and
+  holds each variable in only one of them. Encoded as asset-level `cube:dimensions` and
+  `cube:variables`.
 - Added `data[].spatial`: coverage of one asset alone, for selecting files by area. Same shapes as
   the top-level `spatial`, and never copied down from it.
 - Added `parent`: the id of the record this one is a child representation of.

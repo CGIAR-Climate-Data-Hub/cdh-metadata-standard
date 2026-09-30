@@ -67,6 +67,59 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       unit,
     });
   });
+  const varNames = new Set(list(doc?.variables).map((v) => v?.name));
+  // Structures name declared dimensions and variables. With structures, every
+  // variable sits in one and every asset lists the structures it holds.
+  const structures = new Map();
+  list(doc?.structures).forEach((s, i) => {
+    if (typeof s?.name !== "string") return;
+    if (structures.has(s.name)) out.push(`/structures/${i}/name: duplicate name "${s.name}"`);
+    structures.set(s.name, s);
+    list(s?.dimensions).forEach((d, k) => {
+      if (!dims.has(d)) {
+        out.push(`/structures/${i}/dimensions/${k}: "${d}" does not match any dimensions[].name`);
+      }
+    });
+    list(s?.variables).forEach((v, k) => {
+      if (!varNames.has(v)) {
+        out.push(`/structures/${i}/variables/${k}: "${v}" does not match any variables[].name`);
+      }
+    });
+  });
+  const placed = new Set([...structures.values()].flatMap((s) => list(s?.variables)));
+  list(doc?.variables).forEach((v, i) => {
+    if (structures.size > 0 && typeof v?.name === "string" && !placed.has(v.name)) {
+      out.push(`/variables/${i}: "${v.name}" is not in any structures[]`);
+    }
+  });
+  // The structures each asset holds, resolved once for every check that needs them.
+  const held = list(doc?.data).map((asset, i) => {
+    if (!Array.isArray(asset?.structures)) {
+      if (structures.size > 0) {
+        out.push(`/data/${i}: must list its structures - the record declares structures[]`);
+      }
+      return [];
+    }
+    const found = [];
+    const seen = new Map();
+    asset.structures.forEach((name, k) => {
+      const s = structures.get(name);
+      if (!s) {
+        out.push(`/data/${i}/structures/${k}: "${name}" does not match any structures[].name`);
+        return;
+      }
+      found.push(s);
+      for (const v of list(s.variables)) {
+        if (seen.has(v)) {
+          out.push(
+            `/data/${i}: variable "${v}" is in structures "${seen.get(v)}" and "${name}" - an asset holds each variable in one structure`,
+          );
+        }
+        seen.set(v, name);
+      }
+    });
+    return found;
+  });
   // Unit a strftime directive spells; a format may not go finer than the axis values.
   const DIRECTIVE_UNIT = { Y: "year", m: "month", j: "day", d: "day", H: "time", M: "time" };
   const namedVariables = list(doc?.variables).filter((v) => typeof v?.name === "string").length;
@@ -88,6 +141,15 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
         );
       } else if (dim.count === 0) {
         out.push(`/data/${i}/href_template: dimension "${token}" must list its values or extent`);
+      } else {
+        // A template assumes every combination exists, so each held structure needs the token.
+        for (const s of held[i]) {
+          if (!list(s.dimensions).includes(token)) {
+            out.push(
+              `/data/${i}/href_template: token {${token}} is not a dimension of structure "${s.name}"`,
+            );
+          }
+        }
       }
       if (spec === undefined) continue;
       if (!dim?.temporal) {
@@ -148,71 +210,6 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       declaredNames.add(entry.name);
     });
   }
-  const varNames = new Set(list(doc?.variables).map((v) => v?.name));
-  const dimNames = new Set(list(doc?.dimensions).map((d) => d?.name));
-  // Structures name declared dimensions and variables; with structures, every
-  // variable must sit in one, and assets name structures that exist.
-  const structures = new Map();
-  list(doc?.structures).forEach((s, i) => {
-    if (typeof s?.name !== "string") return;
-    if (structures.has(s.name)) out.push(`/structures/${i}/name: duplicate name "${s.name}"`);
-    structures.set(s.name, s);
-    list(s?.dimensions).forEach((d, k) => {
-      if (!dimNames.has(d)) {
-        out.push(`/structures/${i}/dimensions/${k}: "${d}" does not match any dimensions[].name`);
-      }
-    });
-    list(s?.variables).forEach((v, k) => {
-      if (!varNames.has(v)) {
-        out.push(`/structures/${i}/variables/${k}: "${v}" does not match any variables[].name`);
-      }
-    });
-  });
-  if (structures.size > 0) {
-    const placed = new Set([...structures.values()].flatMap((s) => list(s?.variables)));
-    list(doc?.variables).forEach((v, i) => {
-      if (typeof v?.name === "string" && !placed.has(v.name)) {
-        out.push(`/variables/${i}: "${v.name}" is not in any structures[]`);
-      }
-    });
-  }
-  list(doc?.data).forEach((asset, i) => {
-    list(asset?.structures).forEach((name, k) => {
-      if (!structures.has(name)) {
-        out.push(`/data/${i}/structures/${k}: "${name}" does not match any structures[].name`);
-      }
-    });
-    if (structures.size === 0) return;
-    // An asset omitting data[].structures holds every structure.
-    const held = asset?.structures
-      ? list(asset.structures)
-          .filter((n) => structures.has(n))
-          .map((n) => structures.get(n))
-      : [...structures.values()];
-    const seen = new Map();
-    for (const s of held) {
-      for (const v of list(s?.variables)) {
-        if (seen.has(v)) {
-          out.push(
-            `/data/${i}: variable "${v}" is in structures "${seen.get(v)}" and "${s.name}" - an asset holds each variable in one structure`,
-          );
-        }
-        seen.set(v, s.name);
-      }
-    }
-    // A template assumes every combination exists, so each token must be a dimension of every held structure.
-    const tpl = typeof asset?.href_template === "string" ? asset.href_template : "";
-    for (const [, token] of tpl.matchAll(/\{([^}:]+)(?::[^}]*)?\}/g)) {
-      if (token === "variable" || !dimNames.has(token)) continue;
-      for (const s of held) {
-        if (!list(s?.dimensions).includes(token)) {
-          out.push(
-            `/data/${i}/href_template: token {${token}} is not a dimension of structure "${s.name}"`,
-          );
-        }
-      }
-    }
-  });
   list(doc?.classes).forEach((cls, i) => {
     if (cls?.variable != null && !varNames.has(cls.variable)) {
       out.push(`/classes/${i}/variable: "${cls.variable}" does not match any variables[].name`);

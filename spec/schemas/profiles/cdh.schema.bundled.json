@@ -370,7 +370,7 @@
                 "description": "Asset name; must be unique across data[] and additional_assets[]."
               },
               "structures": {
-                "description": "Names of the structures[] this asset holds (requires the datacube extension). Omit when the asset holds every structure. Structure membership must be verified before publication.",
+                "description": "Names of the structures[] this asset holds (requires the datacube extension). Required on every asset when the record declares structures[]. Structure membership must be verified before publication.",
                 "type": "array",
                 "minItems": 1,
                 "uniqueItems": true,
@@ -2484,7 +2484,7 @@
           }
         },
         "structures": {
-          "description": "Layouts for records whose assets hold different dimensions and variables. Each structure is a cube: every variable in it has every one of its dimensions. Without structures, every variable has every declared dimension.",
+          "description": "Layouts for records whose assets hold different dimensions and variables. Each structure groups variables that share dimensions: every variable in it has every one of its dimensions. With structures, every data[] entry names the structures it holds. Without structures, every variable has every declared dimension.",
           "type": "array",
           "minItems": 1,
           "items": {
