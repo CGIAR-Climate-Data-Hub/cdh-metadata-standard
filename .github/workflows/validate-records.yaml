@@ -17,7 +17,6 @@ name: Validate CDH records
 #         extra-schemas: ./my-extensions    # optional: your own extension schemas
 #         profile: ./my-profile.schema.json # optional: your own policy schema
 #                                           # (default "cdh"; "" = mechanism only)
-#         draft: true                        # optional: allow blank template placeholders
 #
 # Pin the workflow ref to a release tag. It sets the workflow's inputs, not
 # the schema version records are checked against.
@@ -80,14 +79,6 @@ on:
         required: false
         default: cdh
         type: string
-      draft:
-        description: |
-          Validate targets as fillable drafts: blank placeholders are pruned
-          and presence requirements are relaxed. Defaults to false so metadata
-          records are always checked as complete submissions.
-        required: false
-        default: false
-        type: boolean
 
 permissions:
   contents: read
@@ -117,7 +108,6 @@ jobs:
           TOOLING_REPO: ${{ inputs.tooling-repository }}
           EXTRA_SCHEMAS: ${{ inputs.extra-schemas }}
           PROFILE: ${{ inputs.profile }}
-          DRAFT: ${{ inputs.draft }}
         run: |
           if [ "$CHANGED_ONLY" = "true" ]; then
             files=$(git diff --name-only --diff-filter=ACMR "$BASE" HEAD -- "$TARGET" | grep -E '\.ya?ml$' || true)
@@ -157,7 +147,6 @@ jobs:
             profile=$PROFILE
             [ "$profile" = "cdh" ] && profile="$dir/spec/schemas/profiles/cdh.schema.json"
             [ -n "$profile" ] && flags+=(--profile "$profile")
-            [ "$DRAFT" = "true" ] && flags+=(--draft)
             printf '%s' "${groups[$ref]}" | xargs -d '\n' node "$dir/scripts/validate-yaml.js" "${flags[@]}" || status=1
             echo "::endgroup::"
           done

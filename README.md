@@ -9,8 +9,7 @@ templates. Records are validated against the schema and mapped to STAC or OGC AP
 ## Start Here
 
 - [Authoring guide](./spec/authoring-guide.md) - how to fill out metadata.
-- [Templates](./templates) - fillable YAML starting points for common record types.
-- [Full template](./templates/full-standard.yaml) - the complete metadata input structure.
+- [Examples](./examples) - validated sample records to copy: gridded, tabular, and vector data.
 - [Core schema](./spec/schemas/core.schema.json) - validates the YAML structure and controlled
   values.
 - [Standard](./spec/standard.md) - formal field definitions and validation expectations.

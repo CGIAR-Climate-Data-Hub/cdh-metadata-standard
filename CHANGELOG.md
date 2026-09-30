@@ -107,11 +107,13 @@ occur between minor versions.
 - `joins[].target` accepts a catalog record id as well as an absolute URI (data dictionary
   extension). An id survives a catalog move and must resolve to exactly one catalog record.
 
-### Fixed
+### Removed
 
-- `--draft` validation no longer rejects every `spatial.bbox` or any `data[]` entry. It kept
-  stripping `minItems` and `required` where they tell `oneOf` branches apart or sit under `not` and
-  `if`. Refs: #33
+- **Breaking:** removed `templates/` and draft validation (`--draft`, and the `draft` input of the
+  reusable workflow). Start from a validated record in `examples/` instead, as STAC and Croissant
+  do. Relaxing the schema for blank placeholders changed what its rules meant: draft mode rejected
+  every `spatial.bbox` and any filled `data[]` entry. Records are always checked as complete. Refs:
+  #33
 
 ## [0.3.0] - 2026-08-20
 

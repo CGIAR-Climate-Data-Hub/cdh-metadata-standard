@@ -11,9 +11,8 @@ projects and programs. It is intend to map to commonly used community formats, n
 - **OGC API Records** (recordJSON) - for everything else: non-spatial datasets, documents, software,
   services. See [`mapping-ogc-records.md`](./mapping-ogc-records.md).
 
-For the field-level mapping to both formats, see [`crosswalk.md`](./crosswalk.md). Fillable YAML
-templates live in [`templates/`](../templates/), including
-[`full-standard.yaml`](../templates/full-standard.yaml).
+For the field-level mapping to both formats, see [`crosswalk.md`](./crosswalk.md). Validated sample
+records live in [`examples/`](../examples/).
 
 For contributor-facing guidance, start in [`authoring-guide.md`](./authoring-guide.md).
 
@@ -55,8 +54,7 @@ The standard follows RFC 2119-style requirement levels.
 
 The schema rejects blank values (`""`, `null`, empty required lists). Optional fields may be omitted
 when unknown unless omission has a defined meaning. The only allowed `null` is an open-ended
-`temporal` interval. Files under `templates/` validate in draft mode so blank placeholders do not
-weaken the published schema.
+`temporal` interval.
 
 ## 4. Authoring Rules
 

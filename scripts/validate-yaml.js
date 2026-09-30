@@ -7,11 +7,8 @@
 //     profile requires the cdh extension on every record). Optional; the CDH
 //     pipeline passes its own profile exactly like any other adopter would.
 //
-// Files under templates/ are validated as drafts (blank placeholders pruned,
-// presence rules relaxed).
-//
 // Usage:
-//   node scripts/validate-yaml.js                # default: templates/ + examples/
+//   node scripts/validate-yaml.js                # default: examples/
 //   node scripts/validate-yaml.js path [path...] # validate the given files or directories
 //
 // Flags:
@@ -20,8 +17,6 @@
 //                            adopters pass their own or omit for mechanism-only)
 //   --schemas <file-or-dir>  register additional extension schemas (repeatable),
 //                            e.g. a third-party extension a record declares
-//   --draft                  validate every target as a fillable draft: prune
-//                            blank placeholders and relax presence rules
 //   --expect-fail            invert the outcome: every file MUST be invalid;
 //                            used for the negative fixtures in tests/invalid/,
 //                            each merged over the valid tests/base.yaml
@@ -31,7 +26,7 @@
 
 import { existsSync } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
-import { dirname, extname, resolve, sep } from "node:path";
+import { dirname, extname, resolve } from "node:path";
 
 import yaml from "js-yaml";
 import validateSpdxExpression from "spdx-expression-validate";
@@ -83,14 +78,11 @@ async function expand(path) {
 }
 
 const defaultTargets = async () =>
-  (
-    await Promise.all(["templates", "examples"].map((name) => walk(resolve(ROOT, name), YAML_EXTS)))
-  ).flat();
+  (await Promise.all(["examples"].map((name) => walk(resolve(ROOT, name), YAML_EXTS)))).flat();
 
 const argPaths = [];
 const extraSchemaPaths = [];
 let profilePath = null;
-let forceDraft = false;
 let expectFail = false;
 const argv = process.argv.slice(2);
 for (let i = 0; i < argv.length; i++) {
@@ -109,8 +101,6 @@ for (let i = 0; i < argv.length; i++) {
     }
   } else if (argv[i] === "--expect-fail") {
     expectFail = true;
-  } else if (argv[i] === "--draft") {
-    forceDraft = true;
   } else {
     argPaths.push(argv[i]);
   }
@@ -154,45 +144,6 @@ if (profilePath) {
   }
 }
 
-// Draft (template) validation: same schemas with presence rules stripped, so
-// a partially filled template still checks field names, types, enums, and
-// patterns without failing on what is not filled in yet.
-// Blank strings and empty lists are pruned before validation, so minLength and
-// minItems stay: they also tell oneOf branches apart (a flat or nested bbox).
-// Under not and if, presence rules state a condition, not a demand; keep them.
-const PRESENCE_KEYWORDS = ["required", "minContains", "contains"];
-function stripPresence(node) {
-  if (Array.isArray(node)) {
-    node.forEach(stripPresence);
-  } else if (node && typeof node === "object") {
-    for (const key of PRESENCE_KEYWORDS) delete node[key];
-    for (const [k, v] of Object.entries(node)) if (k !== "not" && k !== "if") stripPresence(v);
-  }
-  return node;
-}
-const draftAjv = newAjv();
-for (const { schema } of loaded) {
-  draftAjv.addSchema(stripPresence(structuredClone(schema)));
-}
-
-// Drop blank placeholders ("", null, and containers left empty) from a draft
-// before validating it.
-function prune(node) {
-  if (Array.isArray(node)) {
-    const arr = node.map(prune).filter((v) => v !== undefined);
-    return arr.length ? arr : undefined;
-  }
-  if (node && typeof node === "object") {
-    const out = {};
-    for (const [k, v] of Object.entries(node)) {
-      const p = prune(v);
-      if (p !== undefined) out[k] = p;
-    }
-    return Object.keys(out).length ? out : undefined;
-  }
-  return node === "" || node === null ? undefined : node;
-}
-
 // Compose the mechanism schema for one record: core + only the extensions it
 // declares in extensions[]. unevaluatedProperties:false then rejects a field
 // whose extension was used but not declared. Policy (e.g. "cdh is required")
@@ -217,9 +168,6 @@ function mechanismFor(validator, doc) {
   return { schema, known, unknown };
 }
 
-const TEMPLATES_PREFIX = resolve(ROOT, "templates") + sep;
-const isDraft = (file) => forceDraft || file.startsWith(TEMPLATES_PREFIX);
-
 // Turn an Ajv error into something an author can act on: name the offending
 // property for unevaluated/additional-property errors, and show (a sample of)
 // the allowed values for enum misses.
@@ -243,13 +191,9 @@ function describeError(err) {
 
 // Collect every problem for one file; empty array = valid record.
 function validateFile(file, doc) {
-  const draft = isDraft(file);
-  const validator = draft ? draftAjv : ajv;
-  const target = draft ? (prune(doc) ?? {}) : doc;
-  const { schema, known, unknown } = mechanismFor(validator, doc);
+  const { schema, known, unknown } = mechanismFor(ajv, doc);
   if (unknown.length) {
     return {
-      draft,
       errors: [
         `unknown extension schema(s): ${unknown.join(", ")}`,
         "fields from an unregistered extension would be rejected - pass --schemas <file-or-dir> to register it",
@@ -257,14 +201,14 @@ function validateFile(file, doc) {
     };
   }
   const seen = new Set();
-  const validate = validator.compile(schema);
-  if (!validate(target)) {
+  const validate = ajv.compile(schema);
+  if (!validate(doc)) {
     // When any subschema fails, Ajv also flags every legitimate top-level
     // field as "unevaluated" - keep only strays that no composed schema
     // actually defines.
     const evaluable = new Set();
     for (const id of [CORE_ID, ...known]) {
-      for (const key of Object.keys(validator.getSchema(id)?.schema?.properties ?? {})) {
+      for (const key of Object.keys(ajv.getSchema(id)?.schema?.properties ?? {})) {
         evaluable.add(key);
       }
     }
@@ -280,8 +224,8 @@ function validateFile(file, doc) {
     }
   }
   if (profileId) {
-    const validateProfile = validator.getSchema(profileId);
-    if (!validateProfile(target)) {
+    const validateProfile = ajv.getSchema(profileId);
+    if (!validateProfile(doc)) {
       for (const err of validateProfile.errors ?? []) {
         // The mechanism layer owns stray-field detection (it knows what was
         // declared); profile-side unevaluated errors are duplicates or noise.
@@ -291,12 +235,11 @@ function validateFile(file, doc) {
       }
     }
   }
-  if (seen.size) return { draft, errors: [...seen] };
+  if (seen.size) return { errors: [...seen] };
   return {
-    draft,
     errors: [
-      ...checkCrossFieldRules(target, { isSpdx: validateSpdxExpression }),
-      ...missingRelativeAssets(file, target),
+      ...checkCrossFieldRules(doc, { isSpdx: validateSpdxExpression }),
+      ...missingRelativeAssets(file, doc),
     ],
   };
 }
@@ -349,13 +292,11 @@ for (const file of files) {
     const doc = await loadYaml(file);
     result = validateFile(file, base ? merge(base, doc) : doc);
   } catch (err) {
-    result = { draft: false, errors: [err.message] };
+    result = { errors: [err.message] };
   }
   const invalid = result.errors.length > 0;
   if (expectFail ? invalid : !invalid) {
-    console.log(
-      `ok   ${rel(file)}${result.draft ? " (draft)" : ""}${expectFail ? " (invalid, as expected)" : ""}`,
-    );
+    console.log(`ok   ${rel(file)}${expectFail ? " (invalid, as expected)" : ""}`);
   } else {
     failures += 1;
     console.error(`FAIL ${rel(file)}`);

@@ -6,11 +6,11 @@ depending on the submission type, and what the fields mean. Is expected that mos
 refined and finalized during review, so mistakes and purposeful omissions are expected and should
 not prevent or delay submission.
 
-The formal standard is `standard.md`. Fillable YAML starting points live in `../templates/`; each
-CDH template binds YAML-aware editors to the CDH profile (`schemas/profiles/cdh.schema.json` = the
-core plus all CDH extensions) for autocomplete and field hints in code editors (VScode, positron,
-Neovim, etc.). Teams wanting to customize the metadata standard for other projects can modify and
-generate a new profile and validate their records against it.
+The formal standard is `standard.md`. Validated sample records to start from live in `../examples/`;
+each binds YAML-aware editors to the CDH profile (`schemas/profiles/cdh.schema.json` = the core plus
+all CDH extensions) for autocomplete and field hints in code editors (VScode, positron, Neovim,
+etc.). Teams wanting to customize the metadata standard for other projects can modify and generate a
+new profile and validate their records against it.
 
 ## Key Questions a Record Should Answer
 
@@ -416,10 +416,10 @@ so omitted dates do not imply missing rows that a consumer should fill. See the
 
 ## Additional fields (Conditional/Optional)
 
-Some fields in the template will not apply to every record. This includes things like `climate`,
-`commodities`, and `variables`/`dimensions`. Only fill the ones that apply. However, additional does
-not always mean optional. If it applies to a dataset, it should be used. Most datasets will be
-required to provide a list of variables, for example.
+Some fields will not apply to every record. This includes things like `climate`, `commodities`, and
+`variables`/`dimensions`. Only fill the ones that apply. However, additional does not always mean
+optional. If it applies to a dataset, it should be used. Most datasets will be required to provide a
+list of variables, for example.
 
 This schema can be extended if a dataset requires additional metadata that is not currently covered.
 This should be done by contacting the team, or creating a new third-party extension and adding a

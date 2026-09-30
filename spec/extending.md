@@ -78,7 +78,7 @@ check-jsonschema \
 For your own profile, publish the referenced schemas or create a single-file bundle with
 `scripts/bundle-profile.js`.
 
-This repo's validator adds per-record extension checks, template draft mode, and cross-field rules:
+This repo's validator adds per-record extension checks and cross-field rules:
 
 ```sh
 # mechanism only: core + whatever extensions each record declares
