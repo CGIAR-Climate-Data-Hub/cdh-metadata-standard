@@ -210,11 +210,6 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       declaredNames.add(entry.name);
     });
   }
-  list(doc?.classes).forEach((cls, i) => {
-    if (cls?.variable != null && !varNames.has(cls.variable)) {
-      out.push(`/classes/${i}/variable: "${cls.variable}" does not match any variables[].name`);
-    }
-  });
   const assetNames = new Set();
   for (const [field, assets] of [
     ["data", doc?.data],

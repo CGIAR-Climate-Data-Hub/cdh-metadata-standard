@@ -21,7 +21,7 @@ generate a new profile and validate their records against it.
 - What are the reuse limitations and license?
 - Where can the data, code, or documentation be found?
 - What geography and time period does it cover?
-- What variables, units, dimensions, or classes does it contain?
+- What variables, units, dimensions, or categories does it contain?
 - What limitations or caveats does it have?
 
 ## The bare minimum
@@ -417,9 +417,9 @@ so omitted dates do not imply missing rows that a consumer should fill. See the
 ## Additional fields (Conditional/Optional)
 
 Some fields in the template will not apply to every record. This includes things like `climate`,
-`commodities`, `classes`, and `variables`/`dimensions`. Only fill the ones that apply. However,
-additional does not always mean optional. If it applies to a dataset, it should be used. Most
-datasets will be required to provide a list of variables, for example.
+`commodities`, and `variables`/`dimensions`. Only fill the ones that apply. However, additional does
+not always mean optional. If it applies to a dataset, it should be used. Most datasets will be
+required to provide a list of variables, for example.
 
 This schema can be extended if a dataset requires additional metadata that is not currently covered.
 This should be done by contacting the team, or creating a new third-party extension and adding a
@@ -590,12 +590,23 @@ band, etc. Time dimension is already covered by `temporal` metadata field.
 Define coded values. If a code is not obvious, explain it in the dimension description, point to a
 controlled vocabulary, or link a sidecar code list as an [additional asset](#additional-assets).
 
-### Classes
+### Categories
 
-Use `classes` for categorical values, classified rasters, etc.
+Give a categorical or classified variable its `categories`: each coded value with a `label`, and a
+`description` when the label is not enough.
 
-For long class lists, link a sidecar file instead of putting everything in the record (see
-[additional assets](#additional-assets)).
+```yaml
+variables:
+  - name: land_cover
+    data_type: uint8
+    categories:
+      - value: 1
+        label: Cropland
+      - value: 2
+        label: Forest
+```
+
+For long lists, link a sidecar file instead (see [additional assets](#additional-assets)).
 
 ### Processing
 
@@ -669,12 +680,12 @@ additional_assets:
     description: Joins the table to admin-2 boundaries and maps the result.
     locations:
       - url: https://example.org/examples/join-admin2.ipynb
-  - name: classes
+  - name: categories
     roles: [metadata, describedby]
     media_type: text/csv
-    description: class codes for the dataset.
+    description: Category codes for the land_cover variable.
     locations:
-      - url: https://example.org/rasterClasses.csv
+      - url: https://example.org/land-cover-categories.csv
 ```
 
 Common types for examples: `application/x-ipynb+json` (Jupyter notebook), `text/x-python`,
@@ -816,7 +827,7 @@ Avoid inventing new fields. If the template has no place for something, use `add
 1. Fill the minimum record.
 2. Add `spatial` and `temporal` if relevant.
 3. Add `variables` and `dimensions`, and include units and reading guidance.
-4. Add `classes` only if they are needed to understand values.
+4. Add `categories` to coded variables.
 5. Add `processing` for derived products.
 6. Add `climate` and `commodity` fields when they improve discovery.
 7. Add sidecars or extra links for long supporting detail.
@@ -855,4 +866,4 @@ Avoid inventing new fields. If the template has no place for something, use `add
 - [ ] `climate.scenarios[]` for projection-based climate resources
 - [ ] `climate.mip_era` for CMIP-based resources
 - [ ] `climate.baseline` for anomalies and baseline-relative indicators
-- [ ] `classes[]` or class sidecar for classified data
+- [ ] `variables[].categories` or a category sidecar for coded variables

@@ -180,9 +180,10 @@ second is a shape CDH does not emit, and the extension forbids both as custom ty
   that record's URL) so the join is followable, with the `left_fields`/`right_fields` pairing
   carried as `cgiar-cdh:` link fields.
 
-`classes[]` -> Classification Extension `classification:classes` on the relevant asset or variable.
-Large class lists SHOULD be a sidecar asset with `roles=[metadata, describedby]` and a link with
-`rel=describedby` from the variable's containing object.
+`variables[].categories` -> Classification Extension `classification:classes` on that variable's
+band or asset: `value` as `value`, `label` as `title`, `description` as `description`. Long lists
+SHOULD be a sidecar asset with `roles=[metadata, describedby]` and a link with `rel=describedby`
+from the variable's containing object.
 
 ### 4.5 Collection vs Item vs Summaries vs Asset
 

@@ -76,8 +76,7 @@ CDH metadata is a generic core plus optional extensions. Validation has two laye
 - **Mechanism:** core plus exactly the extensions declared in `extensions[]`. Fields from undeclared
   extensions are rejected.
 - **Profile:** policy rules on top. The CDH profile requires the `cdh` extension and composes the
-  five CDH-maintained extensions: `cdh`, `climate`, `datacube`, `classification`, and `agriculture`
-  (section 5.5).
+  four CDH-maintained extensions: `cdh`, `climate`, `datacube`, and `agriculture` (section 5.5).
 
 A profile is applied by the catalog that validates a record; the record does not name it. The CDH
 templates bind the CDH profile for editor hints in a `yaml-language-server` comment. A bundled copy
@@ -92,8 +91,8 @@ To carry metadata the standard does not yet cover:
    [`extensions/_template/`](extensions/_template/README.md); see [`extending.md`](./extending.md).
 
 A new extension SHOULD nest fields under one top-level key named after the extension. The older
-`datacube`, `classification`, and `agriculture` extensions keep their existing top-level fields.
-Fields that outlive one project should move into a shared extension.
+`datacube` and `agriculture` extensions keep their existing top-level fields. Fields that outlive
+one project should move into a shared extension.
 
 ### 4.3 Description, note, and free text
 
@@ -125,7 +124,7 @@ Decision rule:
 
 Use sidecar files (linked with `rel=describedby`) for large, nested, or frequently changing content
 such as long code lists, full [variable dictionaries](extensions/datacube/README.md), QA/QC outputs,
-detailed table schemas, and detailed [classification legends](extensions/classification/README.md).
+detailed table schemas, and long category lists.
 
 ### 4.6 Author-supplied vs machine-derived
 
@@ -712,13 +711,12 @@ Each extension is documented alongside its schema (linked below); all are option
 extension, which the CDH profile requires (`cdh.domain`). Put values you filter or facet on in these
 extension fields, not in `keywords` (see section 4.4).
 
-| Extension                                             | Fields                                                 | Applies to                            |
-| ----------------------------------------------------- | ------------------------------------------------------ | ------------------------------------- |
-| [CDH](extensions/cdh/README.md)                       | `cdh.domain`, `cdh.usage`                              | all records (required by the profile) |
-| [Climate](extensions/climate/README.md)               | `climate.*` - scenarios, models, baseline, downscaling | climate / CMIP / adaptation           |
-| [Datacube](extensions/datacube/README.md)             | `dimensions[]`, `variables[]`                          | gridded / multidimensional / tabular  |
-| [Classification](extensions/classification/README.md) | `classes[]`                                            | categorical / classified data         |
-| [Agriculture](extensions/agriculture/README.md)       | `commodities[]`                                        | agriculture / food-systems / crops    |
+| Extension                                       | Fields                                                   | Applies to                            |
+| ----------------------------------------------- | -------------------------------------------------------- | ------------------------------------- |
+| [CDH](extensions/cdh/README.md)                 | `cdh.domain`, `cdh.usage`                                | all records (required by the profile) |
+| [Climate](extensions/climate/README.md)         | `climate.*` - scenarios, models, baseline, downscaling   | climate / CMIP / adaptation           |
+| [Datacube](extensions/datacube/README.md)       | `dimensions[]`, `variables[]`, `structures[]`, `joins[]` | gridded / multidimensional / tabular  |
+| [Agriculture](extensions/agriculture/README.md) | `commodities[]`                                          | agriculture / food-systems / crops    |
 
 ### 5.6 Processing and Provenance
 

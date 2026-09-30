@@ -81,6 +81,10 @@ occur between minor versions.
   create nodes or parent links, and there are no grouping nodes. A `parent` must resolve to one
   record, never itself, and never form a cycle.
 - **Breaking:** `dimensions[].step` must have a nonzero component; `P0D` is rejected.
+- **Breaking:** removed the classification extension. Class codes move onto their variable as
+  `variables[].categories` (`{ value, label, description? }`, after Frictionless `categories`), so
+  nothing links codes to a variable by name. `value` and `label` are now required. Encoded as STAC
+  `classification:classes` on that variable.
 - **Breaking:** `variables[].data_type` is a closed list: the STAC `raster:data_type` names plus
   `decimal`, `boolean`, `string`, `binary`, `date`, `time`, `datetime`, and `other` for nested
   types.

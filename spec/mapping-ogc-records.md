@@ -104,7 +104,6 @@ For OGC Records resources that need structured field metadata:
 | `dimensions[]` | `properties["cgiar-cdh:dimensions"]`                                        |
 | `variables[]`  | `properties["cgiar-cdh:variables"]` and/or `links[rel=describedby]` sidecar |
 | `structures[]` | `properties["cgiar-cdh:structures"]`                                        |
-| `classes[]`    | `links[rel=describedby]` to a sidecar class list                            |
 
 Use STAC for tabular datasets with embedded geometry or spatial asset metadata.
 

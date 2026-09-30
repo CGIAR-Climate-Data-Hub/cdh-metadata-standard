@@ -39,11 +39,6 @@ const cases = [
     },
   },
   {
-    name: "classification",
-    extension: extensionUrl("classification"),
-    field: { classes: [{ variable: "land_cover", values: [{ value: 1, label: "Cropland" }] }] },
-  },
-  {
     name: "agriculture",
     extension: extensionUrl("agriculture"),
     field: { commodities: ["maize"] },

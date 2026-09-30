@@ -15,7 +15,6 @@ extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/climate/schema.json
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/datacube/schema.json
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/classification/schema.json
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/agriculture/schema.json
 
 id: example-crop-suitability
@@ -159,7 +158,19 @@ variables:
     # uint8 can hold), so it states its own. The float variable above takes the
     # asset value.
     nodata: 255
-    note: See the classification classes for value meanings.
+    categories:
+      - value: 0
+        label: Unsuitable
+        description: Modelled suitability below 0.25.
+      - value: 1
+        label: Marginal
+        description: Modelled suitability 0.25 to 0.5.
+      - value: 2
+        label: Moderate
+        description: Modelled suitability 0.5 to 0.75.
+      - value: 3
+        label: High
+        description: Modelled suitability above 0.75.
 
 cdh:
   domain: [agricultural-production, adaptation]
@@ -191,22 +202,6 @@ climate:
   scenarios:
     - ssp245
     - ssp585
-
-classes:
-  - variable: suitability_class
-    values:
-      - value: 0
-        label: Unsuitable
-        description: Modelled suitability below 0.25.
-      - value: 1
-        label: Marginal
-        description: Modelled suitability 0.25 to 0.5.
-      - value: 2
-        label: Moderate
-        description: Modelled suitability 0.5 to 0.75.
-      - value: 3
-        label: High
-        description: Modelled suitability above 0.75.
 
 commodities:
   - maize

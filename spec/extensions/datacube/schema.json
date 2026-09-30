@@ -221,6 +221,30 @@
           "note": {
             "$ref": "#/$defs/nonEmptyString",
             "description": "Variable-specific caveats, limitations, or warnings."
+          },
+          "categories": {
+            "description": "Coded values of a categorical or classified variable and what each means. For long lists, link a sidecar with rel=describedby instead.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["value", "label"],
+              "properties": {
+                "value": {
+                  "description": "The coded value as stored in the data.",
+                  "anyOf": [{ "$ref": "#/$defs/nonEmptyString" }, { "type": "integer" }]
+                },
+                "label": {
+                  "$ref": "#/$defs/nonEmptyString",
+                  "description": "Short human-readable name of the category."
+                },
+                "description": {
+                  "$ref": "#/$defs/nonEmptyString",
+                  "description": "What this category means."
+                }
+              }
+            }
           }
         },
         "required": ["name", "description"]

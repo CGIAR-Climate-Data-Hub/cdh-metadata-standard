@@ -6,7 +6,6 @@ extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/climate/schema.json
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/datacube/schema.json
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/classification/schema.json
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/agriculture/schema.json
 
 # Core Metadata (required)
@@ -125,10 +124,7 @@ variables:
     # limitations belong in the record-level `note` field.
     note: >
       ""
-
-classes: # conditional, if classification scheme exists - must map to a listed variable
-  - variable: ""
-    values:
+    categories: # conditional, for coded values - what each value means
       - value:
         label: ""
         description: ""
