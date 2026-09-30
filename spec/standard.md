@@ -328,6 +328,7 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
     entry with `rel: license` and a URL for the license terms.
   - Data must be licensed to be included in the Hub.
   - Access restrictions are separate from license (see `access`).
+  - Do not construct a LicenseRef-\* for assumed terms.
 - **Examples:** `CC-BY-4.0`, `CC0-1.0`, `MIT`, `LicenseRef-CGIAR-Restricted`.
 
 #### `attribution`
