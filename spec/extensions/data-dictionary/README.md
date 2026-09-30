@@ -94,8 +94,9 @@ Dimensions and variables for gridded, multidimensional, or tabular data.
   - `description` says what the variable measures. Add reading guidance when direction matters.
   - `note` is for variable-specific caveats. Use record-level `note` for dataset-wide limitations.
   - `categories` lists a coded variable's values, each `{ value, label, description? }`. Required
-    when stored values are codes (a class raster, a status flag, a text category). A `nodata` value
-    is not a category. For long lists, link a sidecar with `rel=describedby` instead.
+    when stored values are codes (a class raster, a status flag, a text category). Each `value`
+    appears once. A `nodata` value is not a category. For long lists, link a sidecar with
+    `rel=describedby` instead.
   - Review may add technical metadata from inspectable files, but not meaning, units, or caveats.
 
 ## Example

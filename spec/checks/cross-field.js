@@ -68,6 +68,17 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
     });
   });
   const varNames = new Set(list(doc?.variables).map((v) => v?.name));
+  // A coded value has one meaning; 1 and "1" are the same code.
+  list(doc?.variables).forEach((v, i) => {
+    const seen = new Set();
+    list(v?.categories).forEach((c, k) => {
+      const key = String(c?.value);
+      if (seen.has(key)) {
+        out.push(`/variables/${i}/categories/${k}/value: duplicate value "${key}"`);
+      }
+      seen.add(key);
+    });
+  });
   // Structures name declared dimensions and variables. With structures, every
   // variable sits in one and every asset lists the structures it holds.
   const structures = new Map();
