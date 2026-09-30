@@ -94,12 +94,8 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
   });
   // The structures each asset holds, resolved once for every check that needs them.
   const held = list(doc?.data).map((asset, i) => {
-    if (!Array.isArray(asset?.structures)) {
-      if (structures.size > 0) {
-        out.push(`/data/${i}: must list its structures - the record declares structures[]`);
-      }
-      return [];
-    }
+    // The schema requires the list whenever the record declares structures[].
+    if (!Array.isArray(asset?.structures)) return [];
     const found = [];
     const seen = new Map();
     asset.structures.forEach((name, k) => {

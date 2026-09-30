@@ -2309,6 +2309,19 @@
       "title": "Data Dictionary Extension",
       "description": "Dimensions and variables for gridded, multidimensional, or tabular data.",
       "type": "object",
+      "if": {
+        "required": ["structures"]
+      },
+      "then": {
+        "$comment": "With structures, every data[] entry names the structures it holds.",
+        "properties": {
+          "data": {
+            "items": {
+              "required": ["structures"]
+            }
+          }
+        }
+      },
       "properties": {
         "dimensions": {
           "description": "Cube axes: domain axes (e.g. crop, scenario), a vertical axis (type: z), place-key columns (type: location), and temporal axes (each type: temporal with a step). The horizontal lat/lon grid is derived from the top-level spatial field and is not declared here, and bands are variables rather than an axis.",

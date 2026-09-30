@@ -4,6 +4,11 @@
   "title": "Data Dictionary Extension",
   "description": "Dimensions and variables for gridded, multidimensional, or tabular data.",
   "type": "object",
+  "if": { "required": ["structures"] },
+  "then": {
+    "$comment": "With structures, every data[] entry names the structures it holds.",
+    "properties": { "data": { "items": { "required": ["structures"] } } }
+  },
   "$defs": {
     "nonEmptyString": {
       "minLength": 1,
