@@ -51,6 +51,8 @@ occur between minor versions.
 - Added optional `orcid` (people) and `ror` (organizations) to `citation.authors[]` and `contact[]`,
   as full `https://orcid.org/` and `https://ror.org/` URLs, as DataCite, CFF, and schema.org carry
   them. Contacts encode as STAC and OGC Records `contacts[].identifier`.
+- Added `data[].checksum` for single-file entries, `<algorithm>:<hex>` as in `cdh-inventory`,
+  emitted as STAC `file:checksum`. Not allowed with `href_template` or `file_index`.
 - Added `data[].spatial`: coverage of one asset alone, for selecting files by area. Same shapes as
   the top-level `spatial`, and never copied down from it.
 - Added `parent`: the id of the record this one is a child representation of.

@@ -749,7 +749,7 @@ extension fields, not in `keywords` (see section 4.4).
 
 - **Requirement:** Required - at least one entry.
 - **Expected value per entry:**
-  `{ name, locations, description, media_type, file_size, nodata, processing_steps, structures, href_template, file_index, spatial }`.
+  `{ name, locations, description, media_type, file_size, checksum, nodata, processing_steps, structures, href_template, file_index, spatial }`.
 - **Vocabulary:** `media_type` must be an
   [IANA media type](https://www.iana.org/assignments/media-types/) (e.g.,
   `application/vnd.zarr; version=3`, `image/tiff; application=geotiff; profile=cloud-optimized`).
@@ -795,6 +795,9 @@ extension fields, not in `keywords` (see section 4.4).
   `data[]` entry, not an index. `cdh-inventory` may appear once. The index is the one part of a
   record that may live outside it; every field definition stays in the record. Mutually exclusive
   with `href_template`. Formats and rules: [File indexes](#file-indexes-file_index).
+- **`checksum` (optional):** Digest of a single-file entry as `<algorithm>:<hex>` (`md5`, `sha1`,
+  `sha256`, `sha512`), the same form as the `cdh-inventory` column. Not allowed with `href_template`
+  or `file_index`; list per-file checksums in a `cdh-inventory` instead.
 - **`structures` (conditional):** Names of the `structures[]` this asset holds (data dictionary
   extension). Required on every asset when the record declares `structures[]`; omitted otherwise. An
   asset holds the dimensions and variables of its structures; in a record without `structures[]`,

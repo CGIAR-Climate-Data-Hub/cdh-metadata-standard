@@ -327,6 +327,14 @@
                 "type": "string",
                 "minLength": 1
               },
+              "checksum": {
+                "description": "Digest of the single file this entry names, as <algorithm>:<hex>. Not for templated or indexed entries; a cdh-inventory carries per-file checksums.",
+                "type": "string",
+                "pattern": "^(md5|sha1|sha256|sha512):[0-9a-f]+$",
+                "examples": [
+                  "sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"
+                ]
+              },
               "file_size": {
                 "description": "File size in bytes (integer) or a human-readable string (e.g. 1.2 GB).",
                 "anyOf": [
@@ -997,6 +1005,20 @@
             ],
             "not": {
               "required": ["href_template", "file_index"]
+            },
+            "dependentSchemas": {
+              "checksum": {
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": ["href_template"]
+                    },
+                    {
+                      "required": ["file_index"]
+                    }
+                  ]
+                }
+              }
             },
             "type": "object"
           },
