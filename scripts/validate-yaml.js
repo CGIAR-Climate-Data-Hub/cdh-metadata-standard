@@ -228,6 +228,9 @@ function describeError(err) {
   // A `false` subschema means "this field is not allowed here" (e.g. temporal
   // date vs start_date/end_date); Ajv's own wording says nothing useful.
   if (err.keyword === "false schema") return "must not be present alongside its sibling fields";
+  if (err.keyword === "pattern" && err.instancePath.endsWith("/href_template")) {
+    return "tokens must be {name} or {name:format}, a format using only %Y %m %d %H %M %j";
+  }
   const stray = p.unevaluatedProperty ?? p.additionalProperty;
   if (stray != null) return `${err.message}: "${stray}"`;
   if (Array.isArray(p.allowedValues)) {

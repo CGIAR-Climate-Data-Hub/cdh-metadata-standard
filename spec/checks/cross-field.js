@@ -129,19 +129,15 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
   });
   // Unit a strftime directive spells; a format may not go finer than the axis values.
   const DIRECTIVE_UNIT = { Y: "year", m: "month", j: "day", d: "day", H: "time", M: "time" };
-  const namedVariables = list(doc?.variables).filter((v) => typeof v?.name === "string").length;
   list(doc?.data).forEach((asset, i) => {
     const tpl = asset?.href_template;
     if (typeof tpl !== "string" || tpl === "") return;
     // {token} or {token:strftime}; the spec spells a temporal value the way the file name does.
     for (const [, token, spec] of tpl.matchAll(/\{([^}:]+)(?::([^}]*))?\}/g)) {
       const dim = dims.get(token);
+      // The schema checks token syntax and requires variables[] for {variable}.
       if (token === "variable") {
-        if (namedVariables === 0) {
-          out.push(
-            `/data/${i}/href_template: token {variable} expands over variables[].name, but no named variables are declared (requires the data dictionary extension)`,
-          );
-        }
+        // nothing to resolve
       } else if (!dim) {
         out.push(
           `/data/${i}/href_template: token {${token}} has no matching dimensions[].name (requires the data dictionary extension)`,
@@ -162,10 +158,6 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       if (!dim?.temporal) {
         out.push(
           `/data/${i}/href_template: token {${token}:${spec}} carries a format, which is only allowed on a type: temporal dimension`,
-        );
-      } else if (!/^(?=.*%)(%[YmdHMj]|[^%])+$/.test(spec)) {
-        out.push(
-          `/data/${i}/href_template: token {${token}:${spec}} format must use at least one of %Y %m %d %H %M %j and nothing else`,
         );
       } else if (dim.unit) {
         const finest = Math.max(

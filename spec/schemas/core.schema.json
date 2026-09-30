@@ -169,7 +169,8 @@
             "mapspam_{crop}_{technology}_{variable}.tif",
             "chirps-v2.0.{date:%Y.%m.%d}.tif"
           ],
-          "minLength": 1
+          "$comment": "Braces balance; a token is {name} or {name:format}, and a format holds at least one directive and no other %.",
+          "pattern": "^(?:[^{}]|\\{[^{}:]+(?::(?=[^}]*%)(?:%[YmdHMj]|[^%{}])+)?\\})+$"
         },
         "file_index": {
           "description": "Indexes that list or open this entry's files as one dataset, per the File indexes section of standard.md. Each entry is one index file; its locations[] are the same file at several addresses. format names the specification the file follows; cdh-inventory (the CDH column contract, CSV or Parquet) may appear once and is the only one CDH validates. Mutually exclusive with href_template.",
@@ -1007,6 +1008,21 @@
     }
   ],
   "allOf": [
+    {
+      "$comment": "{variable} expands over variables[].name, so a template using it needs declared variables (data dictionary extension).",
+      "if": {
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "contains": {
+              "required": ["href_template"],
+              "properties": { "href_template": { "pattern": "\\{variable\\}" } }
+            }
+          }
+        }
+      },
+      "then": { "required": ["variables"] }
+    },
     {
       "if": {
         "required": ["access"],
