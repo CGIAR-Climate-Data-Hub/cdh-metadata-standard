@@ -91,6 +91,12 @@ occur between minor versions.
 - `joins[].target` accepts a catalog record id as well as an absolute URI (datacube extension). An
   id survives a catalog move and must resolve to exactly one catalog record.
 
+### Fixed
+
+- `--draft` validation no longer rejects every `spatial.bbox` or any `data[]` entry. It kept
+  stripping `minItems` and `required` where they tell `oneOf` branches apart or sit under `not` and
+  `if`. Refs: #33
+
 ## [0.3.0] - 2026-08-20
 
 ### Added

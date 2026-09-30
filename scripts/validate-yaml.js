@@ -157,13 +157,16 @@ if (profilePath) {
 // Draft (template) validation: same schemas with presence rules stripped, so
 // a partially filled template still checks field names, types, enums, and
 // patterns without failing on what is not filled in yet.
-const PRESENCE_KEYWORDS = ["required", "minItems", "minContains", "minLength", "contains"];
+// Blank strings and empty lists are pruned before validation, so minLength and
+// minItems stay: they also tell oneOf branches apart (a flat or nested bbox).
+// Under not and if, presence rules state a condition, not a demand; keep them.
+const PRESENCE_KEYWORDS = ["required", "minContains", "contains"];
 function stripPresence(node) {
   if (Array.isArray(node)) {
     node.forEach(stripPresence);
   } else if (node && typeof node === "object") {
     for (const key of PRESENCE_KEYWORDS) delete node[key];
-    for (const v of Object.values(node)) stripPresence(v);
+    for (const [k, v] of Object.entries(node)) if (k !== "not" && k !== "if") stripPresence(v);
   }
   return node;
 }
