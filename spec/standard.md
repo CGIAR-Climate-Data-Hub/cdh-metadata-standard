@@ -97,12 +97,11 @@ Fields that outlive one project should move into a shared extension.
 
 ### 4.3 Description, note, and free text
 
-`description` and `note` are first-class fields, not catch-all fallbacks:
+Both `description` and `note` should be used to describe the resource itself. They should not be
+used as catch-all fallbacks for any free form text.
 
 - **`description` (required)** explains the resource.
 - **`note` (optional)** is for caveats, warnings, or interpretation-critical remarks.
-
-Search, filter, facet, and programmatic facts MUST be structured fields, not only prose.
 
 ### 4.4 Domain vs keywords
 
@@ -299,6 +298,7 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
   - Should avoid unexplained acronyms.
   - Must not be a copy of the title.
   - Must not be the only place where filterable facts are stored.
+  - Must not be a list of products that use the resource.
 
 #### `note`
 
@@ -308,11 +308,13 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
 - **Rules:**
   - Must not duplicate `description`.
   - Must not be used as a second free-form description.
-  - Should be omitted when nothing important is at stake - empty notes add noise.
-  - Use when there is a genuine caveat (e.g., known artifact, data version mismatch, restricted
-    geographic validity, sensitive aggregation behavior).
+  - Should be short and to the point.
+  - Should be omitted when nothing important needs to be highlighted.
+  - Use when there is a genuine caveat (e.g., known artifacts, steps needed before analysis,
+    restricted geographic validity, sensitive aggregation behaviors).
   - Not a home for facts other fields hold: credit lines go in `attribution`, source provenance in
     `processing[].derived_from`, how an axis is labelled in that dimension's `description`.
+  - Not a log of how the record or data was created, modified, licensed, etc.
 
 #### `license`
 

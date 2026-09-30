@@ -32,8 +32,10 @@ CGIAR Climate Data Hub governance: domain classification and use guidance.
     not listed is judged from `description`, `variables`, coverage, and resolution.
   - Not a filter facet: `cdh.domain` is the field catalog browse and filtering use. Faceting on
     `intended_uses` would turn an illustrative list into a closed one.
-  - State what the producers built the resource for, not what it could conceivably support. Vague
+  - State the use the producers built the resource for, not what it could conceivably support. Vague
     entries (`research`, `decision-making`) carry no information and should be omitted.
+  - Name the use, not a product that uses the resource: gridded climate risk analysis, not panel B
+    of a climate mapping tool.
   - Limitations belong in `usage.not_recommended_for`, which carries the reason and, where one
     exists, the alternative.
 
