@@ -180,10 +180,18 @@ second is a shape CDH does not emit, and the extension forbids both as custom ty
   that record's URL) so the join is followable, with the `left_fields`/`right_fields` pairing
   carried as `cgiar-cdh:` link fields.
 
-`variables[].categories` -> Classification Extension `classification:classes` on that variable's
-band or asset: `value` as `value`, `label` as `title`, `description` as `description`. Long lists
-SHOULD be a sidecar asset with `roles=[metadata, describedby]` and a link with `rel=describedby`
-from the variable's containing object.
+Integer `variables[].categories` on raster variables map to Classification Extension
+`classification:classes` on the corresponding band, or the asset for a single-band raster: `value`
+as `value`, `label` as `title`, and `description` as `description`. Each class object's `name` is
+derived from `label`: apply Unicode NFKD normalization, discard non-ASCII characters, replace each
+run of characters outside `[0-9A-Za-z_-]` with `_`, and trim leading and trailing underscores.
+Preserve letter case. If the result is empty, use the integer `value` written as a string. The
+`title` retains the original label.
+
+String codes and table categories MUST retain their original values, labels, and descriptions in a
+data dictionary sidecar asset with `roles=[metadata, describedby]` and a link with
+`rel=describedby`. Long category lists SHOULD also use a sidecar. Link from the variable's
+containing object.
 
 ### 4.5 Collection vs Item vs Summaries vs Asset
 
