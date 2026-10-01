@@ -1,0 +1,7 @@
+# A checksum names one file; a templated entry lists per-file checksums in a cdh-inventory instead.
+data:
+  - name: primary
+    checksum: md5:9e107d9d372bb6826bd81d3542a419d6
+    href_template: "file.tif"
+    locations:
+      - url: https://example.org/

@@ -1,0 +1,7 @@
+# A relative asset path must name a file committed beside the record.
+additional_assets:
+  - name: agent-guide
+    roles: [agents]
+    media_type: text/markdown
+    locations:
+      - url: ./AGENTS.md

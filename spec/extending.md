@@ -59,12 +59,10 @@ schema is enough:
 }
 ```
 
-Add `required` / `contains` constraints for your own rules. Declare the profile in records and bind
-it in YAML editors:
+Add `required` / `contains` constraints for your own rules. Bind the profile in YAML editors:
 
 ```yaml
 # yaml-language-server: $schema=https://<you>.github.io/<repo>/v1.0.0/profiles/mine.schema.json
-"$schema": https://<you>.github.io/<repo>/v1.0.0/profiles/mine.schema.json
 ```
 
 ## 4. Validate
@@ -80,7 +78,7 @@ check-jsonschema \
 For your own profile, publish the referenced schemas or create a single-file bundle with
 `scripts/bundle-profile.js`.
 
-This repo's validator adds per-record extension checks, template draft mode, and cross-field rules:
+This repo's validator adds per-record extension checks and cross-field rules:
 
 ```sh
 # mechanism only: core + whatever extensions each record declares
@@ -95,7 +93,7 @@ In CI:
 ```yaml
 jobs:
   validate:
-    uses: CGIAR-Climate-Data-Hub/metadata/.github/workflows/validate-records.yaml@main
+    uses: CGIAR-Climate-Data-Hub/cdh-metadata-standard/.github/workflows/validate-records.yaml@<tag>
     with:
       path: ./my-records
       extra-schemas: ./my-extensions

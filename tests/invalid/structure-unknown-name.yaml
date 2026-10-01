@@ -1,0 +1,13 @@
+# data[].structures must name a declared structures[] entry; "adm1" is not declared.
+variables:
+  - name: nam_0
+    description: Country name.
+structures:
+  - name: adm0
+    dimensions: []
+    variables: [nam_0]
+data:
+  - name: adm0
+    structures: [adm1]
+    locations:
+      - url: https://example.org/adm0.parquet

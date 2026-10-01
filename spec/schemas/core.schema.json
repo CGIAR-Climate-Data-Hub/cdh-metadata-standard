@@ -23,7 +23,7 @@
           ]
         },
         "locations": {
-          "description": "Access paths to the same content; the first is canonical.",
+          "description": "Access paths to the same content; the first is canonical. An absolute URL, or a path relative to the record file for a small metadata file committed beside it (README, agent guide, code list, thumbnail).",
           "items": {
             "$ref": "#/$defs/location"
           },
@@ -36,10 +36,10 @@
         "name": {
           "type": "string",
           "minLength": 1,
-          "description": "Asset name; becomes the asset key in serialized output, so it must be unique across data[] and additional_assets[]."
+          "description": "Asset name; must be unique across data[] and additional_assets[]."
         },
         "roles": {
-          "description": "Asset roles. Suggested values, not a closed set: `metadata`, `validation`, `describedby`, `thumbnail`, `overview`, `visual`, `example` (a runnable usage example, e.g. a notebook or SQL file).",
+          "description": "Asset roles. Suggested values, not a closed set: `metadata`, `validation`, `describedby` (human documentation such as a README), `agents` (a Markdown guide for AI agents: keys and join columns, quirks, CRS consequences, tested queries), `thumbnail`, `overview`, `visual`, `example` (a code file: a runnable usage example, e.g. a notebook or SQL file).",
           "items": {
             "type": "string",
             "minLength": 1,
@@ -47,6 +47,7 @@
               "metadata",
               "validation",
               "describedby",
+              "agents",
               "thumbnail",
               "overview",
               "visual",
@@ -72,6 +73,10 @@
           "type": "string",
           "minLength": 1
         },
+        "orcid": {
+          "$ref": "#/$defs/orcid",
+          "description": "ORCID iD of the named person."
+        },
         "organization": {
           "type": "string",
           "minLength": 1,
@@ -91,11 +96,15 @@
             "WorldFish"
           ]
         },
+        "ror": {
+          "$ref": "#/$defs/ror",
+          "description": "ROR id of the organization."
+        },
         "roles": {
           "description": "Roles this contact holds (one or more).",
           "type": "array",
           "items": {
-            "enum": ["licensor", "producer", "processor", "point-of-contact", "custodian"]
+            "enum": ["licensor", "producer", "processor", "point-of-contact", "maintainer"]
           },
           "uniqueItems": true
         },
@@ -113,6 +122,12 @@
           "type": "string",
           "minLength": 1
         },
+        "checksum": {
+          "description": "Digest of the single file this entry names, as <algorithm>:<hex>. Not for templated or indexed entries; a cdh-inventory carries per-file checksums.",
+          "type": "string",
+          "pattern": "^(md5|sha1|sha256|sha512):[0-9a-f]+$",
+          "examples": ["sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"]
+        },
         "file_size": {
           "description": "File size in bytes (integer) or a human-readable string (e.g. 1.2 GB).",
           "anyOf": [
@@ -127,12 +142,7 @@
           ]
         },
         "locations": {
-          "description": "Access paths to the same content; the first is canonical.",
-          "items": {
-            "$ref": "#/$defs/location"
-          },
-          "minItems": 1,
-          "type": "array"
+          "$ref": "#/$defs/locations"
         },
         "media_type": {
           "$ref": "#/$defs/mediaType"
@@ -140,13 +150,69 @@
         "name": {
           "type": "string",
           "minLength": 1,
-          "description": "Asset name; becomes the asset key in serialized output, so it must be unique across data[] and additional_assets[]."
+          "description": "Asset name; must be unique across data[] and additional_assets[]."
+        },
+        "structures": {
+          "description": "Names of the structures[] this asset holds (requires the data dictionary extension). Required on every asset when the record declares structures[]. Structure membership must be verified before publication.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         },
         "href_template": {
           "type": "string",
-          "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name (requires the datacube extension); the entry expands to one item per combination of the tokens' values. When absent, locations[].url are full file URLs and the entry is a single asset.",
-          "examples": ["mapspam_{crop}_{technology}_{variable}.tif"],
-          "minLength": 1
+          "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name (requires the data dictionary extension); the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d %H %M %j only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset.",
+          "examples": [
+            "mapspam_{crop}_{technology}_{variable}.tif",
+            "chirps-v2.0.{date:%Y.%m.%d}.tif"
+          ],
+          "$comment": "Braces balance; a token is {name} or {name:format}, and a format holds at least one directive and no other %.",
+          "pattern": "^(?:[^{}]|\\{[^{}:]+(?::(?=[^}]*%)(?:%[YmdHMj]|[^%{}])+)?\\})+$"
+        },
+        "file_index": {
+          "description": "Indexes that list or open this entry's files as one dataset, per the File indexes section of standard.md. Each entry is one index file; its locations[] are the same file at several addresses. format names the specification the file follows; cdh-inventory (the CDH column contract, CSV or Parquet) may appear once and is the only one CDH validates. Mutually exclusive with href_template.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["format", "locations"],
+            "properties": {
+              "format": {
+                "enum": ["stac-geoparquet", "gti", "vrt", "kerchunk", "icechunk", "cdh-inventory"]
+              },
+              "locations": {
+                "$ref": "#/$defs/locations"
+              },
+              "title": {
+                "description": "Optional label, e.g. which scheme the index's internal paths use.",
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "media_type": {
+                "description": "IANA media type of the index file itself, when it has one. Optional; useful for gti (GeoPackage, FlatGeobuf, or Parquet) and cdh-inventory (CSV or Parquet).",
+                "$ref": "#/$defs/nonEmptyString"
+              }
+            }
+          },
+          "contains": { "properties": { "format": { "const": "cdh-inventory" } } },
+          "minContains": 0,
+          "maxContains": 1
+        },
+        "spatial": {
+          "description": "Coverage of this asset alone, for selecting files by area. Same shapes as the top-level spatial. Omit when unknown; the top-level bbox is not copied down.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bbox": {
+              "$ref": "#/$defs/spatial/properties/bbox"
+            },
+            "geography": {
+              "$ref": "#/$defs/spatial/properties/geography"
+            }
+          }
         },
         "nodata": {
           "description": "No-data / fill value for the asset.",
@@ -161,7 +227,27 @@
           "type": "array"
         }
       },
-      "required": ["name", "locations"],
+      "required": ["name"],
+      "anyOf": [
+        { "required": ["locations"] },
+        {
+          "$comment": "locations may be omitted when a file_index carries the file locations itself (any format but cdh-inventory).",
+          "required": ["file_index"],
+          "properties": {
+            "file_index": {
+              "not": { "contains": { "properties": { "format": { "const": "cdh-inventory" } } } }
+            }
+          }
+        }
+      ],
+      "not": {
+        "required": ["href_template", "file_index"]
+      },
+      "dependentSchemas": {
+        "checksum": {
+          "not": { "anyOf": [{ "required": ["href_template"] }, { "required": ["file_index"] }] }
+        }
+      },
       "type": "object"
     },
     "bboxCoords": {
@@ -314,6 +400,14 @@
       "required": ["rel", "url"],
       "type": "object"
     },
+    "locations": {
+      "description": "Access paths to the same content; the first is canonical. URLs are always absolute and machine-actionable: a data file, a store or directory prefix, or a service endpoint - never a landing page or DOI (those go in citation.url, doi, or additional_links).",
+      "items": {
+        "allOf": [{ "$ref": "#/$defs/location" }, { "properties": { "url": { "format": "uri" } } }]
+      },
+      "minItems": 1,
+      "type": "array"
+    },
     "location": {
       "additionalProperties": false,
       "properties": {
@@ -323,7 +417,8 @@
           "minLength": 1
         },
         "url": {
-          "$ref": "#/$defs/nonEmptyString"
+          "$ref": "#/$defs/nonEmptyString",
+          "description": "Absolute URL. In additional_assets[] it may instead be a path relative to the record file."
         }
       },
       "required": ["url"],
@@ -394,15 +489,26 @@
           "$ref": "#/$defs/date"
         },
         "derived_from": {
-          "description": "Upstream sources this step derived from - the data (e.g. a Zenodo/Dataverse landing page), not code.",
+          "description": "Upstream sources this step derived from - the data (e.g. a Zenodo/Dataverse landing page), not code. Each entry has an id (a Hub record) or a url (anything else), not both.",
           "items": {
             "additionalProperties": false,
+            "anyOf": [{ "required": ["id"] }, { "required": ["url"] }],
+            "not": { "required": ["id", "url"] },
             "properties": {
+              "id": {
+                "$ref": "#/$defs/id",
+                "description": "id of the Hub record used. Must resolve to exactly one catalog record."
+              },
               "title": {
                 "$ref": "#/$defs/nonEmptyString"
               },
               "url": {
-                "$ref": "#/$defs/nonEmptyString"
+                "$ref": "#/$defs/nonEmptyString",
+                "description": "URL of a source outside the Hub."
+              },
+              "version": {
+                "$ref": "#/$defs/nonEmptyString",
+                "description": "Version label of the source release that was used, as the source publishes it."
               }
             },
             "type": "object"
@@ -420,6 +526,54 @@
       },
       "type": "object"
     },
+    "orcid": {
+      "description": "ORCID iD of the person, as its https://orcid.org/ URL.",
+      "type": "string",
+      "pattern": "^https://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\d{3}[\\dX]$",
+      "examples": ["https://orcid.org/0000-0002-1825-0097"]
+    },
+    "ror": {
+      "description": "ROR id of the organization, as its https://ror.org/ URL.",
+      "type": "string",
+      "pattern": "^https://ror\\.org/0[0-9a-hjkmnp-tv-z]{6}[0-9]{2}$",
+      "examples": ["https://ror.org/04xsxqp89"]
+    },
+    "author": {
+      "description": "A citation author: either a person or an organization.",
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "required": ["family"],
+          "properties": {
+            "family": {
+              "$ref": "#/$defs/nonEmptyString",
+              "description": "Family name(s). A person with a single name uses this field alone.",
+              "examples": ["Smith", "Carreño Quiñones", "Suharto"]
+            },
+            "given": {
+              "$ref": "#/$defs/nonEmptyString",
+              "description": "Given name(s) or initials.",
+              "examples": ["Jane", "J.", "María José"]
+            },
+            "orcid": { "$ref": "#/$defs/orcid" }
+          },
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "required": ["organization"],
+          "properties": {
+            "organization": {
+              "$ref": "#/$defs/nonEmptyString",
+              "description": "Full name of an organization credited as an author.",
+              "examples": ["Food and Agriculture Organization of the United Nations"]
+            },
+            "ror": { "$ref": "#/$defs/ror" }
+          },
+          "type": "object"
+        }
+      ]
+    },
     "citation": {
       "additionalProperties": false,
       "description": "Structured citation for the resource.",
@@ -432,10 +586,9 @@
         "authors": {
           "type": "array",
           "items": {
-            "type": "string",
-            "minLength": 1
+            "$ref": "#/$defs/author"
           },
-          "description": "Names in citation order.",
+          "description": "Authors in citation order. A person gives family (and usually given); an organization gives organization.",
           "minItems": 1
         },
         "date": {
@@ -497,7 +650,7 @@
       "additionalProperties": false,
       "properties": {
         "bbox": {
-          "description": "Spatial extent. A single bounding box, or a list of boxes for disjoint coverage - each box is a real area covered, in any order; the overall/union extent is derived when serializing, not authored. 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+          "description": "Spatial extent. A single bounding box, or a list of boxes for disjoint coverage - each box is a real area covered, in any order; do not include an overall/union box. 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
           "oneOf": [
             {
               "$ref": "#/$defs/bboxCoords"
@@ -571,7 +724,7 @@
       "type": "object"
     },
     "temporal": {
-      "description": "Coverage extent, precision-aware. Use `date` for a single instant or period (date: 2020 = the year 2020), or `start_date` + `end_date` for a span (end_date: null = open-ended). `date` and `start_date`/`end_date` are mutually exclusive. Temporal cadence is not recorded here - declare a type: temporal dimension (datacube extension) instead.",
+      "description": "Coverage extent, precision-aware. Use `date` for a single instant or period (date: 2020 = the year 2020), or `start_date` + `end_date` for a span (end_date: null = open-ended). `date` and `start_date`/`end_date` are mutually exclusive. Temporal cadence is not recorded here - declare a type: temporal dimension (data dictionary extension) instead.",
       "additionalProperties": false,
       "properties": {
         "date": {
@@ -592,6 +745,10 @@
               "type": "null"
             }
           ]
+        },
+        "update_frequency": {
+          "description": "How often this resource gains new data. Recommended while a series is still growing; omit for a finished one.",
+          "enum": ["daily", "weekly", "monthly", "quarterly", "semiannual", "annual", "irregular"]
         }
       },
       "dependentRequired": {
@@ -609,14 +766,7 @@
       "type": "object"
     }
   },
-  "description": "JSON Schema for validating CDH metadata input YAML records before serialization to STAC or OGC API Records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
-  "patternProperties": {
-    "^\\$schema$": {
-      "description": "Canonical JSON Schema URL for validating this metadata record.",
-      "format": "uri",
-      "type": "string"
-    }
-  },
+  "description": "JSON Schema for CDH metadata records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
   "properties": {
     "access": {
       "description": "Access condition for the resource's data, distinct from license. Omitting it means public. Aligned to the DCAT / EU accessRights vocabulary: public (openly accessible); restricted (discoverable, but obtaining the data requires a request or authentication); non-public (catalogued but not available through public channels).",
@@ -626,6 +776,11 @@
     "access_note": {
       "$ref": "#/$defs/nonEmptyString",
       "description": "Human-readable access conditions or instructions. Required when access is restricted or non-public; maps to schema.org conditionsOfAccess."
+    },
+    "attribution": {
+      "$ref": "#/$defs/nonEmptyString",
+      "description": "Credit line reusers should reproduce: wording a license or upstream source requires, or the credit the producer asks for. One short statement; do not restate citation. Maps to schema.org creditText.",
+      "examples": ["Contains modified Copernicus Emergency Management Service information [year]"]
     },
     "additional_assets": {
       "description": "Sidecar or auxiliary assets, e.g. metadata files or thumbnails.",
@@ -670,7 +825,7 @@
     },
     "created": {
       "$ref": "#/$defs/date",
-      "description": "Date the record was first published to the Hub - the metadata record, not the data file. Optional when authoring; filled in at publication if omitted."
+      "description": "Date the metadata record was created - the record, not the data file."
     },
     "data": {
       "description": "Data assets for the resource; at least one entry.",
@@ -682,7 +837,7 @@
     },
     "deprecated": {
       "type": "boolean",
-      "description": "true when a newer release supersedes this record. Set on version snapshots."
+      "description": "true when a newer release (same id) supersedes this record."
     },
     "description": {
       "type": "string",
@@ -712,7 +867,7 @@
       "$ref": "#/$defs/id"
     },
     "keywords": {
-      "description": "Free-text search terms. Each item is either a plain string, or an object linking the term to an external vocabulary/ontology (e.g., AGROVOC, GEMET). Linked-keyword items are also emitted as ontology themes in the serialized output, grouped by `scheme`.",
+      "description": "Free-text search terms. Each item is either a plain string, or an object linking the term to an external vocabulary/ontology (e.g., AGROVOC, GEMET).",
       "type": "array",
       "uniqueItems": true,
       "items": {
@@ -731,7 +886,7 @@
                 "minLength": 1
               },
               "scheme": {
-                "description": "Resolvable URI of the controlled vocabulary or ontology this term comes from. CDH vocab schemes (.../cdh-metadata-standard/vocab/) are reserved for encoder expansion of cdh.domain / commodities - link an external vocabulary instead.",
+                "description": "Resolvable URI of the controlled vocabulary or ontology this term comes from. CDH vocab schemes (.../cdh-metadata-standard/vocab/) belong to cdh.domain / commodities - link an external vocabulary instead.",
                 "type": "string",
                 "format": "uri",
                 "not": {
@@ -763,9 +918,13 @@
       "$ref": "#/$defs/nonEmptyString",
       "description": "Caveats, warnings, or interpretation-critical remarks not captured in description."
     },
+    "parent": {
+      "$ref": "#/$defs/id",
+      "description": "id of the parent record, when this record is a child representation of it. Omit on top-level records. Must resolve to exactly one catalog record, must not equal this record's id, and must not create a parent cycle."
+    },
     "previous_version": {
       "$ref": "#/$defs/nonEmptyString",
-      "description": "id of the predecessor record, when this supersedes an earlier version."
+      "description": "version of the predecessor record (same id), when this supersedes an earlier release."
     },
     "processing": {
       "description": "Ordered processing/provenance steps; at least one must have id: source.",
@@ -813,12 +972,12 @@
     },
     "updated": {
       "$ref": "#/$defs/date",
-      "description": "Date the record was last revised - the metadata record, not the data file. Optional when authoring; filled in at publication if omitted."
+      "description": "Date the metadata record was last updated - the record, not the data file."
     },
     "version": {
       "$ref": "#/$defs/nonEmptyString",
-      "description": "Version of the resource, when versioned.",
-      "examples": ["v1.0", "2.0-release-2"]
+      "description": "Version label of this release of the resource. The source's own label when it has one; otherwise a counter from 1. Not compared or sorted - order comes from previous_version.",
+      "examples": ["1", "v2r2", "2.1"]
     }
   },
   "required": [
@@ -826,6 +985,8 @@
     "id",
     "title",
     "description",
+    "created",
+    "updated",
     "license",
     "resource_type",
     "keywords",
@@ -847,6 +1008,21 @@
     }
   ],
   "allOf": [
+    {
+      "$comment": "{variable} expands over variables[].name, so a template using it needs declared variables (data dictionary extension).",
+      "if": {
+        "required": ["data"],
+        "properties": {
+          "data": {
+            "contains": {
+              "required": ["href_template"],
+              "properties": { "href_template": { "pattern": "\\{variable\\}" } }
+            }
+          }
+        }
+      },
+      "then": { "required": ["variables"] }
+    },
     {
       "if": {
         "required": ["access"],

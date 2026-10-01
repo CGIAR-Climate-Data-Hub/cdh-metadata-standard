@@ -1,0 +1,4 @@
+# The CDH profile requires a maintainer contact; core does not.
+contact:
+  - organization: Example Org
+    roles: [licensor]

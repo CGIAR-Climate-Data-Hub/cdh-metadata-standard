@@ -1,14 +1,14 @@
 # yaml-language-server: $schema=../../spec/schemas/profiles/cdh.schema.json
-"$schema": https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/schemas/profiles/cdh.schema.json
 cdh_schema_version: "v0.3.0"
 
 extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/datacube/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/data-dictionary/schema.json
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/agriculture/schema.json
 
 id: glw4-2020
 title: Gridded livestock density for 2020 (GLW4)
+version: "1"
 series:
   name: Gridded Livestock of the World (GLW)
   url: https://www.fao.org/livestock-systems/global-distributions/en/
@@ -49,14 +49,14 @@ contact:
     email: giuseppina.cinardi@fao.org
     organization: Food and Agriculture Organization of the United Nations
   - name: Brayden Youngberg
-    roles: [processor, custodian]
+    roles: [processor, maintainer]
     email: b.youngberg@cgiar.org
     organization: Alliance of Bioversity International and CIAT
 
 citation:
   title: "GLW 4: Gridded Livestock Density (Global - 2020 - 10 km)"
   authors:
-    - Food and Agriculture Organization of the United Nations
+    - organization: Food and Agriculture Organization of the United Nations
   date: "2024"
   publisher: FAO Agro-Informatic Data Catalog
   url: https://data.apps.fao.org/catalog/dataset/9d1e149b-d63f-4213-978b-317a8eb42d02

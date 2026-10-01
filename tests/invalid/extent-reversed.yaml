@@ -1,0 +1,7 @@
+# Start is after end.
+dimensions:
+  - name: year
+    type: temporal
+    description: Year.
+    step: P1Y
+    extent: ["2025", "1981"]

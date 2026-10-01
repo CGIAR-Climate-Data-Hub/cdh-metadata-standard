@@ -1,7 +1,7 @@
 # Climate Data Hub Metadata Standard
 
-This repository defines the Climate Data Hub metadata standard, input schema, and authoring
-templates. Records are validated against the schema and mapped to STAC or OGC API Records.
+This repository defines the Climate Data Hub metadata standard, input schema, and example records.
+Records are validated against the schema and mapped to STAC or OGC API Records.
 
 > \[!WARNING] This standard is still a draft. Breaking changes are expected while it is being tested
 > and refined.
@@ -9,13 +9,14 @@ templates. Records are validated against the schema and mapped to STAC or OGC AP
 ## Start Here
 
 - [Authoring guide](./spec/authoring-guide.md) - how to fill out metadata.
-- [Templates](./templates) - fillable YAML starting points for common record types.
-- [Full template](./templates/full-standard.yaml) - the complete metadata input structure.
+- [Examples](./examples) - validated sample records to copy: gridded, tabular, and vector data.
 - [Core schema](./spec/schemas/core.schema.json) - validates the YAML structure and controlled
   values.
 - [Standard](./spec/standard.md) - formal field definitions and validation expectations.
 - [Extending & adopting](./spec/extending.md) - add your own extension, build a profile, or adopt
   the core standard outside the Hub.
+- [File indexes](./spec/standard.md#file-indexes-file_index) - GTI, VRT, stac-geoparquet, kerchunk,
+  Icechunk, or CSV lists over many files.
 
 ## Mappings
 

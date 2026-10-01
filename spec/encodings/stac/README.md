@@ -43,11 +43,12 @@ The fields in the table below can be used in these parts of STAC documents:
 - [x] Links (incl. Link Templates)
 - [ ] Bands
 
-Catalogs are excluded on purpose: a CDH catalog node is a grouping directory that carries no
-description of its own ([`standard.md`](../../standard.md) section 4.8). An asset carries exactly
-one field, `cgiar-cdh:partition`, because it describes a single file; per-asset provenance uses the
-Processing extension. The schema closes the namespace everywhere, so a stray or misplaced
-`cgiar-cdh:` field fails validation instead of passing silently.
+Catalogs are excluded on purpose: the root Catalog provides navigation, while resource nodes are
+records linked by explicit `parent` references; directories have no catalog meaning
+([`standard.md`](../../standard.md) section 4.8). An asset carries exactly one field,
+`cgiar-cdh:partition`, because it describes a single file; per-asset provenance uses the Processing
+extension. The schema closes the namespace everywhere, so a stray or misplaced `cgiar-cdh:` field
+fails validation instead of passing silently.
 
 | Field Name                    | Type                                                 | Description                                                                                                                                          |
 | ----------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -58,6 +59,7 @@ Processing extension. The schema closes the namespace everywhere, so a stray or 
 | cgiar-cdh:access_note         | string                                               | What a user must do to obtain the data, or why it is catalogued but unavailable.                                                                     |
 | cgiar-cdh:partition           | [Partition Object](#partition-object)                | Item properties only: the values each axis spans within this Item. See the object for the asset form.                                                |
 | cgiar-cdh:note                | string                                               | Caveats or interpretation-critical context that is not part of `description`.                                                                        |
+| cgiar-cdh:update_frequency    | string                                               | How often the resource gains new data: `daily`, `weekly`, `monthly`, `quarterly`, `semiannual`, `annual`, or `irregular`.                            |
 | cgiar-cdh:funding             | \[[Name-URL Object](#name-url-object)]               | Funding sources for the resource.                                                                                                                    |
 | cgiar-cdh:series              | [Name-URL Object](#name-url-object)                  | Program, initiative, or product brand the resource was published under. A discovery facet, not a hierarchy.                                          |
 | cgiar-cdh:geography           | \[string]                                            | Place facet from the CDH geography vocabulary. Complements the spatial extent rather than replacing it.                                              |
@@ -74,11 +76,12 @@ Processing extension. The schema closes the namespace everywhere, so a stray or 
 
 These appear on a link object, never in Collection or Item properties.
 
-| Field Name             | Type      | Description                                                                      |
-| ---------------------- | --------- | -------------------------------------------------------------------------------- |
-| cgiar-cdh:code_version | string    | Version of the code or workflow a `processing-expression` link points at.        |
-| cgiar-cdh:left_fields  | \[string] | Key columns in this resource, paired positionally with `cgiar-cdh:right_fields`. |
-| cgiar-cdh:right_fields | \[string] | Matching columns in the joined resource. Same length as `cgiar-cdh:left_fields`. |
+| Field Name               | Type      | Description                                                                      |
+| ------------------------ | --------- | -------------------------------------------------------------------------------- |
+| cgiar-cdh:code_version   | string    | Version of the code or workflow a `processing-expression` link points at.        |
+| cgiar-cdh:source_version | string    | Version of the source release a `derived_from` link points at.                   |
+| cgiar-cdh:left_fields    | \[string] | Key columns in this resource, paired positionally with `cgiar-cdh:right_fields`. |
+| cgiar-cdh:right_fields   | \[string] | Matching columns in the joined resource. Same length as `cgiar-cdh:left_fields`. |
 
 ### Additional Field Information
 

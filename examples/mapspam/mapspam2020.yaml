@@ -1,10 +1,9 @@
 # yaml-language-server: $schema=../../spec/schemas/profiles/cdh.schema.json
-"$schema": https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/schemas/profiles/cdh.schema.json
 cdh_schema_version: "v0.3.0"
 extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/climate/schema.json
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/datacube/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/data-dictionary/schema.json
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/agriculture/schema.json
 
 id: spam2020
@@ -47,12 +46,16 @@ contact:
   - organization: International Food Policy Research Institute (IFPRI)
     roles: [licensor]
     url: https://www.ifpri.org/
+  - name: Brayden Youngberg
+    roles: [maintainer]
+    email: b.youngberg@cgiar.org
+    organization: Alliance of Bioversity International and CIAT
 
 citation:
   title:
     Global Spatially-Disaggregated Crop Production Statistics Data for 2020 Version 2.0 Release 2
   authors:
-    - International Food Policy Research Institute (IFPRI)
+    - organization: International Food Policy Research Institute (IFPRI)
   date: "2026"
   publisher: Harvard Dataverse
 doi: 10.7910/DVN/SWPENT
@@ -60,10 +63,14 @@ related_publications:
   - citation:
       title: "Generating global crop distribution maps: From census to grid"
       authors:
-        - You, L.
-        - Wood, S.
-        - Wood-Sichra, U.
-        - Wu, W.
+        - family: You
+          given: L.
+        - family: Wood
+          given: S.
+        - family: Wood-Sichra
+          given: U.
+        - family: Wu
+          given: W.
       date: "2014"
       publisher: Agricultural Systems
     doi: 10.1016/j.agsy.2014.01.002
@@ -235,6 +242,7 @@ processing:
     derived_from:
       - url: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/SWPENT
         title: Source MAPSPAM dataset
+        version: v2r2
   - id: cloud-optimize
     description: Conversion of source MAPSPAM files to a consolidated Zarr data cube.
     code:

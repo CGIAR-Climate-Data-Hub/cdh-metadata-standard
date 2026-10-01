@@ -6,48 +6,28 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
+import yaml from "js-yaml";
+
 import { newAjv, rel, ROOT } from "./_ajv.js";
 
 const PROFILE = resolve(ROOT, "spec/schemas/profiles/cdh.schema.bundled.json");
 
-const EXTENSIONS = {
-  cdh: "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json",
-  climate:
-    "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/climate/schema.json",
-  datacube:
-    "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/datacube/schema.json",
-  classification:
-    "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/classification/schema.json",
-  agriculture:
-    "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/agriculture/schema.json",
-};
-
-const base = {
-  $schema:
-    "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/schemas/profiles/cdh.schema.json",
-  cdh_schema_version: "v0.3.0",
-  extensions: [EXTENSIONS.cdh],
-  id: "fixture-record",
-  title: "Fixture record",
-  description: "A deliberately small record for profile-bundle checks.",
-  license: "CC-BY-4.0",
-  resource_type: "dataset",
-  keywords: ["fixture"],
-  cdh: { domain: ["climate"] },
-  contact: [{ organization: "Test Org", roles: ["licensor"] }],
-  citation: { authors: ["Doe, J."], date: "2026" },
-  data: [{ name: "primary", locations: [{ url: "https://example.org/data.tif" }] }],
-};
+// The shared negative-fixture base, declaring only the cdh extension.
+const base = yaml.load(await readFile(resolve(ROOT, "tests/base.yaml"), "utf-8"), {
+  schema: yaml.CORE_SCHEMA,
+});
+base.extensions = base.extensions.filter((url) => url.includes("/extensions/cdh/"));
+const extensionUrl = (name) => base.extensions[0].replace("/cdh/", `/${name}/`);
 
 const cases = [
   {
     name: "climate",
-    extension: EXTENSIONS.climate,
+    extension: extensionUrl("climate"),
     field: { climate: { mip_era: "CMIP6" } },
   },
   {
-    name: "datacube",
-    extension: EXTENSIONS.datacube,
+    name: "data-dictionary",
+    extension: extensionUrl("data-dictionary"),
     field: {
       dimensions: [
         {
@@ -59,13 +39,8 @@ const cases = [
     },
   },
   {
-    name: "classification",
-    extension: EXTENSIONS.classification,
-    field: { classes: [{ variable: "land_cover", values: [{ value: 1, label: "Cropland" }] }] },
-  },
-  {
     name: "agriculture",
-    extension: EXTENSIONS.agriculture,
+    extension: extensionUrl("agriculture"),
     field: { commodities: ["maize"] },
   },
 ];

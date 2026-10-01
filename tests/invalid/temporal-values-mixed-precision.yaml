@@ -1,0 +1,6 @@
+# Each value is a valid date, but a year and a month can't share one axis.
+dimensions:
+  - name: period
+    type: temporal
+    description: Period.
+    values: ["2020", "2020-06"]

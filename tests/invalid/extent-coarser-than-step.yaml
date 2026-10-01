@@ -1,0 +1,7 @@
+# A daily step needs day-precision ends.
+dimensions:
+  - name: day
+    type: temporal
+    description: Day.
+    step: P1D
+    extent: ["1981", "2025"]

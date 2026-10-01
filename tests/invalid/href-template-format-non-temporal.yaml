@@ -1,0 +1,11 @@
+# A format is only allowed on a type: temporal token.
+data:
+  - name: cogs
+    locations:
+      - url: https://example.org/cogs/
+    href_template: "file_{crop:%Y}.tif"
+dimensions:
+  - name: crop
+    type: crop
+    description: Crop code.
+    values: [maiz, rice]

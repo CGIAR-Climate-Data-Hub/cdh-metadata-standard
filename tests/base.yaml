@@ -1,8 +1,11 @@
+# A valid record. Each negative fixture in invalid/ is merged over it, so a
+# fixture holds only the fields that break one rule.
 cdh_schema_version: "v0.3.0"
-"$schema": https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/schemas/profiles/cdh.schema.json
 extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/data-dictionary/schema.json
 id: fixture-record
+version: "1"
 title: Fixture record
 description: A deliberately broken record for the negative test suite.
 license: CC-BY-4.0
@@ -10,16 +13,17 @@ resource_type: dataset
 keywords: [fixture]
 cdh:
   domain: [climate]
-  usage:
-    not_recommended_for:
-      - use: operational field-scale decisions
 contact:
-  - organization: Test Org
-    roles: [licensor]
+  - organization: Example Org
+    roles: [licensor, maintainer]
 citation:
-  authors: [Doe, J.]
+  authors:
+    - family: Doe
+      given: J.
   date: "2026"
 data:
   - name: primary
     locations:
       - url: https://example.org/data.tif
+created: 2026-01-01
+updated: 2026-01-01

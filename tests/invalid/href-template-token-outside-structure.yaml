@@ -1,0 +1,14 @@
+# Template tokens must be dimensions of every structure the asset holds; season is not in monthly.
+dimensions:
+  - { name: time, type: temporal, description: Month., extent: ["2018-01", "2025-12"], step: P1M }
+  - { name: season, type: season, description: Rainy season., values: [MAM, OND] }
+variables:
+  - { name: flooded, description: Flood occurrence. }
+structures:
+  - { name: monthly, dimensions: [time], variables: [flooded] }
+data:
+  - name: monthly
+    structures: [monthly]
+    locations:
+      - url: https://example.org/monthly/
+    href_template: "flooded-{season}.tif"

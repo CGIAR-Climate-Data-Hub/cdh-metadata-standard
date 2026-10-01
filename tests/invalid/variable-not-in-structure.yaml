@@ -1,0 +1,15 @@
+# With structures, every variable must sit in one; nobs is in none.
+variables:
+  - name: flooded
+    description: Flood occurrence.
+  - name: nobs
+    description: Valid observation count.
+structures:
+  - name: monthly
+    dimensions: []
+    variables: [flooded]
+data:
+  - name: primary
+    structures: [monthly]
+    locations:
+      - url: https://example.org/data.tif

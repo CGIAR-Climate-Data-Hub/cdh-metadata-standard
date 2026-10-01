@@ -6,11 +6,11 @@ depending on the submission type, and what the fields mean. Is expected that mos
 refined and finalized during review, so mistakes and purposeful omissions are expected and should
 not prevent or delay submission.
 
-The formal standard is `standard.md`. Fillable YAML starting points live in `../templates/`; each
-CDH template declares the CDH profile in `$schema` and binds YAML-aware editors to the same profile
-(`schemas/profiles/cdh.schema.json` = the core plus all CDH extensions) for autocomplete and field
-hints in code editors (VScode, positron, Neovim, etc.). Teams wanting to customize the metadata
-standard for other projects can modify and generate a new profile and declare their own schema URL.
+The formal standard is `standard.md`. Validated sample records to start from live in `../examples/`;
+each binds YAML-aware editors to the CDH profile (`schemas/profiles/cdh.schema.json` = the core plus
+all CDH extensions) for autocomplete and field hints in code editors (VScode, positron, Neovim,
+etc.). Teams wanting to customize the metadata standard for other projects can modify and generate a
+new profile and validate their records against it.
 
 ## Key Questions a Record Should Answer
 
@@ -21,7 +21,7 @@ standard for other projects can modify and generate a new profile and declare th
 - What are the reuse limitations and license?
 - Where can the data, code, or documentation be found?
 - What geography and time period does it cover?
-- What variables, units, dimensions, or classes does it contain?
+- What variables, units, dimensions, or categories does it contain?
 - What limitations or caveats does it have?
 
 ## The bare minimum
@@ -58,8 +58,19 @@ Use lowercase words with hyphens:
 id: banana-climate-risk-indicators
 ```
 
-Generally, do not put the version in the `id`; the unversioned `id` always describes the current
-release (see [Superseding a record & versioning](#superseding-a-record)).
+Do not put the version in the `id`. Every release of a resource shares one `id`; `version` tells
+them apart, and the bare `id` always resolves to the current release (see
+[Superseding a record](#superseding-a-record)).
+
+### `version`
+
+Required. Copy the source's own label when it has one (`v2r2`, `2.1`, `2020`). If the source does
+not version, or the resource is Hub-produced, start at `"1"`. Labels are never parsed or sorted, so
+any scheme works; the `previous_version` chain gives the order. Quote labels that YAML would read as
+numbers.
+
+Cite and display `version` with `id` on every release, including the first. Version navigation only
+needs to appear once a record has a `previous_version` or is `deprecated`.
 
 ### `title`
 
@@ -178,6 +189,13 @@ chosen before submission (see [Choose a License](https://choosealicense.com/) fo
 custom license, use `LicenseRef-*` and add an `additional_links[]` entry with `rel: license` and a
 URL for the license terms.
 
+A CC-BY license needs nothing beyond `citation`. When a source mandates specific credit wording
+(Copernicus, OpenStreetMap), or the producer asks to be credited, quote it in `attribution`:
+
+```yaml
+attribution: Contains modified Copernicus Emergency Management Service information [year]
+```
+
 Use `access_note` when `access` is `restricted` or `non-public`. It should say how to request
 access, what authentication is needed, or whether the data is embargoed. In `additional_links[]`,
 link to request forms with `rel: create-form`; link access help pages or `mailto:` contacts with
@@ -185,6 +203,7 @@ link to request forms with `rel: create-form`; link access help pages or `mailto
 
 For `contact`, use either an organization contact or a person contact. Every record must include at
 least one contact with `licensor` in `roles`; that contact is the licensing party for the resource.
+CDH records also need at least one `maintainer`.
 
 Organization contact:
 
@@ -206,24 +225,39 @@ contact:
 ```
 
 If `name` is used, include `organization` too. `organization` on its own is OK. Roles: `licensor`,
-`producer`, `processor`, `point-of-contact`, or `custodian` (the party accountable for the resource
-and its metadata - typically whoever authored or submitted the record and maintains it). Contacts
-are allowed to list multiple roles.
+`producer`, `processor`, `point-of-contact` (who to ask about the data, and where data errors go),
+or `maintainer` (who keeps the record and any hosted copy current, and passes data errors to the
+point of contact). Contacts are allowed to list multiple roles.
 
 For `citation`, provide structured fields - `authors` and `date` (required), plus optional `title`,
-`publisher`, and `url`. You may omit `citation` when a `doi` is provided, as fields can be derived.
+`publisher`, and `url`. You may omit `citation` when a `doi` is provided.
+
+Each author is either a person or an organization, and the two can be mixed in citation order:
+
+```yaml
+citation:
+  authors:
+    - family: Smith
+      given: Jane
+    - organization: Food and Agriculture Organization of the United Nations
+    - family: Suharto # a single name goes in family, with no given
+  date: "2024-07-15"
+```
+
+Put multiple surnames together in `family` (`family: Carreño Quiñones`). `family` and `given` say
+which part of the name is which; the citation style decides which comes first when it is displayed.
 
 ### `created` and `updated`
 
-These timestamps are optional when authoring - provide them if you want, or leave them out and they
-are filled in at publication. If updating a resource, please provide a new `updated` date.
+Both are required. Set `created` when you first write the record and a new `updated` date each time
+you change it.
 
 ### `data`
 
-At least one link to the resource. It is understood that sometimes the resource may need to be
-uploaded to the climate data hub before this can be filled. As such, the url can be a placeholder
-for the upload location or be left blank to be filled in on final review. Embargoed or restricted
-data should still include a link, such as a request page, an embargoed dataverse entry, etc.
+At least one location for the data itself. If the data will be uploaded to the Hub during review,
+leave `url` blank; it is filled in before publication. Restricted or embargoed data with no URL of
+its own uses the page where access is requested or the data will be released, such as the Dataverse
+record, and `access_note` must say so.
 
 ```yaml
 data:
@@ -235,9 +269,20 @@ data:
 ```
 
 Each asset's `locations` lists access paths to the same content. The first is the primary access
-pattern (most often an https url). Alternate locations can be provided if applicable, such as if the
-same file is hosted on multiple storage platforms. Data in different formats (csv, parquet) or
-services (such as an API or GEE asset) should be listed as separate `data` entries.
+pattern (most often an https url). A location is the data itself - a file, a bucket prefix, a Zarr
+root, a service endpoint - never a landing page. A Zenodo or Dataverse record page goes in
+`citation.url` or `doi`; a project website goes in `additional_links[]`. Alternate locations can be
+provided if applicable, such as if the same file is hosted on multiple storage platforms. Data in
+different formats (csv, parquet) or services (such as an API or GEE asset) should be listed as
+separate `data` entries. For a service, use the URL of the endpoint that returns the data (for a GEE
+asset, `https://earthengine.googleapis.com/v1/<asset id>`), and omit `media_type` when it returns no
+file.
+
+By default every asset holds every declared dimension and variable. When assets differ, such as
+monthly and seasonal file sets or tables with different columns, declare
+[`structures`](./extensions/data-dictionary/README.md#structures) and name each asset's structures
+in `data[].structures`. Verify what each asset holds before publication, either from the source or
+with an inspection tool.
 
 Every asset needs a `name`, and names must be unique across both `data` and `additional_assets`. Use
 `nodata` when an asset has a sentinel value for missing or invalid observations. When `processing`
@@ -285,30 +330,96 @@ In the above example, the full paths would look something like:
 
 Rules:
 
-- Using `href_template` for multiple files
-  requires[Variables and dimensions](#variables-and-dimensions) to also be declared.
+- `href_template` requires [variables and dimensions](#variables-and-dimensions) to be declared.
 - Each `{token}` must match a declared `dimensions[].name`, except the `{variable}` token, which
   expands over `variables[].name` for files split per variable.
 - The matching dimension's `values` (or the variable names) are substituted verbatim and must match
   file-name tokens.
-- Every token dimension must list `values`
+- When a file name spells a date differently from the ISO value, give the token a strftime format:
+  `chirps-v2.0.{date:%Y.%m.%d}.tif`. Only `%Y %m %d %H %M %j` are allowed, and only on a
+  `type: temporal` dimension. The same token may repeat with different formats, so hive-partitioned
+  days are `year={date:%Y}/month={date:%m}/ptot_{date:%Y%m%d}.tif`. Month or season names are
+  labels, not formats: declare them as a domain axis with the labels in `values`.
+- Every token dimension must list `values`, or for a regular temporal axis give `extent` and `step`
+  (`extent: ["1981", "2025"]`, `step: P1Y`) instead of writing out every year.
 - The template assumes every value combination exists.
-- Each file URL is `locations[0].url` + filled template; additional locations become alternates.
-- Without `href_template`, `locations[].url` are full file URLs.
 - A templated entry shares one `description`, `nodata`, `media_type`, and `file_size` across every
-  generated file; split into separate `data[]` entries (e.g. one per variable) when those differ.
-  `file_size` is the size of a single generated file, not the set - omit it where slices differ
-  materially in size rather than averaging them.
+  file; split into separate `data[]` entries (e.g. one per variable) when those differ. `file_size`
+  is the size of a single file, not the set - omit it where slices differ materially in size rather
+  than averaging them.
 
 Only the file-partitioning dimensions go in the template. Dimensions stored inside each file (e.g.
 bands of a multi-band COG) stay out of it.
 
+#### Irregular or very large file sets with `file_index`
+
+A template assumes two things: every combination of token values exists, and the file name can be
+computed from the coordinates. When either is false, or there are thousands of files, point at an
+index instead. `file_index` is a list of indexes of the same files, each with a `format`:
+
+- `stac-geoparquet`: STAC items in Parquet. Preferred for large tiled products; STAC clients,
+  DuckDB, and GDAL open it.
+- `gti` or `vrt`: GDAL opens all the tiles as one raster.
+- `kerchunk` or `icechunk`: xarray opens many NetCDF/HDF files as one dataset. An Icechunk store
+  that holds its own data is a `data[]` entry instead.
+- `cdh-inventory`: a CSV with one row per file: a required `href` column, relative to every
+  `locations[].url` (a directory base ending in `/`), plus one column per declared dimension giving
+  that file's coordinate, and `variable` when each file holds a single variable. An optional
+  `checksum` column (`md5:<hex>`, `sha256:<hex>`) carries file digests. The only format CDH checks;
+  use it when you have a spreadsheet and nothing else.
+
+Any one index is enough. List the one people should open first.
+
+```yaml
+dimensions:
+  - name: time
+    type: temporal
+    extent: ["2020-02-01", "2020-02-29"]
+    step: P1D
+data:
+  - name: daily-rainfall
+    locations:
+      - url: https://example.org/rainfall/
+    file_index:
+      - format: cdh-inventory
+        locations:
+          - url: https://example.org/rainfall/files.csv
+```
+
+Gaps and a naming change mid-series. A template would claim 02-02 exists and spell 02-04 wrong:
+
+```csv
+href,time
+2020/CHIRPS-v2.0.2020.02.01.tif,2020-02-01
+2020/CHIRPS-v2.0.2020.02.03.tif,2020-02-03
+2020/chirps_20200204_prelim.tif,2020-02-04
+```
+
+Opaque names and an incomplete grid. There is no wheat/ssp585 file, and without the `crop` and
+`scenario` columns nobody can tell what `a1f3.tif` is:
+
+```csv
+href,crop,scenario
+a1f3.tif,maize,ssp245
+b7c9.tif,maize,ssp585
+c002.tif,wheat,ssp245
+```
+
+Include a column for every dimension the record declares. An inventory with only `href` is valid but
+leaves consumers unable to select files without opening them. Several rows may share a coordinate,
+e.g. tiles observed on the same date. Add a `variable` column when files hold one variable each and
+the names do not follow a `{variable}` token.
+
+Use either `file_index` or `href_template` on an entry. Inventory rows enumerate the files present,
+so omitted dates do not imply missing rows that a consumer should fill. See the
+[file index rules](standard.md#file-indexes-file_index) for the formats and the CSV columns.
+
 ## Additional fields (Conditional/Optional)
 
-Some fields in the template will not apply to every record. This includes things like `climate`,
-`commodities`, `classes`, and `variables`/`dimensions`. Only fill the ones that apply. However,
-additional does not always mean optional. If it applies to a dataset, it should be used. Most
-datasets will be required to provide a list of variables, for example.
+Some fields will not apply to every record. This includes things like `climate`, `commodities`, and
+`variables`/`dimensions`. Only fill the ones that apply. However, additional does not always mean
+optional. If it applies to a dataset, it should be used. Most datasets will be required to provide a
+list of variables, for example.
 
 This schema can be extended if a dataset requires additional metadata that is not currently covered.
 This should be done by contacting the team, or creating a new third-party extension and adding a
@@ -412,6 +523,11 @@ Common fields:
 Use `start_date` and `end_date` for a span, with `end_date: null` for an open-ended series. Do not
 combine `date` with `start_date` or `end_date`.
 
+For a series that is still growing, add `update_frequency` (`daily`, `weekly`, `monthly`,
+`quarterly`, `semiannual`, `annual`, or `irregular`). It says how often _this_ resource gains new
+data: a Hub copy of CHIRPS refreshed once a year is `annual`, even though CHIRPS itself appends
+monthly. Give such a copy its real `end_date` rather than `null`, and move it at each refresh.
+
 These fields can be precise to the year (_e.g._ `date: "1981"`), month (_e.g._ `date: "1981-01"`),
 day (_e.g._ `date: "1981-01-01"`), or datetime (_e.g._ `date: "1981-01-01T00:00:00"`).
 
@@ -450,7 +566,6 @@ values.
 ```yaml
 variables:
   - name: heat_stress_days
-    dimensions: [time, scenario]
     description: >
       Number of days during the growing period when daily maximum temperature exceeded the heat
       stress threshold. Higher values indicate greater heat hazard.
@@ -475,12 +590,23 @@ band, etc. Time dimension is already covered by `temporal` metadata field.
 Define coded values. If a code is not obvious, explain it in the dimension description, point to a
 controlled vocabulary, or link a sidecar code list as an [additional asset](#additional-assets).
 
-### Classes
+### Categories
 
-Use `classes` for categorical values, classified rasters, etc.
+Give a categorical or classified variable its `categories`: each coded value with a `label`, and a
+`description` when the label is not enough.
 
-For long class lists, link a sidecar file instead of putting everything in the record (see
-[additional assets](#additional-assets)).
+```yaml
+variables:
+  - name: land_cover
+    data_type: uint8
+    categories:
+      - value: 1
+        label: Cropland
+      - value: 2
+        label: Forest
+```
+
+For long lists, link a sidecar file instead (see [additional assets](#additional-assets)).
 
 ### Processing
 
@@ -502,6 +628,7 @@ processing:
     derived_from:
       - title: NEX-GDDP-CMIP6
         url: https://example.org/nex-gddp-cmip6
+        version: "1.5" # the source release used, as the source labels it
 ```
 
 ### Climate Fields
@@ -527,9 +654,7 @@ Use values from `vocab/commodity.json`.
 ### Additional assets
 
 Use `additional_assets` for supporting files that accompany the primary data, such as documentation,
-previews, schemas, QA/QC output, code lists, thumbnails, or runnable examples. Different formats of
-the data may also be listed here when they are supplementary rather than a primary way of accessing
-the resource.
+previews, schemas, QA/QC output, code lists, thumbnails, or runnable examples.
 
 Like entries in `data`, every additional asset needs a unique `name` and at least one location. Use
 multiple `locations` only when they provide different ways to access the same file; use separate
@@ -537,9 +662,15 @@ asset entries for different files.
 
 For `additional_assets`, provide `media_type` and `file_size` when known.
 
-`roles` is open; the suggested values are `metadata`, `validation`, `describedby`, `thumbnail`,
-`overview`, `visual`, and `example`. Use `example` for a runnable usage example - worth adding when
-consuming the data needs a query that the data itself cannot carry, such as a required join:
+A small metadata file can live beside the record instead of at a URL. Commit it next to the YAML and
+give its `url` as a relative path, such as `./README.md` or `docs/legend.csv`. Validation checks the
+file exists. This is for documentation, code lists, legends, and thumbnails, not for data. Data URLs
+must be absolute.
+
+`roles` is open; the suggested values are `metadata`, `validation`, `describedby`, `agents`,
+`thumbnail`, `overview`, `visual`, and `example`. Use `example` for a runnable usage example - worth
+adding when consuming the data needs a query that the data itself cannot carry, such as a required
+join:
 
 ```yaml
 additional_assets:
@@ -549,12 +680,45 @@ additional_assets:
     description: Joins the table to admin-2 boundaries and maps the result.
     locations:
       - url: https://example.org/examples/join-admin2.ipynb
-  - name: classes
+  - name: categories
     roles: [metadata, describedby]
     media_type: text/csv
-    description: class codes for the dataset.
+    description: Category codes for the land_cover variable.
     locations:
-      - url: https://example.org/rasterClasses.csv
+      - url: https://example.org/land-cover-categories.csv
+```
+
+Common types for examples: `application/x-ipynb+json` (Jupyter notebook), `text/x-python`,
+`text/x-r`, and `application/sql`.
+
+#### Optional: a README and an agent guide
+
+You can add two Markdown files beside the record. Neither is required.
+
+- A **README** (`roles: [describedby]`) for a person deciding whether to use the data: what it is,
+  numbers that build trust, links to methods and sources.
+- An **agent guide** (`roles: [agents]`) for an AI agent or analyst who has already decided to use
+  it and needs to get the first query right: which column is the stable key and what it joins to,
+  quirks and caveats, what the coordinate system means for distance and area, and a few tested
+  queries with their expected results.
+
+Leave out anything the record already states, such as extent, license, or row counts. Duplicated
+facts drift.
+
+```yaml
+additional_assets:
+  - name: readme
+    roles: [describedby]
+    media_type: text/markdown
+    description: Human-readable overview.
+    locations:
+      - url: ./README.md
+  - name: agent-guide
+    roles: [agents]
+    media_type: text/markdown
+    description: Keys, join columns, quirks, and tested queries.
+    locations:
+      - url: ./AGENTS.md
 ```
 
 ### Additional links
@@ -578,10 +742,17 @@ additional_links:
 
 ## Where The Record Lives
 
-Put the record in a directory named for the resource. Superseded snapshots sit beside it. When a
-representation exists only because of that resource - an admin-level aggregation, a point
-extraction, a convenience reformat nobody would look for on its own - give it a subdirectory, and it
-becomes a child you can enter from the parent:
+Put the record in a directory named for the resource. Superseded releases can sit beside it, and
+related representations can use subdirectories for filing. Catalog hierarchy is expressed by
+`parent`, independently of directory layout. For an admin-level aggregation of one product, the
+child record includes:
+
+```yaml
+id: example-crop-suitability-admin2
+parent: example-crop-suitability
+```
+
+One possible directory layout is:
 
 ```text
 example-crop-suitability/
@@ -592,25 +763,32 @@ example-crop-suitability/
 ```
 
 Nothing is inherited. Each record still states its own `license`, `contact`, `citation`, `spatial`,
-and `temporal`, even where the parent repeats it word for word - the position only adds navigation
+and `temporal`, even where the parent repeats it word for word - `parent` only adds navigation
 links, and a child still records `processing[].derived_from` if it was derived from its parent.
 
 If the thing has standing of its own - its own DOI, its own funding, inputs from several products -
-it is not a child. Give it its own directory and link it with `derived_from`. Do not group by theme
-or program either: a subject area is `cdh.domain` and a program is `series`, and both stay filters
-rather than folders. See `standard.md` section 4.8.
+omit `parent` and link its sources with `processing[].derived_from`. A subject area is `cdh.domain`
+and a program is `series`; neither establishes parenthood. Moving a file never changes its parent.
+
+Before publication, check the complete catalog. Every parent must exist, `id` + `version` must be
+unique with one current release per `id`, and self-parenting and cycles are prohibited. A
+single-file check cannot establish the integrity of the whole hierarchy. See `standard.md` section
+4.8.
 
 ## Superseding a Record
 
-When a new release of the data ships, snapshot first, then update in place:
+When the publisher issues a revision of the same product (MapSPAM 2020 v2r0 to v2r2, not MapSPAM
+2010 to 2020, which is a new resource in the same `series`):
 
-1. Copy the current record to a new file. Append the version to the snapshot's `id` (e.g.
-   `spam2020-v2`) and set `deprecated: true`. Never edit the snapshot again.
-2. Update the original record to the new release: set the new `version` and point `previous_version`
-   at the snapshot's `id`.
+1. Copy the current record to a new file. Keep the `id`, set the new `version`, and set
+   `previous_version` to the old record's `version`.
+2. Set `deprecated: true` on the old record. Leave its data description as it was; link and typo
+   fixes are still fine.
 
-The unversioned `id` always describes the current release. Metadata-only fixes are not releases -
-update in place without a snapshot. See `standard.md` section 4.7 for the full rules.
+A file name of `<id>-<version>.yaml` for superseded releases keeps them easy to find, but file names
+carry no meaning. Metadata-only fixes are not releases - update in place. Other records are never
+rewritten: children keep their `parent`, and derived records keep the `version` they recorded in
+`derived_from`. See `standard.md` section 4.7 for the full rules.
 
 ## What Review Cannot Decide
 
@@ -635,7 +813,13 @@ Leave a field out when:
 - The information is unknown and not required.
 - The detail belongs in a sidecar file because it is long, nested, or likely to change.
 
-Avoid inventing new fields. If the template has no place for something, use `additional_links`,
+`note` is not a catch-all. Use it only for a caveat a reader would miss (a known artefact, a region
+where values are invalid, a source version mismatch). Credit lines go in `attribution`; source
+provenance in `processing[].derived_from`; how an axis is labelled in that dimension's
+`description`; which files exist in the template extent or `file_index`. If another field already
+says it, delete it.
+
+Avoid inventing new fields. If the schema has no place for something, use `additional_links`,
 `additional_assets`, a sidecar file, or an extension (see `standard.md` section 4.2).
 
 ## Practical Authoring Order
@@ -643,7 +827,7 @@ Avoid inventing new fields. If the template has no place for something, use `add
 1. Fill the minimum record.
 2. Add `spatial` and `temporal` if relevant.
 3. Add `variables` and `dimensions`, and include units and reading guidance.
-4. Add `classes` only if they are needed to understand values.
+4. Add `categories` to coded variables.
 5. Add `processing` for derived products.
 6. Add `climate` and `commodity` fields when they improve discovery.
 7. Add sidecars or extra links for long supporting detail.
@@ -653,9 +837,9 @@ Avoid inventing new fields. If the template has no place for something, use `add
 ### Required for every record
 
 - [ ] `cdh_schema_version`
-- [ ] `$schema`
 - [ ] `id`, `title`, `description`
-- [ ] `created`, `updated` (filled in at publication if omitted)
+- [ ] `version`
+- [ ] `created`, `updated`
 - [ ] `resource_type`
 - [ ] `cdh.domain[]` includes at least one concept from `vocab/domain.json`
 - [ ] `keywords[]`
@@ -673,13 +857,13 @@ Avoid inventing new fields. If the template has no place for something, use `add
 
 - [ ] `temporal.start_date` / `end_date` for resources with temporal coverage
 - [ ] `variables[]` and `dimensions[]` for data-cube or multi-variable data
-- [ ] `version` for versioned resources
 - [ ] `previous_version` when the record supersedes an existing Hub record
-- [ ] `deprecated: true` on version snapshots
+- [ ] `deprecated: true` on superseded releases
+- [ ] `derived_from[].version` when the source is versioned
 - [ ] `doi` when a DOI exists
 - [ ] `processing[]` for derived products
 - [ ] `commodities[]` for commodity-specific resources
 - [ ] `climate.scenarios[]` for projection-based climate resources
 - [ ] `climate.mip_era` for CMIP-based resources
 - [ ] `climate.baseline` for anomalies and baseline-relative indicators
-- [ ] `classes[]` or class sidecar for classified data
+- [ ] `variables[].categories` or a category sidecar for coded variables

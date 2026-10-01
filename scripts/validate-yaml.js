@@ -7,11 +7,8 @@
 //     profile requires the cdh extension on every record). Optional; the CDH
 //     pipeline passes its own profile exactly like any other adopter would.
 //
-// Files under templates/ are validated as drafts (blank placeholders pruned,
-// presence rules relaxed).
-//
 // Usage:
-//   node scripts/validate-yaml.js                # default: templates/ + examples/
+//   node scripts/validate-yaml.js                # default: examples/
 //   node scripts/validate-yaml.js path [path...] # validate the given files or directories
 //
 // Flags:
@@ -20,16 +17,16 @@
 //                            adopters pass their own or omit for mechanism-only)
 //   --schemas <file-or-dir>  register additional extension schemas (repeatable),
 //                            e.g. a third-party extension a record declares
-//   --draft                  validate every target as a fillable draft: prune
-//                            blank placeholders and relax presence rules
 //   --expect-fail            invert the outcome: every file MUST be invalid;
-//                            used for the negative fixtures in tests/invalid/
+//                            used for the negative fixtures in tests/invalid/,
+//                            each merged over the valid tests/base.yaml
 //
 // Directories are walked recursively for *.yaml and *.yml files. Files of any
 // other extension are accepted as-is (so explicit non-.yaml paths still work).
 
+import { existsSync } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
-import { extname, resolve, sep } from "node:path";
+import { dirname, extname, resolve } from "node:path";
 
 import yaml from "js-yaml";
 import validateSpdxExpression from "spdx-expression-validate";
@@ -80,22 +77,11 @@ async function expand(path) {
   return st.isDirectory() ? walk(abs, YAML_EXTS) : [abs];
 }
 
-async function defaultTargets() {
-  const targets = [];
-  for (const name of ["templates", "examples"]) {
-    try {
-      targets.push(...(await walk(resolve(ROOT, name), YAML_EXTS)));
-    } catch (err) {
-      if (err.code !== "ENOENT") throw err;
-    }
-  }
-  return targets;
-}
+const defaultTargets = () => walk(resolve(ROOT, "examples"), YAML_EXTS);
 
 const argPaths = [];
 const extraSchemaPaths = [];
 let profilePath = null;
-let forceDraft = false;
 let expectFail = false;
 const argv = process.argv.slice(2);
 for (let i = 0; i < argv.length; i++) {
@@ -114,8 +100,6 @@ for (let i = 0; i < argv.length; i++) {
     }
   } else if (argv[i] === "--expect-fail") {
     expectFail = true;
-  } else if (argv[i] === "--draft") {
-    forceDraft = true;
   } else {
     argPaths.push(argv[i]);
   }
@@ -130,14 +114,13 @@ if (files.length === 0) {
 }
 
 const ajv = newAjv();
-const loaded = await loadAllSchemas(ajv);
+await loadAllSchemas(ajv);
 for (const path of extraSchemaPaths) {
   const abs = resolve(process.cwd(), path);
   const jsonFiles = (await stat(abs)).isDirectory() ? await walk(abs, [".json"]) : [abs];
   for (const file of jsonFiles) {
     const schema = JSON.parse(await readFile(file, "utf-8"));
     ajv.addSchema(schema);
-    loaded.push({ file, schema });
   }
 }
 if (!ajv.getSchema(CORE_ID)) {
@@ -155,44 +138,7 @@ if (profilePath) {
   }
   if (!ajv.getSchema(profileId)) {
     ajv.addSchema(schema);
-    loaded.push({ file: profilePath, schema });
   }
-}
-
-// Draft (template) validation: same schemas with presence rules stripped, so
-// a partially filled template still checks field names, types, enums, and
-// patterns without failing on what is not filled in yet.
-const PRESENCE_KEYWORDS = ["required", "minItems", "minContains", "minLength", "contains"];
-function stripPresence(node) {
-  if (Array.isArray(node)) {
-    node.forEach(stripPresence);
-  } else if (node && typeof node === "object") {
-    for (const key of PRESENCE_KEYWORDS) delete node[key];
-    for (const v of Object.values(node)) stripPresence(v);
-  }
-  return node;
-}
-const draftAjv = newAjv();
-for (const { schema } of loaded) {
-  draftAjv.addSchema(stripPresence(structuredClone(schema)));
-}
-
-// Drop blank placeholders ("", null, and containers left empty) from a draft
-// before validating it.
-function prune(node) {
-  if (Array.isArray(node)) {
-    const arr = node.map(prune).filter((v) => v !== undefined);
-    return arr.length ? arr : undefined;
-  }
-  if (node && typeof node === "object") {
-    const out = {};
-    for (const [k, v] of Object.entries(node)) {
-      const p = prune(v);
-      if (p !== undefined) out[k] = p;
-    }
-    return Object.keys(out).length ? out : undefined;
-  }
-  return node === "" || node === null ? undefined : node;
 }
 
 // Compose the mechanism schema for one record: core + only the extensions it
@@ -219,9 +165,6 @@ function mechanismFor(validator, doc) {
   return { schema, known, unknown };
 }
 
-const TEMPLATES_PREFIX = resolve(ROOT, "templates") + sep;
-const isDraft = (file) => forceDraft || file.startsWith(TEMPLATES_PREFIX);
-
 // Turn an Ajv error into something an author can act on: name the offending
 // property for unevaluated/additional-property errors, and show (a sample of)
 // the allowed values for enum misses.
@@ -230,6 +173,9 @@ function describeError(err) {
   // A `false` subschema means "this field is not allowed here" (e.g. temporal
   // date vs start_date/end_date); Ajv's own wording says nothing useful.
   if (err.keyword === "false schema") return "must not be present alongside its sibling fields";
+  if (err.keyword === "pattern" && err.instancePath.endsWith("/href_template")) {
+    return "tokens must be {name} or {name:format}, a format using only %Y %m %d %H %M %j";
+  }
   const stray = p.unevaluatedProperty ?? p.additionalProperty;
   if (stray != null) return `${err.message}: "${stray}"`;
   if (Array.isArray(p.allowedValues)) {
@@ -242,13 +188,9 @@ function describeError(err) {
 
 // Collect every problem for one file; empty array = valid record.
 function validateFile(file, doc) {
-  const draft = isDraft(file);
-  const validator = draft ? draftAjv : ajv;
-  const target = draft ? (prune(doc) ?? {}) : doc;
-  const { schema, known, unknown } = mechanismFor(validator, doc);
+  const { schema, known, unknown } = mechanismFor(ajv, doc);
   if (unknown.length) {
     return {
-      draft,
       errors: [
         `unknown extension schema(s): ${unknown.join(", ")}`,
         "fields from an unregistered extension would be rejected - pass --schemas <file-or-dir> to register it",
@@ -256,15 +198,14 @@ function validateFile(file, doc) {
     };
   }
   const seen = new Set();
-  const validate = validator.compile(schema);
-  if (!validate(target)) {
+  const validate = ajv.compile(schema);
+  if (!validate(doc)) {
     // When any subschema fails, Ajv also flags every legitimate top-level
     // field as "unevaluated" - keep only strays that no composed schema
     // actually defines.
-    // $schema is allowed via patternProperties, not properties.
-    const evaluable = new Set(["$schema"]);
+    const evaluable = new Set();
     for (const id of [CORE_ID, ...known]) {
-      for (const key of Object.keys(validator.getSchema(id)?.schema?.properties ?? {})) {
+      for (const key of Object.keys(ajv.getSchema(id)?.schema?.properties ?? {})) {
         evaluable.add(key);
       }
     }
@@ -280,8 +221,8 @@ function validateFile(file, doc) {
     }
   }
   if (profileId) {
-    const validateProfile = validator.getSchema(profileId);
-    if (!validateProfile(target)) {
+    const validateProfile = ajv.getSchema(profileId);
+    if (!validateProfile(doc)) {
       for (const err of validateProfile.errors ?? []) {
         // The mechanism layer owns stray-field detection (it knows what was
         // declared); profile-side unevaluated errors are duplicates or noise.
@@ -291,26 +232,68 @@ function validateFile(file, doc) {
       }
     }
   }
-  if (seen.size) return { draft, errors: [...seen] };
-  return { draft, errors: checkCrossFieldRules(target, { isSpdx: validateSpdxExpression }) };
+  if (seen.size) return { errors: [...seen] };
+  return {
+    errors: [
+      ...checkCrossFieldRules(doc, { isSpdx: validateSpdxExpression }),
+      ...missingRelativeAssets(file, doc),
+    ],
+  };
+}
+
+// A relative additional_assets[] url names a file committed beside the record
+// (standard.md 5.6). Only this script can see the filesystem, so the check
+// lives here rather than in cross-field.js.
+function missingRelativeAssets(file, doc) {
+  const out = [];
+  list(doc?.additional_assets).forEach((asset, i) => {
+    list(asset?.locations).forEach((loc, j) => {
+      const url = loc?.url;
+      if (typeof url !== "string" || /^[a-z][a-z0-9+.-]*:/i.test(url)) return;
+      if (!existsSync(resolve(dirname(file), url))) {
+        out.push(
+          `/additional_assets/${i}/locations/${j}/url: relative path "${url}" not found beside the record`,
+        );
+      }
+    });
+  });
+  return out;
+}
+
+// Parse as YAML 1.2 / JSON-style: bare dates stay strings (matching the
+// editor and the JSON output) instead of becoming JS Date objects.
+const loadYaml = async (file) =>
+  yaml.load(await readFile(file, "utf-8"), { schema: yaml.CORE_SCHEMA });
+const isObject = (v) => v && typeof v === "object" && !Array.isArray(v);
+const merge = (base, over) =>
+  isObject(base) && isObject(over)
+    ? {
+        ...base,
+        ...Object.fromEntries(Object.entries(over).map(([k, v]) => [k, merge(base[k], v)])),
+      }
+    : over;
+
+// Negative fixtures hold only what breaks; the rest comes from a valid base.
+const BASE_FILE = resolve(ROOT, "tests/base.yaml");
+const base = expectFail ? await loadYaml(BASE_FILE) : undefined;
+// An invalid base would make every fixture fail for the wrong reason.
+if (base && validateFile(BASE_FILE, base).errors.length) {
+  console.error(`error: ${rel(BASE_FILE)} must be valid`);
+  process.exit(2);
 }
 
 let failures = 0;
 for (const file of files) {
   let result;
   try {
-    // Parse as YAML 1.2 / JSON-style: bare dates stay strings (matching the
-    // editor and the JSON output) instead of becoming JS Date objects.
-    const doc = yaml.load(await readFile(file, "utf-8"), { schema: yaml.CORE_SCHEMA });
-    result = validateFile(file, doc);
+    const doc = await loadYaml(file);
+    result = validateFile(file, base ? merge(base, doc) : doc);
   } catch (err) {
-    result = { draft: false, errors: [err.message] };
+    result = { errors: [err.message] };
   }
   const invalid = result.errors.length > 0;
   if (expectFail ? invalid : !invalid) {
-    console.log(
-      `ok   ${rel(file)}${result.draft ? " (draft)" : ""}${expectFail ? " (invalid, as expected)" : ""}`,
-    );
+    console.log(`ok   ${rel(file)}${expectFail ? " (invalid, as expected)" : ""}`);
   } else {
     failures += 1;
     console.error(`FAIL ${rel(file)}`);

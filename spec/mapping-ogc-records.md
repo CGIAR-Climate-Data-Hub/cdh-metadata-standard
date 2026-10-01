@@ -64,18 +64,20 @@ terms are used where available, e.g. `access` -> `dct:accessRights`.
 | `keywords`                  | `properties.keywords`                                                                                                                                                      |
 | `cdh.domain[]`              | `properties["cgiar-cdh:domain"]`; also expanded into `properties.themes` under the CDH domain scheme. First entry is the primary domain.                                   |
 | `keywords[]` (linked items) | Plain-string keywords are emitted into `properties.keywords`. Linked-keyword entries (`{ term, scheme, uri }`) are also added to `properties.themes`, grouped by `scheme`. |
-| `properties.themes`         | Encoder output only - populated from `cdh.domain`, `commodities`, and any linked-keyword entries. Not an author-facing input field.                                        |
+| `properties.themes`         | Derived output - populated from `cdh.domain`, `commodities`, and any linked-keyword entries. Not an author-facing input field.                                             |
 | `license`                   | `properties.license`                                                                                                                                                       |
+| `attribution`               | `properties.rights`; also suitable for schema.org `creditText` on generated landing pages.                                                                                 |
 | `access`                    | `properties["dct:accessRights"]` using the EU accessRights NAL URI. Omitted = `public`; `public` MAY be left unencoded. Advertise GeoDCAT via `conformsTo`.                |
 | `access_note`               | `properties["cgiar-cdh:access_note"]`; also suitable for schema.org `conditionsOfAccess` on generated landing pages.                                                       |
-| `contact[]`                 | `properties.contacts[]`. At least one contact must include `licensor` in `roles`.                                                                                          |
+| `contact[]`                 | `properties.contacts[]`, with `orcid` or `ror` as `identifier`. At least one contact must include `licensor` in `roles`.                                                   |
 | `citation`                  | `properties["cgiar-cdh:citation"]`                                                                                                                                         |
 | `doi`                       | `links[rel=cite-as]`                                                                                                                                                       |
 | `related_publications[]`    | `properties["cgiar-cdh:related_publications"]`                                                                                                                             |
 | `note`                      | `properties["cgiar-cdh:note"]`                                                                                                                                             |
-| `version`                   | `properties.version`                                                                                                                                                       |
+| `version`                   | `properties.version`. Superseded releases get record id `<id>-<version>`; the current release keeps the bare `id`.                                                         |
 | `deprecated`                | `properties["cgiar-cdh:deprecated"]`                                                                                                                                       |
 | `previous_version`          | `links[rel=predecessor-version]`                                                                                                                                           |
+| `temporal.update_frequency` | `properties["dct:accrualPeriodicity"]`, as the matching EU frequency vocabulary URI (`daily` -> `DAILY`, `semiannual` -> `ANNUAL_2`, `irregular` -> `IRREG`).              |
 | `funding[]`                 | `properties["cgiar-cdh:funding"]`                                                                                                                                          |
 | `series`                    | `properties["dcat:inSeries"]` (`{ name, url }`, DCAT 3 dataset series). Advertise DCAT 3 via `conformsTo`.                                                                 |
 
@@ -87,7 +89,7 @@ and temporal metadata for discovery.
 
 | CDH                                         | recordJSON placement                                                                                                                                                                                    |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `spatial.geography[]`                       | `properties["dct:spatial"]` (GeoDCAT spatial coverage). The encoder resolves each `geography` id to its place IRI; advertise GeoDCAT via `conformsTo`. (STAC keeps `cgiar-cdh:geography`.)              |
+| `spatial.geography[]`                       | `properties["dct:spatial"]` (GeoDCAT spatial coverage). Each `geography` id resolves to its place IRI; advertise GeoDCAT via `conformsTo`. (STAC keeps `cgiar-cdh:geography`.)                          |
 | `temporal.date` / `start_date` / `end_date` | `time`: instant from `date`, interval `{ interval: [start, end] }` from `start_date`/`end_date`, or open interval when `end_date: null`. Reduced-precision values expand (end inclusive to period end). |
 
 The CDH OGC Records profile does not emit `spatial.bbox`, `spatial.crs`, `spatial.geometry_column`,
@@ -101,7 +103,7 @@ For OGC Records resources that need structured field metadata:
 | -------------- | --------------------------------------------------------------------------- |
 | `dimensions[]` | `properties["cgiar-cdh:dimensions"]`                                        |
 | `variables[]`  | `properties["cgiar-cdh:variables"]` and/or `links[rel=describedby]` sidecar |
-| `classes[]`    | `links[rel=describedby]` to a sidecar class list                            |
+| `structures[]` | `properties["cgiar-cdh:structures"]`                                        |
 
 Use STAC for tabular datasets with embedded geometry or spatial asset metadata.
 
@@ -111,13 +113,11 @@ Use STAC for tabular datasets with embedded geometry or spatial asset metadata.
 `properties.themes`. OGC Records has no STAC `summaries`, so faceted values are direct array
 properties.
 
-### 4.5 Catalog position
+### 4.5 Catalog hierarchy
 
-A record's position (`standard.md` section 4.8) creates no new resource here. Records stay
+A record's `parent` (`standard.md` section 4.8) creates no new resource here. Records stay
 individual records in the same record collection, and the hierarchy is carried as `parent` and
-`child` links between them. Unlike the STAC encoding (`mapping-stac.md` section 4.7), no
-intermediate catalog resource is generated for a pure grouping directory, because a record
-collection is already the unit an OGC API - Records deployment serves.
+`child` links between them.
 
 ## 5. Links
 
@@ -158,15 +158,42 @@ For OGC Records, file-level metadata lives on the link, not as top-level record 
 | `data[].file_size`         | `links[*].length`                                       |
 | `data[].description`       | `links[*].title` / `description` extension if supported |
 
-Each `locations[]` entry becomes a link. `locations[0]` gets the primary relation (`enclosure` /
-`service`); additional same-content locations use `rel=alternate`.
+For entries without `href_template` or `file_index`, each `locations[]` entry becomes a link.
+`locations[0]` gets the primary relation (`enclosure` / `service`); additional same-content
+locations use `rel=alternate`.
 
 ### 5.3 Primary data link
 
 The required CDH `data[]` entries map to `links[rel=enclosure]` for downloadable files, or
 `links[rel=service]` for service endpoints (using the canonical `locations[0]`). If the resource is
 a landing page, code repository, dashboard, or model, use `rel=about`, `rel=code`
-(`processing-expression` for workflow code), or the most appropriate relation from section 5.1.
+(`processing-expression` for workflow code), or the most appropriate relation from section 5.1. For
+`file_index`, resolve the file list first as described below; the location base is not a
+downloadable file.
+
+### 5.4 File inventories
+
+Every `file_index[]` entry becomes a `links[rel=describedby]` entry per location, titled by its
+`format` (or `title`), with `type` from `media_type` when present. Only a `cdh-inventory` entry is
+expanded as below; other formats are not read.
+
+Inspect the CSV using the [file index rules](standard.md#file-indexes-file_index). Keep one
+discovery record for the dataset and emit an `enclosure` link for each row's canonical resolved file
+URL. Resolve the same relative `href` against remaining locations for its `alternate` links. Give
+links titles that identify the entry and relative file path, plus the access label where present, so
+alternates can be associated with their canonical file.
+
+The entry's media type and description apply to each file link; include `length` only when the
+entry's per-file size is valid for every row. Records links carry no checksum; a `checksum` column
+stays in the linked inventory. Shared field definitions remain in the record. The inventory retains
+the mapping of file paths to supplied coordinates and selected fields; link the CSV with
+`rel: describedby`, `type: text/csv`, and a title identifying the asset's file inventory. Do not
+turn the inventory URL or base directory into an `enclosure` link, expand missing rows, or promote
+one row's time or bbox to the dataset extent.
+
+Unavailable or invalid inventories prevent a complete file-link export. Report that condition
+instead of silently exporting a partial list. Consumers can still display descriptive metadata with
+an explicit notice that file enumeration is unavailable.
 
 ## 6. Processing and provenance
 
@@ -179,8 +206,9 @@ Encoding rules:
    schema mirrors the YAML.
 2. The `source` step's `code.url` maps to `links[rel=processing-expression]` on the record. Include
    `cgiar-cdh:code_version` as a link extra field.
-3. Each step's `derived_from[].url` entries (always external URLs) map to `links[rel=derived_from]`
-   on the record.
+3. Each step's `derived_from[]` entries map to `links[rel=derived_from]` on the record, with
+   `version` carried as a `cgiar-cdh:source_version` link extra field. An `id` resolves to that
+   record's URL.
 4. Per-asset processing chains live in the corresponding link's `cgiar-cdh:processing_steps` extra
    field (mirroring `data[].processing_steps[]` in the YAML).
 
