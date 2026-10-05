@@ -92,8 +92,8 @@ occur between minor versions.
   STAC output still uses the STAC Datacube extension.
 - **Breaking:** removed the classification extension. Class codes move onto their variable as
   `variables[].categories` (`{ value, label, description? }`, after Frictionless `categories`), so
-  nothing links codes to a variable by name. `value` and `label` are now required. Encoded as STAC
-  `classification:classes` on that variable.
+  nothing links codes to a variable by name. `value` and `label` are now required, and each `value`
+  appears once per variable. Encoded as STAC `classification:classes` on that variable.
 - **Breaking:** `variables[].data_type` is a closed list: the STAC `raster:data_type` names plus
   `decimal`, `boolean`, `string`, `binary`, `date`, `time`, `datetime`, and `other` for nested
   types.
