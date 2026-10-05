@@ -20,7 +20,6 @@ Records are validated against the schema and mapped to STAC or OGC API Records.
 
 ## Mappings
 
-- [Crosswalk](./spec/crosswalk.md) - CDH fields mapped to STAC and OGC API Records.
 - [STAC mapping](./spec/mapping-stac.md)
 - [OGC API Records mapping](./spec/mapping-ogc-records.md)
 

@@ -122,6 +122,8 @@ occur between minor versions.
   do. Relaxing the schema for blank placeholders changed what its rules meant: draft mode rejected
   every `spatial.bbox` and any filled `data[]` entry. Records are always checked as complete. Refs:
   #33
+- Removed `spec/crosswalk.md`. It repeated `mapping-stac.md` and `mapping-ogc-records.md` and had
+  drifted from them; those two documents hold the field mappings.
 
 ## [0.3.0] - 2026-08-20
 

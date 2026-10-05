@@ -11,8 +11,7 @@ projects and programs. It is intend to map to commonly used community formats, n
 - **OGC API Records** (recordJSON) - for everything else: non-spatial datasets, documents, software,
   services. See [`mapping-ogc-records.md`](./mapping-ogc-records.md).
 
-For the field-level mapping to both formats, see [`crosswalk.md`](./crosswalk.md). Validated sample
-records live in [`examples/`](../examples/).
+Validated sample records live in [`examples/`](../examples/).
 
 For contributor-facing guidance, start in [`authoring-guide.md`](./authoring-guide.md).
 
@@ -84,8 +83,8 @@ can select the CDH profile for editor hints in a `yaml-language-server` comment.
 To carry metadata the standard does not yet cover:
 
 1. Use a field from an existing CDH extension if one fits.
-2. Add a field to a CDH extension when it is broadly useful. Update the schema, profile, crosswalk,
-   and examples before use.
+2. Add a field to a CDH extension when it is broadly useful. Update the schema, profile, mapping
+   docs, and examples before use.
 3. Author a new extension for project- or center-specific fields. Start from
    [`extensions/_template/`](extensions/_template/README.md); see [`extending.md`](./extending.md).
 
