@@ -224,18 +224,18 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       assetNames.add(asset.name);
     });
   }
-  list(doc?.joins).forEach((join, i) => {
-    const left = list(join?.left_fields);
-    const right = list(join?.right_fields);
+  list(doc?.foreign_keys).forEach((fk, i) => {
+    const left = list(fk?.fields);
+    const right = list(fk?.reference?.fields);
     if (left.length && right.length && left.length !== right.length) {
       out.push(
-        `/joins/${i}: left_fields (${left.length}) and right_fields (${right.length}) must have the same length`,
+        `/foreign_keys/${i}: fields (${left.length}) and reference.fields (${right.length}) must have the same length`,
       );
     }
     left.forEach((f, k) => {
       if (typeof f === "string" && !declaredNames.has(f)) {
         out.push(
-          `/joins/${i}/left_fields/${k}: "${f}" does not match any declared dimensions[]/variables[] name`,
+          `/foreign_keys/${i}/fields/${k}: "${f}" does not match any declared dimensions[]/variables[] name`,
         );
       }
     });

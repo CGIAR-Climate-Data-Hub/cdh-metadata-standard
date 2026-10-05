@@ -1,0 +1,10 @@
+# fields must reference a declared column; adm0_code is not declared.
+dimensions:
+  - name: adm2_code
+    type: location
+    description: GAUL 2015 admin-2 code.
+foreign_keys:
+  - fields: [adm0_code, adm2_code]
+    reference:
+      resource: https://cdh.example/boundaries/gaul-2015-admin2
+      fields: [ADM0_CODE, ADM2_CODE]

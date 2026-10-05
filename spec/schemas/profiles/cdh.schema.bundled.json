@@ -2669,29 +2669,15 @@
             }
           }
         },
-        "joins": {
-          "description": "Joins from this table to other catalogued datasets. Each entry pairs this record's key columns with the target's columns, positionally.",
+        "foreign_keys": {
+          "description": "Keys from this table to other catalogued datasets, after Frictionless Table Schema foreignKeys. Each entry pairs this record's key columns with the referenced dataset's columns, positionally.",
           "type": "array",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["target", "left_fields", "right_fields"],
+            "required": ["fields", "reference"],
             "properties": {
-              "target": {
-                "description": "The dataset joined to (e.g. a boundary/station record): its catalog record id, which must resolve to exactly one catalog record, or an absolute URI for a dataset outside the catalog.",
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "pattern": "^[a-z0-9][a-z0-9-]*$"
-                  },
-                  {
-                    "type": "string",
-                    "format": "uri"
-                  }
-                ],
-                "examples": ["gaul-2015-admin2", "https://example.org/boundaries/gaul-2015-admin2"]
-              },
-              "left_fields": {
+              "fields": {
                 "description": "Key columns in this record; each must be a declared dimensions[]/variables[] name.",
                 "type": "array",
                 "minItems": 1,
@@ -2700,13 +2686,42 @@
                   "minLength": 1
                 }
               },
-              "right_fields": {
-                "description": "Matching columns in the target, paired positionally with left_fields (same length).",
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                  "type": "string",
-                  "minLength": 1
+              "reference": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["resource", "fields"],
+                "properties": {
+                  "resource": {
+                    "description": "The dataset referenced (e.g. a boundary/station record): its catalog record id, which must resolve to exactly one catalog record, or an absolute URI for a dataset outside the catalog.",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9-]*$"
+                      },
+                      {
+                        "type": "string",
+                        "format": "uri"
+                      }
+                    ],
+                    "examples": [
+                      "gaul-2015-admin2",
+                      "https://example.org/boundaries/gaul-2015-admin2"
+                    ]
+                  },
+                  "asset": {
+                    "description": "The data[].name of the referenced dataset's file that holds reference.fields. Required when that dataset has more than one data[] entry.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "fields": {
+                    "description": "Matching columns in the referenced dataset, paired positionally with fields (same length).",
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
                 }
               }
             }

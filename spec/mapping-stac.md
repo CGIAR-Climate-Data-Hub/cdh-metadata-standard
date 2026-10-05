@@ -176,9 +176,9 @@ second is a shape CDH does not emit, and the extension forbids both as custom ty
   on tables; `decimal`, `boolean`, `string`, `binary`, `date`, `time`, and `datetime` are
   table-only.
 - Tabular data uses Table Extension `table:columns`; `spatial.geometry_column` maps to
-  `table:primary_geometry`. Each `joins[]` entry emits a link to its `target` (an id resolves to
-  that record's URL) so the join is followable, with the `left_fields`/`right_fields` pairing
-  carried as `cgiar-cdh:` link fields.
+  `table:primary_geometry`. Each `foreign_keys[]` entry maps to `cgiar-cdh:foreign_keys` on every
+  asset that holds its `fields`, in the same shape: `reference.resource` becomes `reference.href`
+  (an id resolves to that record's URL) and `reference.asset` stays the target's asset key.
 
 Integer `variables[].categories` on raster variables map to Classification Extension
 `classification:classes` on the corresponding band, or the asset for a single-band raster: `value`

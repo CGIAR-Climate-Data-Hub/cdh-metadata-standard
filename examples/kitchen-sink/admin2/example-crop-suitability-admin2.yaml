@@ -129,10 +129,12 @@ variables:
     unit: "1"
     note: Low counts mean the mean rests on very few cells.
 
-joins:
-  - target: https://example.org/data/example-farland-admin2-boundaries
-    left_fields: [adm0_code, adm2_code]
-    right_fields: [ADM0_CODE, ADM2_CODE]
+foreign_keys:
+  - fields: [adm0_code, adm2_code]
+    reference:
+      resource: https://example.org/data/example-farland-admin2-boundaries
+      asset: boundaries
+      fields: [ADM0_CODE, ADM2_CODE]
 
 cdh:
   domain: [agricultural-production, adaptation]

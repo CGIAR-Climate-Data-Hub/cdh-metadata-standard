@@ -244,25 +244,28 @@ data:
     structures: [daily, static]
 ```
 
-## `joins[]`
+## `foreign_keys[]`
 
-Joins from this table to other catalogued datasets - typically a value table keyed to an external
-geometry/boundary set rather than embedding geometry.
+Keys from this table to other catalogued datasets - typically a value table keyed to an external
+geometry/boundary set rather than embedding geometry. Same shape as Frictionless Table Schema
+`foreignKeys`.
 
 - **Requirement:** Optional.
-- **Expected value per join:** `{ target, left_fields, right_fields }`.
+- **Expected value per key:** `{ fields, reference: { resource, asset, fields } }`.
 - **Rules:**
-  - `target` is the dataset joined to: its catalog record id, or an absolute URI for a dataset
-    outside the catalog. Prefer the id, which survives a catalog move. An id MUST resolve to exactly
-    one catalog record.
-  - `left_fields` are this record's key columns; each MUST be a declared
-    `dimensions[]`/`variables[]` name. `right_fields` are the matching columns in the target.
+  - `reference.resource` is the dataset referenced: its catalog record id, or an absolute URI for a
+    dataset outside the catalog. Prefer the id, which survives a catalog move. An id MUST resolve to
+    exactly one catalog record.
+  - `reference.asset` is the `data[].name` of the referenced file that holds `reference.fields`. It
+    MUST be given when the referenced record has more than one `data[]` entry.
+  - `fields` are this record's key columns; each MUST be a declared `dimensions[]`/`variables[]`
+    name. `reference.fields` are the matching columns in the referenced dataset.
   - The two arrays pair **positionally** and MUST be the same length, so composite keys (e.g.
     `[adm0_code, adm2_code]`) and differing column names on each side are both handled.
   - No join type or cardinality is expressed; an entry is an equi-join on the paired fields.
 
 Model the join as two records: the boundary/index set is its own record (its geometries plus the
-code columns), and the value table declares its key columns and the `joins[]` entry:
+code columns), and the value table declares its key columns and the `foreign_keys[]` entry:
 
 ```yaml
 dimensions:
@@ -276,8 +279,9 @@ variables:
   - name: population
     description: Population per admin unit.
     unit: "1"
-joins:
-  - target: https://cdh.example/boundaries/gaul-2015-admin2
-    left_fields: [adm0_code, adm2_code]
-    right_fields: [ADM0_CODE, ADM2_CODE]
+foreign_keys:
+  - fields: [adm0_code, adm2_code]
+    reference:
+      resource: https://cdh.example/boundaries/gaul-2015-admin2
+      fields: [ADM0_CODE, ADM2_CODE]
 ```

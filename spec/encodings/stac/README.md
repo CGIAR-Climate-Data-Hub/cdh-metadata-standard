@@ -39,16 +39,16 @@ The fields in the table below can be used in these parts of STAC documents:
 - [ ] Catalogs
 - [x] Collections
 - [x] Item Properties (incl. Summaries in Collections)
-- [x] Assets (`cgiar-cdh:partition` only)
+- [x] Assets (`cgiar-cdh:partition` and `cgiar-cdh:foreign_keys` only)
 - [x] Links (incl. Link Templates)
 - [ ] Bands
 
 Catalogs are excluded on purpose: the root Catalog provides navigation, while resource nodes are
 records linked by explicit `parent` references; directories have no catalog meaning
-([`standard.md`](../../standard.md) section 4.8). An asset carries exactly one field,
-`cgiar-cdh:partition`, because it describes a single file; per-asset provenance uses the Processing
-extension. The schema closes the namespace everywhere, so a stray or misplaced `cgiar-cdh:` field
-fails validation instead of passing silently.
+([`standard.md`](../../standard.md) section 4.8). An asset carries only `cgiar-cdh:partition` and
+`cgiar-cdh:foreign_keys`, because it describes a single file; per-asset provenance uses the
+Processing extension. The schema closes the namespace everywhere, so a stray or misplaced
+`cgiar-cdh:` field fails validation instead of passing silently.
 
 | Field Name                    | Type                                                 | Description                                                                                                                                          |
 | ----------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -58,6 +58,7 @@ fails validation instead of passing silently.
 | cgiar-cdh:access              | string                                               | `public`, `restricted`, or `non-public`. Absent means public. Distinct from `license`: what you may do versus whether you can get it.                |
 | cgiar-cdh:access_note         | string                                               | What a user must do to obtain the data, or why it is catalogued but unavailable.                                                                     |
 | cgiar-cdh:partition           | [Partition Object](#partition-object)                | Item properties only: the values each axis spans within this Item. See the object for the asset form.                                                |
+| cgiar-cdh:foreign_keys        | \[[Foreign Key Object](#foreign-key-object)]         | Assets only: keys from this asset's columns to another dataset.                                                                                      |
 | cgiar-cdh:note                | string                                               | Caveats or interpretation-critical context that is not part of `description`.                                                                        |
 | cgiar-cdh:update_frequency    | string                                               | How often the resource gains new data: `daily`, `weekly`, `monthly`, `quarterly`, `semiannual`, `annual`, or `irregular`.                            |
 | cgiar-cdh:funding             | \[[Name-URL Object](#name-url-object)]               | Funding sources for the resource.                                                                                                                    |
@@ -76,12 +77,10 @@ fails validation instead of passing silently.
 
 These appear on a link object, never in Collection or Item properties.
 
-| Field Name               | Type      | Description                                                                      |
-| ------------------------ | --------- | -------------------------------------------------------------------------------- |
-| cgiar-cdh:code_version   | string    | Version of the code or workflow a `processing-expression` link points at.        |
-| cgiar-cdh:source_version | string    | Version of the source release a `derived_from` link points at.                   |
-| cgiar-cdh:left_fields    | \[string] | Key columns in this resource, paired positionally with `cgiar-cdh:right_fields`. |
-| cgiar-cdh:right_fields   | \[string] | Matching columns in the joined resource. Same length as `cgiar-cdh:left_fields`. |
+| Field Name               | Type   | Description                                                               |
+| ------------------------ | ------ | ------------------------------------------------------------------------- |
+| cgiar-cdh:code_version   | string | Version of the code or workflow a `processing-expression` link points at. |
+| cgiar-cdh:source_version | string | Version of the source release a `derived_from` link points at.            |
 
 ### Additional Field Information
 
@@ -159,6 +158,38 @@ entries; those serialize to `cube:dimensions[].step` instead of here.
 
 An object keyed by axis name. Values are scalars on an asset and arrays of scalars in Item
 properties; at least one axis must be present.
+
+### Foreign Key Object
+
+Same shape as Frictionless Table Schema `foreignKeys`, with the target given by URL.
+
+| Field Name | Type                                  | Description                                                              |
+| ---------- | ------------------------------------- | ------------------------------------------------------------------------ |
+| fields     | \[string]                             | **REQUIRED**. Key columns in this asset.                                 |
+| reference  | [Reference Object](#reference-object) | **REQUIRED**. The columns they match. Paired positionally with `fields`. |
+
+### Reference Object
+
+| Field Name | Type      | Description                                                |
+| ---------- | --------- | ---------------------------------------------------------- |
+| href       | string    | **REQUIRED**. URL of the referenced dataset.               |
+| asset      | string    | Key of the referenced dataset's asset that holds `fields`. |
+| fields     | \[string] | **REQUIRED**. Matching columns in the referenced asset.    |
+
+```json
+{
+  "cgiar-cdh:foreign_keys": [
+    {
+      "fields": ["adm0_code", "adm2_code"],
+      "reference": {
+        "href": "https://example.org/data/example-farland-admin2-boundaries",
+        "asset": "boundaries",
+        "fields": ["ADM0_CODE", "ADM2_CODE"]
+      }
+    }
+  ]
+}
+```
 
 ### Not-Recommended Object
 

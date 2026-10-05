@@ -289,20 +289,47 @@
       "description": "Version of the source release a derived_from link points at, as the source labels it.",
       "$ref": "#/definitions/nonEmptyString"
     },
-    "cgiar-cdh:left_fields": {
-      "description": "Key columns in this resource, paired positionally with cgiar-cdh:right_fields on a link to the joined resource.",
+    "columnList": {
       "type": "array",
       "minItems": 1,
       "items": {
         "$ref": "#/definitions/nonEmptyString"
       }
     },
-    "cgiar-cdh:right_fields": {
-      "description": "Matching columns in the joined resource, paired positionally with cgiar-cdh:left_fields.",
+    "cgiar-cdh:foreign_keys": {
+      "description": "Keys from this asset's columns to another dataset, after Frictionless Table Schema foreignKeys. fields and reference.fields pair positionally.",
       "type": "array",
       "minItems": 1,
       "items": {
-        "$ref": "#/definitions/nonEmptyString"
+        "type": "object",
+        "required": ["fields", "reference"],
+        "properties": {
+          "fields": {
+            "description": "Key columns in this asset.",
+            "$ref": "#/definitions/columnList"
+          },
+          "reference": {
+            "type": "object",
+            "required": ["href", "fields"],
+            "properties": {
+              "href": {
+                "description": "URL of the referenced dataset.",
+                "type": "string",
+                "format": "uri"
+              },
+              "asset": {
+                "description": "Key of the referenced dataset's asset that holds reference.fields.",
+                "$ref": "#/definitions/nonEmptyString"
+              },
+              "fields": {
+                "description": "Matching columns in the referenced asset.",
+                "$ref": "#/definitions/columnList"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
       }
     },
     "fields": {
@@ -383,12 +410,6 @@
         },
         "cgiar-cdh:source_version": {
           "$ref": "#/definitions/cgiar-cdh:source_version"
-        },
-        "cgiar-cdh:left_fields": {
-          "$ref": "#/definitions/cgiar-cdh:left_fields"
-        },
-        "cgiar-cdh:right_fields": {
-          "$ref": "#/definitions/cgiar-cdh:right_fields"
         }
       },
       "patternProperties": {
@@ -526,11 +547,14 @@
       "additionalProperties": false
     },
     "assetFields": {
-      "$comment": "An asset describes one file, so the only cgiar-cdh field it carries is that file's exact position. Per-asset provenance uses the Processing extension.",
+      "$comment": "An asset describes one file: its exact position and its keys. Per-asset provenance uses the Processing extension.",
       "type": "object",
       "properties": {
         "cgiar-cdh:partition": {
           "$ref": "#/definitions/partitionScalar"
+        },
+        "cgiar-cdh:foreign_keys": {
+          "$ref": "#/definitions/cgiar-cdh:foreign_keys"
         }
       },
       "patternProperties": {
@@ -544,7 +568,10 @@
       "$comment": "A Collection asset is the un-templated whole - 5.2 expands templated entries into Items - so it holds no partition. item_assets is a template shared by every Item, where one exact value cannot apply either.",
       "type": "object",
       "properties": {
-        "cgiar-cdh:partition": false
+        "cgiar-cdh:partition": false,
+        "cgiar-cdh:foreign_keys": {
+          "$ref": "#/definitions/cgiar-cdh:foreign_keys"
+        }
       },
       "patternProperties": {
         "^(?!cgiar-cdh:)": {

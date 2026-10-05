@@ -102,12 +102,18 @@ occur between minor versions.
 - **Breaking:** removed `variables[].dimensions` (data dictionary extension). A variable has every
   declared dimension, or those of the structures that hold it. Variables on different axes in one
   asset are two structures on that asset.
+- **Breaking:** `joins[]` is renamed `foreign_keys[]` (data dictionary extension) and takes the
+  Frictionless Table Schema `foreignKeys` shape:
+  `{ fields, reference: { resource, asset, fields } }` replaces
+  `{ target, left_fields, right_fields }`. `reference.resource` accepts a catalog record id as well
+  as an absolute URI. An id survives a catalog move and must resolve to exactly one catalog record.
+  The new `reference.asset` names the target's file, and is required when the target has more than
+  one `data[]` entry. In STAC, an asset-level `cgiar-cdh:foreign_keys` replaces the
+  `cgiar-cdh:left_fields` and `cgiar-cdh:right_fields` link fields, so both files are explicit.
 - `variables[].unit` is optional (data dictionary extension). Omit it for unitless values such as
   class codes.
 - `data[].locations` may be omitted when a `file_index` other than `cdh-inventory` carries the file
   locations.
-- `joins[].target` accepts a catalog record id as well as an absolute URI (data dictionary
-  extension). An id survives a catalog move and must resolve to exactly one catalog record.
 
 ### Removed
 
