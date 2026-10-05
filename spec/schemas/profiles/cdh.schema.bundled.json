@@ -330,7 +330,7 @@
               "checksum": {
                 "description": "Digest of the single file this entry names, as <algorithm>:<hex>. Not for templated or indexed entries; a cdh-inventory carries per-file checksums.",
                 "type": "string",
-                "pattern": "^(md5|sha1|sha256|sha512):[0-9a-f]+$",
+                "pattern": "^(md5:[0-9a-f]{32}|sha1:[0-9a-f]{40}|sha256:[0-9a-f]{64}|sha512:[0-9a-f]{128})$",
                 "examples": [
                   "sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"
                 ]
