@@ -120,9 +120,10 @@ jobs:
           declare -A groups
           status=0
           while IFS= read -r f; do
-            v=$(sed -nE 's/^cdh_schema_version: *["'"'"']?([^"'"'"' ]+).*/\1/p' "$f" | head -1)
-            if [ -z "$TOOLING_REF" ] && [ -z "$v" ]; then
-              echo "::error file=$f::no cdh_schema_version"; status=1; continue
+            v=$(yq '.cdh_schema_version // ""' "$f" 2>/dev/null || true)
+            # v becomes a fetch ref and a directory name, so require vX.Y.Z.
+            if [ -z "$TOOLING_REF" ] && ! [[ $v =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "::error file=$f::cdh_schema_version '$v' is missing or not vX.Y.Z"; status=1; continue
             fi
             # A series matches as a prefix at a dot: "v1" takes v1.x.y, "v0.3" takes v0.3.y.
             ok=; for s in $VERSIONS; do [[ "$v." == "$s."* ]] && ok=1; done
@@ -136,8 +137,7 @@ jobs:
           for ref in "${!groups[@]}"; do
             echo "::group::Validating with $TOOLING_REPO@$ref"
             dir="_cdh-tooling/$ref"
-            mkdir -p "$dir"
-            git -C "$dir" init -q
+            git init -q "$dir"
             git -C "$dir" fetch -q --depth 1 "https://github.com/$TOOLING_REPO" "$ref"
             git -C "$dir" checkout -q FETCH_HEAD
             npm ci --prefix "$dir" --silent
