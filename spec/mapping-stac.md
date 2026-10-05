@@ -149,18 +149,21 @@ For grid data, `spatial.resolution[]` derives `cube:dimensions[].step` with nati
 Dimension types map as follows. The horizontal axes are derived, never authored: `spatial.bbox`
 gives each one's `extent` and `spatial.resolution[]` its `step`.
 
-| CDH `dimensions[].type` | STAC `cube:dimensions` entry                                  |
-| ----------------------- | ------------------------------------------------------------- |
-| derived from `spatial`  | `{ type: spatial, axis: x }` and `{ type: spatial, axis: y }` |
-| `z`                     | `{ type: spatial, axis: z }`, carrying `values`, `unit`       |
-| `temporal`              | `{ type: temporal }`, carrying `values` and `step`            |
-| `location`, any other   | Additional Dimension: `{ type: <the CDH value> }`             |
+| CDH `dimensions[].type` | STAC `cube:dimensions` entry                                         |
+| ----------------------- | -------------------------------------------------------------------- |
+| derived from `spatial`  | `{ type: spatial, axis: x }` and `{ type: spatial, axis: y }`        |
+| `z`                     | `{ type: spatial, axis: z }`, carrying `values`, `unit`              |
+| `temporal`              | `{ type: temporal }`, carrying `values` and `step`                   |
+| `location`, any other   | Additional Dimension: `{ type: <the CDH value> }`, carrying `values` |
 
-Every dimension object requires an `extent`. It is derived, not copied from the CDH field of the
-same name: from the dimension's `values` (first and last) or its authored `extent`, and otherwise
-from the top-level `temporal` coverage for a temporal axis or `spatial.bbox` for a horizontal one.
-That is what lets a high-cardinality axis - a `day` column with no enumerated values - serialize at
-all. A record may carry several temporal dimensions, each getting its own extent this way.
+A temporal dimension requires an `extent`. It is derived, not copied from the CDH field of the same
+name. It comes from the dimension's `values` (first and last), its authored `extent`, or the
+top-level `temporal` coverage. A record may have several temporal dimensions, each with its own
+extent.
+
+A `z` or Additional Dimension needs `extent` or `values`. It carries its `values`, and gets an
+`extent` (first and last value) only when the values are numbers. A dimension with no `values` can't
+meet this, so it is left out of `cube:dimensions`.
 
 `unit` maps to `cube:dimensions[].unit`, which the datacube extension defines on every dimension
 flavour. `spatial` and `geometry` are not accepted as authored types: the first is derived and the
