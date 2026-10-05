@@ -156,7 +156,7 @@ For OGC Records, file-level metadata lives on the link, not as top-level record 
 | `data[].locations[].title` | `links[*].title` (access label)                         |
 | `data[].name`              | `links[*].title`                                        |
 | `data[].media_type`        | `links[*].type`                                         |
-| `data[].file_size`         | `links[*].length`                                       |
+| `data[].file_size`         | `links[*].length` (in bytes, 1 KB = 1000 bytes)         |
 | `data[].description`       | `links[*].title` / `description` extension if supported |
 
 For entries without `href_template` or `file_index`, each `locations[]` entry becomes a link.

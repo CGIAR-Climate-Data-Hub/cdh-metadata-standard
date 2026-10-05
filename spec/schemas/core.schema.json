@@ -9,19 +9,7 @@
           "type": "string",
           "minLength": 1
         },
-        "file_size": {
-          "description": "File size in bytes (integer) or a human-readable string (e.g. 1.2 GB).",
-          "anyOf": [
-            {
-              "minLength": 1,
-              "type": "string"
-            },
-            {
-              "minimum": 0,
-              "type": "integer"
-            }
-          ]
-        },
+        "file_size": { "$ref": "#/$defs/fileSize" },
         "locations": {
           "description": "Access paths to the same content; the first is canonical. An absolute URL, or a path relative to the record file for a small metadata file committed beside it (README, agent guide, code list, thumbnail).",
           "items": {
@@ -128,19 +116,7 @@
           "pattern": "^(md5|sha1|sha256|sha512):[0-9a-f]+$",
           "examples": ["sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"]
         },
-        "file_size": {
-          "description": "File size in bytes (integer) or a human-readable string (e.g. 1.2 GB).",
-          "anyOf": [
-            {
-              "minLength": 1,
-              "type": "string"
-            },
-            {
-              "minimum": 0,
-              "type": "integer"
-            }
-          ]
-        },
+        "file_size": { "$ref": "#/$defs/fileSize" },
         "locations": {
           "$ref": "#/$defs/locations"
         },
@@ -423,6 +399,13 @@
       },
       "required": ["url"],
       "type": "object"
+    },
+    "fileSize": {
+      "description": "File size: whole bytes (31100000) or a number and unit (31.1 MB). Units are B, KB, MB, GB, TB, PB, in powers of 1000 (1 KB = 1000 bytes).",
+      "anyOf": [
+        { "type": "integer", "minimum": 0 },
+        { "type": "string", "pattern": "^\\d+(\\.\\d+)?\\s?(B|KB|MB|GB|TB|PB)$" }
+      ]
     },
     "mediaType": {
       "description": "Media type (IANA), optionally with format parameters such as profile or version.",

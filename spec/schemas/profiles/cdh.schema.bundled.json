@@ -35,15 +35,15 @@
                 "minLength": 1
               },
               "file_size": {
-                "description": "File size in bytes (integer) or a human-readable string (e.g. 1.2 GB).",
+                "description": "File size: whole bytes (31100000) or a number and unit (31.1 MB). Units are B, KB, MB, GB, TB, PB, in powers of 1000 (1 KB = 1000 bytes).",
                 "anyOf": [
                   {
-                    "minLength": 1,
-                    "type": "string"
+                    "type": "integer",
+                    "minimum": 0
                   },
                   {
-                    "minimum": 0,
-                    "type": "integer"
+                    "type": "string",
+                    "pattern": "^\\d+(\\.\\d+)?\\s?(B|KB|MB|GB|TB|PB)$"
                   }
                 ]
               },
@@ -336,15 +336,15 @@
                 ]
               },
               "file_size": {
-                "description": "File size in bytes (integer) or a human-readable string (e.g. 1.2 GB).",
+                "description": "File size: whole bytes (31100000) or a number and unit (31.1 MB). Units are B, KB, MB, GB, TB, PB, in powers of 1000 (1 KB = 1000 bytes).",
                 "anyOf": [
                   {
-                    "minLength": 1,
-                    "type": "string"
+                    "type": "integer",
+                    "minimum": 0
                   },
                   {
-                    "minimum": 0,
-                    "type": "integer"
+                    "type": "string",
+                    "pattern": "^\\d+(\\.\\d+)?\\s?(B|KB|MB|GB|TB|PB)$"
                   }
                 ]
               },

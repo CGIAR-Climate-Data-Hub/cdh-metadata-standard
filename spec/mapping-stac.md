@@ -249,8 +249,9 @@ Every asset SHOULD include:
 - `roles`
 - `description` if the asset is not self-explanatory
 
-Recommended file metadata: File Extension `file:size` in bytes. A `data[].checksum` becomes
-`file:checksum`, re-encoded as a multihash.
+Recommended file metadata: File Extension `file:size` in bytes. A `file_size` written with a unit
+converts at powers of 1000 (`31.1 MB` is `31100000`). A `data[].checksum` becomes `file:checksum`,
+re-encoded as a multihash.
 
 ### 5.1 Asset `locations[]`
 
