@@ -239,6 +239,14 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
         );
       }
     });
+    // A key's columns must sit together in one asset, or no asset carries the key.
+    const together = held.some((ss) => {
+      const cols = new Set(ss.flatMap((s) => [...list(s.dimensions), ...list(s.variables)]));
+      return left.every((f) => cols.has(f));
+    });
+    if (structures.size > 0 && left.every((f) => declaredNames.has(f)) && !together) {
+      out.push(`/foreign_keys/${i}/fields: no data[] asset holds all of [${left.join(", ")}]`);
+    }
   });
   return out;
 }

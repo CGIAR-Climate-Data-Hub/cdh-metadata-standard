@@ -22,6 +22,8 @@ occur between minor versions.
 
 ### Fixed
 
+- A foreign key's `fields` must all be in one `data[]` asset. A key split across assets passed
+  validation but was attached to no asset in STAC.
 - `checksum` must have the digest length its algorithm produces (64 hex characters for `sha256`).
   `sha256:0` used to pass.
 - `variables` must list at least one variable. An empty list let a `{variable}` `href_template`
