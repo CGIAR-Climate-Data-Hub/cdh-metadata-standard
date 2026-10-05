@@ -834,19 +834,8 @@ Avoid inventing new fields. If the schema has no place for something, use `addit
 
 ## Validation Checklist
 
-### Required for every record
-
-- [ ] `cdh_schema_version`
-- [ ] `id`, `title`, `description`
-- [ ] `version`
-- [ ] `created`, `updated`
-- [ ] `resource_type`
-- [ ] `cdh.domain[]` includes at least one concept from `vocab/domain.json`
-- [ ] `keywords[]`
-- [ ] `license`
-- [ ] `contact[]` includes at least one contact with `licensor` in `roles`
-- [ ] `citation` (or `doi`, which satisfies the citation requirement)
-- [ ] `data[]` includes at least one entry
+The validator checks required fields, so a record that passes has them all. It cannot tell whether a
+record is geospatial or which conditional fields apply. Check those by hand:
 
 ### Required for geospatial records
 
