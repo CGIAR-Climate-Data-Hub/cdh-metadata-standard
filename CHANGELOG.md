@@ -10,6 +10,13 @@ occur between minor versions.
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking:** temporal `values` and `extent` written as a date-time must be RFC 3339, with seconds
+  and an offset (`2020-01-01T01:00:00Z`). Date-times are now checked as real calendar dates, so
+  `2026-02-30T10:00:00Z` fails, and a missing offset no longer makes ordering depend on the
+  machine's timezone.
+
 ### Fixed
 
 - `variables` must list at least one variable. An empty list let a `{variable}` `href_template`

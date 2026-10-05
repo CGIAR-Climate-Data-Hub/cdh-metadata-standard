@@ -2414,7 +2414,7 @@
                 "examples": ["P3M", "P20Y"]
               },
               "extent": {
-                "description": "First and last value of a regular temporal axis, as ISO 8601 strings, in place of listing every value. Only valid on a type: temporal dimension with a step, and not alongside values. Both strings are written at one precision (YYYY, YYYY-MM, YYYY-MM-DD, or a date-time), no coarser than the step, start before end. The values are start, start + step, … while <= end, at that same precision, so [\"1981\", \"2025\"] with step P1Y is 1981, 1982, ... 2025.",
+                "description": "First and last value of a regular temporal axis, as ISO 8601 strings, in place of listing every value. Only valid on a type: temporal dimension with a step, and not alongside values. Both strings are written at one precision (YYYY, YYYY-MM, YYYY-MM-DD, or an RFC 3339 date-time with seconds and offset), no coarser than the step, start before end. The values are start, start + step, … while <= end, at that same precision, so [\"1981\", \"2025\"] with step P1Y is 1981, 1982, ... 2025.",
                 "minItems": 2,
                 "maxItems": 2,
                 "examples": [["1981", "2025"]],
@@ -2435,13 +2435,12 @@
                   },
                   {
                     "items": {
-                      "pattern": "^\\d{4}-(0[1-9]|1[0-2])-\\d{2}$",
                       "format": "date"
                     }
                   },
                   {
                     "items": {
-                      "pattern": "^\\d{4}-(0[1-9]|1[0-2])-\\d{2}[T ]\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})?$"
+                      "format": "date-time"
                     }
                   }
                 ]
@@ -2485,7 +2484,7 @@
             "then": {
               "properties": {
                 "values": {
-                  "description": "On a temporal dimension, every value is an ISO 8601 date or instant, as a string. A binned axis lists each bin's start and states its length in step, so a 30-year period axis is values: [\"2021\", \"2051\"] with step: P30Y. A cyclic label axis (DJF/MAM/JJA/SON) is not temporal - name it after what it varies and describe the labels. All values share one precision.",
+                  "description": "On a temporal dimension, every value is an ISO 8601 date or an RFC 3339 date-time with seconds and offset, as a string. A binned axis lists each bin's start and states its length in step, so a 30-year period axis is values: [\"2021\", \"2051\"] with step: P30Y. A cyclic label axis (DJF/MAM/JJA/SON) is not temporal - name it after what it varies and describe the labels. All values share one precision.",
                   "type": "array",
                   "items": {
                     "type": "string"
@@ -2503,13 +2502,12 @@
                     },
                     {
                       "items": {
-                        "pattern": "^\\d{4}-(0[1-9]|1[0-2])-\\d{2}$",
                         "format": "date"
                       }
                     },
                     {
                       "items": {
-                        "pattern": "^\\d{4}-(0[1-9]|1[0-2])-\\d{2}[T ]\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})?$"
+                        "format": "date-time"
                       }
                     }
                   ]
