@@ -707,6 +707,11 @@ and how long each label covers is stated in its `description`. This mirrors `spa
 horizontal grid comes from `spatial`, and every other axis - time and domain - is a `dimensions[]`
 entry. See the [data dictionary extension](extensions/data-dictionary/README.md).
 
+> [!NOTE] Temporal values and `extent` steps use the standard Gregorian calendar. Some climate model
+> data uses another calendar, such as `360_day` or `noleap`. Its days may not exist in the Gregorian
+> calendar (`2050-02-30`). Keep that calendar in the file's own metadata. Describe the axis by year
+> or month, or list day-level files in a `file_index`.
+
 ### 5.5 Extension fields
 
 CDH extension fields are declared in `extensions[]` and validated with the core (see section 4.2).
