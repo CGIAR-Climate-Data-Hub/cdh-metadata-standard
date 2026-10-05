@@ -407,6 +407,10 @@
         { "type": "string", "pattern": "^\\d+(\\.\\d+)?\\s?(B|KB|MB|GB|TB|PB)$" }
       ]
     },
+    "versionLabel": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]+$"
+    },
     "mediaType": {
       "description": "Media type (IANA), optionally with format parameters such as profile or version.",
       "pattern": "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+(\\s*;\\s*[^;=]+=[^;]+)*$",
@@ -906,7 +910,7 @@
       "description": "id of the parent record, when this record is a child representation of it. Omit on top-level records. Must resolve to exactly one catalog record, must not equal this record's id, and must not create a parent cycle."
     },
     "previous_version": {
-      "$ref": "#/$defs/nonEmptyString",
+      "$ref": "#/$defs/versionLabel",
       "description": "version of the predecessor record (same id), when this supersedes an earlier release."
     },
     "processing": {
@@ -958,8 +962,8 @@
       "description": "Date the metadata record was last updated - the record, not the data file."
     },
     "version": {
-      "$ref": "#/$defs/nonEmptyString",
-      "description": "Version label of this release of the resource. The source's own label when it has one; otherwise a counter from 1. Not compared or sorted - order comes from previous_version.",
+      "$ref": "#/$defs/versionLabel",
+      "description": "Version label of this release of the resource. The source's own label when it has one; otherwise a counter from 1. Letters, digits, dots, underscores, and hyphens only, since it becomes part of a superseded release's id. Not compared or sorted - order comes from previous_version.",
       "examples": ["1", "v2r2", "2.1"]
     }
   },

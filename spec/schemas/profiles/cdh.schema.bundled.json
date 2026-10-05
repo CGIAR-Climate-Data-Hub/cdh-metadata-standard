@@ -1134,9 +1134,9 @@
           "examples": ["example-crop-suitability", "spam2020"]
         },
         "previous_version": {
-          "minLength": 1,
+          "description": "version of the predecessor record (same id), when this supersedes an earlier release.",
           "type": "string",
-          "description": "version of the predecessor record (same id), when this supersedes an earlier release."
+          "pattern": "^[A-Za-z0-9._-]+$"
         },
         "processing": {
           "description": "Ordered processing/provenance steps; at least one must have id: source.",
@@ -2035,10 +2035,10 @@
           ]
         },
         "version": {
-          "minLength": 1,
+          "description": "Version label of this release of the resource. The source's own label when it has one; otherwise a counter from 1. Letters, digits, dots, underscores, and hyphens only, since it becomes part of a superseded release's id. Not compared or sorted - order comes from previous_version.",
+          "examples": ["1", "v2r2", "2.1"],
           "type": "string",
-          "description": "Version label of this release of the resource. The source's own label when it has one; otherwise a counter from 1. Not compared or sorted - order comes from previous_version.",
-          "examples": ["1", "v2r2", "2.1"]
+          "pattern": "^[A-Za-z0-9._-]+$"
         }
       },
       "required": [

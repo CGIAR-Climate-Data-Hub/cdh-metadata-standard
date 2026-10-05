@@ -12,6 +12,9 @@ occur between minor versions.
 
 ### Changed
 
+- **Breaking:** `version` and `previous_version` may hold only letters, digits, dots, underscores,
+  and hyphens. A version becomes part of a superseded release's id, where a space or `/` would break
+  the URL.
 - **Breaking:** superseded releases are emitted with id `<id>_<version>`, not `<id>-<version>`. The
   hyphen let `rain` version `2020` collide with a record whose id is `rain-2020`.
 - **Breaking:** `file_size` is whole bytes or a number and unit (`31.1 MB`). Units are B, KB, MB,
