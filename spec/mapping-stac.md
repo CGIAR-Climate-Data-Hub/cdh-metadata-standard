@@ -392,7 +392,8 @@ Encoding rules:
 5. `derived_from[]` entries map to `links[rel=derived_from]`, with `version` carried as a
    `cgiar-cdh:source_version` link field. An `id` resolves to that record's URL.
 6. Releases share a YAML `id`. The current release keeps it as the Collection id; superseded
-   releases are emitted as `<id>-<version>` so Collection ids stay unique.
+   releases are emitted as `<id>_<version>`. Record ids cannot contain `_`, so these never collide
+   with another record's id.
 
 ## 8. Validation expectations
 

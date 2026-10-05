@@ -12,6 +12,8 @@ occur between minor versions.
 
 ### Changed
 
+- **Breaking:** superseded releases are emitted with id `<id>_<version>`, not `<id>-<version>`. The
+  hyphen let `rain` version `2020` collide with a record whose id is `rain-2020`.
 - **Breaking:** `file_size` is whole bytes or a number and unit (`31.1 MB`). Units are B, KB, MB,
   GB, TB, PB, in powers of 1000. Free text could not be converted to the byte counts STAC and OGC
   Records expect.
