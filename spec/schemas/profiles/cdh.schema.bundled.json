@@ -2531,6 +2531,7 @@
         "variables": {
           "description": "Measurement variables, bands, or columns.",
           "type": "array",
+          "minItems": 1,
           "items": {
             "type": "object",
             "additionalProperties": false,

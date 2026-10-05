@@ -10,6 +10,11 @@ occur between minor versions.
 
 ## [Unreleased]
 
+### Fixed
+
+- `variables` must list at least one variable. An empty list let a `{variable}` `href_template`
+  validate while naming no files.
+
 ## [0.4.0] - 2026-10-05
 
 ### Added
