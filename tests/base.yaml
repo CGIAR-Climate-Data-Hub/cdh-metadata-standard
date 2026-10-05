@@ -1,9 +1,9 @@
 # A valid record. Each negative fixture in invalid/ is merged over it, so a
 # fixture holds only the fields that break one rule.
-cdh_schema_version: "v0.3.0"
+cdh_schema_version: "v0.4.0"
 extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/data-dictionary/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.0/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.0/extensions/data-dictionary/schema.json
 id: fixture-record
 version: "1"
 title: Fixture record
