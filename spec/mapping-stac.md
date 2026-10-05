@@ -162,8 +162,9 @@ top-level `temporal` coverage. A record may have several temporal dimensions, ea
 extent.
 
 A `z` or Additional Dimension needs `extent` or `values`. It carries its `values`, and gets an
-`extent` (first and last value) only when the values are numbers. A dimension with no `values` can't
-meet this, so it is left out of `cube:dimensions`.
+`extent` (smallest and largest value) only when the values are numbers. A dimension with no `values`
+gets `extent: [null, null]`, unknown bounds, so it stays in `cube:dimensions` for the variables that
+name it.
 
 `unit` maps to `cube:dimensions[].unit`, which the datacube extension defines on every dimension
 flavour. `spatial` and `geometry` are not accepted as authored types: the first is derived and the
@@ -253,8 +254,8 @@ Every asset SHOULD include:
 - `description` if the asset is not self-explanatory
 
 Recommended file metadata: File Extension `file:size` in bytes. A `file_size` written with a unit
-converts at powers of 1000 (`31.1 MB` is `31100000`). A `data[].checksum` becomes `file:checksum`,
-re-encoded as a multihash.
+converts at powers of 1000, rounded up to whole bytes (`31.1 MB` is `31100000`). A `data[].checksum`
+becomes `file:checksum`, re-encoded as a multihash.
 
 ### 5.1 Asset `locations[]`
 

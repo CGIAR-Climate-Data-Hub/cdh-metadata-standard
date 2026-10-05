@@ -150,14 +150,14 @@ documentation, and provenance.
 
 For OGC Records, file-level metadata lives on the link, not as top-level record metadata:
 
-| CDH                        | recordJSON placement                                    |
-| -------------------------- | ------------------------------------------------------- |
-| `data[].locations[].url`   | `links[*].href`                                         |
-| `data[].locations[].title` | `links[*].title` (access label)                         |
-| `data[].name`              | `links[*].title`                                        |
-| `data[].media_type`        | `links[*].type`                                         |
-| `data[].file_size`         | `links[*].length` (in bytes, 1 KB = 1000 bytes)         |
-| `data[].description`       | `links[*].title` / `description` extension if supported |
+| CDH                        | recordJSON placement                                           |
+| -------------------------- | -------------------------------------------------------------- |
+| `data[].locations[].url`   | `links[*].href`                                                |
+| `data[].locations[].title` | `links[*].title` (access label)                                |
+| `data[].name`              | `links[*].title`                                               |
+| `data[].media_type`        | `links[*].type`                                                |
+| `data[].file_size`         | `links[*].length` (whole bytes, 1 KB = 1000 bytes, rounded up) |
+| `data[].description`       | `links[*].title` / `description` extension if supported        |
 
 For entries without `href_template` or `file_index`, each `locations[]` entry becomes a link.
 `locations[0]` gets the primary relation (`enclosure` / `service`); additional same-content

@@ -35,7 +35,7 @@
                 "minLength": 1
               },
               "file_size": {
-                "description": "File size: whole bytes (31100000) or a number and unit (31.1 MB). Units are B, KB, MB, GB, TB, PB, in powers of 1000 (1 KB = 1000 bytes).",
+                "description": "File size: whole bytes (31100000) or a number and unit (31.1 MB). Units are B, KB, MB, GB, TB, PB, in powers of 1000 (1 KB = 1000 bytes), rounded up to whole bytes.",
                 "anyOf": [
                   {
                     "type": "integer",
@@ -336,7 +336,7 @@
                 ]
               },
               "file_size": {
-                "description": "File size: whole bytes (31100000) or a number and unit (31.1 MB). Units are B, KB, MB, GB, TB, PB, in powers of 1000 (1 KB = 1000 bytes).",
+                "description": "File size: whole bytes (31100000) or a number and unit (31.1 MB). Units are B, KB, MB, GB, TB, PB, in powers of 1000 (1 KB = 1000 bytes), rounded up to whole bytes.",
                 "anyOf": [
                   {
                     "type": "integer",
