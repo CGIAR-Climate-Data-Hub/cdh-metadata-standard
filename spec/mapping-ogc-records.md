@@ -99,11 +99,12 @@ or `spatial.resolution[]`; those records route to STAC.
 
 For OGC Records resources that need structured field metadata:
 
-| CDH            | recordJSON placement                                                        |
-| -------------- | --------------------------------------------------------------------------- |
-| `dimensions[]` | `properties["cgiar-cdh:dimensions"]`                                        |
-| `variables[]`  | `properties["cgiar-cdh:variables"]` and/or `links[rel=describedby]` sidecar |
-| `structures[]` | `properties["cgiar-cdh:structures"]`                                        |
+| CDH              | recordJSON placement                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------- |
+| `dimensions[]`   | `properties["cgiar-cdh:dimensions"]`                                                              |
+| `variables[]`    | `properties["cgiar-cdh:variables"]` and/or `links[rel=describedby]` sidecar                       |
+| `structures[]`   | `properties["cgiar-cdh:structures"]`                                                              |
+| `foreign_keys[]` | `properties["cgiar-cdh:foreign_keys"]`; same shape, with `reference.resource` as `reference.href` |
 
 Use STAC for tabular datasets with embedded geometry or spatial asset metadata.
 
