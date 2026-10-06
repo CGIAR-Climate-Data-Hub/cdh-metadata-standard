@@ -8,42 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While the project is pre-1.0, the schema should be considered unstable and breaking changes may
 occur between minor versions.
 
-## [Unreleased]
-
-### Changed
-
-- **Breaking:** `version` and `previous_version` may hold only letters, digits, dots, underscores,
-  and hyphens. A version becomes part of a superseded release's id, where a space or `/` would break
-  the URL.
-- **Breaking:** superseded releases are emitted with id `<id>_<version>`, not `<id>-<version>`. The
-  hyphen let `rain` version `2020` collide with a record whose id is `rain-2020`.
-- **Breaking:** `file_size` is whole bytes or a number and unit (`31.1 MB`). Units are B, KB, MB,
-  GB, TB, PB, in powers of 1000. Free text could not be converted to the byte counts STAC and OGC
-  Records expect.
-- **Breaking:** temporal `values` and `extent` written as a date-time must be RFC 3339, with seconds
-  and an offset (`2020-01-01T01:00:00Z`). Date-times are now checked as real calendar dates, so
-  `2026-02-30T10:00:00Z` fails, and a missing offset no longer makes ordering depend on the
-  machine's timezone.
-
-- **Breaking:** `additional_links[].name` is renamed `title`, matching `locations[].title`,
-  `file_index[].title`, and the `title` on STAC, OGC Records, and Atom links.
-
-### Fixed
-
-- A foreign key's `fields` must all be in one `data[]` asset. A key split across assets passed
-  validation but was attached to no asset in STAC.
-- `checksum` must have the digest length its algorithm produces (64 hex characters for `sha256`).
-  `sha256:0` used to pass.
-- `variables` must list at least one variable. An empty list let a `{variable}` `href_template`
-  validate while naming no files.
-- Empty entries no longer pass: `contact[].roles` needs at least one role, every `processing[]` step
-  needs `id` and `description`, `funding[]` entries need `name`, and `related_publications[]`
-  entries need `doi` or `citation`.
-- `citation.date` must be a year, month, date, or date-time. Any text used to pass.
-- Every link URL (`additional_links`, `contact`, `citation`, `funding`, `series`, `code`,
-  `derived_from`) must be a valid URI, as `locations[].url` already was.
-
-## [0.4.0] - 2026-10-05
+## [0.4.0] - 2026-10-06
 
 ### Added
 
@@ -87,7 +52,8 @@ occur between minor versions.
   as full `https://orcid.org/` and `https://ror.org/` URLs, as DataCite, CFF, and schema.org carry
   them. Contacts encode as STAC and OGC Records `contacts[].identifier`.
 - Added `data[].checksum` for single-file entries, `<algorithm>:<hex>` as in `cdh-inventory`,
-  emitted as STAC `file:checksum`. Not allowed with `href_template` or `file_index`.
+  emitted as STAC `file:checksum`. Not allowed with `href_template` or `file_index`. The digest must
+  have the length its algorithm produces.
 - Added `data[].spatial`: coverage of one asset alone, for selecting files by area. Same shapes as
   the top-level `spatial`, and never copied down from it.
 - Added `parent`: the id of the record this one is a child representation of.
@@ -115,8 +81,10 @@ occur between minor versions.
   `id`; `version` tells releases apart and `id` + `version` is the citable identity. Superseded
   releases keep their `id` and get `deprecated: true` instead of a renamed snapshot copy.
   `previous_version` is now the predecessor's `version`, not its `id`. Catalog uniqueness is `id` +
-  `version` with one current release per `id`. Encoders emit `<id>-<version>` for superseded
-  releases so output ids stay unique.
+  `version` with one current release per `id`. Encoders emit `<id>_<version>` for superseded
+  releases so output ids stay unique; an underscore cannot collide with a hyphenated `id`. `version`
+  and `previous_version` hold only letters, digits, dots, underscores, and hyphens, so the emitted
+  id stays URL-safe.
 - **Breaking:** `created` and `updated` are required.
 - **Breaking:** catalog hierarchy comes from `parent`, not file position. Directories no longer
   create nodes or parent links, and there are no grouping nodes. A `parent` must resolve to one
@@ -142,11 +110,32 @@ occur between minor versions.
   as an absolute URI. An id survives a catalog move and must resolve to exactly one catalog record.
   The new `reference.asset` names the target's file, and is required when the target has more than
   one `data[]` entry. In STAC, an asset-level `cgiar-cdh:foreign_keys` replaces the
-  `cgiar-cdh:left_fields` and `cgiar-cdh:right_fields` link fields, so both files are explicit.
+  `cgiar-cdh:left_fields` and `cgiar-cdh:right_fields` link fields, so both files are explicit. A
+  key's `fields` must all be in one `data[]` asset.
 - `variables[].unit` is optional (data dictionary extension). Omit it for unitless values such as
   class codes.
 - `data[].locations` may be omitted when a `file_index` other than `cdh-inventory` carries the file
   locations.
+- **Breaking:** `file_size` is whole bytes or a number and unit (`31.1 MB`). Units are B, KB, MB,
+  GB, TB, PB, in powers of 1000. Free text could not be converted to the byte counts STAC and OGC
+  Records expect.
+- **Breaking:** temporal `values` and `extent` written as a date-time must be RFC 3339, with seconds
+  and an offset (`2020-01-01T01:00:00Z`). Date-times are now checked as real calendar dates, so
+  `2026-02-30T10:00:00Z` fails, and a missing offset no longer makes ordering depend on the
+  machine's timezone.
+- **Breaking:** `additional_links[].name` is renamed `title`, matching `locations[].title`,
+  `file_index[].title`, and the `title` on STAC, OGC Records, and Atom links.
+
+### Fixed
+
+- `variables` must list at least one variable. An empty list let a `{variable}` `href_template`
+  validate while naming no files.
+- Empty entries no longer pass: `contact[].roles` needs at least one role, every `processing[]` step
+  needs `id` and `description`, `funding[]` entries need `name`, and `related_publications[]`
+  entries need `doi` or `citation`.
+- `citation.date` must be a year, month, date, or date-time. Any text used to pass.
+- Every link URL (`additional_links`, `contact`, `citation`, `funding`, `series`, `code`,
+  `derived_from`) must be a valid URI, as `locations[].url` already was.
 
 ### Removed
 
@@ -456,7 +445,6 @@ occur between minor versions.
 - Initial prototype of the core metadata specification, controlled vocabularies, and supporting
   build scripts.
 
-[Unreleased]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.1.0...v0.2.0
