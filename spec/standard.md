@@ -5,19 +5,14 @@ Status: v0.4.0
 This document defines the metadata model used by the Climate Data Hub - the field definitions,
 requirement levels, and rules every Hub record conforms to. The model is self-contained and stands
 on its own, independent of any output format. It is designed to be flexible and extensible for other
-projects and programs. It is intend to map to commonly used community formats, namely:
-
-- **STAC** - for geospatial data. See [`mapping-stac.md`](./mapping-stac.md).
-- **OGC API Records** (recordJSON) - for everything else: non-spatial datasets, documents, software,
-  services. See [`mapping-ogc-records.md`](./mapping-ogc-records.md).
+projects and programs. It maps to **STAC**; see [`mapping-stac.md`](./mapping-stac.md).
 
 Validated sample records live in [`examples/`](../examples/).
 
 For contributor-facing guidance, start in [`authoring-guide.md`](./authoring-guide.md).
 
 > [!NOTE] For now, all metadata submissions must be in CDH YAML format which will be automatically
-> converted to STAC or OGC API Records. In the future, there may be an option to directly submit
-> STAC or OGC API Records.
+> converted to STAC. In the future, there may be an option to directly submit STAC.
 
 ## 1. Purpose
 
@@ -903,7 +898,7 @@ version-specific inventory URL for a release.
 | `predecessor-version` / `successor-version`     | Version chain (successor side is derived) | IANA                 |
 | `latest-version`                                | Current version (derived, on superseded)  | IANA                 |
 | `version-history`                               | Changelog or version history document     | IANA                 |
-| `enclosure`                                     | Downloadable file (OGC Records)           | IANA                 |
+| `enclosure`                                     | Downloadable file                         | IANA                 |
 | `service`                                       | Service endpoint                          | IANA                 |
 | `preview` / `icon` / `thumbnail`                | Imagery                                   | IANA / STAC          |
 | `processing-expression`                         | Code or workflow that produced the data   | STAC Processing Ext. |

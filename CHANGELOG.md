@@ -29,13 +29,12 @@ occur between minor versions.
 - Added `data[].file_index`: a list of `{ format, locations, title, media_type }` indexes over an
   entry's files, for file sets a template cannot describe. An entry's `locations[]` are one index
   file at several addresses. `format` is one of `stac-geoparquet`, `gti`, `vrt`, `kerchunk`,
-  `icechunk`, or `cdh-inventory` (a CSV or Parquet column contract defined in the standard, with
-  STAC and OGC Records mappings). Any one index is enough; `cdh-inventory` may appear once and is
-  the only format CDH validates. Indexes are emitted as STAC assets with role `file_index` and as
-  OGC Records `describedby` links.
+  `icechunk`, or `cdh-inventory` (a CSV or Parquet column contract defined in the standard, with a
+  STAC mapping). Any one index is enough; `cdh-inventory` may appear once and is the only format CDH
+  validates. Indexes are emitted as STAC assets with role `file_index`.
 - Added `attribution`: a credit line reusers should reproduce, for sources that mandate wording
   (Copernicus, OpenStreetMap) or producers who ask to be credited. Keeps such text out of `note`.
-  Maps to `cgiar-cdh:attribution`, OGC Records `rights`, and schema.org `creditText`.
+  Maps to `cgiar-cdh:attribution` and schema.org `creditText`.
 - `cdh-inventory` accepts an optional `checksum` column (`<algorithm>:<hex>`), emitted as STAC
   `file:checksum`.
 - Added `temporal.update_frequency` (`daily` … `annual`, `irregular`): how often this resource gains
@@ -50,7 +49,7 @@ occur between minor versions.
   `cube:variables`.
 - Added optional `orcid` (people) and `ror` (organizations) to `citation.authors[]` and `contact[]`,
   as full `https://orcid.org/` and `https://ror.org/` URLs, as DataCite, CFF, and schema.org carry
-  them. Contacts encode as STAC and OGC Records `contacts[].identifier`.
+  them. Contacts encode as STAC `contacts[].identifier`.
 - Added `data[].checksum` for single-file entries, `<algorithm>:<hex>` as in `cdh-inventory`,
   emitted as STAC `file:checksum`. Not allowed with `href_template` or `file_index`. The digest must
   have the length its algorithm produces.
@@ -117,14 +116,13 @@ occur between minor versions.
 - `data[].locations` may be omitted when a `file_index` other than `cdh-inventory` carries the file
   locations.
 - **Breaking:** `file_size` is whole bytes or a number and unit (`31.1 MB`). Units are B, KB, MB,
-  GB, TB, PB, in powers of 1000. Free text could not be converted to the byte counts STAC and OGC
-  Records expect.
+  GB, TB, PB, in powers of 1000. Free text could not be converted to the byte counts STAC expects.
 - **Breaking:** temporal `values` and `extent` written as a date-time must be RFC 3339, with seconds
   and an offset (`2020-01-01T01:00:00Z`). Date-times are now checked as real calendar dates, so
   `2026-02-30T10:00:00Z` fails, and a missing offset no longer makes ordering depend on the
   machine's timezone.
 - **Breaking:** `additional_links[].name` is renamed `title`, matching `locations[].title`,
-  `file_index[].title`, and the `title` on STAC, OGC Records, and Atom links.
+  `file_index[].title`, and the `title` on STAC and Atom links.
 
 ### Fixed
 
@@ -144,8 +142,11 @@ occur between minor versions.
   do. Relaxing the schema for blank placeholders changed what its rules meant: draft mode rejected
   every `spatial.bbox` and any filled `data[]` entry. Records are always checked as complete. Refs:
   #33
-- Removed `spec/crosswalk.md`. It repeated `mapping-stac.md` and `mapping-ogc-records.md` and had
-  drifted from them; those two documents hold the field mappings.
+- Removed `spec/crosswalk.md`. It repeated the mapping documents and had drifted from them.
+- Removed the OGC API Records mapping (`spec/mapping-ogc-records.md`). It required a profile schema
+  that does not exist and used `cgiar-cdh:*` fields nothing defined. It returns once it has a schema
+  and an encoder; until then, non-spatial records may encode as STAC (`mapping-stac.md` section
+  1.1).
 
 ## [0.3.0] - 2026-08-20
 
