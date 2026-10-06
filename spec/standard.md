@@ -863,8 +863,8 @@ version-specific inventory URL for a release.
   first is canonical; multiple entries only for the same content via a different access path - with
   one difference: `url` MAY be a path relative to the record file (`./README.md`,
   `docs/legend.csv`). Use this only for a small, versioned metadata file committed beside the
-  record. The file MUST exist at that path, and whoever publishes the record publishes the file with
-  it, so the path resolves the same way from the published record.
+  record. The file MUST exist at that path. A relative `url` resolves against the URL the record
+  file was read from (RFC 3986).
 - **Vocabulary for `roles`:** Suggested, not closed - `metadata`, `validation`, `describedby`,
   `agents`, `thumbnail`, `overview`, `visual`, `example`. Use `example` for a runnable usage example
   (a notebook, script, or SQL file), which is the place for a query a consumer needs but the data
