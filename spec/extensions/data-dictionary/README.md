@@ -207,8 +207,13 @@ dimensions:
     step: P1Y
 variables:
   - name: flooded
-    description: Flood occurrence; 0 = dry, 1 = flooded.
+    description: Flood occurrence.
     data_type: uint8
+    categories:
+      - value: 0
+        label: Dry
+      - value: 1
+        label: Flooded
   - name: nobs
     description: Valid observation count.
     data_type: uint16
