@@ -160,6 +160,7 @@
             "required": ["format", "locations"],
             "properties": {
               "format": {
+                "description": "Specification the index file follows: stac-geoparquet (STAC Items as GeoParquet), gti (GDAL Tile Index), vrt (GDAL Virtual Raster), kerchunk (kerchunk reference file), icechunk (Icechunk repository with virtual chunks), or cdh-inventory (CDH CSV or Parquet file list).",
                 "enum": ["stac-geoparquet", "gti", "vrt", "kerchunk", "icechunk", "cdh-inventory"]
               },
               "locations": {
