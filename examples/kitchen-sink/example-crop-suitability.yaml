@@ -9,6 +9,8 @@
 # its id and lives in example-crop-suitability-v1.yaml (previous_version: "1.0").
 # admin2/example-crop-suitability-admin2.yaml is its child: the admin-2
 # aggregation of this grid (standard.md section 4.8).
+# file_index lives in the v1 record; update_frequency and a growing series in
+# markets/example-markets.yaml.
 # ============================================================================
 cdh_schema_version: "v0.4.0"
 extensions:
@@ -31,6 +33,7 @@ description: >
   invented to demonstrate the CDH schema - do not use for any real analysis.
 license: CC-BY-4.0
 resource_type: dataset
+attribution: Contains modified Example Climate Projections data (Example Climate Centre, 2025).
 
 access: restricted
 access_note: >
@@ -55,6 +58,7 @@ contact:
   - name: Ada Placeholder
     roles: [producer, point-of-contact]
     email: ada.placeholder@example.org
+    orcid: https://orcid.org/0000-0002-1825-0097 # ORCID's documented test iD
     organization: Institute for Example Data
     url: https://example.org
   - name: Sam Sample
@@ -70,12 +74,14 @@ contact:
   - organization: Institute for Example Data
     roles: [licensor]
     url: https://example.org
+    ror: https://ror.org/05xampe12 # fictional; resolves to no organization
 
 citation:
   title: "Example Gridded Crop Suitability Projections"
   authors:
     - family: Placeholder
       given: A.
+      orcid: https://orcid.org/0000-0002-1825-0097
     - organization: Example Research Institute
   date: "2026"
   publisher: Example Data Repository
@@ -131,7 +137,8 @@ dimensions:
   - name: time
     type: temporal
     description: Projection horizon (reference year).
-    values: ["2030", "2050"] # ISO 8601 strings; a temporal axis takes no bare numbers
+    # A regular axis gives [first, last] + step instead of listing every value.
+    extent: ["2030", "2050"] # ISO 8601 strings; a temporal axis takes no bare numbers
     step: P20Y
   - name: crop
     type: crop
@@ -171,6 +178,26 @@ variables:
       - value: 3
         label: High
         description: Modelled suitability above 0.75.
+  - name: cropland_mask
+    description: Cells modelled as cropland; suitability is only meaningful where this is 1.
+    data_type: uint8
+    nodata: 255
+    categories:
+      - value: 0
+        label: Not cropland
+      - value: 1
+        label: Cropland
+
+# The mask varies over the grid only, so it cannot share the projection axes.
+# Each structure groups variables with the same dimensions; every asset names
+# the structures it holds.
+structures:
+  - name: projections
+    dimensions: [time, crop, scenario]
+    variables: [suitability_index, suitability_class]
+  - name: static
+    dimensions: []
+    variables: [cropland_mask]
 
 cdh:
   domain: [agricultural-production, adaptation]
@@ -238,6 +265,33 @@ data:
     nodata: -9999
     file_size: 250 MB
     processing_steps: [cloud-optimize]
+    structures: [projections, static]
+  # One NetCDF per disjoint area. data[].spatial gives each file's own coverage so
+  # a client can pick one; checksum fits because each entry names a single file.
+  - name: netcdf-west
+    description: The full cube clipped to western Farland, one NetCDF file.
+    locations:
+      - url: https://example.org/data/example-crop-suitability/v2/farland-west.nc
+    media_type: application/netcdf
+    nodata: -9999
+    file_size: 90 MB
+    checksum: sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+    spatial:
+      bbox: [10, -5, 22, 8]
+    processing_steps: [cloud-optimize]
+    structures: [projections, static]
+  - name: netcdf-east
+    description: The full cube clipped to eastern Farland, one NetCDF file.
+    locations:
+      - url: https://example.org/data/example-crop-suitability/v2/farland-east.nc
+    media_type: application/netcdf
+    nodata: -9999
+    file_size: 160 MB
+    checksum: sha256:60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752
+    spatial:
+      bbox: [28, 6, 40, 20]
+    processing_steps: [cloud-optimize]
+    structures: [projections, static]
   - name: cogs
     description: Per-slice Cloud Optimized GeoTIFFs, one file per scenario/crop/variable.
     locations:
@@ -250,6 +304,7 @@ data:
     nodata: -9999
     file_size: 3 MB
     processing_steps: [cloud-optimize]
+    structures: [projections]
 
 additional_assets:
   # Optional agent guide, committed beside the record and referenced by relative path.
@@ -271,7 +326,7 @@ additional_assets:
     locations:
       - url: https://example.org/data/example-crop-suitability/v2/qaqc-report.pdf
     media_type: application/pdf
-    roles: [metadata, quality]
+    roles: [metadata, validation]
     file_size: 800 KB
 
 additional_links:

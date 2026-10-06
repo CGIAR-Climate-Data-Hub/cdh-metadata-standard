@@ -11,12 +11,12 @@ Fictional sample. This file shows the shape of an agent guide, not real guidance
 
 ## Quirks
 
-- Suitability is a 0-100 index, not a probability.
+- Suitability is a 0 to 1 index, not a probability.
 - The grid is WGS84 in degrees. Cell area varies with latitude; reproject before summing area.
 
 ## Tested query
 
 ```sql
 -- mean suitability for one crop and scenario, one file
-SELECT avg(value) FROM read_raster('.../maize_ssp245_suitability.tif');
+SELECT avg(value) FROM read_raster('.../suit_ssp245_maiz_suitability_index.tif');
 ```

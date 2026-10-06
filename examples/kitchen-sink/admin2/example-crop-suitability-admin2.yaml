@@ -23,7 +23,7 @@ id: example-crop-suitability-admin2
 parent: example-crop-suitability
 title: "Example Crop Suitability, Admin-2 Aggregates (SAMPLE - NOT REAL DATA)"
 version: "2.0"
-# Same program grouping as its sibling: a series is a facet, not the family.
+# Same program grouping as its parent: a series is a facet, not the family.
 series:
   name: Example Suitability Atlas
   url: https://example.org/atlas
@@ -35,8 +35,8 @@ description: >
 license: CC-BY-4.0
 resource_type: dataset
 
-# The grid is `access: restricted`; this aggregate is public. Sibling records
-# state their own access conditions.
+# The grid is `access: restricted`; this aggregate is public. Every record
+# states its own access conditions.
 
 keywords:
   - suitability
@@ -45,7 +45,7 @@ keywords:
 
 note: >
   Aggregation hides within-unit variation: a unit reported as Moderate can contain both unsuitable
-  and highly suitable cells. Use the gridded sibling record when that matters. Units follow the
+  and highly suitable cells. Use the gridded parent record when that matters. Units follow the
   boundary record joined below; codes are stable within a release.
 
 contact:
@@ -142,7 +142,7 @@ cdh:
     not_recommended_for:
       - use: comparing units of very different size
         reason: a mean over a large unit hides variation a small unit cannot hide.
-        use_instead: the gridded sibling record.
+        use_instead: the gridded parent record.
 
 commodities:
   - maize
@@ -152,11 +152,12 @@ commodities:
 processing:
   # A shared parent implies nothing. The derivation is stated here.
   - id: source
-    description: The gridded suitability cube described by the sibling record in this directory.
+    description: The gridded suitability cube described by the parent record.
     date: "2026-07-10"
     derived_from:
-      - url: https://example.org/atlas/example-crop-suitability
-        title: Example Gridded Crop Suitability Projections (the sibling grid)
+      # A Hub record is named by id, not URL.
+      - id: example-crop-suitability
+        title: Example Gridded Crop Suitability Projections
         version: "2.0" # pins the parent release this aggregate was computed from
   - id: zonal-aggregate
     description: >
