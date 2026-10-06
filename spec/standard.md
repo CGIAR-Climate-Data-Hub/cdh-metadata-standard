@@ -894,6 +894,7 @@ version-specific inventory URL for a release.
 | `via`                                           | Intermediate source                       | IANA                 |
 | `canonical`                                     | Authoritative URL (when this is a mirror) | IANA                 |
 | `alternate`                                     | Alternate representation                  | IANA                 |
+| `related`                                       | Related resource                          | IANA                 |
 | `derived_from`                                  | Source dataset                            | STAC                 |
 | `predecessor-version` / `successor-version`     | Version chain (successor side is derived) | IANA                 |
 | `latest-version`                                | Current version (derived, on superseded)  | IANA                 |
