@@ -403,10 +403,10 @@ https://example.org/suit/b7c9.tif,maize,ssp585
 https://example.org/suit/c002.tif,wheat,ssp245
 ```
 
-Include a column for every dimension the record declares. An inventory with only `href` is valid but
-leaves consumers unable to select files without opening them. Several rows may share a coordinate,
-e.g. tiles observed on the same date. Add a `variable` column when files hold one variable each and
-the names do not follow a `{variable}` token.
+Include a column for every dimension along which the files are split. An inventory with only `href`
+is valid but leaves consumers unable to select files without opening them. Several rows may share a
+coordinate, e.g. tiles observed on the same date. Add a `variable` column when files hold one
+variable each and the names do not follow a `{variable}` token.
 
 Use either `file_index` or `href_template` on an entry. Inventory rows enumerate the files present,
 so omitted dates do not imply missing rows that a consumer should fill. See the

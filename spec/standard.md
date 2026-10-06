@@ -841,11 +841,12 @@ directory prefix; omit `media_type` then.
 - `href` - required. The file's absolute URL; no duplicates.
 - One column per declared `dimensions[].name` - that file's coordinate on the axis. A cell MUST
   equal a declared value exactly as written in the record, or a valid ISO 8601 date on a temporal
-  axis. Include a column for every dimension the entry holds.
+  axis. Include a column for every dimension along which the files are split.
 - `variable` - the single declared variable the file holds, when files are split per variable. Must
   be one the entry holds.
 - `checksum` - optional. The file's digest as `<algorithm>:<hex>`, e.g. `md5:9e107d9d…` or
-  `sha256:…`. One algorithm per inventory; a producer's `md5sum` listing joins in directly.
+  `sha256:…`. One algorithm per inventory; a producer's `md5sum` listing joins in once its file
+  names are prefixed with the base URL.
 
 No other columns. Rows list files that exist; nothing is inferred. Use an immutable,
 version-specific inventory URL for a release.
