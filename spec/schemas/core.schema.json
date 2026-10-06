@@ -200,7 +200,8 @@
             "type": "string",
             "minLength": 1
           },
-          "type": "array"
+          "type": "array",
+          "uniqueItems": true
         }
       },
       "required": ["name"],

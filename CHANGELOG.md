@@ -112,6 +112,10 @@ occur between minor versions.
   one `data[]` entry. In STAC, an asset-level `cgiar-cdh:foreign_keys` replaces the
   `cgiar-cdh:left_fields` and `cgiar-cdh:right_fields` link fields, so both files are explicit. A
   key's `fields` must all be in one `data[]` asset.
+- `dimensions[].values` must list at least one value when present (data dictionary extension); omit
+  it rather than writing `[]`.
+- Duplicates are rejected in `dimensions[].values`, `foreign_keys[].fields`,
+  `foreign_keys[].reference.fields`, and `data[].processing_steps`.
 - `variables[].unit` is optional (data dictionary extension). Omit it for unitless values such as
   class codes.
 - `data[].locations` may be omitted when a `file_index` carries the file locations.

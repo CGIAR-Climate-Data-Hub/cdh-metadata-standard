@@ -1,0 +1,6 @@
+# Each value appears once along an axis.
+dimensions:
+  - name: crop
+    type: crop
+    description: Crop modelled.
+    values: [maize, maize]
