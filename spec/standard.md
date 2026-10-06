@@ -541,13 +541,13 @@ keywords:
 #### `related_publications[]`
 
 - **Requirement:** Optional
-- **Expected value:** List of `{ citation, doi }`, where `citation` is the same structured object. A
-  `doi` alone is sufficient for an entry.
+- **Expected value:** List of `{ citation, doi }`, where `citation` is the same structured object.
+  Each entry needs at least one of the two; a `doi` alone is sufficient.
 
 #### `funding[]`
 
 - **Requirement:** Optional
-- **Expected value:** List of `{ name, url }`.
+- **Expected value:** List of `{ name, url }`; `name` is required.
 
 ### 5.3 Spatial
 
@@ -734,7 +734,7 @@ extension fields, not in `keywords` (see section 4.4).
 - **Definition:** Ordered list of processing steps. When present, one step MUST use `id: source`.
 - **Expected value per step:** `{ id, description, code: { url, version }, date, derived_from[] }`.
 - **Rules:**
-  - `id` must be unique within `processing[]`.
+  - `id` and `description` are required on every step. `id` must be unique within `processing[]`.
   - At least one step must use `id: source` whenever `processing[]` is present.
   - `derived_from[]` entries are `{ id, url, title, version }` references to the data used. A Hub
     record is named by its `id`, which MUST resolve to exactly one catalog record; any other source
@@ -905,7 +905,6 @@ version-specific inventory URL for a release.
 | `version-history`                               | Changelog or version history document     | IANA                 |
 | `enclosure`                                     | Downloadable file (OGC Records)           | IANA                 |
 | `service`                                       | Service endpoint                          | IANA                 |
-| `license`                                       | License document                          | IANA                 |
 | `preview` / `icon` / `thumbnail`                | Imagery                                   | IANA / STAC          |
 | `processing-expression`                         | Code or workflow that produced the data   | STAC Processing Ext. |
 

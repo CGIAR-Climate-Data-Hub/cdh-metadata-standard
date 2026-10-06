@@ -133,6 +133,7 @@
                 "minLength": 1
               },
               "url": {
+                "format": "uri",
                 "minLength": 1,
                 "type": "string"
               }
@@ -211,10 +212,26 @@
               "minItems": 1
             },
             "date": {
-              "minLength": 1,
-              "type": "string",
               "description": "Publication date or year, e.g. 2024 or 2024-07-15.",
-              "examples": ["2024", "2024-07-15"]
+              "examples": ["2024", "2024-07-15", "2020-06-23", "2020-06-23T00:00:00Z"],
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}$"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ]
             },
             "publisher": {
               "minLength": 1,
@@ -223,7 +240,8 @@
             },
             "url": {
               "minLength": 1,
-              "type": "string"
+              "type": "string",
+              "format": "uri"
             }
           },
           "required": ["authors", "date"],
@@ -277,12 +295,14 @@
               "roles": {
                 "description": "Roles this contact holds (one or more).",
                 "type": "array",
+                "minItems": 1,
                 "items": {
                   "enum": ["licensor", "producer", "processor", "point-of-contact", "maintainer"]
                 },
                 "uniqueItems": true
               },
               "url": {
+                "format": "uri",
                 "minLength": 1,
                 "type": "string"
               }
@@ -474,14 +494,14 @@
                       "type": "array"
                     },
                     "title": {
+                      "description": "Optional label, e.g. which scheme the index's internal paths use.",
                       "minLength": 1,
-                      "type": "string",
-                      "description": "Optional label, e.g. which scheme the index's internal paths use."
+                      "type": "string"
                     },
                     "media_type": {
+                      "description": "IANA media type of the index file itself, when it has one. Optional; useful for gti (GeoPackage, FlatGeobuf, or Parquet) and cdh-inventory (CSV or Parquet).",
                       "minLength": 1,
-                      "type": "string",
-                      "description": "IANA media type of the index file itself, when it has one. Optional; useful for gti (GeoPackage, FlatGeobuf, or Parquet) and cdh-inventory (CSV or Parquet)."
+                      "type": "string"
                     }
                   }
                 },
@@ -1060,10 +1080,12 @@
                 "minLength": 1
               },
               "url": {
+                "format": "uri",
                 "minLength": 1,
                 "type": "string"
               }
             },
+            "required": ["name"],
             "type": "object"
           },
           "type": "array"
@@ -1157,14 +1179,15 @@
                 "description": "Software or code that produced this step's output. Omit when none is published.",
                 "properties": {
                   "url": {
+                    "format": "uri",
+                    "description": "Link to the production code or repository.",
                     "minLength": 1,
-                    "type": "string",
-                    "description": "Link to the production code or repository."
+                    "type": "string"
                   },
                   "version": {
+                    "description": "Version, tag, or commit of the code.",
                     "minLength": 1,
-                    "type": "string",
-                    "description": "Version, tag, or commit of the code."
+                    "type": "string"
                   }
                 },
                 "type": "object"
@@ -1212,6 +1235,7 @@
                     "url": {
                       "minLength": 1,
                       "type": "string",
+                      "format": "uri",
                       "description": "URL of a source outside the Hub."
                     },
                     "version": {
@@ -1235,6 +1259,7 @@
                 "description": "Step identifier; one step must use id: source for the original generation."
               }
             },
+            "required": ["id", "description"],
             "type": "object"
           },
           "minContains": 1,
@@ -1311,10 +1336,26 @@
                     "minItems": 1
                   },
                   "date": {
-                    "minLength": 1,
-                    "type": "string",
                     "description": "Publication date or year, e.g. 2024 or 2024-07-15.",
-                    "examples": ["2024", "2024-07-15"]
+                    "examples": ["2024", "2024-07-15", "2020-06-23", "2020-06-23T00:00:00Z"],
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^\\d{4}$"
+                      },
+                      {
+                        "type": "string",
+                        "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                      },
+                      {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    ]
                   },
                   "publisher": {
                     "minLength": 1,
@@ -1323,7 +1364,8 @@
                   },
                   "url": {
                     "minLength": 1,
-                    "type": "string"
+                    "type": "string",
+                    "format": "uri"
                   }
                 },
                 "required": ["authors", "date"],
@@ -1336,6 +1378,14 @@
                 "examples": ["10.7910/DVN/SWPENT"]
               }
             },
+            "anyOf": [
+              {
+                "required": ["doi"]
+              },
+              {
+                "required": ["citation"]
+              }
+            ],
             "type": "object"
           },
           "type": "array"
@@ -1354,13 +1404,14 @@
               "minLength": 1
             },
             "url": {
+              "format": "uri",
               "minLength": 1,
               "type": "string"
             }
           },
+          "required": ["name"],
           "type": "object",
-          "description": "Program, initiative, or product brand the resource was published under (e.g. Africa Agriculture Adaptation Atlas, MapSPAM, ACASA). Members may span domains, resolutions, and resource types. Not for grouping representations or releases of a single resource. `name` is the grouping key - use the same spelling on every record in the series; `url` is the series landing page.",
-          "required": ["name"]
+          "description": "Program, initiative, or product brand the resource was published under (e.g. Africa Agriculture Adaptation Atlas, MapSPAM, ACASA). Members may span domains, resolutions, and resource types. Not for grouping representations or releases of a single resource. `name` is the grouping key - use the same spelling on every record in the series; `url` is the series landing page."
         },
         "spatial": {
           "additionalProperties": false,

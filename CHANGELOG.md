@@ -33,6 +33,12 @@ occur between minor versions.
   `sha256:0` used to pass.
 - `variables` must list at least one variable. An empty list let a `{variable}` `href_template`
   validate while naming no files.
+- Empty entries no longer pass: `contact[].roles` needs at least one role, every `processing[]` step
+  needs `id` and `description`, `funding[]` entries need `name`, and `related_publications[]`
+  entries need `doi` or `citation`.
+- `citation.date` must be a year, month, date, or date-time. Any text used to pass.
+- Every link URL (`additional_links`, `contact`, `citation`, `funding`, `series`, `code`,
+  `derived_from`) must be a valid URI, as `locations[].url` already was.
 
 ## [0.4.0] - 2026-10-05
 
