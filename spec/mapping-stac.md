@@ -92,6 +92,7 @@ Searchable structured facts MUST NOT live only in free text.
 | `deprecated`                | `deprecated` (Version Extension)                                                                                                                                                                                                              |
 | `previous_version`          | `links[rel=predecessor-version]` (Version Extension). The rest of the chain follows from the `previous_version` graph: superseded records get `links[rel=successor-version]` and `links[rel=latest-version]` (see `standard.md` section 4.7). |
 | `temporal.update_frequency` | `cgiar-cdh:update_frequency`                                                                                                                                                                                                                  |
+| `additional_links[]`        | Collection `links[]`: `url` as `href`, `rel` as `rel`, `title` as `title`, and `description` as a `description` extra field (STAC links have none of their own).                                                                              |
 | `funding[]`                 | `cgiar-cdh:funding`                                                                                                                                                                                                                           |
 | `series`                    | `cgiar-cdh:series` (`{ name, url }`). `name` is the grouping key for series facets and listings.                                                                                                                                              |
 | `cdh.domain[]`              | `cgiar-cdh:domain` on the Collection; also expanded into Themes Extension `themes[]` under the CDH domain scheme. First entry drives sub-catalog placement.                                                                                   |
@@ -208,8 +209,8 @@ Decision rules:
   Collection metadata MUST NOT live only in `summaries`.
 - **Item-level field** when the value varies per Item and Item-level discovery is needed
   (`datetime`, `bbox`, `geometry`, per-Item variables). Items are produced from a `data[]` entry
-  carrying an `href_template` (see 5.2); broader per-Item authoring beyond template expansion is not
-  yet supported.
+  carrying `spatial` (5.1), an `href_template` (5.2), or a `cdh-inventory` (5.4); Items cannot be
+  authored directly.
 - **Asset-level field** when the value describes a specific file or access endpoint (`file:size`,
   asset `roles`, `type`).
 
@@ -268,6 +269,13 @@ the **same content**). Encode as:
   carrying its `href` and optional `title`.
 - The asset's `type` (media type) and `file:size` apply to all locations, since they are the same
   content.
+
+A `data[]` entry with `spatial` and no `href_template` or `file_index` is emitted as its own Item
+holding that one asset, because STAC searches Items by area and assets have no footprint. The
+entry's `spatial.bbox` gives the Item `bbox` and `geometry`, its `spatial.geography` gives
+`cgiar-cdh:geography`, and the Item takes the record's temporal coverage. On an `href_template`
+entry, `spatial` replaces the record's bbox as each expanded Item's footprint. Entries without
+`spatial` stay Collection assets.
 
 ### 5.2 Templated assets (`href_template`)
 
