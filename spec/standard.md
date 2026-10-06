@@ -757,6 +757,8 @@ extension fields, not in `keywords` (see section 4.4).
   access label describing the access path (e.g., `HTTPS`, `S3`), not the content.
   - The first entry is canonical.
   - `url` MUST be an absolute URL. Data never lives beside the record.
+  - A directory MUST end in `/`. A store opened as one dataset - Zarr, Icechunk, a Kerchunk folder,
+    or a partitioned Parquet dataset - MAY omit it.
   - `url` MUST be machine-actionable: a data file, a store or directory prefix (with
     `href_template`, a `file_index`, or a Zarr-family root), a service endpoint that returns the
     data, or for software the repository or tool URL. A landing page, DOI, Zenodo or Dataverse
@@ -834,7 +836,7 @@ itself, each copy must sit beside the files it lists.
 
 Prefer `stac-geoparquet` for large tiled products. An Icechunk or Zarr store that holds its own
 chunks is a `data[]` entry, not an index. For `kerchunk` and `icechunk` the location may be a
-directory prefix; omit `media_type` then.
+directory prefix.
 
 **`cdh-inventory`** is a CSV (RFC 4180, UTF-8, header row), one row per file:
 
