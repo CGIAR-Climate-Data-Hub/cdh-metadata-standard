@@ -109,7 +109,7 @@ STAC implies resource type through object type and asset media types. CDH also e
 | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `spatial.bbox`                              | `extent.spatial.bbox` (Collection) - the overall/union box is prepended as the first entry, then the authored boxes; `bbox` (Item)                                                                                                                                                                                                |
 | `spatial.geography[]`                       | `cgiar-cdh:geography` array                                                                                                                                                                                                                                                                                                       |
-| `spatial.crs`                               | Projection Extension: `proj:code` (preferred) or `proj:epsg`                                                                                                                                                                                                                                                                      |
+| `spatial.crs`                               | Projection Extension v2: `proj:code`                                                                                                                                                                                                                                                                                              |
 | `spatial.geometry_column`                   | Table Extension `table:primary_geometry`                                                                                                                                                                                                                                                                                          |
 | `spatial.resolution[]`                      | Grid entries (`xy`, `x`, `y`) map to `cube:dimensions[].step` (+ `unit`/`reference_system`); `point` and `polygon` entries emit as `cgiar-cdh:spatial_resolution`                                                                                                                                                                 |
 | `temporal.date` / `start_date` / `end_date` | `date` -> `datetime`; `start_date`/`end_date` -> `start_datetime`/`end_datetime`; `end_date: null` -> open interval; also `extent.temporal.interval` (Collection). Reduced-precision values expand to full RFC 3339 (start to period start, end inclusive to period end); the raw value also feeds schema.org `temporalCoverage`. |
@@ -176,9 +176,9 @@ second is a shape CDH does not emit, and the extension forbids both as custom ty
 
 - Use Raster Extension on raster assets when band-level physical metadata exists.
 
-- `variables[].data_type` maps to `raster:data_type` on raster bands and to `table:columns[].type`
-  on tables; `decimal`, `boolean`, `string`, `binary`, `date`, `time`, and `datetime` are
-  table-only.
+- `variables[].data_type` maps to the STAC 1.1 `bands[].data_type` common field on rasters and to
+  `table:columns[].type` on tables; `decimal`, `boolean`, `string`, `binary`, `date`, `time`, and
+  `datetime` are table-only.
 - Tabular data uses Table Extension `table:columns`; `spatial.geometry_column` maps to
   `table:primary_geometry`. Each `foreign_keys[]` entry maps to `cgiar-cdh:foreign_keys` on every
   asset that holds its `fields`, in the same shape: `reference.resource` becomes `reference.href`
