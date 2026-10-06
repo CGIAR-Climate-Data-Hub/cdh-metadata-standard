@@ -255,20 +255,20 @@ data:
     locations:
       - url: https://digital-atlas.s3.amazonaws.com/cdh/data/mapspam2020-v2r2/spam2020-v2r2.zarr
         title: HTTPS
-      - url: s3://digital-atlas/cdh/data/mapspam-2020-v2r2/spam2020-v2r2.zarr
+      - url: s3://digital-atlas/cdh/data/mapspam2020-v2r2/spam2020-v2r2.zarr
         title: S3
     processing_steps: [cloud-optimize]
     description: Zarr representation of the source MAPSPAM files.
-    nodata: -9999
+    nodata: "NaN"
     media_type: application/vnd.zarr; version=3
     file_size: 500 MB
   - name: cogs
     locations:
-      - url: https://digital-atlas.s3.amazonaws.com/cdh/data/mapspam2020-v2r2/cogs/
+      - url: https://digital-atlas.s3.amazonaws.com/cdh/data/mapspam2020-v2r2/cog/
         title: HTTPS
-      - url: s3://digital-atlas/cdh/data/mapspam-2020-v2r2/cogs/
+      - url: s3://digital-atlas/cdh/data/mapspam2020-v2r2/cog/
         title: S3
-    href_template: "spam2020-{technology}-{variable}.tif"
+    href_template: "spam2020-{variable}-{technology}.tif"
     processing_steps: [cloud-optimize]
     description: Cloud Optimized GeoTIFFs of the MAPSPAM files.
     nodata: -9999
@@ -277,7 +277,7 @@ data:
 additional_assets:
   - name: crop codes
     locations:
-      - url: https://digital-atlas.s3.amazonaws.com/cdh/data/mapspam-2020-v2r2/crop-codes.json
+      - url: https://digital-atlas.s3.amazonaws.com/cdh/data/mapspam2020-v2r2/crop-codes.json
     description: Dimension code list for crop values.
     media_type: application/json
     roles: [metadata, describedby]

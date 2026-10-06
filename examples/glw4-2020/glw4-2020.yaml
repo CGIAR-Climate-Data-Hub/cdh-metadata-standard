@@ -80,17 +80,31 @@ spatial:
 temporal:
   date: "2020" # static 2020 reference year (year precision)
 
-dimensions:
-  - name: species
-    type: species
-    description: The livestock species for which the data is provided
-    values: [buffalo, cattle, chicken, goat, pig, sheep]
-
 variables:
-  - name: Livestock Density
-    description: Number of livestock per km2
+  - name: buffalo
+    description: Modelled buffalo density.
     data_type: float32
-    unit: "{head}/km-1"
+    unit: "{head}/km2"
+  - name: cattle
+    description: Modelled cattle density.
+    data_type: float32
+    unit: "{head}/km2"
+  - name: chicken
+    description: Modelled chicken density.
+    data_type: float32
+    unit: "{head}/km2"
+  - name: goat
+    description: Modelled goat density.
+    data_type: float32
+    unit: "{head}/km2"
+  - name: pig
+    description: Modelled pig density.
+    data_type: float32
+    unit: "{head}/km2"
+  - name: sheep
+    description: Modelled sheep density.
+    data_type: float32
+    unit: "{head}/km2"
 
 cdh:
   domain: [agricultural-production]
@@ -134,11 +148,11 @@ data:
     file_size: 31.1 MB
   - name: cogs
     locations:
-      - url: https://digital-atlas.s3.amazonaws.com/cdh/data/glw4-2020/cogs/
+      - url: https://digital-atlas.s3.amazonaws.com/cdh/data/glw4-2020/cog/
         title: HTTPS
-      - url: s3://digital-atlas/cdh/data/glw4-2020/cogs/
+      - url: s3://digital-atlas/cdh/data/glw4-2020/cog/
         title: S3
-    href_template: "glw4-2020-{species}.tif"
+    href_template: "glw4-2020-{variable}.tif"
     processing_steps: [cloud-optimize]
     description: Cloud-optimized GeoTIFFs of GLW 4 2020
     nodata: -3.4028235e+38
