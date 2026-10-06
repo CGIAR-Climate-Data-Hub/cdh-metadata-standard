@@ -123,14 +123,15 @@
                 "type": "string",
                 "minLength": 1
               },
-              "name": {
-                "type": "string",
-                "minLength": 1
-              },
               "rel": {
                 "type": "string",
                 "description": "Link relation type, e.g. cite-as or describedby.",
                 "minLength": 1
+              },
+              "title": {
+                "description": "Human-readable label for the link.",
+                "minLength": 1,
+                "type": "string"
               },
               "url": {
                 "format": "uri",

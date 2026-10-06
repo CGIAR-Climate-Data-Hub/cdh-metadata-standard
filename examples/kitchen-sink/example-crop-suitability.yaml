@@ -275,11 +275,11 @@ additional_assets:
     file_size: 800 KB
 
 additional_links:
-  - name: Example Suitability Atlas
+  - title: Example Suitability Atlas
     rel: about
     url: https://example.org/atlas
     description: Landing page describing the fictional atlas and its methods.
-  - name: Changelog
+  - title: Changelog
     rel: version-history
     url: https://example.org/atlas/example-crop-suitability/changelog
     description: Human-readable history of releases for this record.

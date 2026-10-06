@@ -25,6 +25,9 @@ occur between minor versions.
   `2026-02-30T10:00:00Z` fails, and a missing offset no longer makes ordering depend on the
   machine's timezone.
 
+- **Breaking:** `additional_links[].name` is renamed `title`, matching `locations[].title`,
+  `file_index[].title`, and the `title` on STAC, OGC Records, and Atom links.
+
 ### Fixed
 
 - A foreign key's `fields` must all be in one `data[]` asset. A key split across assets passed

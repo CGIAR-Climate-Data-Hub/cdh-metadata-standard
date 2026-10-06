@@ -284,7 +284,7 @@ additional_assets:
     file_size: 5 KB
 
 additional_links:
-  - name: MAPSPAM project website
+  - title: MAPSPAM project website
     rel: about
     url: https://www.mapspam.info/about/
     description: Project page describing MAPSPAM methods and releases.

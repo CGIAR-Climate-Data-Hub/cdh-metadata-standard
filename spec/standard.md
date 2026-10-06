@@ -882,7 +882,7 @@ version-specific inventory URL for a release.
 #### `additional_links[]`
 
 - **Requirement:** Optional
-- **Expected value per entry:** `{ name, rel, url, description }`.
+- **Expected value per entry:** `{ title, rel, url, description }`; `rel` and `url` are required.
 - **Vocabulary for `rel`:** See section 6.
 
 ## 6. Link Relations

@@ -145,9 +145,9 @@ data:
     media_type: "image/tiff; application=geotiff; profile=cloud-optimized"
 
 additional_links:
-  - name: FAO Livestock Distributions
+  - title: FAO Livestock Distributions
     rel: related
     url: https://www.fao.org/livestock-systems/global-distributions/en/
-  - name: FAOSTAT Crop and Livestock Production
+  - title: FAOSTAT Crop and Livestock Production
     rel: related
     url: https://www.fao.org/faostat/en/#data/QCL

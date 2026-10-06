@@ -725,7 +725,7 @@ additional_assets:
 
 Use `additional_links` for related web resources rather than downloadable files: for example,
 documentation pages, license terms, request forms, services, or related and source datasets. Each
-link needs a unique `name`, a `url`, and a `rel` value describing its relationship to the record.
+link needs a `url` and a `rel` value describing its relationship to the record; `title` labels it.
 
 Common `rel` values include `describedby` for documentation, `license` for license terms,
 `create-form` for an access-request form, `help` for access instructions, `cite-as` for the
@@ -734,7 +734,7 @@ the full list.
 
 ```yaml
 additional_links:
-  - name: access-request
+  - title: Access request form
     rel: create-form
     url: https://example.org/request-access
     description: Form for requesting access to the dataset.
