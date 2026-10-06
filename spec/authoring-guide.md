@@ -362,11 +362,11 @@ index instead. `file_index` is a list of indexes of the same files, each with a 
 - `gti` or `vrt`: GDAL opens all the tiles as one raster.
 - `kerchunk` or `icechunk`: xarray opens many NetCDF/HDF files as one dataset. An Icechunk store
   that holds its own data is a `data[]` entry instead.
-- `cdh-inventory`: a CSV with one row per file: a required `href` column, relative to every
-  `locations[].url` (a directory base ending in `/`), plus one column per declared dimension giving
-  that file's coordinate, and `variable` when each file holds a single variable. An optional
-  `checksum` column (`md5:<hex>`, `sha256:<hex>`) carries file digests. The only format CDH checks;
-  use it when you have a spreadsheet and nothing else.
+- `cdh-inventory`: a CSV with one row per file: a required `href` column holding the file's full
+  URL, plus one column per declared dimension giving that file's coordinate, and `variable` when
+  each file holds a single variable. An optional `checksum` column (`md5:<hex>`, `sha256:<hex>`)
+  carries file digests. Use it when you have a spreadsheet and nothing else. Full URLs keep the CSV
+  usable on its own; a mirror gets its own CSV as a second entry.
 
 Any one index is enough. List the one people should open first.
 
@@ -378,8 +378,6 @@ dimensions:
     step: P1D
 data:
   - name: daily-rainfall
-    locations:
-      - url: https://example.org/rainfall/
     file_index:
       - format: cdh-inventory
         locations:
@@ -390,9 +388,9 @@ Gaps and a naming change mid-series. A template would claim 02-02 exists and spe
 
 ```csv
 href,time
-2020/CHIRPS-v2.0.2020.02.01.tif,2020-02-01
-2020/CHIRPS-v2.0.2020.02.03.tif,2020-02-03
-2020/chirps_20200204_prelim.tif,2020-02-04
+https://example.org/rainfall/2020/CHIRPS-v2.0.2020.02.01.tif,2020-02-01
+https://example.org/rainfall/2020/CHIRPS-v2.0.2020.02.03.tif,2020-02-03
+https://example.org/rainfall/2020/chirps_20200204_prelim.tif,2020-02-04
 ```
 
 Opaque names and an incomplete grid. There is no wheat/ssp585 file, and without the `crop` and
@@ -400,9 +398,9 @@ Opaque names and an incomplete grid. There is no wheat/ssp585 file, and without 
 
 ```csv
 href,crop,scenario
-a1f3.tif,maize,ssp245
-b7c9.tif,maize,ssp585
-c002.tif,wheat,ssp245
+https://example.org/suit/a1f3.tif,maize,ssp245
+https://example.org/suit/b7c9.tif,maize,ssp585
+https://example.org/suit/c002.tif,wheat,ssp245
 ```
 
 Include a column for every dimension the record declares. An inventory with only `href` is valid but

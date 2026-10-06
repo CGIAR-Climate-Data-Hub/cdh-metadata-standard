@@ -750,12 +750,11 @@ extension fields, not in `keywords` (see section 4.4).
 - **Vocabulary:** `media_type` must be an
   [IANA media type](https://www.iana.org/assignments/media-types/) (e.g.,
   `application/vnd.zarr; version=3`, `image/tiff; application=geotiff; profile=cloud-optimized`).
-- **`locations[]`:** Access location(s) for the asset. Required, unless the entry has a `file_index`
-  whose formats carry their own file locations (any format but `cdh-inventory`); then Recommended
-  when the files share a prefix, since a prefix is listable and is what a bucket policy or mirror
-  points at. Omit it only when the files genuinely share none. Each entry is `{ url, title? }`,
-  where `title` is an optional access label describing the access path (e.g., `HTTPS`, `S3`), not
-  the content.
+- **`locations[]`:** Access location(s) for the asset. Required, unless the entry has a
+  `file_index`, which carries the file locations itself; then Recommended when the files share a
+  prefix, since a prefix is listable and is what a bucket policy or mirror points at. Omit it only
+  when the files genuinely share none. Each entry is `{ url, title? }`, where `title` is an optional
+  access label describing the access path (e.g., `HTTPS`, `S3`), not the content.
   - The first entry is canonical.
   - `url` MUST be an absolute URL. Data never lives beside the record.
   - `url` MUST be machine-actionable: a data file, a store or directory prefix (with
@@ -789,9 +788,9 @@ extension fields, not in `keywords` (see section 4.4).
   pattern, or when there are too many to open one by one. A list of
   `{ format, locations, title, media_type }` indexes that list or open this entry's files as one
   dataset. An index opens files this entry already holds; a store that carries its own data is a
-  `data[]` entry, not an index. `cdh-inventory` may appear once. The index is the one part of a
-  record that may live outside it; every field definition stays in the record. Mutually exclusive
-  with `href_template`. Formats and rules: [File indexes](#file-indexes-file_index).
+  `data[]` entry, not an index. The index is the one part of a record that may live outside it;
+  every field definition stays in the record. Mutually exclusive with `href_template`. Formats and
+  rules: [File indexes](#file-indexes-file_index).
 - **`checksum` (optional):** Digest of a single-file entry as `<algorithm>:<hex>` (`md5`, `sha1`,
   `sha256`, `sha512`), the same form as the `cdh-inventory` column. Not allowed with `href_template`
   or `file_index`; list per-file checksums in a `cdh-inventory` instead.
@@ -814,11 +813,15 @@ extension fields, not in `keywords` (see section 4.4).
 
 #### File indexes (`file_index[]`)
 
-Each entry names one index file and the specification it follows. Its `locations[]` are that file at
-several addresses; an index whose internal paths use a different scheme is a separate entry. No
-format is required and any one is a complete index. Only `cdh-inventory` is validated by CDH; the
-others are trusted to their own specifications. An index may live anywhere; the entry's
+Each entry names one index file and the specification it follows. Its `locations[]` are identical
+copies of that file; an index whose internal paths differ, such as S3 instead of HTTPS, is a
+separate entry. No format is required and any one is a complete index. CDH does not open index
+files; each is trusted to its own specification. An index may live anywhere; the entry's
 `locations[]` describe the files, not the index.
+
+Paths inside an index follow its format's specification. A `cdh-inventory` holds absolute URLs, so
+it works on its own. Other formats should use absolute URLs too. If an index uses paths relative to
+itself, each copy must sit beside the files it lists.
 
 | `format`          | Specification                                                                                           | Internal paths resolve against              | Opened by                    |
 | ----------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------- |
@@ -827,17 +830,15 @@ others are trusted to their own specifications. An index may live anywhere; the 
 | `vrt`             | [GDAL VRT](https://gdal.org/en/stable/drivers/raster/vrt.html)                                          | The index file's own location               | GDAL, QGIS, rasterio         |
 | `kerchunk`        | [kerchunk](https://fsspec.github.io/kerchunk/spec.html)                                                 | As written in the references                | xarray via fsspec            |
 | `icechunk`        | [Icechunk](https://icechunk.io/) with virtual chunks                                                    | As written; containers within `locations[]` | xarray via icechunk          |
-| `cdh-inventory`   | Below                                                                                                   | Every `locations[].url`                     | CDH validation, spreadsheets |
+| `cdh-inventory`   | Below                                                                                                   | Absolute URLs only                          | Spreadsheets, any CSV reader |
 
 Prefer `stac-geoparquet` for large tiled products. An Icechunk or Zarr store that holds its own
 chunks is a `data[]` entry, not an index. For `kerchunk` and `icechunk` the location may be a
 directory prefix; omit `media_type` then.
 
-**`cdh-inventory`** is a CSV (RFC 4180, UTF-8, header row) or a Parquet file with the same columns,
-one row per file:
+**`cdh-inventory`** is a CSV (RFC 4180, UTF-8, header row), one row per file:
 
-- `href` - required. A relative reference (RFC 3986) resolved against every `locations[].url`, each
-  of which MUST be a directory ending in `/`. Must stay beneath the base; no duplicates.
+- `href` - required. The file's absolute URL; no duplicates.
 - One column per declared `dimensions[].name` - that file's coordinate on the axis. A cell MUST
   equal a declared value exactly as written in the record, or a valid ISO 8601 date on a temporal
   axis. Include a column for every dimension the entry holds.

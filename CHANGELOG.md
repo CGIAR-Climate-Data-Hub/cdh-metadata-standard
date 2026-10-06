@@ -29,9 +29,10 @@ occur between minor versions.
 - Added `data[].file_index`: a list of `{ format, locations, title, media_type }` indexes over an
   entry's files, for file sets a template cannot describe. An entry's `locations[]` are one index
   file at several addresses. `format` is one of `stac-geoparquet`, `gti`, `vrt`, `kerchunk`,
-  `icechunk`, or `cdh-inventory` (a CSV or Parquet column contract defined in the standard, with a
-  STAC mapping). Any one index is enough; `cdh-inventory` may appear once and is the only format CDH
-  validates. Indexes are emitted as STAC assets with role `file_index`.
+  `icechunk`, or `cdh-inventory` (a CSV of absolute file URLs defined in the standard, with a STAC
+  mapping). Any one index is enough. CDH does not open index files; each is trusted to its own
+  specification. A `cdh-inventory` holds absolute URLs so it works on its own; a mirror is a second
+  entry. Indexes are emitted as STAC assets with role `file_index`.
 - Added `attribution`: a credit line reusers should reproduce, for sources that mandate wording
   (Copernicus, OpenStreetMap) or producers who ask to be credited. Keeps such text out of `note`.
   Maps to `cgiar-cdh:attribution` and schema.org `creditText`.
@@ -113,8 +114,7 @@ occur between minor versions.
   key's `fields` must all be in one `data[]` asset.
 - `variables[].unit` is optional (data dictionary extension). Omit it for unitless values such as
   class codes.
-- `data[].locations` may be omitted when a `file_index` other than `cdh-inventory` carries the file
-  locations.
+- `data[].locations` may be omitted when a `file_index` carries the file locations.
 - **Breaking:** `file_size` is whole bytes or a number and unit (`31.1 MB`). Units are B, KB, MB,
   GB, TB, PB, in powers of 1000. Free text could not be converted to the byte counts STAC expects.
 - **Breaking:** temporal `values` and `extent` written as a date-time must be RFC 3339, with seconds

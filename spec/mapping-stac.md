@@ -326,15 +326,14 @@ Multiple roles on one asset are allowed (e.g., `[metadata, describedby]`).
 Every `file_index[]` entry is emitted as a Collection asset with role `file_index`, its `format` (or
 `title`) as the asset title, `locations[0]` as `href` and the rest as Alternate Assets, and
 `media_type` as `type` when present. A `stac-geoparquet` index MAY additionally be linked with
-`rel: items` in place of expanding rows into Items. Only a `cdh-inventory` entry is expanded as
-below; other formats are not read.
+`rel: items` in place of expanding rows into Items. Only the first `cdh-inventory` entry is expanded
+as below; other inventories (mirrors) and other formats are not read.
 
 Apply the [file index rules](standard.md#file-indexes-file_index) before encoding. An inventory
-entry describes a file family; do not pass its base URL through the single-asset mapping in section
-5.1.
+entry describes a file family; do not pass its `data[].locations` through the single-asset mapping
+in section 5.1.
 
-- Resolve each row's `href` against each location. The first result becomes the file asset's `href`;
-  the others become Alternate Assets entries. The CSV URL is supporting metadata only.
+- Each row's `href` becomes the file asset's `href`. The CSV URL is supporting metadata only.
 - A `checksum` cell becomes the asset's `file:checksum`, re-encoded as a multihash (the File
   extension's form); the algorithm prefix selects the multihash code.
 - With exactly one temporal coordinate column, emit one Item per row, including when several rows

@@ -151,7 +151,7 @@
           "pattern": "^(?:[^{}]|\\{[^{}:]+(?::(?=[^}]*%)(?:%[YmdHMj]|[^%{}])+)?\\})+$"
         },
         "file_index": {
-          "description": "Indexes that list or open this entry's files as one dataset, per the File indexes section of standard.md. Each entry is one index file; its locations[] are the same file at several addresses. format names the specification the file follows; cdh-inventory (the CDH column contract, CSV or Parquet) may appear once and is the only one CDH validates. Mutually exclusive with href_template.",
+          "description": "Indexes that list or open this entry's files as one dataset, per the File indexes section of standard.md. Each entry is one index file; its locations[] are the same file at several addresses. format names the specification the file follows. CDH does not open index files. Mutually exclusive with href_template.",
           "type": "array",
           "minItems": 1,
           "items": {
@@ -160,7 +160,7 @@
             "required": ["format", "locations"],
             "properties": {
               "format": {
-                "description": "Specification the index file follows: stac-geoparquet (STAC Items as GeoParquet), gti (GDAL Tile Index), vrt (GDAL Virtual Raster), kerchunk (kerchunk reference file), icechunk (Icechunk repository with virtual chunks), or cdh-inventory (CDH CSV or Parquet file list).",
+                "description": "Specification the index file follows: stac-geoparquet (STAC Items as GeoParquet), gti (GDAL Tile Index), vrt (GDAL Virtual Raster), kerchunk (kerchunk reference file), icechunk (Icechunk repository with virtual chunks), or cdh-inventory (CDH CSV file list of absolute URLs).",
                 "enum": ["stac-geoparquet", "gti", "vrt", "kerchunk", "icechunk", "cdh-inventory"]
               },
               "locations": {
@@ -171,14 +171,11 @@
                 "$ref": "#/$defs/nonEmptyString"
               },
               "media_type": {
-                "description": "IANA media type of the index file itself, when it has one. Optional; useful for gti (GeoPackage, FlatGeobuf, or Parquet) and cdh-inventory (CSV or Parquet).",
+                "description": "IANA media type of the index file itself, when it has one. Optional; useful for gti (GeoPackage, FlatGeobuf, or Parquet).",
                 "$ref": "#/$defs/nonEmptyString"
               }
             }
-          },
-          "contains": { "properties": { "format": { "const": "cdh-inventory" } } },
-          "minContains": 0,
-          "maxContains": 1
+          }
         },
         "spatial": {
           "description": "Coverage of this asset alone, for selecting files by area. Same shapes as the top-level spatial. Omit when unknown; the top-level bbox is not copied down.",
@@ -207,18 +204,8 @@
         }
       },
       "required": ["name"],
-      "anyOf": [
-        { "required": ["locations"] },
-        {
-          "$comment": "locations may be omitted when a file_index carries the file locations itself (any format but cdh-inventory).",
-          "required": ["file_index"],
-          "properties": {
-            "file_index": {
-              "not": { "contains": { "properties": { "format": { "const": "cdh-inventory" } } } }
-            }
-          }
-        }
-      ],
+      "$comment": "locations may be omitted when a file_index carries the file locations itself.",
+      "anyOf": [{ "required": ["locations"] }, { "required": ["file_index"] }],
       "not": {
         "required": ["href_template", "file_index"]
       },
