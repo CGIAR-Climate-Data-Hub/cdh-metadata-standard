@@ -1,0 +1,8 @@
+# A dimension's category codes are unique; 1 and "1" are the same code.
+dimensions:
+  - name: zone
+    type: zone
+    description: Agro-ecological zone.
+    categories:
+      - { value: 1, label: Arid }
+      - { value: "1", label: Semi-arid }

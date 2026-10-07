@@ -12,6 +12,10 @@ occur between minor versions.
 
 ### Added
 
+- `dimensions[]` take `data_type` and `categories`, shared with `variables[]`. `data_type` is the
+  stored type of a column or coordinate, so an unlisted key column such as an admin code stored as
+  `"001"` is typed. `categories` lists an axis's values with labels, in place of `values`; not on a
+  temporal axis.
 - Added `extent` to `type: temporal` dimensions (data dictionary extension): `[first, last]` plus
   `step` in place of listing every value on a regular axis, so a 45-year `href_template` token no
   longer needs 45 hand-written values. Requires `step`, excludes `values`. Both ends are

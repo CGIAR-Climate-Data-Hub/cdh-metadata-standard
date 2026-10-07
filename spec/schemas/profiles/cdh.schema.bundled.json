@@ -1144,10 +1144,84 @@
                 "type": "string",
                 "description": "Unit of measurement for the values, preferably compliant with UDUNITS-2 or UCUM. Needed on a `z` dimension (m, cm, hPa) and useful on any numeric domain axis; not a substitute for reference_system, which names the vocabulary or vertical CRS the values are coded against.",
                 "examples": ["cm", "m", "hPa"]
+              },
+              "data_type": {
+                "description": "Storage type of the dimension's column or coordinate in the data, distinct from type, which is its role. A temporal dimension's values stay ISO 8601 strings here even when the source stores years as integers.",
+                "enum": [
+                  "int8",
+                  "int16",
+                  "int32",
+                  "int64",
+                  "uint8",
+                  "uint16",
+                  "uint32",
+                  "uint64",
+                  "float16",
+                  "float32",
+                  "float64",
+                  "cint16",
+                  "cint32",
+                  "cfloat32",
+                  "cfloat64",
+                  "decimal",
+                  "boolean",
+                  "string",
+                  "binary",
+                  "date",
+                  "time",
+                  "datetime",
+                  "other"
+                ]
+              },
+              "categories": {
+                "description": "The axis values with labels, in place of values. Not allowed on a type: temporal dimension.",
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["value", "label"],
+                  "properties": {
+                    "value": {
+                      "description": "The coded value as stored in the data.",
+                      "anyOf": [
+                        {
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        }
+                      ]
+                    },
+                    "label": {
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Short human-readable name of the category."
+                    },
+                    "description": {
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "What this category means."
+                    }
+                  }
+                }
               }
             },
             "required": ["name", "type", "description"],
             "dependentSchemas": {
+              "categories": {
+                "properties": {
+                  "type": {
+                    "not": {
+                      "const": "temporal"
+                    }
+                  }
+                },
+                "not": {
+                  "required": ["values"]
+                }
+              },
               "step": {
                 "properties": {
                   "type": {
@@ -1404,15 +1478,15 @@
                 "description": "Software or code that produced this step's output. Omit when none is published.",
                 "properties": {
                   "url": {
-                    "format": "uri",
-                    "description": "Link to the production code or repository.",
                     "minLength": 1,
-                    "type": "string"
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Link to the production code or repository."
                   },
                   "version": {
-                    "description": "Version, tag, or commit of the code.",
                     "minLength": 1,
-                    "type": "string"
+                    "type": "string",
+                    "description": "Version, tag, or commit of the code."
                   }
                 },
                 "type": "object"
@@ -2415,7 +2489,7 @@
                 "description": "Variable-specific caveats, limitations, or warnings."
               },
               "categories": {
-                "description": "Coded values of a categorical or classified variable and what each means. For long lists, link a sidecar with rel=describedby instead.",
+                "description": "Codes the variable can contain and what each means. For long lists, link a sidecar with rel=describedby instead.",
                 "type": "array",
                 "minItems": 1,
                 "items": {

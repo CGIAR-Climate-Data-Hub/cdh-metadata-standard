@@ -908,7 +908,7 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
 - **Requirement:** Conditional. Required for data cubes, tabular data with axes, or any dataset
   whose meaning depends on axes/codes.
 - **Expected value per dimension:**
-  `{ name, type, description, values, extent, reference_system, step, unit }`.
+  `{ name, type, description, values, categories, extent, reference_system, step, unit, data_type }`.
 - **Rules:**
   - `type` is either a **reserved** value or a domain axis name:
     - `temporal` - an axis of ISO 8601 dates or instants. The only type that may carry a `step`, and
@@ -957,8 +957,17 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
     (you would not enumerate every household id or admin code).
   - `reference_system` is the vocabulary the values are coded against; prefer a resolvable URI when
     one exists (e.g. the AGROVOC URI for a `crop` dimension).
-  - Define coded values. Use `reference_system`, a short inline explanation in `description`, or a
-    sidecar code list linked with `rel=describedby`.
+  - Define coded values. Use `categories`, `reference_system`, a short inline explanation in
+    `description`, or a sidecar code list linked with `rel=describedby`.
+  - `categories` lists the axis values with labels, each `{ value, label, description? }`, in place
+    of `values`; not both. Not allowed on a `type: temporal` dimension. On a dimension, `categories`
+    enumerates the axis values and labels them; on a variable, it describes the codes the variable
+    can contain. Existing `values` remain valid; use `categories` when inline labels are useful.
+  - `data_type` is the storage type of the dimension's column or coordinate, from the same list as
+    `variables[].data_type`. It is separate from `type`, which is the dimension's role. It matters
+    most for key columns whose values are not listed: an admin code stored as `"001"` is a `string`,
+    not an integer. A temporal dimension's values stay ISO 8601 strings in the record even when the
+    source stores years as integers.
   - `name` MUST be unique across `dimensions[]` and `variables[]` together: they share one
     namespace.
   - Do not add custom fields such as `value_definitions` to `dimensions[]`.

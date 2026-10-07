@@ -622,8 +622,10 @@ Use `dimensions` when variables depend on additional axes such as scenario, mode
 technology. Declare a time axis as a `type: temporal` dimension; the top-level `temporal` field
 holds only the coverage dates.
 
-Define coded values. If a code is not obvious, explain it in the dimension description, point to a
-controlled vocabulary, or link a sidecar code list as an [additional asset](#additional-assets).
+Define coded values. If a code is not obvious, list the codes as `categories` with labels instead of
+`values`, explain them in the dimension description, point to a controlled vocabulary, or link a
+sidecar code list as an [additional asset](#additional-assets). Give key columns a `data_type`, so
+an admin code stored as `"001"` is read as text, not the number 1.
 
 ### Categories
 

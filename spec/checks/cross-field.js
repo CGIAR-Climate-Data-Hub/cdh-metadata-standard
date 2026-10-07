@@ -62,23 +62,25 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       }
     }
     dims.set(d?.name, {
-      count: list(d?.values).length + extent.length,
+      count: list(d?.values).length + list(d?.categories).length + extent.length,
       temporal,
       unit,
     });
   });
   const varNames = new Set(list(doc?.variables).map((v) => v?.name));
   // A coded value has one meaning; 1 and "1" are the same code.
-  list(doc?.variables).forEach((v, i) => {
-    const seen = new Set();
-    list(v?.categories).forEach((c, k) => {
-      const key = String(c?.value);
-      if (seen.has(key)) {
-        out.push(`/variables/${i}/categories/${k}/value: duplicate value "${key}"`);
-      }
-      seen.add(key);
+  for (const field of ["dimensions", "variables"]) {
+    list(doc?.[field]).forEach((v, i) => {
+      const seen = new Set();
+      list(v?.categories).forEach((c, k) => {
+        const key = String(c?.value);
+        if (seen.has(key)) {
+          out.push(`/${field}/${i}/categories/${k}/value: duplicate value "${key}"`);
+        }
+        seen.add(key);
+      });
     });
-  });
+  }
   // Structures name declared dimensions and variables. With structures, every
   // variable sits in one and every asset lists the structures it holds.
   const structures = new Map();
@@ -141,7 +143,9 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       } else if (!dim) {
         out.push(`/data/${i}/href_template: token {${token}} has no matching dimensions[].name`);
       } else if (dim.count === 0) {
-        out.push(`/data/${i}/href_template: dimension "${token}" must list its values or extent`);
+        out.push(
+          `/data/${i}/href_template: dimension "${token}" must list its values, categories, or extent`,
+        );
       } else {
         // A template assumes every combination exists, so each held structure needs the token.
         for (const s of held[i]) {

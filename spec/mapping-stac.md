@@ -179,8 +179,9 @@ second is a shape CDH does not emit, and the extension forbids both as custom ty
 - Use Raster Extension on raster assets when band-level physical metadata exists.
 
 - `variables[].data_type` maps to the STAC 1.1 `bands[].data_type` common field on rasters and to
-  `table:columns[].type` on tables; `decimal`, `boolean`, `string`, `binary`, `date`, `time`, and
-  `datetime` are table-only.
+  `table:columns[].type` on tables. On tables, dimensions and variables both become columns, each
+  with its `description` and, when given, its `data_type` as `type`; `decimal`, `boolean`, `string`,
+  `binary`, `date`, `time`, and `datetime` are table-only.
 - Tabular data uses Table Extension `table:columns`; `spatial.geometry_column` maps to
   `table:primary_geometry`. Each `foreign_keys[]` entry maps to `cgiar-cdh:foreign_keys` on every
   asset that holds its `fields`, in the same shape: `reference.resource` becomes `reference.href`
@@ -193,6 +194,10 @@ derived from `label`: apply Unicode NFKD normalization, discard non-ASCII charac
 run of characters outside `[0-9A-Za-z_-]` with `_`, and trim leading and trailing underscores.
 Preserve letter case. If the result is empty, use the integer `value` written as a string. The
 `title` retains the original label.
+
+Dimension `categories` are axis coordinates, not pixel classes; they never become
+`classification:classes`. Their codes are the dimension's `values` in `cube:dimensions`, and their
+labels follow the sidecar rule below.
 
 String codes and table categories MUST retain their original values, labels, and descriptions in a
 data dictionary sidecar asset with `roles=[metadata, describedby]` and a link with

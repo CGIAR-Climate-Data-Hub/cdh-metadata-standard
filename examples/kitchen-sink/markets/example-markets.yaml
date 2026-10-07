@@ -65,6 +65,7 @@ dimensions:
   - name: market_id
     type: location
     description: Market code, unique within Farland.
+    data_type: string # codes keep leading zeros
 
 variables:
   - name: market_name

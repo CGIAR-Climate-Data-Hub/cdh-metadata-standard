@@ -141,9 +141,14 @@ dimensions:
     step: P20Y
   - name: crop
     type: crop
-    description: Example crop code. Full labels are in the dimension codes asset.
+    description: Example crop code; the {crop} token.
     reference_system: https://example.org/vocab/crop-codes
-    values: [maiz, rice, whea]
+    data_type: string
+    # categories in place of values: the codes, labelled.
+    categories:
+      - { value: maiz, label: Maize }
+      - { value: rice, label: Rice }
+      - { value: whea, label: Wheat }
   - name: scenario
     type: scenario
     description: Emissions scenario label.
