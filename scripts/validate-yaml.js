@@ -266,9 +266,11 @@ function missingRelativeAssets(file, doc) {
 }
 
 // Parse as YAML 1.2 / JSON-style: bare dates stay strings (matching the
-// editor and the JSON output) instead of becoming JS Date objects.
-const loadYaml = async (file) =>
-  yaml.load(await readFile(file, "utf-8"), { schema: yaml.CORE_SCHEMA });
+// editor and the JSON output) instead of becoming JS Date objects. Merge keys
+// (`<<: *anchor`) are added so a structure can reuse a variable and override
+// one field (authoring-guide.md, Structures).
+const YAML_SCHEMA = yaml.CORE_SCHEMA.extend({ implicit: [yaml.types.merge] });
+const loadYaml = async (file) => yaml.load(await readFile(file, "utf-8"), { schema: YAML_SCHEMA });
 const isObject = (v) => v && typeof v === "object" && !Array.isArray(v);
 const merge = (base, over) =>
   isObject(base) && isObject(over)

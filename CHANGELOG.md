@@ -22,6 +22,8 @@ occur between minor versions.
   `additional_assets[]` already allows, so a small inventory CSV can be committed beside the record.
   Validation checks the file exists. Other index formats still require absolute URLs, since their
   internal paths may resolve against the index's own location.
+- `validate-yaml` accepts YAML merge keys (`<<: *anchor`), so a structure can reuse a variable from
+  another and change one field, such as `nodata`. The authoring guide shows the pattern.
 
 ## [0.4.0] - 2026-10-07
 
