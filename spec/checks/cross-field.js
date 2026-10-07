@@ -139,9 +139,7 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       if (token === "variable") {
         // nothing to resolve
       } else if (!dim) {
-        out.push(
-          `/data/${i}/href_template: token {${token}} has no matching dimensions[].name (requires the data dictionary extension)`,
-        );
+        out.push(`/data/${i}/href_template: token {${token}} has no matching dimensions[].name`);
       } else if (dim.count === 0) {
         out.push(`/data/${i}/href_template: dimension "${token}" must list its values or extent`);
       } else {

@@ -424,7 +424,7 @@
                 "description": "Asset name; must be unique across data[] and additional_assets[]."
               },
               "structures": {
-                "description": "Names of the structures[] this asset holds (requires the data dictionary extension). Required on every asset when the record declares structures[]. Structure membership must be verified before publication.",
+                "description": "Names of the structures[] this asset holds. Required on every asset when the record declares structures[]. Structure membership must be verified before publication.",
                 "type": "array",
                 "minItems": 1,
                 "uniqueItems": true,
@@ -435,7 +435,7 @@
               },
               "href_template": {
                 "type": "string",
-                "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name (requires the data dictionary extension); the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d %H %M %j only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset.",
+                "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name; the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d %H %M %j only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset.",
                 "examples": [
                   "mapspam_{crop}_{technology}_{variable}.tif",
                   "chirps-v2.0.{date:%Y.%m.%d}.tif"
@@ -1037,6 +1037,189 @@
           "description": "Canonical human- and AI-readable summary of the resource.",
           "minLength": 1
         },
+        "dimensions": {
+          "description": "Cube axes: domain axes (e.g. crop, scenario), a vertical axis (type: z), place-key columns (type: location), and temporal axes (each type: temporal with a step). The horizontal lat/lon grid is derived from the top-level spatial field and is not declared here, and bands are variables rather than an axis.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "not": {
+                  "const": "variable"
+                },
+                "description": "Axis name. Must not be \"variable\": measures are not axes and belong in variables[]; href_template refers to them via the reserved {variable} token."
+              },
+              "description": {
+                "type": "string",
+                "description": "What the dimension is; define coded values here, or via reference_system or a sidecar.",
+                "minLength": 1
+              },
+              "type": {
+                "type": "string",
+                "description": "Dimension type. Reserved values change how the dimension is read: `temporal` (an axis of ISO 8601 dates or instants - the only type that may carry a step, and a record may declare several, e.g. a year axis files are split on plus a day column inside them) and `z` (a vertical axis - depth, height, or pressure level - at most one per record). `location` names a column identifying a place, such as an admin or station code. Any other value names a domain axis after what it varies (crop, scenario, season). `spatial` and `geometry` are rejected: the horizontal grid is derived from the top-level spatial field and never declared here, and STAC forbids both words as custom dimension types. Lowercase; aliases of `temporal` are rejected so a time axis cannot silently become a domain axis.",
+                "minLength": 1,
+                "pattern": "^[a-z][a-z0-9_-]*$",
+                "not": {
+                  "enum": [
+                    "time",
+                    "times",
+                    "date",
+                    "dates",
+                    "datetime",
+                    "timestamp",
+                    "spatial",
+                    "geometry"
+                  ]
+                },
+                "examples": ["temporal", "z", "location", "crop", "scenario"]
+              },
+              "reference_system": {
+                "minLength": 1,
+                "type": "string",
+                "description": "Vocabulary the dimension's values are coded against; prefer a resolvable URI when one exists (e.g. an AGROVOC concept scheme)."
+              },
+              "values": {
+                "description": "Allowed values along the dimension.",
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "anyOf": [
+                    {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    }
+                  ]
+                }
+              },
+              "step": {
+                "type": "string",
+                "pattern": "^P(?=.*[1-9])(\\d+Y)?(\\d+M)?(\\d+W)?(\\d+D)?(T(?!$)(\\d+H)?(\\d+M)?(\\d+S)?)?$",
+                "description": "Spacing of one step, as an ISO 8601 duration (P1Y, P3M, PT6H) with at least one nonzero component. Only valid on a type: temporal dimension.",
+                "examples": ["P3M", "P20Y"]
+              },
+              "extent": {
+                "description": "First and last value of a regular temporal axis, as ISO 8601 strings, in place of listing every value. Only valid on a type: temporal dimension with a step, and not alongside values. Both strings are written at one precision (YYYY, YYYY-MM, YYYY-MM-DD, or an RFC 3339 date-time with seconds and offset), no coarser than the step, start before end. The values are start, start + step, … while <= end, at that same precision, so [\"1981\", \"2025\"] with step P1Y is 1981, 1982, ... 2025.",
+                "minItems": 2,
+                "maxItems": 2,
+                "examples": [["1981", "2025"]],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "anyOf": [
+                  {
+                    "items": {
+                      "pattern": "^\\d{4}$"
+                    }
+                  },
+                  {
+                    "items": {
+                      "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                    }
+                  },
+                  {
+                    "items": {
+                      "format": "date"
+                    }
+                  },
+                  {
+                    "items": {
+                      "format": "date-time"
+                    }
+                  }
+                ]
+              },
+              "unit": {
+                "minLength": 1,
+                "type": "string",
+                "description": "Unit of measurement for the values, preferably compliant with UDUNITS-2 or UCUM. Needed on a `z` dimension (m, cm, hPa) and useful on any numeric domain axis; not a substitute for reference_system, which names the vocabulary or vertical CRS the values are coded against.",
+                "examples": ["cm", "m", "hPa"]
+              }
+            },
+            "required": ["name", "type", "description"],
+            "dependentSchemas": {
+              "step": {
+                "properties": {
+                  "type": {
+                    "const": "temporal"
+                  }
+                }
+              },
+              "extent": {
+                "properties": {
+                  "type": {
+                    "const": "temporal"
+                  }
+                },
+                "required": ["step"],
+                "not": {
+                  "required": ["values"]
+                }
+              }
+            },
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "temporal"
+                }
+              },
+              "required": ["type"]
+            },
+            "then": {
+              "properties": {
+                "values": {
+                  "description": "On a temporal dimension, every value is an ISO 8601 date or an RFC 3339 date-time with seconds and offset, as a string. A binned axis lists each bin's start and states its length in step, so a 30-year period axis is values: [\"2021\", \"2051\"] with step: P30Y. A cyclic label axis (DJF/MAM/JJA/SON) is not temporal - name it after what it varies and describe the labels. All values share one precision.",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "anyOf": [
+                    {
+                      "items": {
+                        "pattern": "^\\d{4}$"
+                      }
+                    },
+                    {
+                      "items": {
+                        "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                      }
+                    },
+                    {
+                      "items": {
+                        "format": "date"
+                      }
+                    },
+                    {
+                      "items": {
+                        "format": "date-time"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "contains": {
+            "properties": {
+              "type": {
+                "const": "z"
+              }
+            },
+            "required": ["type"]
+          },
+          "minContains": 0,
+          "maxContains": 1
+        },
         "doi": {
           "description": "Bare DOI (not a URL).",
           "type": "string",
@@ -1051,6 +1234,66 @@
           },
           "type": "array",
           "uniqueItems": true
+        },
+        "foreign_keys": {
+          "description": "Keys from this table to other catalogued datasets, after Frictionless Table Schema foreignKeys. Each entry pairs this record's key columns with the referenced dataset's columns, positionally.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["fields", "reference"],
+            "properties": {
+              "fields": {
+                "description": "Key columns in this record; each must be a declared dimensions[]/variables[] name.",
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "reference": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["resource", "fields"],
+                "properties": {
+                  "resource": {
+                    "description": "The dataset referenced (e.g. a boundary/station record): its catalog record id, which must resolve to exactly one catalog record, or an absolute URI for a dataset outside the catalog.",
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9-]*$"
+                      },
+                      {
+                        "type": "string",
+                        "format": "uri"
+                      }
+                    ],
+                    "examples": [
+                      "gaul-2015-admin2",
+                      "https://example.org/boundaries/gaul-2015-admin2"
+                    ]
+                  },
+                  "asset": {
+                    "description": "The data[].name of the referenced dataset's file that holds reference.fields. Required when that dataset has more than one data[] entry.",
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "fields": {
+                    "description": "Matching columns in the referenced dataset, paired positionally with fields (same length).",
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
         "funding": {
           "description": "Funding sources for the resource.",
@@ -1943,8 +2186,44 @@
           },
           "type": "object"
         },
+        "structures": {
+          "description": "Layouts for records whose assets hold different dimensions and variables. Each structure groups variables that share dimensions: every variable in it has every one of its dimensions. With structures, every data[] entry names the structures it holds. Without structures, every variable has every declared dimension.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "dimensions", "variables"],
+            "properties": {
+              "name": {
+                "minLength": 1,
+                "type": "string",
+                "description": "Structure name, unique within structures[]; data[].structures refers to it."
+              },
+              "dimensions": {
+                "description": "Names of the dimensions[] every variable here has. Empty when the variables have no dimensions beyond the horizontal grid.",
+                "type": "array",
+                "uniqueItems": true,
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "variables": {
+                "description": "Names of the variables[] in this structure.",
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
         "temporal": {
-          "description": "Coverage extent, precision-aware. Use `date` for a single instant or period (date: 2020 = the year 2020), or `start_date` + `end_date` for a span (end_date: null = open-ended). `date` and `start_date`/`end_date` are mutually exclusive. Temporal cadence is not recorded here - declare a type: temporal dimension (data dictionary extension) instead.",
+          "description": "Coverage extent, precision-aware. Use `date` for a single instant or period (date: 2020 = the year 2020), or `start_date` + `end_date` for a span (end_date: null = open-ended). `date` and `start_date`/`end_date` are mutually exclusive. Temporal cadence is not recorded here - declare a type: temporal dimension instead.",
           "additionalProperties": false,
           "properties": {
             "date": {
@@ -2067,6 +2346,112 @@
             }
           ]
         },
+        "variables": {
+          "description": "Measurement variables, bands, or columns.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": {
+                "type": "string",
+                "description": "Stable definition and reading guidance for the variable.",
+                "minLength": 1
+              },
+              "data_type": {
+                "description": "Data type of the stored values. Numeric names follow STAC raster:data_type; the rest cover table columns. other is for nested types (list, map, struct).",
+                "enum": [
+                  "int8",
+                  "int16",
+                  "int32",
+                  "int64",
+                  "uint8",
+                  "uint16",
+                  "uint32",
+                  "uint64",
+                  "float16",
+                  "float32",
+                  "float64",
+                  "cint16",
+                  "cint32",
+                  "cfloat32",
+                  "cfloat64",
+                  "decimal",
+                  "boolean",
+                  "string",
+                  "binary",
+                  "date",
+                  "time",
+                  "datetime",
+                  "other"
+                ]
+              },
+              "unit": {
+                "minLength": 1,
+                "type": "string",
+                "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM. Required for measurements; omit for text or code columns.",
+                "examples": ["t ha-1", "{head}/km2"]
+              },
+              "nodata": {
+                "description": "No-data / fill value for this variable, where it differs from the asset's. Takes precedence over the asset's nodata for this variable only.",
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                ]
+              },
+              "note": {
+                "minLength": 1,
+                "type": "string",
+                "description": "Variable-specific caveats, limitations, or warnings."
+              },
+              "categories": {
+                "description": "Coded values of a categorical or classified variable and what each means. For long lists, link a sidecar with rel=describedby instead.",
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["value", "label"],
+                  "properties": {
+                    "value": {
+                      "description": "The coded value as stored in the data.",
+                      "anyOf": [
+                        {
+                          "minLength": 1,
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        }
+                      ]
+                    },
+                    "label": {
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Short human-readable name of the category."
+                    },
+                    "description": {
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "What this category means."
+                    }
+                  }
+                }
+              }
+            },
+            "required": ["name", "description"]
+          }
+        },
         "version": {
           "description": "Version label of this release of the resource. The source's own label when it has one; otherwise a counter from 1. Letters, digits, dots, underscores, and hyphens only, since it becomes part of a superseded release's id. Not compared or sorted - order comes from previous_version.",
           "examples": ["1", "v2r2", "2.1"],
@@ -2103,7 +2488,22 @@
       ],
       "allOf": [
         {
-          "$comment": "{variable} expands over variables[].name, so a template using it needs declared variables (data dictionary extension).",
+          "$comment": "With structures, every data[] entry names the structures it holds.",
+          "if": {
+            "required": ["structures"]
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "items": {
+                  "required": ["structures"]
+                }
+              }
+            }
+          }
+        },
+        {
+          "$comment": "{variable} expands over variables[].name, so a template using it needs declared variables.",
           "if": {
             "required": ["data"],
             "properties": {
@@ -2361,411 +2761,6 @@
       }
     },
     {
-      "title": "Data Dictionary Extension",
-      "description": "Dimensions and variables for gridded, multidimensional, or tabular data.",
-      "type": "object",
-      "if": {
-        "required": ["structures"]
-      },
-      "then": {
-        "$comment": "With structures, every data[] entry names the structures it holds.",
-        "properties": {
-          "data": {
-            "items": {
-              "required": ["structures"]
-            }
-          }
-        }
-      },
-      "properties": {
-        "dimensions": {
-          "description": "Cube axes: domain axes (e.g. crop, scenario), a vertical axis (type: z), place-key columns (type: location), and temporal axes (each type: temporal with a step). The horizontal lat/lon grid is derived from the top-level spatial field and is not declared here, and bands are variables rather than an axis.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1,
-                "not": {
-                  "const": "variable"
-                },
-                "description": "Axis name. Must not be \"variable\": measures are not axes and belong in variables[]; href_template refers to them via the reserved {variable} token."
-              },
-              "description": {
-                "type": "string",
-                "description": "What the dimension is; define coded values here, or via reference_system or a sidecar.",
-                "minLength": 1
-              },
-              "type": {
-                "type": "string",
-                "description": "Dimension type. Reserved values change how the dimension is read: `temporal` (an axis of ISO 8601 dates or instants - the only type that may carry a step, and a record may declare several, e.g. a year axis files are split on plus a day column inside them) and `z` (a vertical axis - depth, height, or pressure level - at most one per record). `location` names a column identifying a place, such as an admin or station code. Any other value names a domain axis after what it varies (crop, scenario, season). `spatial` and `geometry` are rejected: the horizontal grid is derived from the top-level spatial field and never declared here, and STAC forbids both words as custom dimension types. Lowercase; aliases of `temporal` are rejected so a time axis cannot silently become a domain axis.",
-                "minLength": 1,
-                "pattern": "^[a-z][a-z0-9_-]*$",
-                "not": {
-                  "enum": [
-                    "time",
-                    "times",
-                    "date",
-                    "dates",
-                    "datetime",
-                    "timestamp",
-                    "spatial",
-                    "geometry"
-                  ]
-                },
-                "examples": ["temporal", "z", "location", "crop", "scenario"]
-              },
-              "reference_system": {
-                "description": "Vocabulary the dimension's values are coded against; prefer a resolvable URI when one exists (e.g. an AGROVOC concept scheme).",
-                "minLength": 1,
-                "type": "string"
-              },
-              "values": {
-                "description": "Allowed values along the dimension.",
-                "type": "array",
-                "minItems": 1,
-                "uniqueItems": true,
-                "items": {
-                  "anyOf": [
-                    {
-                      "minLength": 1,
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "boolean"
-                    }
-                  ]
-                }
-              },
-              "step": {
-                "type": "string",
-                "pattern": "^P(?=.*[1-9])(\\d+Y)?(\\d+M)?(\\d+W)?(\\d+D)?(T(?!$)(\\d+H)?(\\d+M)?(\\d+S)?)?$",
-                "description": "Spacing of one step, as an ISO 8601 duration (P1Y, P3M, PT6H) with at least one nonzero component. Only valid on a type: temporal dimension.",
-                "examples": ["P3M", "P20Y"]
-              },
-              "extent": {
-                "description": "First and last value of a regular temporal axis, as ISO 8601 strings, in place of listing every value. Only valid on a type: temporal dimension with a step, and not alongside values. Both strings are written at one precision (YYYY, YYYY-MM, YYYY-MM-DD, or an RFC 3339 date-time with seconds and offset), no coarser than the step, start before end. The values are start, start + step, … while <= end, at that same precision, so [\"1981\", \"2025\"] with step P1Y is 1981, 1982, ... 2025.",
-                "minItems": 2,
-                "maxItems": 2,
-                "examples": [["1981", "2025"]],
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "anyOf": [
-                  {
-                    "items": {
-                      "pattern": "^\\d{4}$"
-                    }
-                  },
-                  {
-                    "items": {
-                      "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
-                    }
-                  },
-                  {
-                    "items": {
-                      "format": "date"
-                    }
-                  },
-                  {
-                    "items": {
-                      "format": "date-time"
-                    }
-                  }
-                ]
-              },
-              "unit": {
-                "description": "Unit of measurement for the values, preferably compliant with UDUNITS-2 or UCUM. Needed on a `z` dimension (m, cm, hPa) and useful on any numeric domain axis; not a substitute for reference_system, which names the vocabulary or vertical CRS the values are coded against.",
-                "examples": ["cm", "m", "hPa"],
-                "minLength": 1,
-                "type": "string"
-              }
-            },
-            "required": ["name", "type", "description"],
-            "dependentSchemas": {
-              "step": {
-                "properties": {
-                  "type": {
-                    "const": "temporal"
-                  }
-                }
-              },
-              "extent": {
-                "properties": {
-                  "type": {
-                    "const": "temporal"
-                  }
-                },
-                "required": ["step"],
-                "not": {
-                  "required": ["values"]
-                }
-              }
-            },
-            "if": {
-              "properties": {
-                "type": {
-                  "const": "temporal"
-                }
-              },
-              "required": ["type"]
-            },
-            "then": {
-              "properties": {
-                "values": {
-                  "description": "On a temporal dimension, every value is an ISO 8601 date or an RFC 3339 date-time with seconds and offset, as a string. A binned axis lists each bin's start and states its length in step, so a 30-year period axis is values: [\"2021\", \"2051\"] with step: P30Y. A cyclic label axis (DJF/MAM/JJA/SON) is not temporal - name it after what it varies and describe the labels. All values share one precision.",
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "anyOf": [
-                    {
-                      "items": {
-                        "pattern": "^\\d{4}$"
-                      }
-                    },
-                    {
-                      "items": {
-                        "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
-                      }
-                    },
-                    {
-                      "items": {
-                        "format": "date"
-                      }
-                    },
-                    {
-                      "items": {
-                        "format": "date-time"
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "contains": {
-            "properties": {
-              "type": {
-                "const": "z"
-              }
-            },
-            "required": ["type"]
-          },
-          "minContains": 0,
-          "maxContains": 1
-        },
-        "variables": {
-          "description": "Measurement variables, bands, or columns.",
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1
-              },
-              "description": {
-                "type": "string",
-                "description": "Stable definition and reading guidance for the variable.",
-                "minLength": 1
-              },
-              "data_type": {
-                "description": "Data type of the stored values. Numeric names follow STAC raster:data_type; the rest cover table columns. other is for nested types (list, map, struct).",
-                "enum": [
-                  "int8",
-                  "int16",
-                  "int32",
-                  "int64",
-                  "uint8",
-                  "uint16",
-                  "uint32",
-                  "uint64",
-                  "float16",
-                  "float32",
-                  "float64",
-                  "cint16",
-                  "cint32",
-                  "cfloat32",
-                  "cfloat64",
-                  "decimal",
-                  "boolean",
-                  "string",
-                  "binary",
-                  "date",
-                  "time",
-                  "datetime",
-                  "other"
-                ]
-              },
-              "unit": {
-                "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM. Required for measurements; omit for text or code columns.",
-                "examples": ["t ha-1", "{head}/km2"],
-                "minLength": 1,
-                "type": "string"
-              },
-              "nodata": {
-                "description": "No-data / fill value for this variable, where it differs from the asset's. Takes precedence over the asset's nodata for this variable only.",
-                "anyOf": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "minLength": 1,
-                    "type": "string"
-                  }
-                ]
-              },
-              "note": {
-                "minLength": 1,
-                "type": "string",
-                "description": "Variable-specific caveats, limitations, or warnings."
-              },
-              "categories": {
-                "description": "Coded values of a categorical or classified variable and what each means. For long lists, link a sidecar with rel=describedby instead.",
-                "type": "array",
-                "minItems": 1,
-                "items": {
-                  "type": "object",
-                  "additionalProperties": false,
-                  "required": ["value", "label"],
-                  "properties": {
-                    "value": {
-                      "description": "The coded value as stored in the data.",
-                      "anyOf": [
-                        {
-                          "minLength": 1,
-                          "type": "string"
-                        },
-                        {
-                          "type": "integer"
-                        }
-                      ]
-                    },
-                    "label": {
-                      "minLength": 1,
-                      "type": "string",
-                      "description": "Short human-readable name of the category."
-                    },
-                    "description": {
-                      "minLength": 1,
-                      "type": "string",
-                      "description": "What this category means."
-                    }
-                  }
-                }
-              }
-            },
-            "required": ["name", "description"]
-          }
-        },
-        "structures": {
-          "description": "Layouts for records whose assets hold different dimensions and variables. Each structure groups variables that share dimensions: every variable in it has every one of its dimensions. With structures, every data[] entry names the structures it holds. Without structures, every variable has every declared dimension.",
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["name", "dimensions", "variables"],
-            "properties": {
-              "name": {
-                "minLength": 1,
-                "type": "string",
-                "description": "Structure name, unique within structures[]; data[].structures refers to it."
-              },
-              "dimensions": {
-                "description": "Names of the dimensions[] every variable here has. Empty when the variables have no dimensions beyond the horizontal grid.",
-                "type": "array",
-                "uniqueItems": true,
-                "items": {
-                  "minLength": 1,
-                  "type": "string"
-                }
-              },
-              "variables": {
-                "description": "Names of the variables[] in this structure.",
-                "type": "array",
-                "minItems": 1,
-                "uniqueItems": true,
-                "items": {
-                  "minLength": 1,
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "foreign_keys": {
-          "description": "Keys from this table to other catalogued datasets, after Frictionless Table Schema foreignKeys. Each entry pairs this record's key columns with the referenced dataset's columns, positionally.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["fields", "reference"],
-            "properties": {
-              "fields": {
-                "description": "Key columns in this record; each must be a declared dimensions[]/variables[] name.",
-                "type": "array",
-                "minItems": 1,
-                "uniqueItems": true,
-                "items": {
-                  "type": "string",
-                  "minLength": 1
-                }
-              },
-              "reference": {
-                "type": "object",
-                "additionalProperties": false,
-                "required": ["resource", "fields"],
-                "properties": {
-                  "resource": {
-                    "description": "The dataset referenced (e.g. a boundary/station record): its catalog record id, which must resolve to exactly one catalog record, or an absolute URI for a dataset outside the catalog.",
-                    "anyOf": [
-                      {
-                        "type": "string",
-                        "pattern": "^[a-z0-9][a-z0-9-]*$"
-                      },
-                      {
-                        "type": "string",
-                        "format": "uri"
-                      }
-                    ],
-                    "examples": [
-                      "gaul-2015-admin2",
-                      "https://example.org/boundaries/gaul-2015-admin2"
-                    ]
-                  },
-                  "asset": {
-                    "description": "The data[].name of the referenced dataset's file that holds reference.fields. Required when that dataset has more than one data[] entry.",
-                    "type": "string",
-                    "minLength": 1
-                  },
-                  "fields": {
-                    "description": "Matching columns in the referenced dataset, paired positionally with fields (same length).",
-                    "type": "array",
-                    "minItems": 1,
-                    "uniqueItems": true,
-                    "items": {
-                      "type": "string",
-                      "minLength": 1
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    {
       "title": "Agriculture Extension",
       "description": "Agricultural commodities described by the record.",
       "type": "object",
@@ -2854,29 +2849,6 @@
             "contains": {
               "type": "string",
               "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/climate/schema\\.json$"
-            }
-          }
-        }
-      }
-    },
-    {
-      "if": {
-        "anyOf": [
-          {
-            "required": ["dimensions"]
-          },
-          {
-            "required": ["variables"]
-          }
-        ]
-      },
-      "then": {
-        "required": ["extensions"],
-        "properties": {
-          "extensions": {
-            "contains": {
-              "type": "string",
-              "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/data-dictionary/schema\\.json$"
             }
           }
         }

@@ -2,4 +2,3 @@
 # unreal, so the release bump never rewrites it.
 extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v9.9.9/extensions/cdh/schema.json
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.0/extensions/data-dictionary/schema.json

@@ -64,6 +64,10 @@ occur between minor versions.
 
 ### Changed
 
+- **Breaking:** the data dictionary is core. `dimensions[]`, `variables[]`, `structures[]`, and
+  `foreign_keys[]` keep their rules but need no extension declaration; remove the data-dictionary
+  URL from `extensions[]`. Core already depended on them through `href_template` and
+  `data[].structures`. They are documented in section 5.8 of the standard.
 - **Breaking:** removed `$schema`. Nothing read it: the validating catalog picks the profile, and
   `cdh_schema_version` already names the release. Editors bind the profile through the
   `yaml-language-server` comment.

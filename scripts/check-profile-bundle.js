@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // The bundled CDH profile is advertised for plain JSON Schema validators.
 // Keep one focused check that it rejects first-party extension fields when the
-// matching extension URL is missing from extensions[].
+// matching extension URL is missing from extensions[], and that core data
+// dictionary fields need no extension URL.
 
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -24,19 +25,6 @@ const cases = [
     name: "climate",
     extension: extensionUrl("climate"),
     field: { climate: { mip_era: "CMIP6" } },
-  },
-  {
-    name: "data-dictionary",
-    extension: extensionUrl("data-dictionary"),
-    field: {
-      dimensions: [
-        {
-          name: "crop",
-          type: "crop",
-          description: "Crop code axis.",
-        },
-      ],
-    },
   },
   {
     name: "agriculture",
@@ -69,5 +57,18 @@ for (const test of cases) {
   }
 }
 
+// Data dictionary fields are core: valid with only the cdh extension, still checked.
+const crop = { name: "crop", type: "crop", description: "Crop code axis." };
+if (!validate({ ...base, dimensions: [crop] })) {
+  failures += 1;
+  console.error("FAIL data dictionary: bundled profile rejected core dimensions[]");
+  for (const err of validate.errors ?? [])
+    console.error(`  ${err.instancePath || "/"}: ${err.message}`);
+}
+if (validate({ ...base, dimensions: [{ name: "crop", type: "crop" }] })) {
+  failures += 1;
+  console.error("FAIL data dictionary: bundled profile allowed a dimension without description");
+}
+
 if (failures > 0) process.exit(1);
-console.log(`ok   ${rel(PROFILE)} first-party extension declarations`);
+console.log(`ok   ${rel(PROFILE)} first-party extension declarations and core data dictionary`);

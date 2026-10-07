@@ -278,9 +278,8 @@ separate `data` entries. For a service, see [Data served by an API](#data-served
 
 By default every asset holds every declared dimension and variable. When assets differ, such as
 monthly and seasonal file sets or tables with different columns, declare
-[`structures`](./extensions/data-dictionary/README.md#structures) and name each asset's structures
-in `data[].structures`. Verify what each asset holds before publication, either from the source or
-with an inspection tool.
+[`structures`](standard.md#structures) and name each asset's structures in `data[].structures`.
+Verify what each asset holds before publication, either from the source or with an inspection tool.
 
 Every asset needs a `name`, and names must be unique across both `data` and `additional_assets`. Use
 `nodata` when an asset has a sentinel value for missing or invalid observations. When `processing`
@@ -617,8 +616,9 @@ For each variable:
 
 #### Dimensions
 
-Use `dimensions` when variables depend on additional axes such as scenario, model, crop, technology,
-band, etc. Time dimension is already covered by `temporal` metadata field.
+Use `dimensions` when variables depend on additional axes such as scenario, model, crop, or
+technology. Declare a time axis as a `type: temporal` dimension; the top-level `temporal` field
+holds only the coverage dates. Bands are variables, not a dimension.
 
 Define coded values. If a code is not obvious, explain it in the dimension description, point to a
 controlled vocabulary, or link a sidecar code list as an [additional asset](#additional-assets).
