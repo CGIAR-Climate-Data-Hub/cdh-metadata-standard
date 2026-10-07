@@ -1962,7 +1962,7 @@
                     },
                     "type": {
                       "type": "string",
-                      "description": "Dimension type. Reserved values change how the dimension is read: `temporal` (an axis of ISO 8601 dates or instants - the only type that may carry a step, and a structure may declare several, e.g. a year axis files are split on plus a day column inside them) and `z` (a vertical axis - depth, height, or pressure level - at most one per structure). `location` names a column identifying a place, such as an admin or station code. Any other value names a domain axis after what it varies (crop, scenario, season). `spatial` and `geometry` are rejected: the horizontal grid is derived from the top-level spatial field and never declared here, and STAC forbids both words as custom dimension types. Lowercase; aliases of `temporal` are rejected so a time axis cannot silently become a domain axis.",
+                      "description": "Dimension type. Reserved values change how the dimension is read: `temporal` (an axis of ISO 8601 dates or instants - the only type that may carry a step, and a structure may declare several, e.g. a year axis files are split on plus a day column inside them) and `z` (a vertical axis - depth, height, or pressure level - at most one per structure). `location` names a column identifying a place, such as an admin or station code. `x` and `y` are a table's coordinate columns, in spatial.crs (CF axis X/Y); lat/lon spellings are rejected so a coordinate column cannot silently become a domain axis. Any other value names a domain axis after what it varies (crop, scenario, season). `spatial` and `geometry` are rejected: the horizontal grid is derived from the top-level spatial field and never declared here, and STAC forbids both words as custom dimension types. Lowercase; aliases of `temporal` are rejected so a time axis cannot silently become a domain axis.",
                       "minLength": 1,
                       "pattern": "^[a-z][a-z0-9_-]*$",
                       "not": {
@@ -1974,7 +1974,12 @@
                           "datetime",
                           "timestamp",
                           "spatial",
-                          "geometry"
+                          "geometry",
+                          "lat",
+                          "latitude",
+                          "lon",
+                          "lng",
+                          "longitude"
                         ]
                       },
                       "examples": ["temporal", "z", "location", "crop", "scenario"]

@@ -87,7 +87,8 @@ occur between minor versions.
   table's reporting unit is what one row is, which its `type: location` dimension states, with the
   boundary set or spatial index in `reference_system` and a `foreign_keys` entry to a catalogued
   boundary record. A record is spatial when it has a footprint; a structure is spatially indexed
-  when it has a `geometry_column` or a `location` dimension.
+  when it has a `geometry_column`, `x` and `y` coordinate dimensions (CF `axis`), or a `location`
+  dimension.
 - **Breaking:** `variables[].data_type` is a closed list: the STAC `raster:data_type` names plus
   `decimal`, `boolean`, `string`, `binary`, `date`, `time`, `datetime`, and `other` for nested
   types.

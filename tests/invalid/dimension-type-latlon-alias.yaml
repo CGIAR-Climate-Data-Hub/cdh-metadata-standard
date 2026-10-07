@@ -1,0 +1,7 @@
+# lat/lon spellings are rejected; a coordinate column is type x or y.
+structures:
+  - name: main
+    dimensions:
+      - { name: latitude, type: lat, description: Sample latitude., unit: degree }
+    variables:
+      - { name: soc, description: Soil organic carbon. }

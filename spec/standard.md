@@ -555,8 +555,9 @@ Required when the resource has a geospatial footprint. `spatial.geography` (name
 any resource for broad discovery; `bbox`, `crs`, and `resolution` describe a precise footprint.
 
 A record is spatial when it has a footprint. A structure is spatially indexed when it has a
-`geometry_column` or a `type: location` dimension (section 5.8): the first carries geometries, the
-second keys rows to a boundary set or spatial index, such as admin units, basins, or H3 cells.
+`geometry_column`, `type: x` and `type: y` dimensions, or a `type: location` dimension (section
+5.8): geometries, coordinate columns, or a key into a boundary set or spatial index such as admin
+units, basins, or H3 cells.
 
 #### `spatial.bbox`
 
@@ -923,11 +924,14 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
       where one exists; omit it for a code the dataset defines itself. Add a `foreign_keys` entry
       when the boundary set is a catalog record. With a composite key, the finest column describes
       the unit.
+    - `x` and `y` - the coordinate columns of a table, in `spatial.crs`, as in CF `axis: X` and
+      `axis: Y`. Give each a `unit`. `lat`, `lon`, and their long forms are rejected, like the
+      `temporal` aliases. A grid never declares them: its horizontal axes come from `spatial`.
     - Anything else names a domain axis after what it varies (`crop`, `technology`, `scenario`).
       Lowercase, digits, `-` and `_`.
   - **`spatial` and `geometry` are rejected.** The horizontal lat/lon grid comes from the top-level
-    `spatial` field and is never declared here. Use `z` for a vertical axis and `location` for a
-    place key.
+    `spatial` field and is never declared here. Use `z` for a vertical axis, `x` and `y` for a
+    table's coordinate columns, and `location` for a place key.
   - `unit` is the unit of measurement for the values, preferably UDUNITS-2 or UCUM. Give one on a
     `z` dimension (`cm`, `m`, `hPa`) and on any numeric domain axis whose values are not
     self-describing. It is not a substitute for `reference_system`, which names the vocabulary or
