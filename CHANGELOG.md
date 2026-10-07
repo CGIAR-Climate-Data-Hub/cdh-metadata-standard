@@ -95,6 +95,8 @@ occur between minor versions.
   `reference_system` and a `foreign_keys` entry to a catalogued boundary record. A record is spatial
   when it has a footprint; a structure is spatially indexed when it has a `geometry_column`,
   horizontal axes, or a `location` dimension.
+- `extent` on a horizontal axis is an optional numeric `[min, max]` in `unit` and `spatial.crs`, for
+  a grid whose edges the WGS84 bbox does not give exactly, as datacube carries it.
 - **Breaking:** `variables[].data_type` is a closed list: the STAC `raster:data_type` names plus
   `decimal`, `boolean`, `string`, `binary`, `date`, `time`, `datetime`, and `other` for nested
   types.

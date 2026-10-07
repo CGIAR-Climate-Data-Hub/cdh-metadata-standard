@@ -1,0 +1,14 @@
+# A horizontal axis takes a numeric extent in its unit; date strings belong to a temporal axis.
+structures:
+  - name: main
+    dimensions:
+      - {
+          name: cell,
+          type: xy,
+          description: Grid cells.,
+          extent: ["1981", "2025"],
+          step: 0.05,
+          unit: degree,
+        }
+    variables:
+      - { name: tmax, description: Maximum temperature. }

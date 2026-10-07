@@ -1,0 +1,7 @@
+# extent is for temporal and horizontal axes only.
+structures:
+  - name: main
+    dimensions:
+      - { name: crop, type: crop, description: Crop., extent: [1, 5] }
+    variables:
+      - { name: yield, description: Yield. }

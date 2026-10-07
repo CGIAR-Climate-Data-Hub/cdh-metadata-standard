@@ -117,7 +117,8 @@ STAC implies resource type through object type and asset media types. CDH also e
 Spacing is a dimension's `step`, and maps to that `cube:dimensions[].step` in every case:
 
 1. On a gridded/array asset, `xy` serializes as separate x and y spatial dimensions sharing one
-   `step` and `unit`; `x` and `y` serialize one each. `extent` on each comes from `spatial.bbox`.
+   `step` and `unit`; `x` and `y` serialize one each. `extent` on each is the authored one, else
+   derived from `spatial.bbox`.
 2. On a table, `x` and `y` without `step` and the `type: location` dimension are `table:columns`
    entries carrying their descriptions.
 3. A `type: temporal` dimension's duration `step` maps unchanged (see below).
@@ -140,7 +141,8 @@ irregular spacing. Never derive a window length or `end_datetime` from `step`. S
 several temporal dimensions, so a store holding a yearly climatology beside a daily field emits one
 temporal dimension each, while the top-level `temporal` drives the Collection `extent.temporal`.
 
-Dimension types map as follows. The horizontal axes take their `extent` from `spatial.bbox`.
+Dimension types map as follows. A horizontal axis without an authored `extent` takes it from
+`spatial.bbox`.
 
 | CDH `dimensions[].type` | STAC `cube:dimensions` entry                                                           |
 | ----------------------- | -------------------------------------------------------------------------------------- |

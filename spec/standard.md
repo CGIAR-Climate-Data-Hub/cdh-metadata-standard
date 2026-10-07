@@ -902,10 +902,12 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
       and CF `axis: X`/`Y`. With a numeric `step` in `unit` they are a regular grid: one `xy` entry
       when both axes share a spacing (a GeoTIFF), or `x` and `y` with their own (a Zarr whose `lon`
       and `lat` differ). Without `step` they are a table's coordinate columns, one row per point.
-      Always carry a `unit`; never list `values` or `extent`, since coverage is `spatial.bbox`. `x`
-      and `y` come as a pair and never beside `xy`. `lat`, `lon`, and their long forms are rejected,
-      like the `temporal` aliases. A representation of the same data at another spacing is a
-      separate record (section 4.8); native variables on different grids are different structures.
+      Always carry a `unit`; never list `values`. `extent` is optional: the native `[min, max]` of
+      the axis in `unit` and `spatial.crs`, for a grid whose edges `spatial.bbox` does not give
+      exactly, such as one in a projected CRS. `x` and `y` come as a pair and never beside `xy`.
+      `lat`, `lon`, and their long forms are rejected, like the `temporal` aliases. A representation
+      of the same data at another spacing is a separate record (section 4.8); native variables on
+      different grids are different structures.
     - `z` - a vertical axis: soil depth, height, or pressure level. **At most one per structure.**
       List its levels in `values` and give it a `unit`.
     - `location` - a column identifying a place rather than measuring something, such as an admin,
@@ -942,11 +944,12 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
     on no other type. On a temporal axis it is required with `extent` and omitted when irregular; it
     does not say how long a value lasts: 30-year windows every 10 years have `step: P10Y`, with the
     window length in `description`. A domain axis describes its cadence in prose.
-  - `extent` is `[first, last]` on a regular temporal axis, in place of listing every value. It
-    requires `step` and excludes `values`. Both strings are written at one precision (`1981`,
-    `1981-01`, `1981-01-01`, or a date-time), no coarser than the step, start before end. The values
-    are `first, first + step, …` while `<= last`, at that same precision: `extent: ["1981", "2025"]`
-    with `step: P1Y` is `1981, 1982, ... 2025`.
+  - `extent` is `[first, last]` of a regular axis, in place of listing every value, as in STAC
+    datacube. On a temporal axis it requires `step` and excludes `values`, and both strings are
+    written at one precision (`1981`, `1981-01`, `1981-01-01`, or a date-time), no coarser than the
+    step, start before end. The values are `first, first + step, …` while `<= last`, at that same
+    precision: `extent: ["1981", "2025"]` with `step: P1Y` is `1981, 1982, ... 2025`. On a
+    horizontal axis it is a numeric `[min, max]` in `unit`. Valid on no other type.
   - `values` lists the allowed values along the dimension. Omit it for a high-cardinality key column
     (you would not enumerate every household id or admin code).
   - `reference_system` is the vocabulary the values are coded against; prefer a resolvable URI when
