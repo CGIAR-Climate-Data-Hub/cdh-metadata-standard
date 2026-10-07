@@ -578,7 +578,8 @@ temporal:
 ```
 
 Temporal cadence (daily, monthly, projection periods) should be declared as a `type: temporal`
-dimension with an ISO 8601 `step` (see [Variables and dimensions](#variables-and-dimensions)).
+dimension, with an ISO 8601 `step` for regular spacing (see
+[Variables and dimensions](#variables-and-dimensions)).
 
 ```yaml
 temporal:
