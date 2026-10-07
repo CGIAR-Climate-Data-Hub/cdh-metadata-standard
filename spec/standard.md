@@ -37,7 +37,9 @@ extensions. Published URLs follow the pattern `<base>/<TAG>/...`.
 
 Before 1.0, minor versions may break records. From 1.0, a minor version only adds: new optional
 fields, new vocabulary values, and new extensions. Renaming or removing a field, or tightening a
-rule, requires a major version; deprecated fields stay valid until then.
+rule, requires a major version; deprecated fields stay valid until then. Changing what an existing
+field means, its default, or what omitting it implies also requires a major version, even when
+existing records still validate.
 
 ## 3. Requirement Levels
 
