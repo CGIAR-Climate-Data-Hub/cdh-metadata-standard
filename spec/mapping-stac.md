@@ -376,6 +376,8 @@ in section 5.1.
 | `alternate`                                         | Alternate representation of the same record    |
 | `processing-expression`                             | Code or workflow that produced the data        |
 | `service`                                           | Service endpoint                               |
+| `service-desc`                                      | Machine-readable API description               |
+| `service-doc`                                       | Human-readable API documentation               |
 | `license`                                           | License document                               |
 | `preview` / `icon` / `thumbnail`                    | Imagery                                        |
 

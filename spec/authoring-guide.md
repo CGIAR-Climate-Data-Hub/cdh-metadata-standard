@@ -709,7 +709,7 @@ join:
 additional_assets:
   - name: join-example
     roles: [example]
-    media_type: application/x-ipynb+json
+    media_type: application/vnd.jupyter
     description: Joins the table to admin-2 boundaries and maps the result.
     locations:
       - url: https://example.org/examples/join-admin2.ipynb
@@ -721,7 +721,7 @@ additional_assets:
       - url: https://example.org/land-cover-categories.csv
 ```
 
-Common types for examples: `application/x-ipynb+json` (Jupyter notebook), `text/x-python`,
+Common types for examples: `application/vnd.jupyter` (Jupyter notebook), `text/x-python`,
 `text/x-r`, and `application/sql`.
 
 #### Optional: a README and an agent guide

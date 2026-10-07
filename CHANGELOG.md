@@ -58,6 +58,9 @@ occur between minor versions.
   the top-level `spatial`, and never copied down from it.
 - Added `parent`: the id of the record this one is a child representation of.
 - Added the `agents` asset role, for a Markdown guide written for AI agents.
+- Added guidance for data served by an API: the endpoint is a `data[]` entry, `media_type` is the
+  format it returns, and the API description and docs are linked with the RFC 8631 `service-desc`
+  and `service-doc` relations.
 
 ### Changed
 
@@ -127,6 +130,9 @@ occur between minor versions.
   machine's timezone.
 - **Breaking:** `additional_links[].name` is renamed `title`, matching `locations[].title`,
   `file_index[].title`, and the `title` on STAC and Atom links.
+- `media_type` is the IANA type where one is registered, otherwise the type in common use
+  (`text/x-python`, `text/x-r`). NetCDF examples use `application/x-netcdf` and notebooks the newly
+  registered `application/vnd.jupyter`.
 
 ### Fixed
 

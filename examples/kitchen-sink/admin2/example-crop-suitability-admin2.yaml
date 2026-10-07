@@ -186,7 +186,7 @@ additional_assets:
     description: Joins the table to the boundary record and maps mean suitability per admin-2 unit.
     locations:
       - url: https://example.org/data/example-crop-suitability/v2/admin2/join-admin2.ipynb
-    media_type: application/x-ipynb+json
+    media_type: application/vnd.jupyter
     roles: [example]
     file_size: 20 KB
 
