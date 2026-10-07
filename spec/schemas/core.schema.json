@@ -652,12 +652,12 @@
             "family": {
               "$ref": "#/$defs/nonEmptyString",
               "description": "Family name(s). A person with a single name uses this field alone.",
-              "examples": ["Smith", "Carreño Quiñones", "Suharto"]
+              "examples": ["Smith", "Carre\u00f1o Qui\u00f1ones", "Suharto"]
             },
             "given": {
               "$ref": "#/$defs/nonEmptyString",
               "description": "Given name(s) or initials.",
-              "examples": ["Jane", "J.", "María José"]
+              "examples": ["Jane", "J.", "Mar\u00eda Jos\u00e9"]
             },
             "orcid": {
               "$ref": "#/$defs/orcid"
@@ -794,10 +794,6 @@
           },
           "type": "array",
           "uniqueItems": true
-        },
-        "geometry_column": {
-          "$ref": "#/$defs/nonEmptyString",
-          "description": "Name of the geometry column, for vector tables."
         },
         "resolution": {
           "description": "Spatial resolution / spacing. Exactly one characterization per record: a single entry, or an `x` + `y` pair when grid spacing differs. A representation at a different resolution (e.g. polygon aggregates of a grid) is a separate record.",
@@ -970,7 +966,7 @@
             "examples": ["P3M", "P20Y"]
           },
           "extent": {
-            "description": "First and last value of a regular temporal axis, as ISO 8601 strings, in place of listing every value. Only valid on a type: temporal dimension with a step, and not alongside values. Both strings are written at one precision (YYYY, YYYY-MM, YYYY-MM-DD, or an RFC 3339 date-time with seconds and offset), no coarser than the step, start before end. The values are start, start + step, … while <= end, at that same precision, so [\"1981\", \"2025\"] with step P1Y is 1981, 1982, ... 2025.",
+            "description": "First and last value of a regular temporal axis, as ISO 8601 strings, in place of listing every value. Only valid on a type: temporal dimension with a step, and not alongside values. Both strings are written at one precision (YYYY, YYYY-MM, YYYY-MM-DD, or an RFC 3339 date-time with seconds and offset), no coarser than the step, start before end. The values are start, start + step, \u2026 while <= end, at that same precision, so [\"1981\", \"2025\"] with step P1Y is 1981, 1982, ... 2025.",
             "$ref": "#/$defs/temporalValues",
             "minItems": 2,
             "maxItems": 2,
@@ -1377,6 +1373,10 @@
           "foreign_keys": {
             "$ref": "#/$defs/foreignKeys",
             "description": "Keys from this structure's columns to other catalogued datasets."
+          },
+          "geometry_column": {
+            "$ref": "#/$defs/nonEmptyString",
+            "description": "Name of the geometry column, for a table with embedded geometries. A geometry column is not a variable."
           }
         }
       }

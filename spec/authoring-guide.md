@@ -472,7 +472,6 @@ Common fields:
 - `spatial.bbox`
 - `spatial.geography`
 - `spatial.crs`
-- `spatial.geometry_column`
 - `spatial.resolution`
 
 `spatial.bbox` is a single bounding box, or a list of bounding boxes, in WGS84 (EPSG:4326).
@@ -541,8 +540,8 @@ spatial:
       reference_system: GAUL24
 ```
 
-Use `spatial.geometry_column` when a vector/table asset contains an embedded geometry column which
-needs to be read.
+When a table has an embedded geometry column, name it in `structures[].geometry_column`; it is not a
+variable.
 
 ### Temporal
 

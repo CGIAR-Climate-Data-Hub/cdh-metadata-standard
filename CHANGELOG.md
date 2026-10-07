@@ -70,6 +70,9 @@ occur between minor versions.
 
 ### Changed
 
+- **Breaking:** `spatial.geometry_column` moves to `structures[].geometry_column`. A geometry column
+  belongs to one table, and a structure is that table; a record can hold a geometry table beside
+  attribute tables. Still encoded as `table:primary_geometry`, now per asset.
 - `dimensions[].step` is only the spacing between values, as in the STAC datacube extension. It no
   longer gives the length of a window: 30-year windows every 10 years are `step: P10Y`, with the
   window length in the dimension's `description`. `step` is optional on an irregular axis.

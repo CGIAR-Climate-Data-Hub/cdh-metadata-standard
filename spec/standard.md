@@ -129,10 +129,10 @@ table schemas, and long category lists.
 Every field a record can hold is either machine-derivable or directly authored. This implies who is
 expected to provide each field.
 
-| Tier                  | Supplied by                                 | Fields                                                                                                                                                                                  |
-| --------------------- | ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Machine-derivable** | Readable from the data itself               | `media_type` (assets and `file_index[]`), `file_size`, `spatial.bbox`, `spatial.crs`, `spatial.resolution`, `spatial.geometry_column`, `nodata`, `variables[].data_type`, table columns |
-| **Authored**          | A person, always - no tool can supply these | `title`, `description`, `note`, `keywords`, `resource_type`, `license`, `access`, `contact`, `citation`, `series`, units, reading guidance, caveats, and every `cdh` field              |
+| Tier                  | Supplied by                                 | Fields                                                                                                                                                                                       |
+| --------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Machine-derivable** | Readable from the data itself               | `media_type` (assets and `file_index[]`), `file_size`, `spatial.bbox`, `spatial.crs`, `spatial.resolution`, `structures[].geometry_column`, `nodata`, `variables[].data_type`, table columns |
+| **Authored**          | A person, always - no tool can supply these | `title`, `description`, `note`, `keywords`, `resource_type`, `license`, `access`, `contact`, `citation`, `series`, units, reading guidance, caveats, and every `cdh` field                   |
 
 Three rules govern how the tiers interact:
 
@@ -552,8 +552,8 @@ keywords:
 ### 5.3 Spatial
 
 Required when the resource has a geospatial footprint. `spatial.geography` (named places) applies to
-any resource for broad discovery; `bbox`, `crs`, `resolution`, and `geometry_column` describe a
-precise footprint.
+any resource for broad discovery; `bbox`, `crs`, and `resolution` describe a precise footprint. A
+table's geometry column is named on its structure (`structures[].geometry_column`).
 
 #### `spatial.bbox`
 
@@ -645,11 +645,6 @@ spatial:
     locations or reporting units. `value` + `unit` may be used when a meaningful level exists, such
     as `value: 2`, `unit: admin-level`.
   - `label` is the human-readable form (e.g., `5 arc-minutes`, `Kenya counties`).
-
-#### `spatial.geometry_column`
-
-- **Requirement:** Conditional. For vector tables with an embedded geometry column.
-- **Expected value:** Name of the geometry column.
 
 ### 5.4 Temporal
 
@@ -996,7 +991,7 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
     `float64`, and the complex `cint16`, `cint32`, `cfloat32`, `cfloat64`. Table columns may also be
     `decimal` (exact fixed-point), `boolean`, `string`, `binary`, `date`, `time`, or `datetime`. Use
     `other` for nested types such as lists or structs. A geometry column is not a variable; name it
-    in `spatial.geometry_column`.
+    in `structures[].geometry_column`.
   - `nodata` is the fill value for this variable, and is only needed where it differs from the
     asset's `data[].nodata` - which stays the default for every variable that does not state one.
     Use it when one store holds variables of different types (a `float32` measure filled with
@@ -1094,9 +1089,12 @@ tables with different columns, has one per layout.
 
 - **Requirement:** Conditional. Required when the resource has measurement variables, bands, or
   columns, or when its meaning depends on axes or codes.
-- **Expected value per structure:** `{ name, dimensions, variables, foreign_keys }`.
+- **Expected value per structure:**
+  `{ name, dimensions, variables, foreign_keys, geometry_column }`.
 - **Rules:**
   - `dimensions`, `variables`, and `foreign_keys` follow the rules of the sections above and below.
+  - `geometry_column` names the geometry column of a table with embedded geometries. It is not a
+    variable.
   - Every variable in a structure has every one of its dimensions. It does not promise every
     combination of values exists. Omit `dimensions` when the variables vary only over the horizontal
     grid.

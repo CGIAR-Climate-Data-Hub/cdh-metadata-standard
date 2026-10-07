@@ -116,8 +116,6 @@ spatial:
   geography:
     - africa
   crs: EPSG:4326
-  # geometry_column is intentionally omitted: it applies to vector tables, not
-  # a gridded raster cube like this one.
   resolution:
     - type: xy
       unit: degree

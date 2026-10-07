@@ -16,9 +16,9 @@ needs:
 - Spatial vector assets, spatial/temporal tabular assets
 - APIs for access to geospatial data
 
-A record with a spatial footprint - `bbox`, `crs`, `resolution`, or `geometry_column` (see
-`standard.md` section 5.3) - carries everything STAC needs and can encode into it directly.
-`spatial.geography` alone is a place facet, not a footprint.
+A record with a spatial footprint - `bbox`, `crs`, or `resolution` (see `standard.md` section 5.3) -
+carries everything STAC needs and can encode into it directly. `spatial.geography` alone is a place
+facet, not a footprint.
 
 ### 1.1 Records without a spatial footprint
 
@@ -111,7 +111,7 @@ STAC implies resource type through object type and asset media types. CDH also e
 | `spatial.bbox`                              | `extent.spatial.bbox` (Collection) - the overall/union box is prepended as the first entry, then the authored boxes; `bbox` (Item)                                                                                                                                                                                                |
 | `spatial.geography[]`                       | `cgiar-cdh:geography` array                                                                                                                                                                                                                                                                                                       |
 | `spatial.crs`                               | Projection Extension v2: `proj:code`                                                                                                                                                                                                                                                                                              |
-| `spatial.geometry_column`                   | Table Extension `table:primary_geometry`                                                                                                                                                                                                                                                                                          |
+| `structures[].geometry_column`              | Table Extension `table:primary_geometry` on each asset holding the structure                                                                                                                                                                                                                                                      |
 | `spatial.resolution[]`                      | Grid entries (`xy`, `x`, `y`) map to `cube:dimensions[].step` (+ `unit`/`reference_system`); `point` and `polygon` entries emit as `cgiar-cdh:spatial_resolution`                                                                                                                                                                 |
 | `temporal.date` / `start_date` / `end_date` | `date` -> `datetime`; `start_date`/`end_date` -> `start_datetime`/`end_datetime`; `end_date: null` -> open interval; also `extent.temporal.interval` (Collection). Reduced-precision values expand to full RFC 3339 (start to period start, end inclusive to period end); the raw value also feeds schema.org `temporalCoverage`. |
 
@@ -181,11 +181,11 @@ second is a shape CDH does not emit, and the extension forbids both as custom ty
   `table:columns[].type` on tables. On tables, dimensions and variables both become columns, each
   with its `description` and, when given, its `data_type` as `type`; `decimal`, `boolean`, `string`,
   `binary`, `date`, `time`, and `datetime` are table-only.
-- Tabular data uses Table Extension `table:columns`; `spatial.geometry_column` maps to
-  `table:primary_geometry`. Each `foreign_keys[]` entry, top-level or on a structure, maps to
-  `cgiar-cdh:foreign_keys` on every asset that holds its dictionary, in the same shape:
-  `reference.resource` becomes `reference.href` (an id resolves to that record's URL) and
-  `reference.asset` stays the target's asset key.
+- Tabular data uses Table Extension `table:columns`; `structures[].geometry_column` maps to
+  `table:primary_geometry` on each asset holding the structure. Each `foreign_keys[]` entry,
+  top-level or on a structure, maps to `cgiar-cdh:foreign_keys` on every asset that holds its
+  dictionary, in the same shape: `reference.resource` becomes `reference.href` (an id resolves to
+  that record's URL) and `reference.asset` stays the target's asset key.
 
 Integer `variables[].categories` on raster variables map to Classification Extension
 `classification:classes` on the corresponding band, or the asset for a single-band raster: `value`

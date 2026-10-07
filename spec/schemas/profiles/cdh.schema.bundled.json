@@ -1862,11 +1862,6 @@
               "type": "array",
               "uniqueItems": true
             },
-            "geometry_column": {
-              "minLength": 1,
-              "type": "string",
-              "description": "Name of the geometry column, for vector tables."
-            },
             "resolution": {
               "description": "Spatial resolution / spacing. Exactly one characterization per record: a single entry, or an `x` + `y` pair when grid spacing differs. A representation at a different resolution (e.g. polygon aggregates of a grid) is a separate record.",
               "items": {
@@ -2379,6 +2374,11 @@
                     }
                   }
                 }
+              },
+              "geometry_column": {
+                "minLength": 1,
+                "type": "string",
+                "description": "Name of the geometry column, for a table with embedded geometries. A geometry column is not a variable."
               }
             }
           }

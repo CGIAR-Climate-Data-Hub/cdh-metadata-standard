@@ -3,7 +3,7 @@
 # ============================================================================
 # SAMPLE RECORD - NOT REAL DATA.
 # Vector data with embedded geometries: one GeoParquet file of market points
-# in the imaginary region of Farland. Shows spatial.geometry_column, a point
+# in the imaginary region of Farland. Shows a structure's geometry_column, a point
 # resolution, a place-key dimension, a coded variable with categories, and an
 # open-ended series refreshed each year.
 # ============================================================================
@@ -51,7 +51,6 @@ spatial:
   bbox: [10, -5, 22, 8]
   geography: [africa]
   crs: EPSG:4326
-  geometry_column: geometry
   resolution:
     - type: point
       label: One point per market
@@ -63,6 +62,7 @@ temporal:
 
 structures:
   - name: main
+    geometry_column: geometry
     dimensions:
       - name: market_id
         type: location
