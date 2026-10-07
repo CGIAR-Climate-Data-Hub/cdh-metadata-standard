@@ -10,6 +10,12 @@ occur between minor versions.
 
 ## [Unreleased]
 
+### Added
+
+- Added `integer` and `number` to `data_type`, the Frictionless Table Schema names, for text formats
+  such as CSV, fixed-width, and JSON where width and signedness are not stored. `decimal` now means
+  fixed-point with a declared precision in a binary store.
+
 ### Changed
 
 - A `cdh-inventory` `file_index[].locations[].url` may be a path relative to the record file, as

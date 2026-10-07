@@ -987,9 +987,11 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
   - `data_type` is one of a closed list. Numeric types follow STAC `raster:data_type`: `int8`,
     `int16`, `int32`, `int64`, `uint8`, `uint16`, `uint32`, `uint64`, `float16`, `float32`,
     `float64`, and the complex `cint16`, `cint32`, `cfloat32`, `cfloat64`. Table columns may also be
-    `decimal` (exact fixed-point), `boolean`, `string`, `binary`, `date`, `time`, or `datetime`. Use
-    `other` for nested types such as lists or structs. A geometry column is not a variable; name it
-    in `structures[].geometry_column`.
+    `integer`, `number`, `decimal`, `boolean`, `string`, `binary`, `date`, `time`, or `datetime`.
+    `integer` and `number` are for text formats such as CSV, fixed-width, and JSON, where width and
+    signedness are not stored. `decimal` is fixed-point with a declared precision in a binary store
+    such as Parquet or a database. Use `other` for nested types such as lists or structs. A geometry
+    column is not a variable; name it in `structures[].geometry_column`.
   - `nodata` is the fill value for missing data, as stored in this variable. State it on every
     variable that has one. A representation that stores a variable with another fill value or type
     (a `float32` Zarr filled with `NaN` beside `int16` GeoTIFFs filled with `-9999`) is another

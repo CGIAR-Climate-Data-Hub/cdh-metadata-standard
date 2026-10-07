@@ -172,8 +172,8 @@ each expanded Item takes the nodata of the variable it holds.
 
 - `variables[].data_type` maps to the STAC 1.1 `bands[].data_type` common field on rasters and to
   `table:columns[].type` on tables. On tables, dimensions and variables both become columns, each
-  with its `description` and, when given, its `data_type` as `type`; `decimal`, `boolean`, `string`,
-  `binary`, `date`, `time`, and `datetime` are table-only.
+  with its `description` and, when given, its `data_type` as `type`; `integer`, `number`, `decimal`,
+  `boolean`, `string`, `binary`, `date`, `time`, and `datetime` are table-only.
 - Tabular data uses Table Extension `table:columns`; `structures[].geometry_column` maps to
   `table:primary_geometry` on each asset holding the structure. Each `foreign_keys[]` entry,
   top-level or on a structure, maps to `cgiar-cdh:foreign_keys` on every asset that holds its
