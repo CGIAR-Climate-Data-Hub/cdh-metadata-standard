@@ -274,9 +274,7 @@ root, a service endpoint - never a landing page. A Zenodo or Dataverse record pa
 `citation.url` or `doi`; a project website goes in `additional_links[]`. Alternate locations can be
 provided if applicable, such as if the same file is hosted on multiple storage platforms. Data in
 different formats (csv, parquet) or services (such as an API or GEE asset) should be listed as
-separate `data` entries. For a service, use the URL of the endpoint that returns the data (for a GEE
-asset, `https://earthengine.googleapis.com/v1/<asset id>`), and omit `media_type` when it returns no
-file.
+separate `data` entries. For a service, see [Data served by an API](#data-served-by-an-api).
 
 By default every asset holds every declared dimension and variable. When assets differ, such as
 monthly and seasonal file sets or tables with different columns, declare
@@ -411,6 +409,43 @@ variable each and the names do not follow a `{variable}` token.
 Use either `file_index` or `href_template` on an entry. Inventory rows enumerate the files present,
 so omitted dates do not imply missing rows that a consumer should fill. See the
 [file index rules](standard.md#file-indexes-file_index) for the formats and the CSV columns.
+
+#### Data served by an API
+
+An API that serves the dataset is another `data` entry. A record with no files still lists the API
+in `data`. Use the URL of the endpoint that returns the data (for a GEE asset,
+`https://earthengine.googleapis.com/v1/<asset id>`). Set `media_type` to the format it returns, or
+omit it when it returns no file. Link the OpenAPI or OGC API description as `rel: service-desc` and
+its docs as `rel: service-doc`. Add a working call as an `additional_assets[]` entry with
+`roles: [example]`. Put the steps for getting credentials in `access_note`.
+
+```yaml
+data:
+  - name: features-api
+    locations:
+      - url: https://api.example.org/collections/yields/items
+    media_type: application/geo+json
+additional_assets:
+  - name: example-query
+    locations:
+      - url: ./examples/query.sh
+    media_type: application/x-sh
+    roles: [example]
+additional_links:
+  - rel: service-desc
+    url: https://api.example.org/api
+  - rel: service-doc
+    url: https://api.example.org/api.html
+```
+
+A service that hosts many datasets, such as a GeoServer instance or a platform API, may have its own
+record with `resource_type: service`. Each dataset keeps its own record and links to the service
+with `rel: service`, not `parent`: the dataset has standing outside its host. A map service that
+returns rendered images, such as WMS (Web Map Service), is not data; list it in
+`additional_assets[]` with `roles: [visual]`.
+
+An API's results can change between calls. If results must be reproducible, also publish a dated
+snapshot file as a second `data` entry.
 
 ## Additional fields (Conditional/Optional)
 

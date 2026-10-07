@@ -815,6 +815,10 @@ extension fields, not in `keywords` (see section 4.4).
   - Provide `media_type` and `file_size` when known; otherwise review may add them (see section
     4.6).
   - `processing_steps` references `processing[].id` values.
+  - For a service endpoint, `media_type` is the format the service returns (e.g.,
+    `application/geo+json`); omit it when the response is not a file. `file_size` and `checksum` do
+    not apply. Link the API's machine-readable description in `additional_links[]` with
+    `rel: service-desc`, and its documentation with `rel: service-doc`.
 
 #### File indexes (`file_index[]`)
 
@@ -908,6 +912,8 @@ version-specific inventory URL for a release.
 | `version-history`                               | Changelog or version history document     | IANA                 |
 | `enclosure`                                     | Downloadable file                         | IANA                 |
 | `service`                                       | Service endpoint                          | IANA                 |
+| `service-desc`                                  | Machine-readable API description          | IANA                 |
+| `service-doc`                                   | Human-readable API documentation          | IANA                 |
 | `preview` / `icon` / `thumbnail`                | Imagery                                   | IANA / STAC          |
 | `processing-expression`                         | Code or workflow that produced the data   | STAC Processing Ext. |
 
