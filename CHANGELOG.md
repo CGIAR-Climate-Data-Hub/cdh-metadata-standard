@@ -8,7 +8,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While the project is pre-1.0, the schema should be considered unstable and breaking changes may
 occur between minor versions.
 
-## [0.4.0] - 2026-10-06
+## [0.4.0] - 2026-10-07
 
 ### Added
 
