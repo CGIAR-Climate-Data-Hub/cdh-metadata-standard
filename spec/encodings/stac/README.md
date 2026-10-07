@@ -27,7 +27,7 @@ describes its output all name the same release.
 
 - Examples:
   - [Collection example](examples/collection.json): the usual case, a dataset with climate
-    provenance and a resolution that STAC cannot express natively
+    provenance
   - [Item example](examples/item.json): one expanded slice of a templated data entry
 - [JSON Schema](schema.json)
 - [Changelog](../../../CHANGELOG.md)
