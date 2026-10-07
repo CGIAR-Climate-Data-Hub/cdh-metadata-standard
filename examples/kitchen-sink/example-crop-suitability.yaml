@@ -272,7 +272,7 @@ data:
     description: The full cube clipped to western Farland, one NetCDF file.
     locations:
       - url: https://example.org/data/example-crop-suitability/v2/farland-west.nc
-    media_type: application/netcdf
+    media_type: application/x-netcdf
     nodata: -9999
     file_size: 90 MB
     checksum: sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
@@ -284,7 +284,7 @@ data:
     description: The full cube clipped to eastern Farland, one NetCDF file.
     locations:
       - url: https://example.org/data/example-crop-suitability/v2/farland-east.nc
-    media_type: application/netcdf
+    media_type: application/x-netcdf
     nodata: -9999
     file_size: 160 MB
     checksum: sha256:60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752

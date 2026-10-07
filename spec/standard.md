@@ -747,9 +747,10 @@ extension fields, not in `keywords` (see section 4.4).
 - **Requirement:** Required - at least one entry.
 - **Expected value per entry:**
   `{ name, locations, description, media_type, file_size, checksum, nodata, processing_steps, structures, href_template, file_index, spatial }`.
-- **Vocabulary:** `media_type` must be an
-  [IANA media type](https://www.iana.org/assignments/media-types/) (e.g.,
-  `application/vnd.zarr; version=3`, `image/tiff; application=geotiff; profile=cloud-optimized`).
+- **Vocabulary:** `media_type` is the
+  [IANA media type](https://www.iana.org/assignments/media-types/) where one is registered;
+  otherwise the type in common use (e.g., `application/vnd.zarr; version=3`, `text/x-python`,
+  `text/x-r`).
 - **`description` (optional):** What this entry holds and how it differs from the record's other
   entries: which part of the dataset it covers (e.g., one table, region, or period), or which layout
   of the same data it is (e.g., time-optimized vs space-optimized chunks) and when to use it.
