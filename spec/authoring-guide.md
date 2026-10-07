@@ -528,16 +528,21 @@ spatial:
       label: 5 arc-minutes
 ```
 
-For polygon reporting units such as counties or watersheds:
+`resolution` is for regular grids only. A table keyed to reporting units such as counties, basins,
+or H3 cells states its unit on the `type: location` dimension of its structure, and joins to a
+catalogued boundary set with `foreign_keys`:
 
 ```yaml
-spatial:
-  resolution:
-    - type: polygon
-      value: 2
-      unit: admin-level
-      label: Counties
-      reference_system: GAUL24
+structures:
+  - name: counties
+    dimensions:
+      - name: adm1_code
+        type: location
+        description: GAUL 2024 admin-1 unit (county).
+        reference_system: https://data.apps.fao.org/catalog/dataset/gaul
+    foreign_keys:
+      - fields: [adm1_code]
+        reference: { resource: gaul-2024-admin1, fields: [ADM1_CODE] }
 ```
 
 When a table has an embedded geometry column, name it in `structures[].geometry_column`; it is not a

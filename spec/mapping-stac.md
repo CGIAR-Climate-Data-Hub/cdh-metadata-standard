@@ -112,18 +112,16 @@ STAC implies resource type through object type and asset media types. CDH also e
 | `spatial.geography[]`                       | `cgiar-cdh:geography` array                                                                                                                                                                                                                                                                                                       |
 | `spatial.crs`                               | Projection Extension v2: `proj:code`                                                                                                                                                                                                                                                                                              |
 | `structures[].geometry_column`              | Table Extension `table:primary_geometry` on each asset holding the structure                                                                                                                                                                                                                                                      |
-| `spatial.resolution[]`                      | Grid entries (`xy`, `x`, `y`) map to `cube:dimensions[].step` (+ `unit`/`reference_system`); `point` and `polygon` entries emit as `cgiar-cdh:spatial_resolution`                                                                                                                                                                 |
+| `spatial.resolution[]`                      | `cube:dimensions[].step` (+ `unit`) on the x and y dimensions                                                                                                                                                                                                                                                                     |
 | `temporal.date` / `start_date` / `end_date` | `date` -> `datetime`; `start_date`/`end_date` -> `start_datetime`/`end_datetime`; `end_date: null` -> open interval; also `extent.temporal.interval` (Collection). Reduced-precision values expand to full RFC 3339 (start to period start, end inclusive to period end); the raw value also feeds schema.org `temporalCoverage`. |
 
-Resolution placement, in order of preference:
+Resolution placement:
 
-1. For gridded/array assets, `spatial.resolution[]` entries with `type: xy`, `x`, or `y` are
-   expanded to the relevant `cube:dimensions[]` `step`, expressed in that dimension's native `unit`
-   / `reference_system`. `type: xy` is an authoring shorthand and serializes as separate x and y
-   dimensions.
-2. `point` and `polygon` entries emit as `cgiar-cdh:spatial_resolution`, and only those: a reporting
-   unit has no native STAC home, while grid spacing already has one in rule 1. Repeating a grid
-   entry there would state one fact twice, with nothing keeping the two copies in agreement.
+1. For gridded/array assets, `spatial.resolution[]` entries are expanded to the x and y
+   `cube:dimensions[]` `step`, expressed in that dimension's native `unit`. `type: xy` is an
+   authoring shorthand and serializes as separate x and y dimensions.
+2. A table's reporting unit has no resolution field. It is the `type: location` dimension, which
+   becomes a `table:columns` entry carrying its description.
 3. Temporal cadence is not a resolution field: it comes from a `type: temporal` dimension's `step`
    (see below), which maps to that `cube:dimensions[].step`.
 

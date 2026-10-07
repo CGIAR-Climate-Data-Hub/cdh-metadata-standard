@@ -11,7 +11,7 @@
 # nothing is inherited from a parent. Nesting implies nothing either: the
 # derivation is stated explicitly in processing[].derived_from.
 # Aggregating a grid to polygons is lossy, which is why this is its own record
-# rather than a second spatial.resolution entry on the parent.
+# rather than a second structure on the parent.
 # ============================================================================
 cdh_schema_version: "v0.4.0"
 extensions:
@@ -80,13 +80,7 @@ spatial:
   geography:
     - africa
   crs: EPSG:4326
-  # One characterization, and it is the reporting unit rather than a grid spacing.
-  resolution:
-    - type: polygon
-      value: 2
-      unit: admin-level
-      label: Admin-2 units (Farland)
-      reference_system: Example GAUL-like boundaries 2024
+  # No resolution: the reporting unit is the adm2_code location dimension below.
 
 temporal:
   start_date: "2030"
@@ -101,7 +95,8 @@ structures:
         description: Example country code of the reporting unit.
       - name: adm2_code
         type: location
-        description: Example admin-2 code of the reporting unit.
+        description: Example admin-2 unit of Farland, the reporting unit of every row.
+        reference_system: https://example.org/boundaries/farland-2024
       - name: time
         type: temporal
         description: Projection horizon (reference year).

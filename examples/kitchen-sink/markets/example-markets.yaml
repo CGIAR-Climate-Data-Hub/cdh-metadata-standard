@@ -3,8 +3,8 @@
 # ============================================================================
 # SAMPLE RECORD - NOT REAL DATA.
 # Vector data with embedded geometries: one GeoParquet file of market points
-# in the imaginary region of Farland. Shows a structure's geometry_column, a point
-# resolution, a place-key dimension, a coded variable with categories, and an
+# in the imaginary region of Farland. Shows a structure's geometry_column, a
+# place-key dimension, a coded variable with categories, and an
 # open-ended series refreshed each year.
 # ============================================================================
 cdh_schema_version: "v0.4.0"
@@ -51,9 +51,6 @@ spatial:
   bbox: [10, -5, 22, 8]
   geography: [africa]
   crs: EPSG:4326
-  resolution:
-    - type: point
-      label: One point per market
 
 temporal:
   start_date: "2026-06"

@@ -552,8 +552,11 @@ keywords:
 ### 5.3 Spatial
 
 Required when the resource has a geospatial footprint. `spatial.geography` (named places) applies to
-any resource for broad discovery; `bbox`, `crs`, and `resolution` describe a precise footprint. A
-table's geometry column is named on its structure (`structures[].geometry_column`).
+any resource for broad discovery; `bbox`, `crs`, and `resolution` describe a precise footprint.
+
+A record is spatial when it has a footprint. A structure is spatially indexed when it has a
+`geometry_column` or a `type: location` dimension (section 5.8): the first carries geometries, the
+second keys rows to a boundary set or spatial index, such as admin units, basins, or H3 cells.
 
 #### `spatial.bbox`
 
@@ -627,24 +630,20 @@ spatial:
 
 #### `spatial.resolution`
 
-- **Requirement:** Conditional. Required when the spatial unit or spacing is needed to interpret the
-  data (e.g., regular grids, point observations, or polygon reporting units).
-- **Expected value:** List of `{ type, value, unit, label, reference_system }`.
+- **Requirement:** Conditional. Required for a regular grid.
+- **Expected value:** List of `{ type, value, unit, label }`.
 - **Rules:**
-  - `type` is required, and is one of `xy`, `x`, `y`, `point`, or `polygon`.
-  - **Exactly one spatial characterization per record:** either a single entry, or an `x` + `y` pair
-    when grid spacing differs. No other combination is valid - a grid entry never sits beside a
-    `point` / `polygon` entry.
-  - Use `type: xy` for regular grids with the same x/y spacing.
+  - `type` is required, and is one of `xy`, `x`, or `y`.
+  - **Exactly one characterization per record:** a single `xy` entry, or an `x` + `y` pair when grid
+    spacing differs.
+  - `value` + `unit` give the grid spacing and map to STAC Datacube dimension `step` + `unit`.
+    `label` is the human-readable form (e.g., `5 arc-minutes`).
   - A representation of the same data at a different spatial resolution (e.g. polygon aggregates
     extracted from a grid) is a **separate record** linked by `derived_from`, not a second entry
     here. Resolution is record-level, never per asset.
-  - For grid entries (`xy`, `x`, `y`), `value` + `unit` describe grid spacing and map to STAC
-    Datacube dimension `step` + `unit`.
-  - For point or polygon entries, use `label` and `reference_system` to describe the observation
-    locations or reporting units. `value` + `unit` may be used when a meaningful level exists, such
-    as `value: 2`, `unit: admin-level`.
-  - `label` is the human-readable form (e.g., `5 arc-minutes`, `Kenya counties`).
+  - Tables and vector data state no spacing here. Their unit is what one row is: the structure's
+    `type: location` dimension describes it and names the boundary set or spatial index in
+    `reference_system` (section 5.8). A geometry-only file states no unit; its footprint is enough.
 
 ### 5.4 Temporal
 
@@ -917,8 +916,12 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
     - `z` - a vertical axis: soil depth, height, or pressure level. **At most one per structure**,
       since it is the only spatial axis a record ever declares. List its levels in `values` and give
       it a `unit`.
-    - `location` - a column identifying a place rather than measuring something, such as an admin or
-      station code. It is a key, not an axis of space.
+    - `location` - a column identifying a place rather than measuring something, such as an admin,
+      basin, station, or H3 cell code. It is a key, not an axis of space. It is also the reporting
+      unit of a table: `description` says what one row is (`HydroBASINS level 6 basin`,
+      `H3 cell at resolution 7`) and `reference_system` names the boundary set or index, as a URI
+      where one exists. Add a `foreign_keys` entry when the boundary set is a catalog record. With a
+      composite key, the finest column describes the unit.
     - Anything else names a domain axis after what it varies (`crop`, `technology`, `scenario`).
       Lowercase, digits, `-` and `_`.
   - **`spatial` and `geometry` are rejected.** The horizontal lat/lon grid comes from the top-level
@@ -1305,7 +1308,7 @@ Catalog navigation and version-chain relations follow from `parent` (section 4.8
 | dates (`created`, `updated`, `temporal.*`, `processing.date`) | ISO 8601 / RFC 3339                                                                                                                                                      |
 | `spatial.crs`                                                 | EPSG codes                                                                                                                                                               |
 | `spatial.geography`                                           | `vocab/geography.json` (UN M49; regions + countries)                                                                                                                     |
-| `variables[].unit`, grid `spatial.resolution[].unit`          | Unit of measurement, preferably UDUNITS-2 or UCUM (not strictly validated); non-grid spatial units may use clear labels such as `admin-level`                            |
+| `variables[].unit`, `spatial.resolution[].unit`               | Unit of measurement, preferably UDUNITS-2 or UCUM (not strictly validated)                                                                                               |
 | `contact[].roles[]`                                           | `licensor`, `producer`, `processor` (STAC provider roles), `point-of-contact`, `maintainer` (Contacts extension)                                                         |
 | `media_type`                                                  | IANA media types                                                                                                                                                         |
 | `resource_type`                                               | `vocab/resource_type.json`                                                                                                                                               |

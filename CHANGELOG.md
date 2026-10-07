@@ -70,6 +70,12 @@ occur between minor versions.
 
 ### Changed
 
+- **Breaking:** `spatial.resolution` is grid spacing only; the `point` and `polygon` types and
+  `reference_system` are removed, and so is `cgiar-cdh:spatial_resolution` in the STAC encoding. A
+  table's reporting unit is what one row is, which its `type: location` dimension already states,
+  with the boundary set or spatial index in `reference_system` and a `foreign_keys` entry to a
+  catalogued boundary record. A record is spatial when it has a footprint; a structure is spatially
+  indexed when it has a `geometry_column` or a `location` dimension.
 - **Breaking:** `spatial.geometry_column` moves to `structures[].geometry_column`. A geometry column
   belongs to one table, and a structure is that table; a record can hold a geometry table beside
   attribute tables. Still encoded as `table:primary_geometry`, now per asset.

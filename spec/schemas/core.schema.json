@@ -742,23 +742,19 @@
       "properties": {
         "label": {
           "$ref": "#/$defs/nonEmptyString",
-          "description": "Human-readable resolution, e.g. 5 arc-minutes or Kenya counties."
-        },
-        "reference_system": {
-          "$ref": "#/$defs/nonEmptyString",
-          "description": "For point/polygon types, the system defining the reporting units (e.g. GAUL 2015, GADM)."
+          "description": "Human-readable spacing, e.g. 5 arc-minutes."
         },
         "type": {
-          "description": "Resolution type: xy (regular grid), x, y, point, or polygon.",
-          "enum": ["xy", "x", "y", "point", "polygon"]
+          "description": "Grid spacing type: xy (same spacing on both axes), or x and y as a pair when they differ.",
+          "enum": ["xy", "x", "y"]
         },
         "unit": {
           "$ref": "#/$defs/nonEmptyString",
-          "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM. Non-grid spatial units may use clear labels such as admin-level."
+          "description": "Unit of the grid spacing, preferably compliant with UDUNITS-2 or UCUM (degree, m, km)."
         },
         "value": {
           "$ref": "#/$defs/numberOrString",
-          "description": "Numeric resolution value (grid spacing, or admin level)."
+          "description": "Grid spacing in unit."
         }
       },
       "type": "object"
@@ -796,7 +792,7 @@
           "uniqueItems": true
         },
         "resolution": {
-          "description": "Spatial resolution / spacing. Exactly one characterization per record: a single entry, or an `x` + `y` pair when grid spacing differs. A representation at a different resolution (e.g. polygon aggregates of a grid) is a separate record.",
+          "description": "Grid spacing of a regular grid. Exactly one characterization per record: a single xy entry, or an x + y pair when spacing differs. Tables and vector data state no spacing here: their unit is what one row is, described by a structure's type: location dimension. A representation at a different resolution is a separate record.",
           "items": {
             "$ref": "#/$defs/spatialResolution"
           },
@@ -948,7 +944,7 @@
           },
           "reference_system": {
             "$ref": "#/$defs/nonEmptyString",
-            "description": "Vocabulary the dimension's values are coded against; prefer a resolvable URI when one exists (e.g. an AGROVOC concept scheme)."
+            "description": "Vocabulary or spatial index the values are coded against; prefer a resolvable URI when one exists (an AGROVOC concept scheme, a boundary set such as https://gadm.org/, https://h3geo.org/)."
           },
           "values": {
             "description": "Allowed values along the dimension.",

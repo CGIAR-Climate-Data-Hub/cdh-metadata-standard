@@ -65,7 +65,6 @@ Processing extension. The schema closes the namespace everywhere, so a stray or 
 | cgiar-cdh:funding             | \[[Name-URL Object](#name-url-object)]               | Funding sources for the resource.                                                                                                                    |
 | cgiar-cdh:series              | [Name-URL Object](#name-url-object)                  | Program, initiative, or product brand the resource was published under. A discovery facet, not a hierarchy.                                          |
 | cgiar-cdh:geography           | \[string]                                            | Place facet from the CDH geography vocabulary. Complements the spatial extent rather than replacing it.                                              |
-| cgiar-cdh:spatial_resolution  | \[[Resolution Object](#resolution-object)]           | Point and polygon reporting units. Grid spacing is not carried here - see the field notes.                                                           |
 | cgiar-cdh:not_recommended_for | \[[Not-Recommended Object](#not-recommended-object)] | Uses to avoid, each with a reason and an optional alternative.                                                                                       |
 | cgiar-cdh:mip_era             | string                                               | `CMIP5` or `CMIP6`.                                                                                                                                  |
 | cgiar-cdh:scenarios           | \[string]                                            | Scenario labels (SSP/RCP, `historic`). Belongs in Collection `summaries` when it applies across Items.                                               |
@@ -84,29 +83,6 @@ These appear on a link object, never in Collection or Item properties.
 | cgiar-cdh:source_version | string | Version of the source release a `derived_from` link points at.            |
 
 ### Additional Field Information
-
-#### cgiar-cdh:spatial_resolution
-
-Only `point` and `polygon` entries. A reporting unit - "Kenya counties", admin level 2 - has no
-native STAC home at all, which is what this field is for:
-
-```json
-{
-  "cgiar-cdh:spatial_resolution": [
-    {
-      "type": "polygon",
-      "value": 2,
-      "unit": "admin-level",
-      "label": "Admin-2 units (Farland)",
-      "reference_system": "Example GAUL-like boundaries 2024"
-    }
-  ]
-}
-```
-
-Grid spacing is deliberately absent. It already maps to `cube:dimensions[].step` with the
-dimension's native `unit` / `reference_system`, so carrying it here too would state one fact in two
-places with nothing keeping them in agreement.
 
 #### cgiar-cdh:partition
 
@@ -141,19 +117,6 @@ closed lists at authoring time.
 | ---------- | ------ | ------------------------------- |
 | name       | string | **REQUIRED**. The name.         |
 | url        | string | Landing page, where one exists. |
-
-### Resolution Object
-
-| Field Name       | Type             | Description                                                                    |
-| ---------------- | ---------------- | ------------------------------------------------------------------------------ |
-| type             | string           | **REQUIRED**. `point` or `polygon`. Grid types belong in `cube:dimensions`.    |
-| value            | number \| string | Numeric characterization of the reporting unit, e.g. the administrative level. |
-| unit             | string           | Unit of measurement, preferably UDUNITS-2 or UCUM; `admin-level` and similar.  |
-| label            | string           | Human-readable resolution, e.g. `Kenya counties`.                              |
-| reference_system | string           | The system defining the reporting units, e.g. `GAUL 2015`.                     |
-
-Exactly one characterization is carried. The input `spatial.resolution[]` may also hold grid
-entries; those serialize to `cube:dimensions[].step` instead of here.
 
 ### Partition Object
 
