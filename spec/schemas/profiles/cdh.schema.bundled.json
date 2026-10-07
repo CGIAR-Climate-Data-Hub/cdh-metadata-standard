@@ -974,18 +974,6 @@
                   }
                 }
               },
-              "nodata": {
-                "description": "No-data / fill value for the asset.",
-                "anyOf": [
-                  {
-                    "type": "number"
-                  },
-                  {
-                    "minLength": 1,
-                    "type": "string"
-                  }
-                ]
-              },
               "processing_steps": {
                 "description": "ids of processing[] steps that produced this asset.",
                 "items": {
@@ -2332,7 +2320,7 @@
                       "examples": ["t ha-1", "{head}/km2"]
                     },
                     "nodata": {
-                      "description": "No-data / fill value for this variable, where it differs from the asset's. Takes precedence over the asset's nodata for this variable only.",
+                      "description": "Fill value for missing data, as stored in this variable. A representation that stores the variable with another fill value or type is another structure.",
                       "anyOf": [
                         {
                           "type": "number"

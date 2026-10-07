@@ -730,7 +730,7 @@ extension fields, not in `keywords` (see section 4.4).
 
 - **Requirement:** Required - at least one entry.
 - **Expected value per entry:**
-  `{ name, locations, description, media_type, file_size, checksum, nodata, processing_steps, structures, href_template, file_index, spatial }`.
+  `{ name, locations, description, media_type, file_size, checksum, processing_steps, structures, href_template, file_index, spatial }`.
 - **Vocabulary:** `media_type` is the
   [IANA media type](https://www.iana.org/assignments/media-types/) where one is registered;
   otherwise the type in common use (e.g., `application/vnd.zarr; version=3`, `text/x-python`,
@@ -758,7 +758,7 @@ extension fields, not in `keywords` (see section 4.4).
     an embargoed Dataverse record, and `access_note` MUST say so.
   - List more than one entry only when the additional entries point at the same content via a
     different access path (e.g., an HTTPS and an S3 URL for the same file). All `locations[]` share
-    the asset's `media_type`, `file_size`, and `nodata`.
+    the asset's `media_type` and `file_size`.
   - Different content, formats, or services are separate `data[]` / `additional_assets[]` entries.
 - **`href_template` (optional):** Use when one dataset is split into many files along its dimensions
   (e.g., one COG per crop, production system, and variable). Each `locations[].url` becomes a base
@@ -986,11 +986,10 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
     `decimal` (exact fixed-point), `boolean`, `string`, `binary`, `date`, `time`, or `datetime`. Use
     `other` for nested types such as lists or structs. A geometry column is not a variable; name it
     in `structures[].geometry_column`.
-  - `nodata` is the fill value for this variable, and is only needed where it differs from the
-    asset's `data[].nodata` - which stays the default for every variable that does not state one.
-    Use it when one store holds variables of different types (a `float32` measure filled with
-    `-9999` beside a `uint8` classification filled with `255`); a single GeoTIFF cannot, since its
-    bands share one data type and one fill value.
+  - `nodata` is the fill value for missing data, as stored in this variable. State it on every
+    variable that has one. A representation that stores a variable with another fill value or type
+    (a `float32` Zarr filled with `NaN` beside `int16` GeoTIFFs filled with `-9999`) is another
+    structure, held by that asset.
   - `description` says what the variable measures, including the statistic over a window (mean,
     total, maximum). Add reading guidance when direction matters.
   - `note` is for variable-specific caveats. Use record-level `note` for dataset-wide limitations.

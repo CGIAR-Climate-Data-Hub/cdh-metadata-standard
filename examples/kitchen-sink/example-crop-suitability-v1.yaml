@@ -91,6 +91,7 @@ structures:
       - name: suitability_index
         description: Continuous modelled suitability, 0 (unsuitable) to 1 (optimal).
         data_type: float32
+        nodata: -9999
         unit: "1"
 
 cdh:
@@ -122,7 +123,6 @@ data:
       - url: https://example.org/data/example-crop-suitability/v1/cube.zarr
         title: HTTPS
     media_type: application/vnd.zarr; version=3
-    nodata: -9999
   # v1 COG names followed no single pattern, so no href_template fits. Indexes
   # list the files instead: a cdh-inventory (CSV columns href, time, crop,
   # checksum) of full URLs, a stac-geoparquet index for STAC clients, and
@@ -144,4 +144,3 @@ data:
         locations:
           - url: https://example.org/data/example-crop-suitability/v1/cogs.vrt
     media_type: "image/tiff; application=geotiff; profile=cloud-optimized"
-    nodata: -9999

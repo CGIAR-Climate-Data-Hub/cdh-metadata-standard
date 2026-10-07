@@ -68,6 +68,9 @@ occur between minor versions.
 
 ### Changed
 
+- **Breaking:** `data[].nodata` is removed. A fill value is how a variable is stored, so it lives on
+  `variables[].nodata` in the structure, and a representation that stores a variable with another
+  fill value or type is another structure. STAC already emitted nodata per band.
 - **Breaking:** the datacube extension is folded into core as `structures[]`. Record-level
   `dimensions[]` and `variables[]` move inside a structure, and the extension URL leaves
   `extensions[]`. `variables[].dimensions` is removed: a variable has every dimension of its

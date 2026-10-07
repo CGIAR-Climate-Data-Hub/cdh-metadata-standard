@@ -282,17 +282,16 @@ tables with different columns, each layout is its own structure with its own dim
 variables, and each asset names the structures it holds in `data[].structures`. Verify what each
 asset holds before publication, either from the source or with an inspection tool.
 
-Every asset needs a `name`, and names must be unique across both `data` and `additional_assets`. Use
-`nodata` when an asset has a sentinel value for missing or invalid observations. When `processing`
-contains multiple steps, use `processing_steps` to list the step IDs that apply to a particular data
-asset, in processing order:
+Every asset needs a `name`, and names must be unique across both `data` and `additional_assets`. A
+sentinel value for missing observations is the variable's `nodata`, in its structure. When
+`processing` contains multiple steps, use `processing_steps` to list the step IDs that apply to a
+particular data asset, in processing order:
 
 ```yaml
 data:
   - name: suitability-cog
     locations:
       - url: https://example.org/suitability.tif
-    nodata: -9999
     processing_steps: [source, calculate-suitability]
 ```
 
@@ -343,10 +342,10 @@ Rules:
 - Every path the template renders must exist.
 - A coarser format splits an axis into files: on a daily axis, `{date:%Y}.parquet` is one file per
   year holding that year's days. Do not declare a separate `year` axis for this.
-- A templated entry shares one `description`, `nodata`, `media_type`, and `file_size` across every
-  file; split into separate `data[]` entries (e.g. one per variable) when those differ. `file_size`
-  is the size of a single file, not the set - omit it where slices differ materially in size rather
-  than averaging them.
+- A templated entry shares one `description`, `media_type`, and `file_size` across every file; split
+  into separate `data[]` entries (e.g. one per variable) when those differ. `file_size` is the size
+  of a single file, not the set - omit it where slices differ materially in size rather than
+  averaging them.
 
 Only the dimensions that split files go in the template; dimensions inside each file stay out of it.
 

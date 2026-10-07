@@ -163,9 +163,8 @@ name it.
 flavour. `spatial` and `geometry` are not accepted as authored types: the first is derived and the
 second is a shape CDH does not emit, and the extension forbids both as custom type values.
 
-`data[].nodata` is the asset default and fans out to every variable in that asset; a
-`variables[].nodata` replaces it for that variable alone. For an entry templated over `{variable}`
-(section 5.2), each expanded Item takes the nodata of the variable it holds.
+`variables[].nodata` is the band's nodata. For an entry templated over `{variable}` (section 5.2),
+each expanded Item takes the nodata of the variable it holds.
 
 - Use Raster Extension on raster assets when band-level physical metadata exists.
 
@@ -352,9 +351,9 @@ in section 5.1.
 - Derive stable Item ids and asset keys from the entry name and relative `href`, using a
   deterministic collision-checked encoding or digest. CSV row numbers are not stable ids.
 - Emit only each row's selected variables and member dimensions into file-level Table, Raster, or
-  Datacube metadata. For a grouped Item, use their union at Item scope. Resolve a selected
-  variable's `nodata` over the asset default. Coordinate metadata alone does not establish native
-  array dimensions or band order; inspect those before emitting structural claims.
+  Datacube metadata. For a grouped Item, use their union at Item scope. Each selected variable
+  carries its own `nodata`. Coordinate metadata alone does not establish native array dimensions or
+  band order; inspect those before emitting structural claims.
 - Item spatial coverage must describe its own content. The entry's family extent can describe an
   Item containing the entire family, but is not automatically the extent of a single-row Item.
   Require source information or inspection where needed; do not assign a combined family bbox to
