@@ -974,8 +974,9 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
   - `unit` is the unit of measurement, preferably compliant with UDUNITS-2 or UCUM (e.g., `ha`, `t`,
     `t ha-1`, `K`, `kg m-2 s-1`, `{head}/km2`) rather than strictly validated. Required for
     measurements. Use `1` for dimensionless quantities; omit for text or code columns.
-  - Climate variables should use CF standard names where practical (e.g., `precipitation_flux`,
-    `air_temperature`).
+  - `name` is the variable, column, or band name as stored in the data, so it matches the files and
+    `{variable}` tokens. Do not rename data to fit a standard; when a CF standard name applies, give
+    it in `description` (e.g., "Near-surface air temperature (CF: `air_temperature`)").
   - `data_type` is one of a closed list. Numeric types follow STAC `raster:data_type`: `int8`,
     `int16`, `int32`, `int64`, `uint8`, `uint16`, `uint32`, `uint64`, `float16`, `float32`,
     `float64`, and the complex `cint16`, `cint32`, `cfloat32`, `cfloat64`. Table columns may also be
@@ -1227,7 +1228,6 @@ Catalog navigation and version-chain relations follow from `parent` (section 4.8
 | `spatial.crs`                                                 | EPSG codes                                                                                                                                                               |
 | `spatial.geography`                                           | `vocab/geography.json` (UN M49; regions + countries)                                                                                                                     |
 | `variables[].unit`, grid `spatial.resolution[].unit`          | Unit of measurement, preferably UDUNITS-2 or UCUM (not strictly validated); non-grid spatial units may use clear labels such as `admin-level`                            |
-| `variables[].name` (climate)                                  | CF Standard Names (where practical)                                                                                                                                      |
 | `contact[].roles[]`                                           | `licensor`, `producer`, `processor` (STAC provider roles), `point-of-contact`, `maintainer` (Contacts extension)                                                         |
 | `media_type`                                                  | IANA media types                                                                                                                                                         |
 | `resource_type`                                               | `vocab/resource_type.json`                                                                                                                                               |
