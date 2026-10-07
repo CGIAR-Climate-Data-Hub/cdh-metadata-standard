@@ -1104,7 +1104,7 @@
               "step": {
                 "type": "string",
                 "pattern": "^P(?=.*[1-9])(\\d+Y)?(\\d+M)?(\\d+W)?(\\d+D)?(T(?!$)(\\d+H)?(\\d+M)?(\\d+S)?)?$",
-                "description": "Spacing of one step, as an ISO 8601 duration (P1Y, P3M, PT6H) with at least one nonzero component. Only valid on a type: temporal dimension.",
+                "description": "Spacing between consecutive values, as an ISO 8601 duration (P1Y, P3M, PT6H) with at least one nonzero component. Not the length of the period a value represents. Required with extent; omit on an irregular axis. Only valid on a type: temporal dimension.",
                 "examples": ["P3M", "P20Y"]
               },
               "extent": {
@@ -1178,7 +1178,7 @@
             "then": {
               "properties": {
                 "values": {
-                  "description": "On a temporal dimension, every value is an ISO 8601 date or an RFC 3339 date-time with seconds and offset, as a string. A binned axis lists each bin's start and states its length in step, so a 30-year period axis is values: [\"2021\", \"2051\"] with step: P30Y. A cyclic label axis (DJF/MAM/JJA/SON) is not temporal - name it after what it varies and describe the labels. All values share one precision.",
+                  "description": "On a temporal dimension, every value is an ISO 8601 date or an RFC 3339 date-time with seconds and offset, as a string. A value that labels a window is one date, such as its start; the dimension description gives the window length. A cyclic label axis (DJF/MAM/JJA/SON) is not temporal - name it after what it varies and describe the labels. All values share one precision.",
                   "type": "array",
                   "items": {
                     "type": "string"

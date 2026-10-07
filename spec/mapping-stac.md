@@ -141,7 +141,8 @@ carries its own `cube:dimensions` and `cube:variables`, listing only what its st
 
 Each `dimensions[]` entry becomes a `cube:dimensions` member. A `type: temporal` dimension
 serializes as a temporal cube dimension, carrying its `step` (an ISO 8601 duration) as
-`cube:dimensions[].step`. STAC datacube permits several temporal dimensions, so a cube split by
+`cube:dimensions[].step`, or `null` when the axis has none. Never derive a window length or
+`end_datetime` from `step`. STAC datacube permits several temporal dimensions, so a cube split by
 `period` and `season` emits one temporal dimension each, while the top-level `temporal` drives the
 Collection `extent.temporal`.
 

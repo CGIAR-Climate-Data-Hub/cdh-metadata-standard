@@ -693,16 +693,18 @@ temporal cadence is not stored here (see "Temporal cadence" below).
 #### Temporal cadence
 
 Temporal cadence (daily, monthly, projection periods, ...) is **not** a `temporal` field. Express it
-as a `type: temporal` dimension (section 5.8), with an ISO 8601 `step` - one dimension per temporal
-axis, and a record may have several (a yearly climatology beside a daily field).
+as a `type: temporal` dimension (section 5.8), with an ISO 8601 `step` for regular spacing - one
+dimension per temporal axis, and a record may have several (a yearly climatology beside a daily
+field).
 
-A temporal dimension's values are ISO 8601 dates or instants. A binned axis lists each bin's start
-and gives its length as the `step`, so 20-year projection windows are `values: ["2021", "2041"]`
-with `step: P20Y`. A **cyclic** label axis - `DJF`/`MAM`/`JJA`/`SON` - is not temporal: it repeats
-every year rather than running in one direction, so it is a domain axis named after what it varies,
-and how long each label covers is stated in its `description`. This mirrors `spatial`: the
-horizontal grid comes from `spatial`, and every other axis - time and domain - is a `dimensions[]`
-entry. See the [data dictionary](#58-data-dictionary).
+A temporal dimension's values are ISO 8601 dates or instants. `step` is only the spacing between
+values; it says nothing about the period a value represents. When values label windows, state the
+window length in the dimension's `description` (`1961` = 1961-1990). A **cyclic** label axis -
+`DJF`/`MAM`/`JJA`/`SON` - is not temporal: it repeats every year rather than running in one
+direction, so it is a domain axis named after what it varies, and how long each label covers is
+stated in its `description`. This mirrors `spatial`: the horizontal grid comes from `spatial`, and
+every other axis - time and domain - is a `dimensions[]` entry. See the
+[data dictionary](#58-data-dictionary).
 
 > [!NOTE] Temporal values and `extent` steps use the standard Gregorian calendar. Some climate model
 > data uses another calendar, such as `360_day` or `noleap`. Its days may not exist in the Gregorian
@@ -928,23 +930,24 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
     vertical CRS the values are coded against - a `z` dimension can carry both.
   - **Do not declare the horizontal lat/lon grid here.** It comes from the top-level `spatial`
     field.
-  - **Declare every temporal axis here** as `type: temporal` with a `step`. The top-level `temporal`
-    field carries only the coverage extent (start/end); all temporal cadence lives on these
-    dimensions. A record may declare **several**, such as one store holding a yearly climatology
-    beside a daily field. Files split by year are not a second axis: yearly files of daily data have
-    one daily axis, split with a `{date:%Y}` token.
+  - **Declare every temporal axis here** as `type: temporal`. The top-level `temporal` field carries
+    only the coverage extent (start/end); all temporal cadence lives on these dimensions. A record
+    may declare **several**, such as one store holding a yearly climatology beside a daily field.
+    Files split by year are not a second axis: yearly files of daily data have one daily axis, split
+    with a `{date:%Y}` token.
   - **A temporal dimension's `values` are ISO 8601 dates or instants, written as strings.** Bare
-    numbers (`2030`) and range labels (`2020-2040`) are rejected. A **binned** axis lists each bin's
-    start and states its length in `step`, exactly as a monthly axis lists month starts: a 30-year
-    projection axis is `values: ["2021", "2051"]` with `step: P30Y`. The readable form (`2021-2050`)
-    follows from the value and the step; do not write it.
+    numbers (`2030`) and range labels (`2020-2040`) are rejected. A value that labels a window is
+    written as one date, such as the window's start; the `description` says how dates label windows
+    and how long each window is (`1961` represents 1961-1990).
   - **A cyclic label axis is not temporal.** `DJF`/`MAM`/`JJA`/`SON` repeats every year, while a
     temporal axis runs in one direction, so a season is a domain axis named `season`. Its `P3M` was
     never a step along an axis - it is how long each label covers - so state that in `description`
     alongside the code list in `reference_system`.
-  - `step` is the spacing of one step, always an ISO 8601 duration (`P3M`, `P20Y`), and valid **only
-    on a `type: temporal` dimension**. It is the only cadence field a dimension carries; a domain
-    axis describes its cadence in prose.
+  - `step` is the spacing between consecutive values, always an ISO 8601 duration (`P3M`, `P10Y`),
+    and valid **only on a `type: temporal` dimension**. Required with `extent`; omit it on an
+    irregular axis. It does not say how long a value lasts: 30-year windows every 10 years have
+    `step: P10Y`, with the window length in `description`. A domain axis describes its cadence in
+    prose.
   - `extent` is `[first, last]` on a regular temporal axis, in place of listing every value. It
     requires `step` and excludes `values`. Both strings are written at one precision (`1981`,
     `1981-01`, `1981-01-01`, or a date-time), no coarser than the step, start before end. The values
@@ -984,7 +987,8 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
     Use it when one store holds variables of different types (a `float32` measure filled with
     `-9999` beside a `uint8` classification filled with `255`); a single GeoTIFF cannot, since its
     bands share one data type and one fill value.
-  - `description` says what the variable measures. Add reading guidance when direction matters.
+  - `description` says what the variable measures, including the statistic over a window (mean,
+    total, maximum). Add reading guidance when direction matters.
   - `note` is for variable-specific caveats. Use record-level `note` for dataset-wide limitations.
   - `categories` lists a coded variable's values, each `{ value, label, description? }`. Required
     when stored values are codes (a class raster, a status flag, a text category). Each `value`
@@ -1011,12 +1015,13 @@ variables:
       weight.
 ```
 
-##### Two temporal axes, and a season that is not one
+##### Seasons and yearly files are not extra temporal axes
 
 A cube split by 20-year projection `period` and by `season` has **one** temporal axis, not two. The
-period axis is temporal: its values are the ISO 8601 start of each window, and `step` says how long
-each one runs. The season axis is cyclic - `DJF` recurs every year - so it is a domain axis, and the
-three months each label covers are stated in prose because STAC has nowhere to put them.
+period axis is temporal: its values are the ISO 8601 start of each window, `step` is the spacing
+between them, and `description` says how long each window runs. The season axis is cyclic - `DJF`
+recurs every year - so it is a domain axis, and the three months each label covers are stated in
+prose because STAC has nowhere to put them.
 
 ```yaml
 temporal:

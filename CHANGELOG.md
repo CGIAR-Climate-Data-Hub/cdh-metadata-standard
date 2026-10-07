@@ -64,6 +64,9 @@ occur between minor versions.
 
 ### Changed
 
+- `dimensions[].step` is only the spacing between values, as in the STAC datacube extension. It no
+  longer gives the length of a window: 30-year windows every 10 years are `step: P10Y`, with the
+  window length in the dimension's `description`. `step` is optional on an irregular axis.
 - Removed the rule that bands are variables. Bands are how a file stores its values, not part of the
   data model; when band descriptions do not say what each band holds, `data[].description` does.
 - **Breaking:** the data dictionary is core. `dimensions[]`, `variables[]`, `structures[]`, and
