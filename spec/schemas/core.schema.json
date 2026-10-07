@@ -1047,7 +1047,54 @@
         "required": ["type"]
       },
       "minContains": 0,
-      "maxContains": 1
+      "maxContains": 1,
+      "allOf": [
+        {
+          "$comment": "Coordinate columns come as a pair.",
+          "if": {
+            "contains": {
+              "properties": {
+                "type": {
+                  "const": "x"
+                }
+              },
+              "required": ["type"]
+            }
+          },
+          "then": {
+            "contains": {
+              "properties": {
+                "type": {
+                  "const": "y"
+                }
+              },
+              "required": ["type"]
+            }
+          }
+        },
+        {
+          "if": {
+            "contains": {
+              "properties": {
+                "type": {
+                  "const": "y"
+                }
+              },
+              "required": ["type"]
+            }
+          },
+          "then": {
+            "contains": {
+              "properties": {
+                "type": {
+                  "const": "x"
+                }
+              },
+              "required": ["type"]
+            }
+          }
+        }
+      ]
     },
     "variables": {
       "description": "Measurement variables, bands, or columns.",
@@ -1468,6 +1515,38 @@
       },
       "then": {
         "required": ["structures"]
+      }
+    },
+    {
+      "$comment": "A grid's horizontal axes come from spatial; x and y dimensions are a table's coordinate columns.",
+      "if": {
+        "required": ["spatial"],
+        "properties": {
+          "spatial": {
+            "required": ["resolution"]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "structures": {
+            "items": {
+              "properties": {
+                "dimensions": {
+                  "items": {
+                    "properties": {
+                      "type": {
+                        "not": {
+                          "enum": ["x", "y"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     {

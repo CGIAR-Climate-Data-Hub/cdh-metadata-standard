@@ -925,8 +925,9 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
       when the boundary set is a catalog record. With a composite key, the finest column describes
       the unit.
     - `x` and `y` - the coordinate columns of a table, in `spatial.crs`, as in CF `axis: X` and
-      `axis: Y`. Give each a `unit`. `lat`, `lon`, and their long forms are rejected, like the
-      `temporal` aliases. A grid never declares them: its horizontal axes come from `spatial`.
+      `axis: Y`. Declared together, each with a `unit`. `lat`, `lon`, and their long forms are
+      rejected, like the `temporal` aliases. A grid never declares them: its horizontal axes come
+      from `spatial`, and the schema rejects them beside `spatial.resolution`.
     - Anything else names a domain axis after what it varies (`crop`, `technology`, `scenario`).
       Lowercase, digits, `-` and `_`.
   - **`spatial` and `geometry` are rejected.** The horizontal lat/lon grid comes from the top-level

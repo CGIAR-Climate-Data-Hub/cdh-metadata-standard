@@ -120,8 +120,9 @@ Resolution placement:
 1. For gridded/array assets, `spatial.resolution[]` entries are expanded to the x and y
    `cube:dimensions[]` `step`, expressed in that dimension's native `unit`. `type: xy` is an
    authoring shorthand and serializes as separate x and y dimensions.
-2. A table's reporting unit has no resolution field. It is the `type: location` dimension, which
-   becomes a `table:columns` entry carrying its description.
+2. A table's reporting unit has no resolution field. It is the `type: location` dimension, or the
+   `type: x` and `type: y` coordinate columns, each a `table:columns` entry carrying its
+   description. Cube x and y dimensions come only from `spatial`.
 3. Temporal cadence is not a resolution field: it comes from a `type: temporal` dimension's `step`
    (see below), which maps to that `cube:dimensions[].step`.
 
