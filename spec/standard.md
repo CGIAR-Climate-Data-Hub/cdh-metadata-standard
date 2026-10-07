@@ -1,6 +1,6 @@
 # Climate Data Hub Metadata Standard
 
-Status: v0.4.0
+Status: v0.4.1
 
 This document defines the metadata model used by the Climate Data Hub - the field definitions,
 requirement levels, and rules every Hub record conforms to. The model is self-contained and stands
@@ -254,7 +254,7 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
   - The version segment of every CDH-hosted schema URL in `extensions[]` must match
     `cdh_schema_version`, so a record references one release throughout. Validators enforce this as
     a cross-field rule.
-- **Example:** `v0.4.0`
+- **Example:** `v0.4.1`
 
 #### `id`
 

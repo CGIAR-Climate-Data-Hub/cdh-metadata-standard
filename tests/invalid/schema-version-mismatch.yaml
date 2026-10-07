@@ -1,4 +1,4 @@
-# An extension URL pins v9.9.9 while cdh_schema_version says v0.4.0. v9.9.9 is
+# An extension URL pins v9.9.9 while cdh_schema_version says v0.4.1. v9.9.9 is
 # unreal, so the release bump never rewrites it.
 extensions:
   - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v9.9.9/extensions/cdh/schema.json
