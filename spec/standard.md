@@ -803,9 +803,9 @@ extension fields, not in `keywords` (see section 4.4).
   `sha256`, `sha512`), the same form as the `cdh-inventory` column. Not allowed with `href_template`
   or `file_index`; list per-file checksums in a `cdh-inventory` instead.
 - **`structures` (conditional):** Names of the `structures[]` this asset holds (section 5.8).
-  Required on every asset when the record declares `structures[]`; omitted otherwise. An asset holds
-  the dimensions and variables of its structures. Authors or inspection tools MUST verify structure
-  membership before publication.
+  Required on every asset when the record has more than one structure; an asset without it holds the
+  record's only structure. An asset holds the dimensions and variables of its structures. Authors or
+  inspection tools MUST verify structure membership before publication.
 - **`spatial` (optional):** `{ bbox, geography }` covering this asset alone, for selecting files by
   area. Same shapes as the top-level `spatial`. Omit when unknown; the top-level bbox is not copied
   down to assets.
@@ -1078,7 +1078,6 @@ structures:
         step: P1D
 data:
   - name: daily
-    structures: [main]
     locations:
       - url: https://example.org/daily/
     href_template: "{date:%Y}.parquet" # one file per year
@@ -1106,8 +1105,9 @@ tables with different columns, has one per layout.
     column named `value` with different meanings. A definition shared by several structures is
     repeated in each; YAML anchors (`&flooded` / `*flooded`) avoid retyping it.
   - `name` MUST be unique within `structures[]`.
-  - Every asset MUST name the structures it holds in `data[].structures`. A structure may be held by
-    several assets, and an asset may hold several structures.
+  - With more than one structure, every asset MUST name the structures it holds in
+    `data[].structures`; with one, every asset holds it. A structure may be held by several assets,
+    and an asset may hold several structures.
   - Within one asset, a variable name appears in only one of its structures.
   - Each `href_template` token other than `{variable}` MUST be a dimension of every structure the
     asset holds; `{variable}` expands over the variables of those structures.

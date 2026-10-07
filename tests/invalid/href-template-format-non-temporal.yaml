@@ -1,7 +1,6 @@
 # A format is only allowed on a type: temporal token.
 data:
   - name: cogs
-    structures: [main]
     locations:
       - url: https://example.org/cogs/
     href_template: "file_{crop:%Y}.tif"

@@ -1,7 +1,6 @@
 # Only %Y, %m, and %d are allowed; day-of-year %j is not.
 data:
   - name: primary
-    structures: [main]
     locations:
       - url: https://example.org/data/
     href_template: "ptot_{day:%Y%j}.tif"

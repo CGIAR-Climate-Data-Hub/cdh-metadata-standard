@@ -164,7 +164,6 @@ processing:
 
 data:
   - name: table
-    structures: [main]
     description: Admin-2 suitability aggregates, one Parquet table.
     locations:
       - url: https://example.org/data/example-crop-suitability/v2/admin2/suitability_admin2.parquet

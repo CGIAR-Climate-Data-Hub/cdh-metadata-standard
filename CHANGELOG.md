@@ -17,9 +17,9 @@ occur between minor versions.
   with one layout has one structure; a record whose assets hold different dimensions and variables,
   such as monthly and seasonal file sets of one product or tables with different columns, has one
   per layout. Names are unique within a structure and may repeat across structures, so two tables
-  can each have a `value` column. Every asset names the structures it holds in `data[].structures`,
-  and holds each variable in only one of them. Encoded as asset-level `cube:dimensions` and
-  `cube:variables`.
+  can each have a `value` column. With more than one structure, every asset names the structures it
+  holds in `data[].structures`, and holds each variable in only one of them; with one, every asset
+  holds it. Encoded as asset-level `cube:dimensions` and `cube:variables`.
 - Added `categories` to `variables[]` and `dimensions[]`: coded values as
   `{ value, label, description? }`, after Frictionless `categories`. On a variable it lists the
   codes it can contain; on a dimension it labels the axis values, in place of `values`. Integer

@@ -276,11 +276,11 @@ provided if applicable, such as if the same file is hosted on multiple storage p
 different formats (csv, parquet) or services (such as an API or GEE asset) should be listed as
 separate `data` entries. For a service, see [Data served by an API](#data-served-by-an-api).
 
-Dimensions and variables live in [`structures`](standard.md#structures), and each asset names the
-structures it holds in `data[].structures`. One layout is one structure. When assets differ, such as
-monthly and seasonal file sets or tables with different columns, each layout is its own structure
-with its own dimensions and variables. Verify what each asset holds before publication, either from
-the source or with an inspection tool.
+Dimensions and variables live in [`structures`](standard.md#structures). One layout is one
+structure, and every asset holds it. When assets differ, such as monthly and seasonal file sets or
+tables with different columns, each layout is its own structure with its own dimensions and
+variables, and each asset names the structures it holds in `data[].structures`. Verify what each
+asset holds before publication, either from the source or with an inspection tool.
 
 Every asset needs a `name`, and names must be unique across both `data` and `additional_assets`. Use
 `nodata` when an asset has a sentinel value for missing or invalid observations. When `processing`
@@ -383,7 +383,6 @@ structures:
         unit: mm
 data:
   - name: daily-rainfall
-    structures: [main]
     file_index:
       - format: cdh-inventory
         locations:

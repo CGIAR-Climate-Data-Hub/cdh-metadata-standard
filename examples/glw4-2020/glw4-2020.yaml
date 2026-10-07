@@ -137,7 +137,6 @@ processing:
 
 data:
   - name: zarr
-    structures: [main]
     locations:
       - url: https://digital-atlas.s3.amazonaws.com/cdh/data/glw4-2020/glw4-2020.zarr
         title: HTTPS
@@ -149,7 +148,6 @@ data:
     media_type: application/vnd.zarr; version=3
     file_size: 31.1 MB
   - name: cogs
-    structures: [main]
     locations:
       - url: https://digital-atlas.s3.amazonaws.com/cdh/data/glw4-2020/cog/
         title: HTTPS

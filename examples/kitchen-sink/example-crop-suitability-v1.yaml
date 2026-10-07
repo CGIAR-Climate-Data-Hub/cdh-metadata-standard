@@ -117,7 +117,6 @@ processing:
 
 data:
   - name: zarr
-    structures: [main]
     description: Zarr representation of the v1 suitability cube.
     locations:
       - url: https://example.org/data/example-crop-suitability/v1/cube.zarr
@@ -129,7 +128,6 @@ data:
   # checksum) of full URLs, a stac-geoparquet index for STAC clients, and
   # a GDAL VRT that opens the COGs as one raster in GDAL, QGIS, or rasterio.
   - name: cogs
-    structures: [main]
     description: Cloud Optimized GeoTIFFs of the v1 cube, one per horizon and crop.
     locations:
       - url: https://example.org/data/example-crop-suitability/v1/cogs/
