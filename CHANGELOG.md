@@ -8,6 +8,23 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While the project is pre-1.0, the schema should be considered unstable and breaking changes may
 occur between minor versions.
 
+## [0.4.1] - 2026-10-07
+
+### Added
+
+- Added `integer` and `number` to `data_type`, the Frictionless Table Schema names, for text formats
+  such as CSV, fixed-width, and JSON where width and signedness are not stored. `decimal` now means
+  fixed-point with a declared precision in a binary store.
+
+### Changed
+
+- A `cdh-inventory` `file_index[].locations[].url` may be a path relative to the record file, as
+  `additional_assets[]` already allows, so a small inventory CSV can be committed beside the record.
+  Validation checks the file exists. Other index formats still require absolute URLs, since their
+  internal paths may resolve against the index's own location.
+- `validate-yaml` accepts YAML merge keys (`<<: *anchor`), so a structure can reuse a variable from
+  another and change one field, such as `nodata`. The authoring guide shows the pattern.
+
 ## [0.4.0] - 2026-10-07
 
 ### Added
@@ -475,6 +492,7 @@ occur between minor versions.
 - Initial prototype of the core metadata specification, controlled vocabularies, and supporting
   build scripts.
 
+[0.4.1]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.1.0...v0.2.0

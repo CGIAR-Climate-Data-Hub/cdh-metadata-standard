@@ -1,0 +1,7 @@
+# Only a cdh-inventory may use a relative path; other index formats need absolute URLs.
+data:
+  - name: tiles
+    file_index:
+      - format: gti
+        locations:
+          - url: ./tiles.gti.fgb

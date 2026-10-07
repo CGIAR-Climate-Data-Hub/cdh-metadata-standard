@@ -282,6 +282,35 @@ tables with different columns, each layout is its own structure with its own dim
 variables, and each asset names the structures it holds in `data[].structures`. Verify what each
 asset holds before publication, either from the source or with an inspection tool.
 
+Structures often repeat each other. Use YAML anchors rather than copying: mark an object with
+`&name`, reuse it whole with `*name`, or reuse it with one field changed with `<<: *name`. The
+parser expands these before validation, so the record is as complete as if it were written out. A
+Zarr filled with `NaN` beside GeoTIFFs filled with `-3.4028235e+38` becomes:
+
+```yaml
+structures:
+  - name: zarr
+    dimensions:
+      - &cell
+        name: cell
+        type: xy
+        description: 5 arc-minute grid.
+        step: 0.08333333
+        unit: degree
+    variables:
+      - &cattle
+        name: cattle
+        description: Modelled cattle density.
+        data_type: float32
+        unit: "{head}/km2"
+        nodata: "NaN"
+  - name: cogs
+    dimensions: [*cell]
+    variables:
+      - <<: *cattle
+        nodata: -3.4028235e+38
+```
+
 Every asset needs a `name`, and names must be unique across both `data` and `additional_assets`. A
 sentinel value for missing observations is the variable's `nodata`, in its structure. When
 `processing` contains multiple steps, use `processing_steps` to list the step IDs that apply to a
@@ -364,7 +393,9 @@ the coordinates. When either is false, or there are thousands of files, point at
   URL, plus one column per declared dimension giving that file's coordinate, and `variable` when
   each file holds a single variable. An optional `checksum` column (`md5:<hex>`, `sha256:<hex>`)
   carries file digests. Use it when you have a spreadsheet and nothing else. Full URLs keep the CSV
-  usable on its own; a mirror gets its own CSV as a second entry.
+  usable on its own; a mirror gets its own CSV as a second entry. A small inventory can be committed
+  beside the record and given a relative `url` such as `files.csv`, like a README in
+  `additional_assets`. Only `cdh-inventory` allows this; other formats need absolute URLs.
 
 Any one index is enough. List the one people should open first.
 
@@ -632,6 +663,8 @@ structures:
 
 For each variable:
 
+- `name` is the column or band name as stored, even when the source's naming is terse or differs
+  from other records. Put the readable name in `description`.
 - Use `description` for what the variable measures.
 - It is preferable to have unit as a UCUM or UDUNITS-2 unit.
 - Include the normal reading guidance in `description` when direction matters.
