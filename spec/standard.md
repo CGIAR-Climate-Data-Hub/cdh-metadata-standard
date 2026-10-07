@@ -780,10 +780,11 @@ extension fields, not in `keywords` (see section 4.4).
   file per combination of the tokens' values. Values are substituted verbatim; every combination is
   assumed to exist. When some combinations do not exist, list the files in a `file_index` instead. A
   token on a `type: temporal` dimension may carry a strftime format, `{date:%Y.%m.%d}`, when the
-  file name spells the date differently from the ISO 8601 value. Only `%Y`, `%m`, `%d`, `%H`, `%M`,
-  and `%j` are allowed; a token may repeat with different formats
+  file name spells the date differently from the ISO 8601 value. Only `%Y` (four-digit year), `%m`,
+  and `%d` (two-digit month and day) are allowed; a token may repeat with different formats
   (`year={date:%Y}/{date:%Y%m%d}.tif`). A format may not be finer than the axis values are written
-  (a year axis takes only `%Y`) and must spell every value distinctly. Names the directives cannot
+  (a year axis takes only `%Y`). The complete generated path must differ for every combination of
+  values; one fragment such as `{date:%Y}` may repeat across many files. Names the directives cannot
   spell use `file_index`. Omit it for a single file. On a templated entry, `file_size` describes
   **one file**, not the set; where slices differ materially in size, omit it rather than averaging.
   See the [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).

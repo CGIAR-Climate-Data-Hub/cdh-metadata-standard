@@ -19,8 +19,8 @@ occur between minor versions.
   than the axis.
 - `href_template` tokens on a `type: temporal` dimension may carry a strftime format,
   `{date:%Y.%m.%d}`, for file names that spell the date differently from the ISO value. Directives
-  are limited to `%Y %m %d %H %M %j`; a token may repeat with different formats for hive-partitioned
-  paths. Domain-axis tokens stay verbatim.
+  are limited to `%Y`, `%m`, and `%d`, with fixed padding; a token may repeat with different formats
+  for hive-partitioned paths. Domain-axis tokens stay verbatim.
 - Added `processing[].derived_from[].id`: names a Hub record as a source, in place of a storage URL.
   An entry has an `id` or a `url`, not both; an `id` must resolve to exactly one catalog record.
   Encoded as a `derived_from` link to that record's URL.

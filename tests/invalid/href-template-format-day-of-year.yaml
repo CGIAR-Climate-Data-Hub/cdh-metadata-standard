@@ -1,0 +1,12 @@
+# Only %Y, %m, and %d are allowed; day-of-year %j is not.
+data:
+  - name: primary
+    locations:
+      - url: https://example.org/data/
+    href_template: "ptot_{day:%Y%j}.tif"
+dimensions:
+  - name: day
+    type: temporal
+    description: Day.
+    step: P1D
+    extent: ["2020-01-01", "2020-12-31"]

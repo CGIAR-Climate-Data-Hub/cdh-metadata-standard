@@ -435,13 +435,13 @@
               },
               "href_template": {
                 "type": "string",
-                "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name; the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d %H %M %j only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset.",
+                "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name; the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset.",
                 "examples": [
                   "mapspam_{crop}_{technology}_{variable}.tif",
                   "chirps-v2.0.{date:%Y.%m.%d}.tif"
                 ],
                 "$comment": "Braces balance; a token is {name} or {name:format}, and a format holds at least one directive and no other %.",
-                "pattern": "^(?:[^{}]|\\{[^{}:]+(?::(?=[^}]*%)(?:%[YmdHMj]|[^%{}])+)?\\})+$"
+                "pattern": "^(?:[^{}]|\\{[^{}:]+(?::(?=[^}]*%)(?:%[Ymd]|[^%{}])+)?\\})+$"
               },
               "file_index": {
                 "description": "Indexes that list or open this entry's files as one dataset, per the File indexes section of standard.md. Each entry is one index file; its locations[] are the same file at several addresses. format names the specification the file follows. CDH does not open index files. Mutually exclusive with href_template.",

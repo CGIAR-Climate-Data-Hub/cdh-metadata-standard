@@ -128,7 +128,7 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
     return found;
   });
   // Unit a strftime directive spells; a format may not go finer than the axis values.
-  const DIRECTIVE_UNIT = { Y: "year", m: "month", j: "day", d: "day", H: "time", M: "time" };
+  const DIRECTIVE_UNIT = { Y: "year", m: "month", d: "day" };
   list(doc?.data).forEach((asset, i) => {
     const tpl = asset?.href_template;
     if (typeof tpl !== "string" || tpl === "") return;
@@ -159,7 +159,7 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
         );
       } else if (dim.unit) {
         const finest = Math.max(
-          ...[...spec.matchAll(/%([YmdHMj])/g)].map(([, c]) => UNITS.indexOf(DIRECTIVE_UNIT[c])),
+          ...[...spec.matchAll(/%([Ymd])/g)].map(([, c]) => UNITS.indexOf(DIRECTIVE_UNIT[c])),
         );
         if (finest > UNITS.indexOf(dim.unit)) {
           out.push(

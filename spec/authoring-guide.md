@@ -333,7 +333,7 @@ Rules:
 - The matching dimension's `values` (or the variable names) are substituted verbatim and must match
   file-name tokens.
 - When a file name spells a date differently from the ISO value, give the token a strftime format:
-  `chirps-v2.0.{date:%Y.%m.%d}.tif`. Only `%Y %m %d %H %M %j` are allowed, and only on a
+  `chirps-v2.0.{date:%Y.%m.%d}.tif`. Only `%Y`, `%m`, and `%d` are allowed, and only on a
   `type: temporal` dimension. The same token may repeat with different formats, so hive-partitioned
   days are `year={date:%Y}/month={date:%m}/ptot_{date:%Y%m%d}.tif`. Month or season names are
   labels, not formats: declare them as a domain axis with the labels in `values`.
