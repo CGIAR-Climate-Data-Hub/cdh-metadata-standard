@@ -35,6 +35,10 @@ records matches the same tag.
 For now, there is no independent extension version. This may change with increased use of the
 extensions. Published URLs follow the pattern `<base>/<TAG>/...`.
 
+Before 1.0, minor versions may break records. From 1.0, a minor version only adds: new optional
+fields, new vocabulary values, and new extensions. Renaming or removing a field, or tightening a
+rule, requires a major version; deprecated fields stay valid until then.
+
 ## 3. Requirement Levels
 
 The standard follows RFC 2119-style requirement levels.
