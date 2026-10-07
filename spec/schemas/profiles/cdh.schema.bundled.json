@@ -2624,38 +2624,6 @@
           }
         },
         {
-          "$comment": "A grid's horizontal axes come from spatial; x and y dimensions are a table's coordinate columns.",
-          "if": {
-            "required": ["spatial"],
-            "properties": {
-              "spatial": {
-                "required": ["resolution"]
-              }
-            }
-          },
-          "then": {
-            "properties": {
-              "structures": {
-                "items": {
-                  "properties": {
-                    "dimensions": {
-                      "items": {
-                        "properties": {
-                          "type": {
-                            "not": {
-                              "enum": ["x", "y"]
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        {
           "if": {
             "required": ["access"],
             "properties": {
