@@ -1,0 +1,7 @@
+# A temporal axis takes an ISO 8601 duration step, never a number.
+structures:
+  - name: main
+    dimensions:
+      - { name: time, type: temporal, description: Day., step: 1 }
+    variables:
+      - { name: tmax, description: Maximum temperature. }

@@ -16,9 +16,9 @@ needs:
 - Spatial vector assets, spatial/temporal tabular assets
 - APIs for access to geospatial data
 
-A record with a spatial footprint - `bbox`, `crs`, or `resolution` (see `standard.md` section 5.3) -
-carries everything STAC needs and can encode into it directly. `spatial.geography` alone is a place
-facet, not a footprint.
+A record with a spatial footprint - `bbox` or `crs` (see `standard.md` section 5.3) - carries
+everything STAC needs and can encode into it directly. `spatial.geography` alone is a place facet,
+not a footprint.
 
 ### 1.1 Records without a spatial footprint
 
@@ -112,19 +112,15 @@ STAC implies resource type through object type and asset media types. CDH also e
 | `spatial.geography[]`                       | `cgiar-cdh:geography` array                                                                                                                                                                                                                                                                                                       |
 | `spatial.crs`                               | Projection Extension v2: `proj:code`                                                                                                                                                                                                                                                                                              |
 | `structures[].geometry_column`              | Table Extension `table:primary_geometry` on each asset holding the structure                                                                                                                                                                                                                                                      |
-| `spatial.resolution[]`                      | `cube:dimensions[].step` (+ `unit`) on the x and y dimensions                                                                                                                                                                                                                                                                     |
 | `temporal.date` / `start_date` / `end_date` | `date` -> `datetime`; `start_date`/`end_date` -> `start_datetime`/`end_datetime`; `end_date: null` -> open interval; also `extent.temporal.interval` (Collection). Reduced-precision values expand to full RFC 3339 (start to period start, end inclusive to period end); the raw value also feeds schema.org `temporalCoverage`. |
 
-Resolution placement:
+Spacing is a dimension's `step`, and maps to that `cube:dimensions[].step` in every case:
 
-1. For gridded/array assets, `spatial.resolution[]` entries are expanded to the x and y
-   `cube:dimensions[]` `step`, expressed in that dimension's native `unit`. `type: xy` is an
-   authoring shorthand and serializes as separate x and y dimensions.
-2. A table's reporting unit has no resolution field. It is the `type: location` dimension, or the
-   `type: x` and `type: y` coordinate columns, each a `table:columns` entry carrying its
-   description. Cube x and y dimensions come only from `spatial`.
-3. Temporal cadence is not a resolution field: it comes from a `type: temporal` dimension's `step`
-   (see below), which maps to that `cube:dimensions[].step`.
+1. On a gridded/array asset, `xy` serializes as separate x and y spatial dimensions sharing one
+   `step` and `unit`; `x` and `y` serialize one each. `extent` on each comes from `spatial.bbox`.
+2. On a table, `x` and `y` without `step` and the `type: location` dimension are `table:columns`
+   entries carrying their descriptions.
+3. A `type: temporal` dimension's duration `step` maps unchanged (see below).
 
 ### 4.4 Data fields, dimensions, variables
 
@@ -144,17 +140,14 @@ irregular spacing. Never derive a window length or `end_datetime` from `step`. S
 several temporal dimensions, so a store holding a yearly climatology beside a daily field emits one
 temporal dimension each, while the top-level `temporal` drives the Collection `extent.temporal`.
 
-For grid data, `spatial.resolution[]` derives `cube:dimensions[].step` with native units.
+Dimension types map as follows. The horizontal axes take their `extent` from `spatial.bbox`.
 
-Dimension types map as follows. The horizontal axes are derived, never authored: `spatial.bbox`
-gives each one's `extent` and `spatial.resolution[]` its `step`.
-
-| CDH `dimensions[].type` | STAC `cube:dimensions` entry                                         |
-| ----------------------- | -------------------------------------------------------------------- |
-| derived from `spatial`  | `{ type: spatial, axis: x }` and `{ type: spatial, axis: y }`        |
-| `z`                     | `{ type: spatial, axis: z }`, carrying `values`, `unit`              |
-| `temporal`              | `{ type: temporal }`, carrying `values` and `step`                   |
-| `location`, any other   | Additional Dimension: `{ type: <the CDH value> }`, carrying `values` |
+| CDH `dimensions[].type` | STAC `cube:dimensions` entry                                                           |
+| ----------------------- | -------------------------------------------------------------------------------------- |
+| `xy`, `x`, `y`          | `{ type: spatial, axis: x }` and `{ type: spatial, axis: y }`, carrying `step`, `unit` |
+| `z`                     | `{ type: spatial, axis: z }`, carrying `values`, `unit`                                |
+| `temporal`              | `{ type: temporal }`, carrying `values` and `step`                                     |
+| `location`, any other   | Additional Dimension: `{ type: <the CDH value> }`, carrying `values`                   |
 
 A temporal dimension requires an `extent`. It is derived, not copied from the CDH field of the same
 name. It comes from the dimension's `values` (first and last), its authored `extent`, or the

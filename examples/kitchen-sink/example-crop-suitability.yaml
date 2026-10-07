@@ -116,11 +116,6 @@ spatial:
   geography:
     - africa
   crs: EPSG:4326
-  resolution:
-    - type: xy
-      unit: degree
-      value: 0.05
-      label: 3 arc-minutes (~5 km at equator)
 
 temporal:
   # Coverage span (year precision). The two projection horizons are a temporal
@@ -128,14 +123,19 @@ temporal:
   start_date: "2030"
   end_date: "2050"
 
-# lat/lon come from spatial. Every other axis - the projection horizon (a temporal
-# dimension, with an ISO 8601 step) and the domain axes - is declared in a structure.
+# Every axis is declared in a structure: the grid (xy with a numeric step), the
+# projection horizon (temporal, with an ISO 8601 step), and the domain axes.
 # The mask varies over the grid only, so it cannot share the projection axes.
 # Each structure is its own data dictionary, like a Frictionless resource schema;
 # every asset names the structures it holds.
 structures:
   - name: projections
     dimensions:
+      - name: cell
+        type: xy
+        description: 3 arc-minutes (~5 km at equator).
+        step: 0.05
+        unit: degree
       - name: time
         type: temporal
         description: Projection horizon (reference year).
@@ -185,7 +185,12 @@ structures:
             label: High
             description: Modelled suitability above 0.75.
   - name: static
-    dimensions: []
+    dimensions:
+      - name: cell
+        type: xy
+        description: 3 arc-minutes (~5 km at equator).
+        step: 0.05
+        unit: degree
     variables:
       - name: cropland_mask
         description: Cells modelled as cropland; suitability is only meaningful where this is 1.

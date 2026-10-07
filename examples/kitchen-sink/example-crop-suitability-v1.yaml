@@ -64,11 +64,6 @@ spatial:
   geography:
     - africa
   crs: EPSG:4326
-  resolution:
-    - type: xy
-      unit: degree
-      value: 0.1
-      label: 6 arc-minutes (~10 km at equator)
 
 temporal:
   start_date: "2030"
@@ -78,6 +73,11 @@ temporal:
 structures:
   - name: main
     dimensions:
+      - name: cell
+        type: xy
+        description: 6 arc-minutes (~10 km at equator).
+        step: 0.1
+        unit: degree
       - name: time
         type: temporal
         description: Projection horizon (reference year).

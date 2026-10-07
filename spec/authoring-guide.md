@@ -475,7 +475,6 @@ Common fields:
 - `spatial.bbox`
 - `spatial.geography`
 - `spatial.crs`
-- `spatial.resolution`
 
 `spatial.bbox` is a single bounding box, or a list of bounding boxes, in WGS84 (EPSG:4326).
 
@@ -519,21 +518,25 @@ repeat coverage with children in a parent region. For example, listing the paren
 
 `spatial.crs` should be a coordinate reference system (CRS) identifier, such as `EPSG:4326`.
 
-Use `spatial.resolution` for the spatial unit at which values are represented. For regular grids
-(most common case), use `type: xy` when x/y spacing is the same:
+Grid spacing is a horizontal axis of the structure, as in STAC datacube. For a regular grid with one
+spacing on both axes, one `xy` dimension with a numeric `step` in its `unit`:
 
 ```yaml
-spatial:
-  resolution:
-    - type: xy
-      value: 0.08333333333333333
-      unit: degree
-      label: 5 arc-minutes
+structures:
+  - name: grid
+    dimensions:
+      - name: cell
+        type: xy
+        description: 5 arc-minute cells.
+        step: 0.08333333333333333
+        unit: degree
 ```
 
-`resolution` is for regular grids only. A table keyed to reporting units such as counties, basins,
-or H3 cells states its unit on the `type: location` dimension of its structure, and joins to a
-catalogued boundary set with `foreign_keys`:
+A Zarr or NetCDF whose `lon` and `lat` spacings differ declares `x` and `y`, each with its own
+`step`. A point table declares `x` and `y` without `step`: they are its coordinate columns. A table
+keyed to reporting units such as counties, basins, or H3 cells states its unit on the
+`type: location` dimension of its structure, and joins to a catalogued boundary set with
+`foreign_keys`:
 
 ```yaml
 structures:

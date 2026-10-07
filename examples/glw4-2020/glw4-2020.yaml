@@ -70,17 +70,18 @@ spatial:
   bbox: [-180.0, -90.0, 180.0, 90.0]
   geography: [world]
   crs: EPSG:4326
-  resolution:
-    - type: xy
-      unit: degree
-      value: 0.08333333
-      label: 5 arc-minutes (~10km at equator)
 
 temporal:
   date: "2020" # static 2020 reference year (year precision)
 
 structures:
   - name: main
+    dimensions:
+      - name: cell
+        type: xy
+        description: 5 arc-minutes (~10km at equator).
+        step: 0.08333333
+        unit: degree
     variables:
       - name: buffalo
         description: Modelled buffalo density.

@@ -82,13 +82,16 @@ occur between minor versions.
 - **Breaking:** `spatial.geometry_column` moves to `structures[].geometry_column`. A geometry column
   belongs to one table, and a structure is that table; a record can hold a geometry table beside
   attribute tables. Still encoded as `table:primary_geometry`, now per asset.
-- **Breaking:** `spatial.resolution` is grid spacing only; the `point` and `polygon` types and
-  `reference_system` are removed, and so is `cgiar-cdh:spatial_resolution` in the STAC encoding. A
-  table's reporting unit is what one row is, which its `type: location` dimension states, with the
-  boundary set or spatial index in `reference_system` and a `foreign_keys` entry to a catalogued
-  boundary record. A record is spatial when it has a footprint; a structure is spatially indexed
-  when it has a `geometry_column`, `x` and `y` coordinate dimensions (CF `axis`), or a `location`
-  dimension.
+- **Breaking:** `spatial.resolution` is removed, and so is `cgiar-cdh:spatial_resolution` in the
+  STAC encoding. The horizontal axes are dimensions, as in STAC datacube and CF: `xy` (one spacing)
+  or `x` and `y` (their own), with a numeric `step` in `unit` for a regular grid and no `step` for a
+  table's coordinate columns. `step` is therefore a duration on `temporal` and a number on the
+  horizontal axes, exactly as datacube has it. Spacing is per structure, so native variables on
+  different grids are different structures in one record. A table's reporting unit is what one row
+  is, which its `type: location` dimension states, with the boundary set or spatial index in
+  `reference_system` and a `foreign_keys` entry to a catalogued boundary record. A record is spatial
+  when it has a footprint; a structure is spatially indexed when it has a `geometry_column`,
+  horizontal axes, or a `location` dimension.
 - **Breaking:** `variables[].data_type` is a closed list: the STAC `raster:data_type` names plus
   `decimal`, `boolean`, `string`, `binary`, `date`, `time`, `datetime`, and `other` for nested
   types.

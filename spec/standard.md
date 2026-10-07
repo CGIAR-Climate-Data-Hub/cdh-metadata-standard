@@ -129,10 +129,10 @@ table schemas, and long category lists.
 Every field a record can hold is either machine-derivable or directly authored. This implies who is
 expected to provide each field.
 
-| Tier                  | Supplied by                                 | Fields                                                                                                                                                                                       |
-| --------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Machine-derivable** | Readable from the data itself               | `media_type` (assets and `file_index[]`), `file_size`, `spatial.bbox`, `spatial.crs`, `spatial.resolution`, `structures[].geometry_column`, `nodata`, `variables[].data_type`, table columns |
-| **Authored**          | A person, always - no tool can supply these | `title`, `description`, `note`, `keywords`, `resource_type`, `license`, `access`, `contact`, `citation`, `series`, units, reading guidance, caveats, and every `cdh` field                   |
+| Tier                  | Supplied by                                 | Fields                                                                                                                                                                              |
+| --------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Machine-derivable** | Readable from the data itself               | `media_type` (assets and `file_index[]`), `file_size`, `spatial.bbox`, `spatial.crs`, grid `step`, `structures[].geometry_column`, `nodata`, `variables[].data_type`, table columns |
+| **Authored**          | A person, always - no tool can supply these | `title`, `description`, `note`, `keywords`, `resource_type`, `license`, `access`, `contact`, `citation`, `series`, units, reading guidance, caveats, and every `cdh` field          |
 
 Three rules govern how the tiers interact:
 
@@ -552,12 +552,13 @@ keywords:
 ### 5.3 Spatial
 
 Required when the resource has a geospatial footprint. `spatial.geography` (named places) applies to
-any resource for broad discovery; `bbox`, `crs`, and `resolution` describe a precise footprint.
+any resource for broad discovery; `bbox` and `crs` describe a precise footprint. Grid spacing is not
+stated here: it is the `step` of a structure's horizontal axis (section 5.8).
 
 A record is spatial when it has a footprint. A structure is spatially indexed when it has a
-`geometry_column`, `type: x` and `type: y` dimensions, or a `type: location` dimension (section
-5.8): geometries, coordinate columns, or a key into a boundary set or spatial index such as admin
-units, basins, or H3 cells.
+`geometry_column`, horizontal axes (`xy`, or `x` and `y`), or a `type: location` dimension (section
+5.8): geometries, a grid or coordinate columns, or a key into a boundary set or spatial index such
+as admin units, basins, or H3 cells.
 
 #### `spatial.bbox`
 
@@ -629,23 +630,6 @@ spatial:
 - **Authoring note:** Provide `spatial.crs` when known; otherwise review may add it (see section
   4.6).
 
-#### `spatial.resolution`
-
-- **Requirement:** Conditional. Required for a regular grid.
-- **Expected value:** List of `{ type, value, unit, label }`.
-- **Rules:**
-  - `type` is required, and is one of `xy`, `x`, or `y`.
-  - **Exactly one characterization per record:** a single `xy` entry, or an `x` + `y` pair when grid
-    spacing differs.
-  - `value` + `unit` give the grid spacing and map to STAC Datacube dimension `step` + `unit`.
-    `label` is the human-readable form (e.g., `5 arc-minutes`).
-  - A representation of the same data at a different spatial resolution (e.g. polygon aggregates
-    extracted from a grid) is a **separate record** linked by `derived_from`, not a second entry
-    here. Resolution is record-level, never per asset.
-  - Tables and vector data state no spacing here. Their unit is what one row is: the structure's
-    `type: location` dimension describes it and names the boundary set or spatial index in
-    `reference_system` (section 5.8). A geometry-only file states no unit; its footprint is enough.
-
 ### 5.4 Temporal
 
 Required when the resource has temporal coverage. `temporal` records the coverage **extent only** -
@@ -699,8 +683,8 @@ values; it says nothing about the period a value represents. When values label w
 window length in the dimension's `description` (`1961` = 1961-1990). A **cyclic** label axis -
 `DJF`/`MAM`/`JJA`/`SON` - is not temporal: it repeats every year rather than running in one
 direction, so it is a domain axis named after what it varies, and how long each label covers is
-stated in its `description`. This mirrors `spatial`: the horizontal grid comes from `spatial`, and
-every other axis - time and domain - is a `dimensions[]` entry. See the
+stated in its `description`. This mirrors `spatial`, which carries the footprint while every axis,
+horizontal, vertical, time, and domain, is a `dimensions[]` entry. See the
 [data dictionary](#58-data-dictionary).
 
 > [!NOTE] Temporal values and `extent` steps use the standard Gregorian calendar. Some climate model
@@ -911,12 +895,19 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
   `{ name, type, description, values, categories, extent, reference_system, step, unit, data_type }`.
 - **Rules:**
   - `type` is either a **reserved** value or a domain axis name:
-    - `temporal` - an axis of ISO 8601 dates or instants. The only type that may carry a `step`, and
-      the only spelling that works: `time`, `date`, `datetime`, and `timestamp` are rejected rather
-      than silently read as domain axes. A record may declare several.
-    - `z` - a vertical axis: soil depth, height, or pressure level. **At most one per structure**,
-      since it is the only spatial axis a record ever declares. List its levels in `values` and give
-      it a `unit`.
+    - `temporal` - an axis of ISO 8601 dates or instants, with an ISO 8601 duration `step` when
+      regular. The only spelling that works: `time`, `date`, `datetime`, and `timestamp` are
+      rejected rather than silently read as domain axes. A structure may declare several.
+    - `xy`, or `x` and `y` - the horizontal axes, in `spatial.crs`, as STAC datacube spatial `x`/`y`
+      and CF `axis: X`/`Y`. With a numeric `step` in `unit` they are a regular grid: one `xy` entry
+      when both axes share a spacing (a GeoTIFF), or `x` and `y` with their own (a Zarr whose `lon`
+      and `lat` differ). Without `step` they are a table's coordinate columns, one row per point.
+      Always carry a `unit`; never list `values` or `extent`, since coverage is `spatial.bbox`. `x`
+      and `y` come as a pair and never beside `xy`. `lat`, `lon`, and their long forms are rejected,
+      like the `temporal` aliases. A representation of the same data at another spacing is a
+      separate record (section 4.8); native variables on different grids are different structures.
+    - `z` - a vertical axis: soil depth, height, or pressure level. **At most one per structure.**
+      List its levels in `values` and give it a `unit`.
     - `location` - a column identifying a place rather than measuring something, such as an admin,
       basin, station, or H3 cell code. It is a key, not an axis of space. It is also the reporting
       unit of a table: `description` says what one row is (`HydroBASINS level 6 basin`,
@@ -924,21 +915,15 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
       where one exists; omit it for a code the dataset defines itself. Add a `foreign_keys` entry
       when the boundary set is a catalog record. With a composite key, the finest column describes
       the unit.
-    - `x` and `y` - the coordinate columns of a table, in `spatial.crs`, as in CF `axis: X` and
-      `axis: Y`. Declared together, each with a `unit`. `lat`, `lon`, and their long forms are
-      rejected, like the `temporal` aliases. A grid never declares them: its horizontal axes come
-      from `spatial`. A record may hold a grid beside a table that has them.
     - Anything else names a domain axis after what it varies (`crop`, `technology`, `scenario`).
       Lowercase, digits, `-` and `_`.
-  - **`spatial` and `geometry` are rejected.** The horizontal lat/lon grid comes from the top-level
-    `spatial` field and is never declared here. Use `z` for a vertical axis, `x` and `y` for a
-    table's coordinate columns, and `location` for a place key.
-  - `unit` is the unit of measurement for the values, preferably UDUNITS-2 or UCUM. Give one on a
-    `z` dimension (`cm`, `m`, `hPa`) and on any numeric domain axis whose values are not
-    self-describing. It is not a substitute for `reference_system`, which names the vocabulary or
-    vertical CRS the values are coded against - a `z` dimension can carry both.
-  - **Do not declare the horizontal lat/lon grid here.** It comes from the top-level `spatial`
-    field.
+  - **`spatial` and `geometry` are rejected** as types. Use `xy` or `x`/`y` for the horizontal axes,
+    `z` for a vertical axis, and `location` for a place key.
+  - `unit` is the unit of measurement for the values, preferably UDUNITS-2 or UCUM. Required on the
+    horizontal axes (`degree`, `m`, `km`); give one on a `z` dimension (`cm`, `m`, `hPa`) and on any
+    numeric domain axis whose values are not self-describing. It is not a substitute for
+    `reference_system`, which names the vocabulary or vertical CRS the values are coded against - a
+    `z` dimension can carry both.
   - **Declare every temporal axis here** as `type: temporal`. The top-level `temporal` field carries
     only the coverage extent (start/end); all temporal cadence lives on these dimensions. A record
     may declare **several**, such as one store holding a yearly climatology beside a daily field.
@@ -952,11 +937,11 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
     temporal axis runs in one direction, so a season is a domain axis named `season`. Its `P3M` was
     never a step along an axis - it is how long each label covers - so state that in `description`
     alongside the code list in `reference_system`.
-  - `step` is the spacing between consecutive values, always an ISO 8601 duration (`P3M`, `P10Y`),
-    and valid **only on a `type: temporal` dimension**. Required with `extent`; omit it on an
-    irregular axis. It does not say how long a value lasts: 30-year windows every 10 years have
-    `step: P10Y`, with the window length in `description`. A domain axis describes its cadence in
-    prose.
+  - `step` is the spacing between consecutive values, as in STAC datacube: an ISO 8601 duration
+    (`P3M`, `P10Y`) on a `type: temporal` dimension, a number in `unit` on a horizontal axis. Valid
+    on no other type. On a temporal axis it is required with `extent` and omitted when irregular; it
+    does not say how long a value lasts: 30-year windows every 10 years have `step: P10Y`, with the
+    window length in `description`. A domain axis describes its cadence in prose.
   - `extent` is `[first, last]` on a regular temporal axis, in place of listing every value. It
     requires `step` and excludes `values`. Both strings are written at one precision (`1981`,
     `1981-01`, `1981-01-01`, or a date-time), no coarser than the step, start before end. The values
@@ -1104,8 +1089,7 @@ tables with different columns, has one per layout.
   - `geometry_column` names the geometry column of a table with embedded geometries. It is not a
     variable.
   - Every variable in a structure has every one of its dimensions. It does not promise every
-    combination of values exists. Omit `dimensions` when the variables vary only over the horizontal
-    grid.
+    combination of values exists. Omit `dimensions` when the variables have none.
   - Names are unique within a structure and MAY repeat across structures: two tables can each have a
     column named `value` with different meanings. A definition shared by several structures is
     repeated in each; YAML anchors (`&flooded` / `*flooded`) avoid retyping it.
@@ -1314,7 +1298,7 @@ Catalog navigation and version-chain relations follow from `parent` (section 4.8
 | dates (`created`, `updated`, `temporal.*`, `processing.date`) | ISO 8601 / RFC 3339                                                                                                                                                      |
 | `spatial.crs`                                                 | EPSG codes                                                                                                                                                               |
 | `spatial.geography`                                           | `vocab/geography.json` (UN M49; regions + countries)                                                                                                                     |
-| `variables[].unit`, `spatial.resolution[].unit`               | Unit of measurement, preferably UDUNITS-2 or UCUM                                                                                                                        |
+| `variables[].unit`, `dimensions[].unit`                       | Unit of measurement, preferably UDUNITS-2 or UCUM                                                                                                                        |
 | `contact[].roles[]`                                           | `licensor`, `producer`, `processor` (STAC provider roles), `point-of-contact`, `maintainer` (Contacts extension)                                                         |
 | `media_type`                                                  | IANA media types                                                                                                                                                         |
 | `resource_type`                                               | `vocab/resource_type.json`                                                                                                                                               |
