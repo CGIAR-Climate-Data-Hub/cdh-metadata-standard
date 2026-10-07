@@ -920,8 +920,9 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
       basin, station, or H3 cell code. It is a key, not an axis of space. It is also the reporting
       unit of a table: `description` says what one row is (`HydroBASINS level 6 basin`,
       `H3 cell at resolution 7`) and `reference_system` names the boundary set or index, as a URI
-      where one exists. Add a `foreign_keys` entry when the boundary set is a catalog record. With a
-      composite key, the finest column describes the unit.
+      where one exists; omit it for a code the dataset defines itself. Add a `foreign_keys` entry
+      when the boundary set is a catalog record. With a composite key, the finest column describes
+      the unit.
     - Anything else names a domain axis after what it varies (`crop`, `technology`, `scenario`).
       Lowercase, digits, `-` and `_`.
   - **`spatial` and `geometry` are rejected.** The horizontal lat/lon grid comes from the top-level
@@ -1308,7 +1309,7 @@ Catalog navigation and version-chain relations follow from `parent` (section 4.8
 | dates (`created`, `updated`, `temporal.*`, `processing.date`) | ISO 8601 / RFC 3339                                                                                                                                                      |
 | `spatial.crs`                                                 | EPSG codes                                                                                                                                                               |
 | `spatial.geography`                                           | `vocab/geography.json` (UN M49; regions + countries)                                                                                                                     |
-| `variables[].unit`, `spatial.resolution[].unit`               | Unit of measurement, preferably UDUNITS-2 or UCUM (not strictly validated)                                                                                               |
+| `variables[].unit`, `spatial.resolution[].unit`               | Unit of measurement, preferably UDUNITS-2 or UCUM                                                                                                                        |
 | `contact[].roles[]`                                           | `licensor`, `producer`, `processor` (STAC provider roles), `point-of-contact`, `maintainer` (Contacts extension)                                                         |
 | `media_type`                                                  | IANA media types                                                                                                                                                         |
 | `resource_type`                                               | `vocab/resource_type.json`                                                                                                                                               |

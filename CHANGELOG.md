@@ -22,8 +22,8 @@ occur between minor versions.
   `cube:variables`.
 - Added `categories` to `variables[]` and `dimensions[]`: coded values as
   `{ value, label, description? }`, after Frictionless `categories`. On a variable it lists the
-  codes it can contain; on a dimension it labels the axis values, in place of `values`. Raster
-  variables encode as STAC `classification:classes`.
+  codes it can contain; on a dimension it labels the axis values, in place of `values`. Integer
+  categories on raster variables encode as STAC `classification:classes`.
 - `dimensions[]` take `data_type`, shared with `variables[]`: the stored type of a column or
   coordinate, so an unlisted key column such as an admin code stored as `"001"` is typed.
 - Added `extent` to `type: temporal` dimensions: `[first, last]` plus `step` in place of listing

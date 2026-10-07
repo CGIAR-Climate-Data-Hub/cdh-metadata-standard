@@ -377,6 +377,10 @@ structures:
         type: temporal
         extent: ["2020-02-01", "2020-02-29"]
         step: P1D
+    variables:
+      - name: rainfall
+        description: Daily rainfall.
+        unit: mm
 data:
   - name: daily-rainfall
     structures: [main]
@@ -600,6 +604,10 @@ structures:
         type: temporal
         description: Daily time step.
         step: P1D
+    variables:
+      - name: precipitation
+        description: Daily precipitation.
+        unit: mm
 ```
 
 ### Variables and dimensions

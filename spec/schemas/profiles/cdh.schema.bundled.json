@@ -1883,16 +1883,9 @@
                     "description": "Unit of the grid spacing, preferably compliant with UDUNITS-2 or UCUM (degree, m, km)."
                   },
                   "value": {
-                    "description": "Grid spacing in unit.",
-                    "anyOf": [
-                      {
-                        "type": "number"
-                      },
-                      {
-                        "minLength": 1,
-                        "type": "string"
-                      }
-                    ]
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "Grid spacing in unit."
                   }
                 },
                 "type": "object"
@@ -2553,7 +2546,7 @@
           }
         },
         {
-          "$comment": "{variable} expands over variable names, so a template using it needs declared variables.",
+          "$comment": "{variable} expands over variable names. data[].structures already guarantees them when structures exist; this only rejects a template in a record with no structures at all.",
           "if": {
             "required": ["data"],
             "properties": {
