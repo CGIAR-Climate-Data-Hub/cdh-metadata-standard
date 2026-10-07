@@ -694,7 +694,7 @@ temporal cadence is not stored here (see "Temporal cadence" below).
 
 Temporal cadence (daily, monthly, projection periods, ...) is **not** a `temporal` field. Express it
 as a `type: temporal` dimension (section 5.8), with an ISO 8601 `step` - one dimension per temporal
-axis, and a record may have several (files split by year, each holding a day column).
+axis, and a record may have several (a yearly climatology beside a daily field).
 
 A temporal dimension's values are ISO 8601 dates or instants. A binned axis lists each bin's start
 and gives its length as the `step`, so 20-year projection windows are `values: ["2021", "2041"]`
@@ -781,14 +781,14 @@ extension fields, not in `keywords` (see section 4.4).
   reserved `{variable}` token for files split per variable (`variable` is therefore not allowed as a
   dimension name). `{variable}` expands over the variables the entry holds. With `structures[]`,
   each other token must be a dimension of every structure the entry holds. The entry describes one
-  file per combination of the tokens' values. Values are substituted verbatim; every combination
+  file per distinct path the template renders. Values are substituted verbatim; every rendered path
   MUST exist; when some do not, list the files in a `file_index` instead. A token on a
   `type: temporal` dimension may carry a strftime format, `{date:%Y.%m.%d}`, when the file name
   spells the date differently from the ISO 8601 value. Only `%Y` (four-digit year), `%m`, and `%d`
   (two-digit month and day) are allowed; a token may repeat with different formats
   (`year={date:%Y}/{date:%Y%m%d}.tif`). A format may not be finer than the axis values are written
-  (a year axis takes only `%Y`). The complete generated path must differ for every combination of
-  values; one fragment such as `{date:%Y}` may repeat across many files. Names the directives cannot
+  (a year axis takes only `%Y`). A coarser format splits an axis into files: on a daily axis,
+  `{date:%Y}.parquet` is one file per year, holding that year's days. Names the directives cannot
   spell use `file_index`. Omit it for a single file. On a templated entry, `file_size` describes
   **one file**, not the set; where slices differ materially in size, omit it rather than averaging.
   See the [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
@@ -931,8 +931,9 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
     field.
   - **Declare every temporal axis here** as `type: temporal` with a `step`. The top-level `temporal`
     field carries only the coverage extent (start/end); all temporal cadence lives on these
-    dimensions. A record may declare **several** - files split by year with a day column inside each
-    is two temporal axes, and so is one store holding a yearly climatology beside a daily field.
+    dimensions. A record may declare **several**, such as one store holding a yearly climatology
+    beside a daily field. Files split by year are not a second axis: yearly files of daily data have
+    one daily axis, split with a `{date:%Y}` token.
   - **A temporal dimension's `values` are ISO 8601 dates or instants, written as strings.** Bare
     numbers (`2030`) and range labels (`2020-2040`) are rejected. A **binned** axis lists each bin's
     start and states its length in `step`, exactly as a monthly axis lists month starts: a 30-year
@@ -1041,19 +1042,21 @@ variables:
     unit: K
 ```
 
-Two axes really are temporal when both carry dates. Files split by year, each holding a day column:
+Files split by year do not add a second temporal axis. Daily data in one file per year is one daily
+axis, split by a coarser token:
 
 ```yaml
 dimensions:
-  - name: year
+  - name: date
     type: temporal
-    description: Year each file covers; the href_template token.
-    values: ["2020", "2021", "2022"]
-    step: P1Y
-  - name: day
-    type: temporal
-    description: Day of observation within each file. High cardinality, so values are not listed.
+    description: Day of observation.
+    extent: ["2020-01-01", "2022-12-31"]
     step: P1D
+data:
+  - name: daily
+    locations:
+      - url: https://example.org/daily/
+    href_template: "{date:%Y}.parquet" # one file per year
 ```
 
 #### `structures[]`

@@ -339,7 +339,9 @@ Rules:
   labels, not formats: declare them as a domain axis with the labels in `values`.
 - Every token dimension must list `values`, or for a regular temporal axis give `extent` and `step`
   (`extent: ["1981", "2025"]`, `step: P1Y`) instead of writing out every year.
-- The template assumes every value combination exists.
+- Every path the template renders must exist.
+- A coarser format splits an axis into files: on a daily axis, `{date:%Y}.parquet` is one file per
+  year holding that year's days. Do not declare a separate `year` axis for this.
 - A templated entry shares one `description`, `nodata`, `media_type`, and `file_size` across every
   file; split into separate `data[]` entries (e.g. one per variable) when those differ. `file_size`
   is the size of a single file, not the set - omit it where slices differ materially in size rather
@@ -350,9 +352,9 @@ bands of a multi-band COG) stay out of it.
 
 #### Irregular or very large file sets with `file_index`
 
-A template assumes two things: every combination of token values exists, and the file name can be
-computed from the coordinates. When either is false, or there are thousands of files, point at an
-index instead. `file_index` is a list of indexes of the same files, each with a `format`:
+A template assumes two things: every path it renders exists, and the file name can be computed from
+the coordinates. When either is false, or there are thousands of files, point at an index instead.
+`file_index` is a list of indexes of the same files, each with a `format`:
 
 - `stac-geoparquet`: STAC items in Parquet. Preferred for large tiled products; STAC clients,
   DuckDB, and GDAL open it.

@@ -287,13 +287,16 @@ A `data[]` entry with `href_template` emits STAC Items whose assets are the expa
 - For each combination, `locations[0]` + filled template is the canonical asset `href`. A temporal
   token with a format (`{date:%Y.%m.%d}`) is rendered with strftime in the href only; `datetime`,
   the Item `id`, and `cgiar-cdh:partition` carry the ISO value. A format finer than the axis
-  precision, or one that yields duplicate hrefs, stops publication with a diagnostic; never invent a
-  month or day. Additional locations become Alternate Assets entries.
+  precision stops publication with a diagnostic; never invent a month or day. A coarser format
+  groups several values into one href. Additional locations become Alternate Assets entries.
 - How the combinations group into Items depends on whether a token is a time axis:
-  - **A `{token}` resolving to a `type: temporal` dimension** -> one Item per token combination, its
-    `datetime` taken from that token's value. A STAC Item is the unit time-series tooling indexes
-    on, so a time axis has to be Items rather than assets for Open Data Cube and similar readers to
-    see a series at all. The token values appear in the Item `id`.
+  - **A `{token}` resolving to a `type: temporal` dimension** -> one Item per distinct href, its
+    `datetime` taken from that token's value. When a coarser format groups several values into one
+    href, `start_datetime` / `end_datetime` span them instead, `datetime` is null, and the `id`
+    carries the value at the precision the format spells (`2020` for `{date:%Y}`). A STAC Item is
+    the unit time-series tooling indexes on, so a time axis has to be Items rather than assets for
+    Open Data Cube and similar readers to see a series at all. The token values appear in the Item
+    `id`.
   - **No temporal token** -> one Item holding every expanded file as an asset, spanning the record's
     temporal extent via `start_datetime` / `end_datetime`. Splitting on a domain axis instead would
     scatter one dataset across Items that differ in no way a client can order. The `id` names the
