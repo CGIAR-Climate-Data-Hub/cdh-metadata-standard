@@ -471,17 +471,6 @@
       "minLength": 1,
       "type": "string"
     },
-    "numberOrString": {
-      "anyOf": [
-        {
-          "type": "number"
-        },
-        {
-          "minLength": 1,
-          "type": "string"
-        }
-      ]
-    },
     "dataType": {
       "description": "Storage type of a column, band, or array. Numeric names follow STAC raster:data_type; the rest cover table columns. other is for nested types (list, map, struct).",
       "enum": [

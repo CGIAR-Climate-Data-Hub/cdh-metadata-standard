@@ -964,7 +964,6 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
     source stores years as integers.
   - `name` MUST be unique across `dimensions[]` and `variables[]` together within a structure: they
     share one namespace. A name may repeat across structures.
-  - Do not add custom fields such as `value_definitions` to `dimensions[]`.
 
 #### `variables[]`
 
