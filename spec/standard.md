@@ -975,8 +975,8 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
     `t ha-1`, `K`, `kg m-2 s-1`, `{head}/km2`) rather than strictly validated. Required for
     measurements. Use `1` for dimensionless quantities; omit for text or code columns.
   - `name` is the variable, column, or band name as stored in the data, so it matches the files and
-    `{variable}` tokens. Do not rename data to fit a standard; when a CF standard name applies, give
-    it in `description` (e.g., "Near-surface air temperature (CF: `air_temperature`)").
+    `{variable}` tokens. When a CF standard name applies, give it in `description` (e.g.,
+    "Near-surface air temperature (CF: `air_temperature`)").
   - `data_type` is one of a closed list. Numeric types follow STAC `raster:data_type`: `int8`,
     `int16`, `int32`, `int64`, `uint8`, `uint16`, `uint32`, `uint64`, `float16`, `float32`,
     `float64`, and the complex `cint16`, `cint32`, `cfloat32`, `cfloat64`. Table columns may also be
