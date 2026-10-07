@@ -69,7 +69,7 @@ temporal:
   start_date: "2030"
   end_date: "2050"
 
-# lat/lon come from spatial; the projection horizon and domain axes are declared here.
+# Every axis is declared here: the grid, the projection horizon, and the domain axes.
 structures:
   - name: main
     dimensions:
