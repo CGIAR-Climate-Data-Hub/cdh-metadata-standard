@@ -1,12 +1,18 @@
 # A format without a directive renders every value to the same literal.
 data:
   - name: primary
+    structures: [main]
     locations:
       - url: https://example.org/data/
     href_template: "ptot_{year:foo}.tif"
-dimensions:
-  - name: year
-    type: temporal
-    description: Year.
-    step: P1Y
-    extent: ["1981", "2025"]
+structures:
+  - name: main
+    dimensions:
+      - name: year
+        type: temporal
+        description: Year.
+        step: P1Y
+        extent: ["1981", "2025"]
+    variables:
+      - name: value
+        description: Placeholder.

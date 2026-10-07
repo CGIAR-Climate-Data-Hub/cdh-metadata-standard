@@ -1,5 +1,6 @@
 # With structures[], every asset lists the structures it holds; primary lists none.
-variables:
-  - { name: flooded, description: Flood occurrence. }
 structures:
-  - { name: static, dimensions: [], variables: [flooded] }
+  - name: static
+    dimensions: []
+    variables:
+      - { name: flooded, description: Flood occurrence. }

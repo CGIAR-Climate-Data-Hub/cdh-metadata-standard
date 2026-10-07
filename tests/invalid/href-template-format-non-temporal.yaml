@@ -1,11 +1,17 @@
 # A format is only allowed on a type: temporal token.
 data:
   - name: cogs
+    structures: [main]
     locations:
       - url: https://example.org/cogs/
     href_template: "file_{crop:%Y}.tif"
-dimensions:
-  - name: crop
-    type: crop
-    description: Crop code.
-    values: [maiz, rice]
+structures:
+  - name: main
+    dimensions:
+      - name: crop
+        type: crop
+        description: Crop code.
+        values: [maiz, rice]
+    variables:
+      - name: value
+        description: Placeholder.

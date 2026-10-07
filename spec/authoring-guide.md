@@ -276,10 +276,11 @@ provided if applicable, such as if the same file is hosted on multiple storage p
 different formats (csv, parquet) or services (such as an API or GEE asset) should be listed as
 separate `data` entries. For a service, see [Data served by an API](#data-served-by-an-api).
 
-By default every asset holds every declared dimension and variable. When assets differ, such as
-monthly and seasonal file sets or tables with different columns, declare
-[`structures`](standard.md#structures) and name each asset's structures in `data[].structures`.
-Verify what each asset holds before publication, either from the source or with an inspection tool.
+Dimensions and variables live in [`structures`](standard.md#structures), and each asset names the
+structures it holds in `data[].structures`. One layout is one structure. When assets differ, such as
+monthly and seasonal file sets or tables with different columns, each layout is its own structure
+with its own dimensions and variables. Verify what each asset holds before publication, either from
+the source or with an inspection tool.
 
 Every asset needs a `name`, and names must be unique across both `data` and `additional_assets`. Use
 `nodata` when an asset has a sentinel value for missing or invalid observations. When `processing`
@@ -369,13 +370,16 @@ the coordinates. When either is false, or there are thousands of files, point at
 Any one index is enough. List the one people should open first.
 
 ```yaml
-dimensions:
-  - name: time
-    type: temporal
-    extent: ["2020-02-01", "2020-02-29"]
-    step: P1D
+structures:
+  - name: main
+    dimensions:
+      - name: time
+        type: temporal
+        extent: ["2020-02-01", "2020-02-29"]
+        step: P1D
 data:
   - name: daily-rainfall
+    structures: [main]
     file_index:
       - format: cdh-inventory
         locations:
@@ -585,11 +589,13 @@ dimension, with an ISO 8601 `step` for regular spacing (see
 temporal:
   start_date: "1981-01-01"
   end_date: "2020-12-31"
-dimensions:
-  - name: time
-    type: temporal
-    description: Daily time step.
-    step: P1D
+structures:
+  - name: main
+    dimensions:
+      - name: time
+        type: temporal
+        description: Daily time step.
+        step: P1D
 ```
 
 ### Variables and dimensions
@@ -598,15 +604,17 @@ Use `variables` when the resource has measurements, bands, columns, indicators, 
 values.
 
 ```yaml
-variables:
-  - name: heat_stress_days
-    description: >
-      Number of days during the growing period when daily maximum temperature exceeded the heat
-      stress threshold. Higher values indicate greater heat hazard.
-    data_type: float32
-    unit: day
-    note: >
-      This indicator describes temperature stress only and does not represent full crop impact.
+structures:
+  - name: main
+    variables:
+      - name: heat_stress_days
+        description: >
+          Number of days during the growing period when daily maximum temperature exceeded the heat
+          stress threshold. Higher values indicate greater heat hazard.
+        data_type: float32
+        unit: day
+        note: >
+          This indicator describes temperature stress only and does not represent full crop impact.
 ```
 
 For each variable:
@@ -633,14 +641,16 @@ Give a categorical or classified variable its `categories`: each coded value wit
 `description` when the label is not enough.
 
 ```yaml
-variables:
-  - name: land_cover
-    data_type: uint8
-    categories:
-      - value: 1
-        label: Cropland
-      - value: 2
-        label: Forest
+structures:
+  - name: main
+    variables:
+      - name: land_cover
+        data_type: uint8
+        categories:
+          - value: 1
+            label: Cropland
+          - value: 2
+            label: Forest
 ```
 
 For long lists, link a sidecar file instead (see [additional assets](#additional-assets)).

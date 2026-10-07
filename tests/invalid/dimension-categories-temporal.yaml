@@ -1,7 +1,12 @@
 # A temporal axis is ISO dates, not labelled codes.
-dimensions:
-  - name: year
-    type: temporal
-    description: Year.
-    categories:
-      - { value: "2020", label: Twenty twenty }
+structures:
+  - name: main
+    dimensions:
+      - name: year
+        type: temporal
+        description: Year.
+        categories:
+          - { value: "2020", label: Twenty twenty }
+    variables:
+      - name: value
+        description: Placeholder.

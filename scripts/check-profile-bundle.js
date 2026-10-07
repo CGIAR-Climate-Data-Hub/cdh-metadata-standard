@@ -59,13 +59,19 @@ for (const test of cases) {
 
 // Data dictionary fields are core: valid with only the cdh extension, still checked.
 const crop = { name: "crop", type: "crop", description: "Crop code axis." };
-if (!validate({ ...base, dimensions: [crop] })) {
+const yld = { name: "yield", description: "Crop yield." };
+const withDictionary = (dimensions) => ({
+  ...base,
+  structures: [{ name: "main", dimensions, variables: [yld] }],
+  data: base.data.map((asset) => ({ ...asset, structures: ["main"] })),
+});
+if (!validate(withDictionary([crop]))) {
   failures += 1;
-  console.error("FAIL data dictionary: bundled profile rejected core dimensions[]");
+  console.error("FAIL data dictionary: bundled profile rejected core structures[]");
   for (const err of validate.errors ?? [])
     console.error(`  ${err.instancePath || "/"}: ${err.message}`);
 }
-if (validate({ ...base, dimensions: [{ name: "crop", type: "crop" }] })) {
+if (validate(withDictionary([{ name: "crop", type: "crop" }]))) {
   failures += 1;
   console.error("FAIL data dictionary: bundled profile allowed a dimension without description");
 }

@@ -1,11 +1,10 @@
 # data[].structures must name a declared structures[] entry; "adm1" is not declared.
-variables:
-  - name: nam_0
-    description: Country name.
 structures:
   - name: adm0
     dimensions: []
-    variables: [nam_0]
+    variables:
+      - name: nam_0
+        description: Country name.
 data:
   - name: adm0
     structures: [adm1]

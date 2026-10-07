@@ -93,47 +93,47 @@ temporal:
   end_date: "2050"
 
 # The same axes as the grid, minus lat/lon: here they are table columns.
-dimensions:
-  - name: adm0_code
-    type: location
-    description: Example country code of the reporting unit.
-  - name: adm2_code
-    type: location
-    description: Example admin-2 code of the reporting unit.
-  - name: time
-    type: temporal
-    description: Projection horizon (reference year).
-    values: ["2030", "2050"] # ISO 8601 strings; a temporal axis takes no bare numbers
-    step: P20Y
-  - name: crop
-    type: crop
-    description: Example crop code.
-    reference_system: https://example.org/vocab/crop-codes
-    values: [maiz, rice, whea]
-  - name: scenario
-    type: scenario
-    description: Emissions scenario label.
-    reference_system: https://example.org/vocab/scenarios
-    values: [ssp245, ssp585]
-
-variables:
-  - name: suitability_index_mean
-    description: Area-weighted mean of the gridded suitability index over the reporting unit.
-    data_type: float32
-    unit: "1"
-    note: Dimensionless index; do not sum across units.
-  - name: cells_counted
-    description: Number of grid cells with data inside the reporting unit.
-    data_type: int32
-    unit: "1"
-    note: Low counts mean the mean rests on very few cells.
-
-foreign_keys:
-  - fields: [adm0_code, adm2_code]
-    reference:
-      resource: https://example.org/data/example-farland-admin2-boundaries
-      asset: boundaries
-      fields: [ADM0_CODE, ADM2_CODE]
+structures:
+  - name: main
+    dimensions:
+      - name: adm0_code
+        type: location
+        description: Example country code of the reporting unit.
+      - name: adm2_code
+        type: location
+        description: Example admin-2 code of the reporting unit.
+      - name: time
+        type: temporal
+        description: Projection horizon (reference year).
+        values: ["2030", "2050"] # ISO 8601 strings; a temporal axis takes no bare numbers
+        step: P20Y
+      - name: crop
+        type: crop
+        description: Example crop code.
+        reference_system: https://example.org/vocab/crop-codes
+        values: [maiz, rice, whea]
+      - name: scenario
+        type: scenario
+        description: Emissions scenario label.
+        reference_system: https://example.org/vocab/scenarios
+        values: [ssp245, ssp585]
+    variables:
+      - name: suitability_index_mean
+        description: Area-weighted mean of the gridded suitability index over the reporting unit.
+        data_type: float32
+        unit: "1"
+        note: Dimensionless index; do not sum across units.
+      - name: cells_counted
+        description: Number of grid cells with data inside the reporting unit.
+        data_type: int32
+        unit: "1"
+        note: Low counts mean the mean rests on very few cells.
+    foreign_keys:
+      - fields: [adm0_code, adm2_code]
+        reference:
+          resource: https://example.org/data/example-farland-admin2-boundaries
+          asset: boundaries
+          fields: [ADM0_CODE, ADM2_CODE]
 
 cdh:
   domain: [agricultural-production, adaptation]
@@ -169,6 +169,7 @@ processing:
 
 data:
   - name: table
+    structures: [main]
     description: Admin-2 suitability aggregates, one Parquet table.
     locations:
       - url: https://example.org/data/example-crop-suitability/v2/admin2/suitability_admin2.parquet

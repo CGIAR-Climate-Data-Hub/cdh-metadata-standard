@@ -1,12 +1,17 @@
 # cube:dimensions is keyed by name; the second `period` would overwrite the first.
-dimensions:
-  - name: period
-    type: temporal
-    description: 20-year projection window.
-    values: ["2021", "2041"]
-    step: P20Y
-  - name: period
-    type: temporal
-    description: Year within each window.
-    values: ["2021", "2022"]
-    step: P1Y
+structures:
+  - name: main
+    dimensions:
+      - name: period
+        type: temporal
+        description: 20-year projection window.
+        values: ["2021", "2041"]
+        step: P20Y
+      - name: period
+        type: temporal
+        description: Year within each window.
+        values: ["2021", "2022"]
+        step: P1Y
+    variables:
+      - name: value
+        description: Placeholder.

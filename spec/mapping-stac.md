@@ -131,13 +131,12 @@ Resolution placement, in order of preference:
 
 Array/grid data uses Datacube by default; tabular data uses Table.
 
-- `dimensions[]` -> `cube:dimensions`
-- `variables[]` -> `cube:variables`
-- `structures[]` -> asset-level `cube:dimensions` and `cube:variables`
+- `structures[].dimensions[]` -> asset-level `cube:dimensions`
+- `structures[].variables[]` -> asset-level `cube:variables`
 
-Each `cube:variables` entry's `dimensions` comes from the structure that holds the variable, or
-every declared dimension when the record has no `structures[]`. An asset with `data[].structures`
-carries its own `cube:dimensions` and `cube:variables`, listing only what its structures hold.
+Each asset carries its own `cube:dimensions` and `cube:variables`, merged from the structures it
+holds; a dimension name shared by two of them is written once. Each `cube:variables` entry's
+`dimensions` are those of its structure.
 
 Each `dimensions[]` entry becomes a `cube:dimensions` member. A `type: temporal` dimension
 serializes as a temporal cube dimension, carrying its `step` (an ISO 8601 duration) as
@@ -183,9 +182,10 @@ second is a shape CDH does not emit, and the extension forbids both as custom ty
   with its `description` and, when given, its `data_type` as `type`; `decimal`, `boolean`, `string`,
   `binary`, `date`, `time`, and `datetime` are table-only.
 - Tabular data uses Table Extension `table:columns`; `spatial.geometry_column` maps to
-  `table:primary_geometry`. Each `foreign_keys[]` entry maps to `cgiar-cdh:foreign_keys` on every
-  asset that holds its `fields`, in the same shape: `reference.resource` becomes `reference.href`
-  (an id resolves to that record's URL) and `reference.asset` stays the target's asset key.
+  `table:primary_geometry`. Each `foreign_keys[]` entry, top-level or on a structure, maps to
+  `cgiar-cdh:foreign_keys` on every asset that holds its dictionary, in the same shape:
+  `reference.resource` becomes `reference.href` (an id resolves to that record's URL) and
+  `reference.asset` stays the target's asset key.
 
 Integer `variables[].categories` on raster variables map to Classification Extension
 `classification:classes` on the corresponding band, or the asset for a single-band raster: `value`

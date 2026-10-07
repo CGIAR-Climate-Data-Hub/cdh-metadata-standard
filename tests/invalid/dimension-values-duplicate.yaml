@@ -1,6 +1,11 @@
 # Each value appears once along an axis.
-dimensions:
-  - name: crop
-    type: crop
-    description: Crop modelled.
-    values: [maize, maize]
+structures:
+  - name: main
+    dimensions:
+      - name: crop
+        type: crop
+        description: Crop modelled.
+        values: [maize, maize]
+    variables:
+      - name: value
+        description: Placeholder.

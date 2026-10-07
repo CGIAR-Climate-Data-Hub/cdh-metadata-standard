@@ -1,7 +1,12 @@
 # A season is cyclic, not temporal: DJF is not an ISO 8601 date.
-dimensions:
-  - name: season
-    type: temporal
-    description: Meteorological season.
-    values: [DJF, MAM, JJA, SON]
-    step: P3M
+structures:
+  - name: main
+    dimensions:
+      - name: season
+        type: temporal
+        description: Meteorological season.
+        values: [DJF, MAM, JJA, SON]
+        step: P3M
+    variables:
+      - name: value
+        description: Placeholder.

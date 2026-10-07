@@ -49,62 +49,79 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
     typeof s === "string" ? ({ 4: "year", 7: "month", 10: "day" }[s.length] ?? "time") : undefined;
   const stepUnit = (step) =>
     /T/.test(step) ? "time" : /[DW]/.test(step) ? "day" : /M/.test(step) ? "month" : "year";
-  const dims = new Map();
-  list(doc?.dimensions).forEach((d, i) => {
-    const extent = list(d?.extent);
-    const temporal = d?.type === "temporal";
-    const unit = temporal ? unitOf(extent[0] ?? list(d?.values)[0]) : undefined;
-    if (unit && extent.length === 2) {
-      if (typeof d?.step === "string" && UNITS.indexOf(stepUnit(d.step)) > UNITS.indexOf(unit)) {
-        out.push(`/dimensions/${i}/extent: written as ${unit}, coarser than step ${d.step}`);
-      } else if (Date.parse(extent[0]) > Date.parse(extent[1])) {
-        out.push(`/dimensions/${i}/extent: start ${extent[0]} is after end ${extent[1]}`);
-      }
-    }
-    dims.set(d?.name, {
-      count: list(d?.values).length + list(d?.categories).length + extent.length,
-      temporal,
-      unit,
-    });
-  });
-  const varNames = new Set(list(doc?.variables).map((v) => v?.name));
-  // A coded value has one meaning; 1 and "1" are the same code.
-  for (const field of ["dimensions", "variables"]) {
-    list(doc?.[field]).forEach((v, i) => {
-      const seen = new Set();
-      list(v?.categories).forEach((c, k) => {
-        const key = String(c?.value);
-        if (seen.has(key)) {
-          out.push(`/${field}/${i}/categories/${k}/value: duplicate value "${key}"`);
+
+  // Each structure is one data dictionary: dimensions[], variables[], and
+  // foreign_keys[]. Names are unique within a structure (its columns and
+  // template tokens) and may repeat across structures.
+  function checkStructure(dict, path) {
+    const dims = new Map();
+    list(dict?.dimensions).forEach((d, i) => {
+      const extent = list(d?.extent);
+      const temporal = d?.type === "temporal";
+      const unit = temporal ? unitOf(extent[0] ?? list(d?.values)[0]) : undefined;
+      if (unit && extent.length === 2) {
+        if (typeof d?.step === "string" && UNITS.indexOf(stepUnit(d.step)) > UNITS.indexOf(unit)) {
+          out.push(
+            `${path}/dimensions/${i}/extent: written as ${unit}, coarser than step ${d.step}`,
+          );
+        } else if (Date.parse(extent[0]) > Date.parse(extent[1])) {
+          out.push(`${path}/dimensions/${i}/extent: start ${extent[0]} is after end ${extent[1]}`);
         }
-        seen.add(key);
+      }
+      dims.set(d?.name, {
+        count: list(d?.values).length + list(d?.categories).length + extent.length,
+        temporal,
+        unit,
       });
     });
+    // A coded value has one meaning; 1 and "1" are the same code.
+    const names = new Set();
+    for (const field of ["dimensions", "variables"]) {
+      list(dict?.[field]).forEach((v, i) => {
+        const seen = new Set();
+        list(v?.categories).forEach((c, k) => {
+          const key = String(c?.value);
+          if (seen.has(key)) {
+            out.push(`${path}/${field}/${i}/categories/${k}/value: duplicate value "${key}"`);
+          }
+          seen.add(key);
+        });
+        if (typeof v?.name !== "string") return;
+        if (names.has(v.name)) {
+          out.push(
+            `${path}/${field}/${i}/name: duplicate name "${v.name}" - dimensions[] and variables[] share one namespace`,
+          );
+        }
+        names.add(v.name);
+      });
+    }
+    list(dict?.foreign_keys).forEach((fk, i) => {
+      const left = list(fk?.fields);
+      const right = list(fk?.reference?.fields);
+      if (left.length && right.length && left.length !== right.length) {
+        out.push(
+          `${path}/foreign_keys/${i}: fields (${left.length}) and reference.fields (${right.length}) must have the same length`,
+        );
+      }
+      left.forEach((f, k) => {
+        if (typeof f === "string" && !names.has(f)) {
+          out.push(
+            `${path}/foreign_keys/${i}/fields/${k}: "${f}" does not match any declared dimensions[]/variables[] name`,
+          );
+        }
+      });
+    });
+    return { dims, variables: list(dict?.variables).map((v) => v?.name) };
   }
-  // Structures name declared dimensions and variables. With structures, every
-  // variable sits in one and every asset lists the structures it holds.
+
   const structures = new Map();
   list(doc?.structures).forEach((s, i) => {
+    const dict = checkStructure(s, `/structures/${i}`);
     if (typeof s?.name !== "string") return;
     if (structures.has(s.name)) out.push(`/structures/${i}/name: duplicate name "${s.name}"`);
-    structures.set(s.name, s);
-    list(s?.dimensions).forEach((d, k) => {
-      if (!dims.has(d)) {
-        out.push(`/structures/${i}/dimensions/${k}: "${d}" does not match any dimensions[].name`);
-      }
-    });
-    list(s?.variables).forEach((v, k) => {
-      if (!varNames.has(v)) {
-        out.push(`/structures/${i}/variables/${k}: "${v}" does not match any variables[].name`);
-      }
-    });
+    structures.set(s.name, { name: s.name, ...dict });
   });
-  const placed = new Set([...structures.values()].flatMap((s) => list(s?.variables)));
-  list(doc?.variables).forEach((v, i) => {
-    if (structures.size > 0 && typeof v?.name === "string" && !placed.has(v.name)) {
-      out.push(`/variables/${i}: "${v.name}" is not in any structures[]`);
-    }
-  });
+
   // The structures each asset holds, resolved once for every check that needs them.
   const held = list(doc?.data).map((asset, i) => {
     // The schema requires the list whenever the record declares structures[].
@@ -118,7 +135,7 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
         return;
       }
       found.push(s);
-      for (const v of list(s.variables)) {
+      for (const v of s.variables) {
         if (seen.has(v)) {
           out.push(
             `/data/${i}: variable "${v}" is in structures "${seen.get(v)}" and "${name}" - an asset holds each variable in one structure`,
@@ -136,8 +153,10 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
     if (typeof tpl !== "string" || tpl === "") return;
     // {token} or {token:strftime}; the spec spells a temporal value the way the file name does.
     for (const [, token, spec] of tpl.matchAll(/\{([^}:]+)(?::([^}]*))?\}/g)) {
-      const dim = dims.get(token);
-      // The schema checks token syntax and requires variables[] for {variable}.
+      // A template assumes every combination exists, so each held structure needs the token.
+      const missing = held[i].filter((s) => !s.dims.has(token));
+      const dim = held[i].find((s) => s.dims.has(token))?.dims.get(token);
+      // The schema checks token syntax and requires variables for {variable}.
       if (token === "variable") {
         // nothing to resolve
       } else if (!dim) {
@@ -147,13 +166,10 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
           `/data/${i}/href_template: dimension "${token}" must list its values, categories, or extent`,
         );
       } else {
-        // A template assumes every combination exists, so each held structure needs the token.
-        for (const s of held[i]) {
-          if (!list(s.dimensions).includes(token)) {
-            out.push(
-              `/data/${i}/href_template: token {${token}} is not a dimension of structure "${s.name}"`,
-            );
-          }
+        for (const s of missing) {
+          out.push(
+            `/data/${i}/href_template: token {${token}} is not a dimension of structure "${s.name}"`,
+          );
         }
       }
       if (spec === undefined) continue;
@@ -193,24 +209,6 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       }
     }
   });
-  // dimensions[] and variables[] share one namespace: they are the columns of
-  // one table and the tokens href_template resolves, so a name must be unique
-  // across both.
-  const declaredNames = new Set();
-  for (const [field, entries] of [
-    ["dimensions", doc?.dimensions],
-    ["variables", doc?.variables],
-  ]) {
-    list(entries).forEach((entry, i) => {
-      if (typeof entry?.name !== "string") return;
-      if (declaredNames.has(entry.name)) {
-        out.push(
-          `/${field}/${i}/name: duplicate name "${entry.name}" - dimensions[] and variables[] share one namespace`,
-        );
-      }
-      declaredNames.add(entry.name);
-    });
-  }
   const assetNames = new Set();
   for (const [field, assets] of [
     ["data", doc?.data],
@@ -226,29 +224,5 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
       assetNames.add(asset.name);
     });
   }
-  list(doc?.foreign_keys).forEach((fk, i) => {
-    const left = list(fk?.fields);
-    const right = list(fk?.reference?.fields);
-    if (left.length && right.length && left.length !== right.length) {
-      out.push(
-        `/foreign_keys/${i}: fields (${left.length}) and reference.fields (${right.length}) must have the same length`,
-      );
-    }
-    left.forEach((f, k) => {
-      if (typeof f === "string" && !declaredNames.has(f)) {
-        out.push(
-          `/foreign_keys/${i}/fields/${k}: "${f}" does not match any declared dimensions[]/variables[] name`,
-        );
-      }
-    });
-    // A key's columns must sit together in one asset, or no asset carries the key.
-    const together = held.some((ss) => {
-      const cols = new Set(ss.flatMap((s) => [...list(s.dimensions), ...list(s.variables)]));
-      return left.every((f) => cols.has(f));
-    });
-    if (structures.size > 0 && left.every((f) => declaredNames.has(f)) && !together) {
-      out.push(`/foreign_keys/${i}/fields: no data[] asset holds all of [${left.join(", ")}]`);
-    }
-  });
   return out;
 }

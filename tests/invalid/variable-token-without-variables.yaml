@@ -1,4 +1,4 @@
-# {variable} expands over variables[].name, but none are declared.
+# {variable} expands over variable names, but no structures[] declares any.
 data:
   - name: cogs
     locations:

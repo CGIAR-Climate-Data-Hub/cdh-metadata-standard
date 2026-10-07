@@ -1,6 +1,11 @@
 # An empty values list says nothing; omit values instead.
-dimensions:
-  - name: crop
-    type: crop
-    description: Crop modelled.
-    values: []
+structures:
+  - name: main
+    dimensions:
+      - name: crop
+        type: crop
+        description: Crop modelled.
+        values: []
+    variables:
+      - name: value
+        description: Placeholder.

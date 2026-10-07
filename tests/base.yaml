@@ -20,8 +20,17 @@ citation:
     - family: Doe
       given: J.
   date: "2026"
+# One structure named main; a fixture's structures[] replaces it, so a fixture
+# names its structure main too or overrides data[].
+structures:
+  - name: main
+    dimensions: []
+    variables:
+      - name: value
+        description: Placeholder.
 data:
   - name: primary
+    structures: [main]
     locations:
       - url: https://example.org/data.tif
 created: 2026-01-01

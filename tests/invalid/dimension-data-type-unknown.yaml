@@ -1,6 +1,11 @@
 # data_type is a closed list.
-dimensions:
-  - name: adm2_code
-    type: location
-    description: Admin-2 code.
-    data_type: text
+structures:
+  - name: main
+    dimensions:
+      - name: adm2_code
+        type: location
+        description: Admin-2 code.
+        data_type: text
+    variables:
+      - name: value
+        description: Placeholder.

@@ -46,12 +46,14 @@ occur between minor versions.
   new data, as distinct from the source's cadence or the data's `step`. `end_date: null` now means
   the resource itself grows continuously; a scheduled mirror states its real end date. Maps to
   `cgiar-cdh:update_frequency` and DCAT `dct:accrualPeriodicity`.
-- Added `structures[]` (data dictionary extension) and `data[].structures`, for records whose assets
-  hold different dimensions and variables: monthly and seasonal file sets of one product, or tables
-  with different columns. A structure groups variables that share dimensions. Variables are defined
-  once and may sit in several structures. With structures, every asset names the structures it
-  holds, and holds each variable in only one of them. Encoded as asset-level `cube:dimensions` and
-  `cube:variables`.
+- **Breaking:** the data dictionary moves into `structures[]`, after Frictionless Data Package
+  resource schemas: each structure holds its own `dimensions`, `variables`, and `foreign_keys`, and
+  the top-level lists are removed. A record with one layout wraps its dictionary in one structure; a
+  record whose assets hold different dimensions and variables, such as monthly and seasonal file
+  sets of one product or tables with different columns, has one structure per layout. Names are
+  unique within a structure and may repeat across structures, so two tables can each have a `value`
+  column. Every asset names the structures it holds in `data[].structures`, and holds each variable
+  in only one of them. Encoded as asset-level `cube:dimensions` and `cube:variables`.
 - Added optional `orcid` (people) and `ror` (organizations) to `citation.authors[]` and `contact[]`,
   as full `https://orcid.org/` and `https://ror.org/` URLs, as DataCite, CFF, and schema.org carry
   them. Contacts encode as STAC `contacts[].identifier`.

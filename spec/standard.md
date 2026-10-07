@@ -785,19 +785,19 @@ extension fields, not in `keywords` (see section 4.4).
   (e.g., one COG per crop, production system, and variable). Each `locations[].url` becomes a base
   path with the template appended. Each `{token}` must match a `dimensions[].name`, or be the
   reserved `{variable}` token for files split per variable (`variable` is therefore not allowed as a
-  dimension name). `{variable}` expands over the variables the entry holds. With `structures[]`,
-  each other token must be a dimension of every structure the entry holds. The entry describes one
-  file per distinct path the template renders. Values are substituted verbatim; every rendered path
-  MUST exist; when some do not, list the files in a `file_index` instead. A token on a
-  `type: temporal` dimension may carry a strftime format, `{date:%Y.%m.%d}`, when the file name
-  spells the date differently from the ISO 8601 value. Only `%Y` (four-digit year), `%m`, and `%d`
-  (two-digit month and day) are allowed; a token may repeat with different formats
-  (`year={date:%Y}/{date:%Y%m%d}.tif`). A format may not be finer than the axis values are written
-  (a year axis takes only `%Y`). A coarser format splits an axis into files: on a daily axis,
-  `{date:%Y}.parquet` is one file per year, holding that year's days. Names the directives cannot
-  spell use `file_index`. Omit it for a single file. On a templated entry, `file_size` describes
-  **one file**, not the set; where slices differ materially in size, omit it rather than averaging.
-  See the [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
+  dimension name). `{variable}` expands over the variables the entry holds, and each other token
+  must be a dimension of every structure the entry holds. The entry describes one file per distinct
+  path the template renders. Values are substituted verbatim; every rendered path MUST exist; when
+  some do not, list the files in a `file_index` instead. A token on a `type: temporal` dimension may
+  carry a strftime format, `{date:%Y.%m.%d}`, when the file name spells the date differently from
+  the ISO 8601 value. Only `%Y` (four-digit year), `%m`, and `%d` (two-digit month and day) are
+  allowed; a token may repeat with different formats (`year={date:%Y}/{date:%Y%m%d}.tif`). A format
+  may not be finer than the axis values are written (a year axis takes only `%Y`). A coarser format
+  splits an axis into files: on a daily axis, `{date:%Y}.parquet` is one file per year, holding that
+  year's days. Names the directives cannot spell use `file_index`. Omit it for a single file. On a
+  templated entry, `file_size` describes **one file**, not the set; where slices differ materially
+  in size, omit it rather than averaging. See the
+  [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
 - **`file_index` (optional):** Use instead of `href_template` when the files do not follow a regular
   pattern, or when there are too many to open one by one. A list of
   `{ format, locations, title, media_type }` indexes that list or open this entry's files as one
@@ -810,9 +810,8 @@ extension fields, not in `keywords` (see section 4.4).
   or `file_index`; list per-file checksums in a `cdh-inventory` instead.
 - **`structures` (conditional):** Names of the `structures[]` this asset holds (section 5.8).
   Required on every asset when the record declares `structures[]`; omitted otherwise. An asset holds
-  the dimensions and variables of its structures; in a record without `structures[]`, every asset
-  holds every declared one. Authors or inspection tools MUST verify structure membership before
-  publication.
+  the dimensions and variables of its structures. Authors or inspection tools MUST verify structure
+  membership before publication.
 - **`spatial` (optional):** `{ bbox, geography }` covering this asset alone, for selecting files by
   area. Same shapes as the top-level `spatial`. Omit when unknown; the top-level bbox is not copied
   down to assets.
@@ -905,6 +904,10 @@ version-specific inventory URL for a release.
 Dimensions and variables for gridded, multidimensional, or tabular data. Use them for datasets with
 measurement variables, bands, or columns, and any dataset whose meaning depends on axes or codes.
 
+The dictionary lives in `structures[]`, one structure per layout, after Frictionless Data Package
+resources: each resource carries its own schema. A record whose assets all share one layout has one
+structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fields of a structure.
+
 #### `dimensions[]`
 
 - **Requirement:** Conditional. Required for data cubes, tabular data with axes, or any dataset
@@ -916,7 +919,7 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
     - `temporal` - an axis of ISO 8601 dates or instants. The only type that may carry a `step`, and
       the only spelling that works: `time`, `date`, `datetime`, and `timestamp` are rejected rather
       than silently read as domain axes. A record may declare several.
-    - `z` - a vertical axis: soil depth, height, or pressure level. **At most one per record**,
+    - `z` - a vertical axis: soil depth, height, or pressure level. **At most one per structure**,
       since it is the only spatial axis a record ever declares. List its levels in `values` and give
       it a `unit`.
     - `location` - a column identifying a place rather than measuring something, such as an admin or
@@ -970,8 +973,8 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
     most for key columns whose values are not listed: an admin code stored as `"001"` is a `string`,
     not an integer. A temporal dimension's values stay ISO 8601 strings in the record even when the
     source stores years as integers.
-  - `name` MUST be unique across `dimensions[]` and `variables[]` together: they share one
-    namespace.
+  - `name` MUST be unique across `dimensions[]` and `variables[]` together within a structure: they
+    share one namespace. A name may repeat across structures.
   - Do not add custom fields such as `value_definitions` to `dimensions[]`.
 
 #### `variables[]`
@@ -981,7 +984,7 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
 - **Expected value per variable:**
   `{ name, description, data_type, unit, nodata, note, categories }`.
 - **Rules:**
-  - Every variable has every declared dimension, unless the record declares `structures[]`.
+  - Every variable has every dimension of its structure.
   - `unit` is the unit of measurement, preferably compliant with UDUNITS-2 or UCUM (e.g., `ha`, `t`,
     `t ha-1`, `K`, `kg m-2 s-1`, `{head}/km2`) rather than strictly validated. Required for
     measurements. Use `1` for dimensionless quantities; omit for text or code columns.
@@ -1011,20 +1014,22 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
 ##### Example
 
 ```yaml
-dimensions:
-  - name: crop
-    type: crop
-    description: Crop code. Full labels are in the dimension codes sidecar.
-    values: [whea, maiz, rice]
-    reference_system: https://example.org/crop-codes
-variables:
-  - name: yield
-    description: Crop yield for each grid cell. Higher values indicate more output.
-    data_type: float32
-    unit: t ha-1
-    note: >
-      Relative quantity; do not sum across cells. Use a weighted mean with harvested_area as the
-      weight.
+structures:
+  - name: main
+    dimensions:
+      - name: crop
+        type: crop
+        description: Crop code. Full labels are in the dimension codes sidecar.
+        values: [whea, maiz, rice]
+        reference_system: https://example.org/crop-codes
+    variables:
+      - name: yield
+        description: Crop yield for each grid cell. Higher values indicate more output.
+        data_type: float32
+        unit: t ha-1
+        note: >
+          Relative quantity; do not sum across cells. Use a weighted mean with harvested_area as the
+          weight.
 ```
 
 ##### Seasons and yearly files are not extra temporal axes
@@ -1039,37 +1044,42 @@ prose because STAC has nowhere to put them.
 temporal:
   start_date: "2020-01-01"
   end_date: "2080-12-31"
-dimensions:
-  - name: period
-    type: temporal
-    description: 20-year projection window, labelled by its first year.
-    values: ["2021", "2041", "2061"] # window starts; 2021-2040, 2041-2060, ...
-    step: P20Y
-  - name: season
-    type: season
-    description:
-      Meteorological season. Each value covers three months - DJF is December to February.
-    reference_system: https://example.org/vocab/seasons
-    values: [DJF, MAM, JJA, SON]
-variables:
-  - name: tas
-    description: Near-surface air temperature.
-    data_type: float32
-    unit: K
+structures:
+  - name: main
+    dimensions:
+      - name: period
+        type: temporal
+        description: 20-year projection window, labelled by its first year.
+        values: ["2021", "2041", "2061"] # window starts; 2021-2040, 2041-2060, ...
+        step: P20Y
+      - name: season
+        type: season
+        description:
+          Meteorological season. Each value covers three months - DJF is December to February.
+        reference_system: https://example.org/vocab/seasons
+        values: [DJF, MAM, JJA, SON]
+    variables:
+      - name: tas
+        description: Near-surface air temperature.
+        data_type: float32
+        unit: K
 ```
 
 Files split by year do not add a second temporal axis. Daily data in one file per year is one daily
 axis, split by a coarser token:
 
 ```yaml
-dimensions:
-  - name: date
-    type: temporal
-    description: Day of observation.
-    extent: ["2020-01-01", "2022-12-31"]
-    step: P1D
+structures:
+  - name: main
+    dimensions:
+      - name: date
+        type: temporal
+        description: Day of observation.
+        extent: ["2020-01-01", "2022-12-31"]
+        step: P1D
 data:
   - name: daily
+    structures: [main]
     locations:
       - url: https://example.org/daily/
     href_template: "{date:%Y}.parquet" # one file per year
@@ -1077,63 +1087,110 @@ data:
 
 #### `structures[]`
 
-Layouts for a record whose assets hold different dimensions and variables, such as monthly and
-seasonal file sets of one product, or several tables with different columns.
+The data dictionary, one structure per layout. Each structure is self-contained, like a Frictionless
+Data Package resource schema. A record with one layout has one structure; a record whose assets hold
+different dimensions and variables, such as monthly and seasonal file sets of one product or several
+tables with different columns, has one per layout.
 
-- **Requirement:** Optional. Omit it when every variable has every declared dimension.
-- **Expected value per structure:** `{ name, dimensions, variables }`.
+- **Requirement:** Conditional. Required when the resource has measurement variables, bands, or
+  columns, or when its meaning depends on axes or codes.
+- **Expected value per structure:** `{ name, dimensions, variables, foreign_keys }`.
 - **Rules:**
-  - A structure groups variables that share dimensions: every variable in it has every one of its
-    dimensions. It does not promise every combination of values exists. `dimensions` may be empty
-    when the variables vary only over the horizontal grid.
-  - `dimensions` and `variables` name declared `dimensions[]` and `variables[]` entries. A variable
-    is defined once and may appear in several structures.
-  - With `structures[]`, every variable MUST appear in at least one structure.
+  - `dimensions`, `variables`, and `foreign_keys` follow the rules of the sections above and below.
+  - Every variable in a structure has every one of its dimensions. It does not promise every
+    combination of values exists. Omit `dimensions` when the variables vary only over the horizontal
+    grid.
+  - Names are unique within a structure and MAY repeat across structures: two tables can each have a
+    column named `value` with different meanings. A definition shared by several structures is
+    repeated in each; YAML anchors (`&flooded` / `*flooded`) avoid retyping it.
   - `name` MUST be unique within `structures[]`.
-  - With `structures[]`, every asset MUST name the structures it holds in `data[].structures`.
-  - Within one asset, a variable appears in only one of its structures.
+  - Every asset MUST name the structures it holds in `data[].structures`. A structure may be held by
+    several assets, and an asset may hold several structures.
+  - Within one asset, a variable name appears in only one of its structures.
   - Each `href_template` token other than `{variable}` MUST be a dimension of every structure the
-    asset holds.
+    asset holds; `{variable}` expands over the variables of those structures.
   - For a table, the dimensions are its identifier columns and the variables its value columns.
     Listing a column as a dimension does not mean its values are unique.
+
+Two tables whose `value` columns mean different things:
+
+```yaml
+structures:
+  - name: population
+    dimensions:
+      - name: adm2_code
+        type: location
+        description: GAUL 2015 admin-2 code.
+        data_type: string
+    variables:
+      - name: value
+        description: Population.
+        data_type: int64
+        unit: "1"
+    foreign_keys:
+      - fields: [adm2_code]
+        reference:
+          resource: gaul-2015-admin2
+          fields: [ADM2_CODE]
+  - name: yield
+    dimensions:
+      - name: adm2_code
+        type: location
+        description: GAUL 2015 admin-2 code.
+        data_type: string
+    variables:
+      - name: value
+        description: Maize yield.
+        data_type: float32
+        unit: t ha-1
+data:
+  - name: population
+    structures: [population]
+    locations:
+      - url: https://example.org/population.csv
+  - name: yield
+    structures: [yield]
+    locations:
+      - url: https://example.org/yield.csv
+```
 
 Monthly and seasonal file sets of the same variables:
 
 ```yaml
-dimensions:
-  - name: time
-    type: temporal
-    description: Month.
-    extent: ["2018-01", "2025-12"]
-    step: P1M
-  - name: season
-    type: season
-    description: Rainy season.
-    values: [MAM, OND]
-  - name: year
-    type: temporal
-    description: Year of the season.
-    extent: ["2018", "2025"]
-    step: P1Y
-variables:
-  - name: flooded
-    description: Flood occurrence.
-    data_type: uint8
-    categories:
-      - value: 0
-        label: Dry
-      - value: 1
-        label: Flooded
-  - name: nobs
-    description: Valid observation count.
-    data_type: uint16
 structures:
   - name: monthly
-    dimensions: [time]
-    variables: [flooded, nobs]
+    dimensions:
+      - name: time
+        type: temporal
+        description: Month.
+        extent: ["2018-01", "2025-12"]
+        step: P1M
+    variables:
+      - &flooded
+        name: flooded
+        description: Flood occurrence.
+        data_type: uint8
+        categories:
+          - value: 0
+            label: Dry
+          - value: 1
+            label: Flooded
+      - &nobs
+        name: nobs
+        description: Valid observation count.
+        data_type: uint16
   - name: seasonal
-    dimensions: [season, year]
-    variables: [flooded, nobs]
+    dimensions:
+      - name: season
+        type: season
+        description: Rainy season.
+        values: [MAM, OND]
+      - name: year
+        type: temporal
+        description: Year of the season.
+        extent: ["2018", "2025"]
+        step: P1Y
+    variables: [*flooded, *nobs]
 data:
   - name: monthly
     structures: [monthly]
@@ -1149,11 +1206,21 @@ mask, is one asset with two structures:
 ```yaml
 structures:
   - name: daily
-    dimensions: [time]
-    variables: [precipitation]
+    dimensions:
+      - name: time
+        type: temporal
+        description: Day.
+        extent: ["2020-01-01", "2020-12-31"]
+        step: P1D
+    variables:
+      - name: precipitation
+        description: Daily precipitation.
+        unit: mm
   - name: static
     dimensions: []
-    variables: [land_mask]
+    variables:
+      - name: land_mask
+        description: Land cells.
 data:
   - name: store
     structures: [daily, static]
@@ -1165,7 +1232,7 @@ Keys from this table to other catalogued datasets - typically a value table keye
 geometry/boundary set rather than embedding geometry. Same shape as Frictionless Table Schema
 `foreignKeys`.
 
-- **Requirement:** Optional.
+- **Requirement:** Optional. Declared on the structure whose columns the key names.
 - **Expected value per key:** `{ fields, reference: { resource, asset, fields } }`.
 - **Rules:**
   - `reference.resource` is the dataset referenced: its catalog record id, or an absolute URI for a
@@ -1183,22 +1250,24 @@ Model the join as two records: the boundary/index set is its own record (its geo
 code columns), and the value table declares its key columns and the `foreign_keys[]` entry:
 
 ```yaml
-dimensions:
-  - name: adm0_code
-    type: location
-    description: GAUL 2015 country code.
-  - name: adm2_code
-    type: location
-    description: GAUL 2015 admin-2 code.
-variables:
-  - name: population
-    description: Population per admin unit.
-    unit: "1"
-foreign_keys:
-  - fields: [adm0_code, adm2_code]
-    reference:
-      resource: https://cdh.example/boundaries/gaul-2015-admin2
-      fields: [ADM0_CODE, ADM2_CODE]
+structures:
+  - name: main
+    dimensions:
+      - name: adm0_code
+        type: location
+        description: GAUL 2015 country code.
+      - name: adm2_code
+        type: location
+        description: GAUL 2015 admin-2 code.
+    variables:
+      - name: population
+        description: Population per admin unit.
+        unit: "1"
+    foreign_keys:
+      - fields: [adm0_code, adm2_code]
+        reference:
+          resource: https://cdh.example/boundaries/gaul-2015-admin2
+          fields: [ADM0_CODE, ADM2_CODE]
 ```
 
 ## 6. Link Relations
