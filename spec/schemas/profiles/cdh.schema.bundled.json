@@ -345,6 +345,7 @@
             "additionalProperties": false,
             "properties": {
               "description": {
+                "description": "What this entry holds and how it differs from the record's other entries: which part of the dataset it covers (one table, region, or period), or which layout of the same data it is (e.g. time- vs space-optimized chunks) and when to use it.",
                 "type": "string",
                 "minLength": 1
               },

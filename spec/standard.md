@@ -750,6 +750,9 @@ extension fields, not in `keywords` (see section 4.4).
 - **Vocabulary:** `media_type` must be an
   [IANA media type](https://www.iana.org/assignments/media-types/) (e.g.,
   `application/vnd.zarr; version=3`, `image/tiff; application=geotiff; profile=cloud-optimized`).
+- **`description` (optional):** What this entry holds and how it differs from the record's other
+  entries: which part of the dataset it covers (e.g., one table, region, or period), or which layout
+  of the same data it is (e.g., time-optimized vs space-optimized chunks) and when to use it.
 - **`locations[]`:** Access location(s) for the asset. Required, unless the entry has a
   `file_index`, which carries the file locations itself; then Recommended when the files share a
   prefix, since a prefix is listable and is what a bucket policy or mirror points at. Omit it only
