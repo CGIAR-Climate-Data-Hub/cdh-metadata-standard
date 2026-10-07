@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.1/schemas/profiles/cdh.schema.json",
+  "title": "CDH Profile",
+  "description": "CDH policy schema: the core composed with all CDH-maintained extensions, requiring the cdh extension on every Hub record. Applied as the policy layer (validate-yaml --profile) on top of the per-record mechanism check (core + declared extensions only), and bound by editors via the yaml-language-server modeline for autocomplete. A single-file bundled copy is published alongside as cdh.schema.bundled.json.",
+  "$defs": {
+    "cdhExtensionUrl": {
+      "type": "string",
+      "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/cdh/schema\\.json$"
+    },
+    "climateExtensionUrl": {
+      "type": "string",
+      "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/climate/schema\\.json$"
+    },
+    "agricultureExtensionUrl": {
+      "type": "string",
+      "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/agriculture/schema\\.json$"
+    },
+    "declaresClimateExtension": {
+      "required": ["extensions"],
+      "properties": {
+        "extensions": {
+          "contains": { "$ref": "#/$defs/climateExtensionUrl" }
+        }
+      }
+    },
+    "declaresAgricultureExtension": {
+      "required": ["extensions"],
+      "properties": {
+        "extensions": {
+          "contains": { "$ref": "#/$defs/agricultureExtensionUrl" }
+        }
+      }
+    }
+  },
+  "allOf": [
+    { "$ref": "../core.schema.json" },
+    { "$ref": "../../extensions/cdh/schema.json" },
+    { "$ref": "../../extensions/climate/schema.json" },
+    { "$ref": "../../extensions/agriculture/schema.json" },
+    {
+      "if": { "required": ["climate"] },
+      "then": { "$ref": "#/$defs/declaresClimateExtension" }
+    },
+    {
+      "if": { "required": ["commodities"] },
+      "then": { "$ref": "#/$defs/declaresAgricultureExtension" }
+    }
+  ],
+  "required": ["cdh", "extensions", "version"],
+  "properties": {
+    "extensions": {
+      "contains": {
+        "$ref": "#/$defs/cdhExtensionUrl"
+      }
+    },
+    "contact": {
+      "description": "Every Hub record names at least one maintainer.",
+      "contains": {
+        "required": ["roles"],
+        "properties": { "roles": { "contains": { "const": "maintainer" } } }
+      }
+    }
+  },
+  "unevaluatedProperties": false
+}
