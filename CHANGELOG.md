@@ -8,7 +8,174 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While the project is pre-1.0, the schema should be considered unstable and breaking changes may
 occur between minor versions.
 
-## [Unreleased]
+## [0.4.0] - 2026-10-07
+
+### Added
+
+- Added `structures[]`, the data dictionary, after Frictionless Data Package resource schemas. Each
+  structure holds its own `dimensions`, `variables`, `foreign_keys`, and `geometry_column`. A record
+  with one layout has one structure; a record whose assets hold different dimensions and variables,
+  such as monthly and seasonal file sets of one product or tables with different columns, has one
+  per layout. Names are unique within a structure and may repeat across structures, so two tables
+  can each have a `value` column. With more than one structure, every asset names the structures it
+  holds in `data[].structures`, and holds each variable in only one of them; with one, every asset
+  holds it. Encoded as asset-level `cube:dimensions` and `cube:variables`.
+- Added `categories` to `variables[]` and `dimensions[]`: coded values as
+  `{ value, label, description? }`, after Frictionless `categories`. On a variable it lists the
+  codes it can contain; on a dimension it labels the axis values, in place of `values`. Integer
+  categories on raster variables encode as STAC `classification:classes`.
+- `dimensions[]` take `data_type`, shared with `variables[]`: the stored type of a column or
+  coordinate, so an unlisted key column such as an admin code stored as `"001"` is typed.
+- Added `extent` to `type: temporal` dimensions: `[first, last]` plus `step` in place of listing
+  every value on a regular axis, so a 45-year `href_template` token no longer needs 45 hand-written
+  values. Requires `step`, excludes `values`. Both ends are calendar-valid ISO 8601 at the step's
+  precision, start before end.
+- `href_template` tokens on a `type: temporal` dimension may carry a strftime format,
+  `{date:%Y.%m.%d}`, for file names that spell the date differently from the ISO value. Directives
+  are limited to `%Y`, `%m`, and `%d`, with fixed padding; a token may repeat with different formats
+  for hive-partitioned paths, and a format may not be finer than the axis. Domain-axis tokens stay
+  verbatim.
+- Added `data[].file_index`: a list of `{ format, locations, title, media_type }` indexes over an
+  entry's files, for file sets a template cannot describe. An entry's `locations[]` are one index
+  file at several addresses. `format` is one of `stac-geoparquet`, `gti`, `vrt`, `kerchunk`,
+  `icechunk`, or `cdh-inventory`, a CSV of absolute file URLs defined in the standard with an
+  optional `checksum` column. Any one index is enough. CDH does not open index files; each is
+  trusted to its own specification. Indexes are emitted as STAC assets with role `file_index`.
+- Added `data[].checksum` for single-file entries, `<algorithm>:<hex>` as in `cdh-inventory`,
+  emitted as STAC `file:checksum`. Not allowed with `href_template` or `file_index`. The digest must
+  have the length its algorithm produces.
+- Added `data[].spatial`: coverage of one asset alone, for selecting files by area. Same shapes as
+  the top-level `spatial`, and never copied down from it.
+- Added `processing[].derived_from[].id`, naming a Hub record as a source in place of a storage URL
+  (an entry has an `id` or a `url`, not both), and `derived_from[].version`, pinning the source
+  release used even when `url` tracks the latest. Encoded as a `derived_from` link with
+  `cgiar-cdh:source_version`.
+- Added `parent`: the id of the record this one is a child representation of.
+- Added `attribution`: a credit line reusers should reproduce, for sources that mandate wording
+  (Copernicus, OpenStreetMap) or producers who ask to be credited. Keeps such text out of `note`.
+  Maps to `cgiar-cdh:attribution` and schema.org `creditText`.
+- Added `temporal.update_frequency` (`daily` … `annual`, `irregular`): how often this resource gains
+  new data, as distinct from the source's cadence or the data's `step`. `end_date: null` now means
+  the resource itself grows continuously; a scheduled mirror states its real end date. Maps to
+  `cgiar-cdh:update_frequency` and DCAT `dct:accrualPeriodicity`.
+- Added optional `orcid` (people) and `ror` (organizations) to `citation.authors[]` and `contact[]`,
+  as full `https://orcid.org/` and `https://ror.org/` URLs, as DataCite, CFF, and schema.org carry
+  them. Contacts encode as STAC `contacts[].identifier`.
+- Added the `agents` asset role, for a Markdown guide written for AI agents.
+- Added guidance for data served by an API: the endpoint is a `data[]` entry, `media_type` is the
+  format it returns, and the API description and docs are linked with the RFC 8631 `service-desc`
+  and `service-doc` relations.
+
+### Changed
+
+- **Breaking:** `data[].nodata` is removed. A fill value is how a variable is stored, so it lives on
+  `variables[].nodata` in the structure, and a representation that stores a variable with another
+  fill value or type is another structure. STAC already emitted nodata per band.
+- **Breaking:** the datacube extension is folded into core as `structures[]`. Record-level
+  `dimensions[]` and `variables[]` move inside a structure, and the extension URL leaves
+  `extensions[]`. `variables[].dimensions` is removed: a variable has every dimension of its
+  structure, and variables on different axes in one asset are two structures on that asset.
+- **Breaking:** `joins[]` is renamed `foreign_keys[]` and takes the Frictionless Table Schema
+  `foreignKeys` shape: `{ fields, reference: { resource, asset, fields } }` replaces
+  `{ target, left_fields, right_fields }`. `reference.resource` accepts a catalog record id as well
+  as an absolute URI; an id must resolve to exactly one catalog record. `reference.asset` names the
+  target's file and is required when the target has more than one `data[]` entry. A key sits on the
+  structure whose columns it names. In STAC, an asset-level `cgiar-cdh:foreign_keys` replaces the
+  `cgiar-cdh:left_fields` and `cgiar-cdh:right_fields` link fields.
+- **Breaking:** `spatial.geometry_column` moves to `structures[].geometry_column`. A geometry column
+  belongs to one table, and a structure is that table; a record can hold a geometry table beside
+  attribute tables. Still encoded as `table:primary_geometry`, now per asset.
+- **Breaking:** `spatial.resolution` is removed, and so is `cgiar-cdh:spatial_resolution` in the
+  STAC encoding. The horizontal axes are dimensions, as in STAC datacube and CF: `xy` (one spacing)
+  or `x` and `y` (their own), with a numeric `step` in `unit` for a regular grid and no `step` for a
+  table's coordinate columns. `step` is therefore a duration on `temporal` and a number on the
+  horizontal axes, exactly as datacube has it. Spacing is per structure, so native variables on
+  different grids are different structures in one record. A table's reporting unit is what one row
+  is, which its `type: location` dimension states, with the boundary set or spatial index in
+  `reference_system` and a `foreign_keys` entry to a catalogued boundary record. A record is spatial
+  when it has a footprint; a structure is spatially indexed when it has a `geometry_column`,
+  horizontal axes, or a `location` dimension.
+- `extent` on a horizontal axis is an optional numeric `[min, max]` in `unit` and `spatial.crs`, for
+  a grid whose edges the WGS84 bbox does not give exactly, as datacube carries it.
+- **Breaking:** `variables[].data_type` is a closed list: the STAC `raster:data_type` names plus
+  `decimal`, `boolean`, `string`, `binary`, `date`, `time`, `datetime`, and `other` for nested
+  types.
+- **Breaking:** `dimensions[].step` is only the spacing between values, as in the STAC datacube
+  extension, and must have a nonzero component (`P0D` is rejected). It no longer gives the length of
+  a window: 30-year windows every 10 years are `step: P10Y`, with the window length in the
+  dimension's `description`. `step` is optional on an irregular axis.
+- **Breaking:** temporal `values` and `extent` written as a date-time must be RFC 3339, with seconds
+  and an offset (`2020-01-01T01:00:00Z`). Date-times are now checked as real calendar dates, so
+  `2026-02-30T10:00:00Z` fails, and a missing offset no longer makes ordering depend on the
+  machine's timezone.
+- `dimensions[].values` must list at least one value when present; omit it rather than writing `[]`.
+  Duplicates are rejected in `dimensions[].values`, `foreign_keys[].fields`,
+  `foreign_keys[].reference.fields`, and `data[].processing_steps`.
+- `variables[].unit` is optional. Omit it for unitless values such as class codes.
+- Removed the rule that bands are variables. Bands are how a file stores its values, not part of the
+  data model; when band descriptions do not say what each band holds, `data[].description` does.
+- `data[].locations` may be omitted when a `file_index` carries the file locations.
+- **Breaking:** `data[]` and `file_index[]` `locations[].url` must be an absolute URI; the schema
+  previously accepted any string.
+- **Breaking:** `file_size` is whole bytes or a number and unit (`31.1 MB`). Units are B, KB, MB,
+  GB, TB, PB, in powers of 1000. Free text could not be converted to the byte counts STAC expects.
+- **Breaking:** `additional_links[].name` is renamed `title`, matching `locations[].title`,
+  `file_index[].title`, and the `title` on STAC and Atom links.
+- `media_type` is the IANA type where one is registered, otherwise the type in common use
+  (`text/x-python`, `text/x-r`). NetCDF examples use `application/x-netcdf` and notebooks the newly
+  registered `application/vnd.jupyter`.
+- **Breaking:** `version` is required by the CDH profile. Every release of a resource now shares one
+  `id`; `version` tells releases apart and `id` + `version` is the citable identity. Superseded
+  releases keep their `id` and get `deprecated: true` instead of a renamed snapshot copy.
+  `previous_version` is now the predecessor's `version`, not its `id`. Catalog uniqueness is `id` +
+  `version` with one current release per `id`. Encoders emit `<id>_<version>` for superseded
+  releases so output ids stay unique; an underscore cannot collide with a hyphenated `id`. `version`
+  and `previous_version` hold only letters, digits, dots, underscores, and hyphens, so the emitted
+  id stays URL-safe.
+- **Breaking:** `created` and `updated` are required.
+- **Breaking:** catalog hierarchy comes from `parent`, not file position. Directories no longer
+  create nodes or parent links, and there are no grouping nodes. A `parent` must resolve to one
+  record, never itself, and never form a cycle.
+- **Breaking:** contact role `custodian` is renamed `maintainer` (`schema:maintainer`), and the CDH
+  profile requires at least one. ISO 19115's `custodian` cares for the resource, not the record, so
+  it did not fit federated records; every Hub record needs someone accountable for it.
+- **Breaking:** `citation.authors` entries are objects: a person is `{ family, given? }`, an
+  organization is `{ organization }`, mixed in citation order. Plain strings gave citation exporters
+  no way to tell FAO from a surname (BibTeX needs `{{...}}` for a corporate author). Same shape as
+  CSL-JSON, CFF, and DataCite. Applies to `related_publications[].citation` too.
+- **Breaking:** removed `$schema`. Nothing read it: the validating catalog picks the profile, and
+  `cdh_schema_version` already names the release. Editors bind the profile through the
+  `yaml-language-server` comment.
+- **Breaking:** the reusable `validate-records` workflow checks each record with the release its
+  `cdh_schema_version` names, so one catalog can hold records of mixed versions. `tooling-ref` no
+  longer defaults to `main`; set, it validates every record at that ref instead. A new `versions`
+  input lists the accepted release series, one per line (`v1` or `v0.3`).
+
+### Fixed
+
+- `variables` must list at least one variable. An empty list let a `{variable}` `href_template`
+  validate while naming no files.
+- Empty entries no longer pass: `contact[].roles` needs at least one role, every `processing[]` step
+  needs `id` and `description`, `funding[]` entries need `name`, and `related_publications[]`
+  entries need `doi` or `citation`.
+- `citation.date` must be a year, month, date, or date-time. Any text used to pass.
+- Every link URL (`additional_links`, `contact`, `citation`, `funding`, `series`, `code`,
+  `derived_from`) must be a valid URI, as `locations[].url` already was.
+
+### Removed
+
+- **Breaking:** removed the classification extension. Class codes move onto their variable as
+  `variables[].categories`, so nothing links codes to a variable by name.
+- **Breaking:** removed `templates/` and draft validation (`--draft`, and the `draft` input of the
+  reusable workflow). Start from a validated record in `examples/` instead, as STAC and Croissant
+  do. Relaxing the schema for blank placeholders changed what its rules meant: draft mode rejected
+  every `spatial.bbox` and any filled `data[]` entry. Records are always checked as complete. Refs:
+  #33
+- Removed `spec/crosswalk.md`. It repeated the mapping documents and had drifted from them.
+- Removed the OGC API Records mapping (`spec/mapping-ogc-records.md`). It required a profile schema
+  that does not exist and used `cgiar-cdh:*` fields nothing defined. It returns once it has a schema
+  and an encoder; until then, non-spatial records may encode as STAC (`mapping-stac.md` section
+  1.1).
 
 ## [0.3.0] - 2026-08-20
 
@@ -308,7 +475,7 @@ occur between minor versions.
 - Initial prototype of the core metadata specification, controlled vocabularies, and supporting
   build scripts.
 
-[Unreleased]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.3.0...HEAD
+[0.4.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.0.1...v0.1.0

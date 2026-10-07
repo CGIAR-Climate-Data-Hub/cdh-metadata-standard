@@ -1,0 +1,7 @@
+# A horizontal axis states its unit.
+structures:
+  - name: main
+    dimensions:
+      - { name: cell, type: xy, description: Grid cells., step: 0.05 }
+    variables:
+      - { name: tmax, description: Maximum temperature. }

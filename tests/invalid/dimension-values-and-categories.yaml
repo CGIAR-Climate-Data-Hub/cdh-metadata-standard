@@ -1,0 +1,13 @@
+# A dimension lists its codes in values or in categories, not both.
+structures:
+  - name: main
+    dimensions:
+      - name: crop
+        type: crop
+        description: Crop code.
+        values: [maiz]
+        categories:
+          - { value: maiz, label: Maize }
+    variables:
+      - name: value
+        description: Placeholder.

@@ -2,7 +2,7 @@
 
 - **Title:** CGIAR CDH
 - **Identifier:**
-  <https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/encodings/stac/schema.json>
+  <https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.0/encodings/stac/schema.json>
 - **Field Name Prefix:** cgiar-cdh
 - **Scope:** Collection, Item, Links
 - **Extension
@@ -27,7 +27,7 @@ describes its output all name the same release.
 
 - Examples:
   - [Collection example](examples/collection.json): the usual case, a dataset with climate
-    provenance and a resolution that STAC cannot express natively
+    provenance
   - [Item example](examples/item.json): one expanded slice of a templated data entry
 - [JSON Schema](schema.json)
 - [Changelog](../../../CHANGELOG.md)
@@ -39,13 +39,14 @@ The fields in the table below can be used in these parts of STAC documents:
 - [ ] Catalogs
 - [x] Collections
 - [x] Item Properties (incl. Summaries in Collections)
-- [x] Assets (`cgiar-cdh:partition` only)
+- [x] Assets (`cgiar-cdh:partition` and `cgiar-cdh:foreign_keys` only)
 - [x] Links (incl. Link Templates)
 - [ ] Bands
 
-Catalogs are excluded on purpose: a CDH catalog node is a grouping directory that carries no
-description of its own ([`standard.md`](../../standard.md) section 4.8). An asset carries exactly
-one field, `cgiar-cdh:partition`, because it describes a single file; per-asset provenance uses the
+Catalogs are excluded on purpose: the root Catalog provides navigation, while resource nodes are
+records linked by explicit `parent` references; directories have no catalog meaning
+([`standard.md`](../../standard.md) section 4.8). An asset carries only `cgiar-cdh:partition` and
+`cgiar-cdh:foreign_keys`, because it describes a single file; per-asset provenance uses the
 Processing extension. The schema closes the namespace everywhere, so a stray or misplaced
 `cgiar-cdh:` field fails validation instead of passing silently.
 
@@ -57,11 +58,13 @@ Processing extension. The schema closes the namespace everywhere, so a stray or 
 | cgiar-cdh:access              | string                                               | `public`, `restricted`, or `non-public`. Absent means public. Distinct from `license`: what you may do versus whether you can get it.                |
 | cgiar-cdh:access_note         | string                                               | What a user must do to obtain the data, or why it is catalogued but unavailable.                                                                     |
 | cgiar-cdh:partition           | [Partition Object](#partition-object)                | Item properties only: the values each axis spans within this Item. See the object for the asset form.                                                |
+| cgiar-cdh:foreign_keys        | \[[Foreign Key Object](#foreign-key-object)]         | Assets only: keys from this asset's columns to another dataset.                                                                                      |
+| cgiar-cdh:attribution         | string                                               | Credit line reusers should reproduce: wording a license or upstream source requires, or the credit the producer asks for.                            |
 | cgiar-cdh:note                | string                                               | Caveats or interpretation-critical context that is not part of `description`.                                                                        |
+| cgiar-cdh:update_frequency    | string                                               | How often the resource gains new data: `daily`, `weekly`, `monthly`, `quarterly`, `semiannual`, `annual`, or `irregular`.                            |
 | cgiar-cdh:funding             | \[[Name-URL Object](#name-url-object)]               | Funding sources for the resource.                                                                                                                    |
 | cgiar-cdh:series              | [Name-URL Object](#name-url-object)                  | Program, initiative, or product brand the resource was published under. A discovery facet, not a hierarchy.                                          |
 | cgiar-cdh:geography           | \[string]                                            | Place facet from the CDH geography vocabulary. Complements the spatial extent rather than replacing it.                                              |
-| cgiar-cdh:spatial_resolution  | \[[Resolution Object](#resolution-object)]           | Point and polygon reporting units. Grid spacing is not carried here - see the field notes.                                                           |
 | cgiar-cdh:not_recommended_for | \[[Not-Recommended Object](#not-recommended-object)] | Uses to avoid, each with a reason and an optional alternative.                                                                                       |
 | cgiar-cdh:mip_era             | string                                               | `CMIP5` or `CMIP6`.                                                                                                                                  |
 | cgiar-cdh:scenarios           | \[string]                                            | Scenario labels (SSP/RCP, `historic`). Belongs in Collection `summaries` when it applies across Items.                                               |
@@ -74,36 +77,12 @@ Processing extension. The schema closes the namespace everywhere, so a stray or 
 
 These appear on a link object, never in Collection or Item properties.
 
-| Field Name             | Type      | Description                                                                      |
-| ---------------------- | --------- | -------------------------------------------------------------------------------- |
-| cgiar-cdh:code_version | string    | Version of the code or workflow a `processing-expression` link points at.        |
-| cgiar-cdh:left_fields  | \[string] | Key columns in this resource, paired positionally with `cgiar-cdh:right_fields`. |
-| cgiar-cdh:right_fields | \[string] | Matching columns in the joined resource. Same length as `cgiar-cdh:left_fields`. |
+| Field Name               | Type   | Description                                                               |
+| ------------------------ | ------ | ------------------------------------------------------------------------- |
+| cgiar-cdh:code_version   | string | Version of the code or workflow a `processing-expression` link points at. |
+| cgiar-cdh:source_version | string | Version of the source release a `derived_from` link points at.            |
 
 ### Additional Field Information
-
-#### cgiar-cdh:spatial_resolution
-
-Only `point` and `polygon` entries. A reporting unit - "Kenya counties", admin level 2 - has no
-native STAC home at all, which is what this field is for:
-
-```json
-{
-  "cgiar-cdh:spatial_resolution": [
-    {
-      "type": "polygon",
-      "value": 2,
-      "unit": "admin-level",
-      "label": "Admin-2 units (Farland)",
-      "reference_system": "Example GAUL-like boundaries 2024"
-    }
-  ]
-}
-```
-
-Grid spacing is deliberately absent. It already maps to `cube:dimensions[].step` with the
-dimension's native `unit` / `reference_system`, so carrying it here too would state one fact in two
-places with nothing keeping them in agreement.
 
 #### cgiar-cdh:partition
 
@@ -139,23 +118,42 @@ closed lists at authoring time.
 | name       | string | **REQUIRED**. The name.         |
 | url        | string | Landing page, where one exists. |
 
-### Resolution Object
-
-| Field Name       | Type             | Description                                                                    |
-| ---------------- | ---------------- | ------------------------------------------------------------------------------ |
-| type             | string           | **REQUIRED**. `point` or `polygon`. Grid types belong in `cube:dimensions`.    |
-| value            | number \| string | Numeric characterization of the reporting unit, e.g. the administrative level. |
-| unit             | string           | Unit of measurement, preferably UDUNITS-2 or UCUM; `admin-level` and similar.  |
-| label            | string           | Human-readable resolution, e.g. `Kenya counties`.                              |
-| reference_system | string           | The system defining the reporting units, e.g. `GAUL 2015`.                     |
-
-Exactly one characterization is carried. The input `spatial.resolution[]` may also hold grid
-entries; those serialize to `cube:dimensions[].step` instead of here.
-
 ### Partition Object
 
 An object keyed by axis name. Values are scalars on an asset and arrays of scalars in Item
 properties; at least one axis must be present.
+
+### Foreign Key Object
+
+Same shape as Frictionless Table Schema `foreignKeys`, with the target given by URL.
+
+| Field Name | Type                                  | Description                                                              |
+| ---------- | ------------------------------------- | ------------------------------------------------------------------------ |
+| fields     | \[string]                             | **REQUIRED**. Key columns in this asset.                                 |
+| reference  | [Reference Object](#reference-object) | **REQUIRED**. The columns they match. Paired positionally with `fields`. |
+
+### Reference Object
+
+| Field Name | Type      | Description                                                |
+| ---------- | --------- | ---------------------------------------------------------- |
+| href       | string    | **REQUIRED**. URL of the referenced dataset.               |
+| asset      | string    | Key of the referenced dataset's asset that holds `fields`. |
+| fields     | \[string] | **REQUIRED**. Matching columns in the referenced asset.    |
+
+```json
+{
+  "cgiar-cdh:foreign_keys": [
+    {
+      "fields": ["adm0_code", "adm2_code"],
+      "reference": {
+        "href": "https://example.org/data/example-farland-admin2-boundaries",
+        "asset": "boundaries",
+        "fields": ["ADM0_CODE", "ADM2_CODE"]
+      }
+    }
+  ]
+}
+```
 
 ### Not-Recommended Object
 

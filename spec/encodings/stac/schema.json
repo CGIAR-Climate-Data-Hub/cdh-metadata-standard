@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/encodings/stac/schema.json#",
+  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.0/encodings/stac/schema.json#",
   "title": "CGIAR CDH Extension",
   "description": "STAC extension for the CGIAR Climate Data Hub: the fields a CDH record carries into STAC that no native field or community extension covers. Fields whose meaning STAC already expresses natively (title, license, extent, sci:citation, cube:dimensions, proj:code) are not repeated here - see mapping-stac.md.",
   "type": "object",
@@ -9,7 +9,7 @@
     "stac_extensions": {
       "type": "array",
       "contains": {
-        "const": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/encodings/stac/schema.json"
+        "const": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.0/encodings/stac/schema.json"
       }
     },
     "type": {
@@ -136,9 +136,17 @@
       "description": "What a user must do to obtain the data: request steps, authentication, or why it is catalogued but unavailable.",
       "$ref": "#/definitions/nonEmptyString"
     },
+    "cgiar-cdh:attribution": {
+      "description": "Credit line reusers should reproduce: wording a license or upstream source requires, or the credit the producer asks for.",
+      "$ref": "#/definitions/nonEmptyString"
+    },
     "cgiar-cdh:note": {
       "description": "Caveats, warnings, or interpretation-critical context that is not part of the description.",
       "$ref": "#/definitions/nonEmptyString"
+    },
+    "cgiar-cdh:update_frequency": {
+      "description": "How often this resource gains new data.",
+      "enum": ["daily", "weekly", "monthly", "quarterly", "semiannual", "annual", "irregular"]
     },
     "cgiar-cdh:funding": {
       "description": "Funding sources for the resource.",
@@ -158,38 +166,6 @@
       "uniqueItems": true,
       "items": {
         "$ref": "#/definitions/nonEmptyString"
-      }
-    },
-    "cgiar-cdh:spatial_resolution": {
-      "description": "Spatial resolution that STAC cannot state natively: point and polygon reporting units. Grid spacing is not carried here - it becomes cube:dimensions[].step in the Datacube extension.",
-      "type": "array",
-      "minItems": 1,
-      "items": {
-        "type": "object",
-        "required": ["type"],
-        "properties": {
-          "type": {
-            "description": "point or polygon reporting unit. Grid types belong in cube:dimensions.",
-            "type": "string",
-            "enum": ["point", "polygon"]
-          },
-          "value": {
-            "description": "Numeric characterization of the reporting unit, e.g. the administrative level.",
-            "type": ["number", "string"]
-          },
-          "unit": {
-            "$ref": "#/definitions/nonEmptyString"
-          },
-          "label": {
-            "description": "Human-readable resolution, e.g. 5 arc-minutes or Kenya counties.",
-            "$ref": "#/definitions/nonEmptyString"
-          },
-          "reference_system": {
-            "description": "For point and polygon types, the system defining the reporting units (e.g. GAUL 2015).",
-            "$ref": "#/definitions/nonEmptyString"
-          }
-        },
-        "additionalProperties": false
       }
     },
     "cgiar-cdh:not_recommended_for": {
@@ -277,20 +253,51 @@
       "description": "Version of the code or workflow a processing-expression link points at.",
       "$ref": "#/definitions/nonEmptyString"
     },
-    "cgiar-cdh:left_fields": {
-      "description": "Key columns in this resource, paired positionally with cgiar-cdh:right_fields on a link to the joined resource.",
+    "cgiar-cdh:source_version": {
+      "description": "Version of the source release a derived_from link points at, as the source labels it.",
+      "$ref": "#/definitions/nonEmptyString"
+    },
+    "columnList": {
       "type": "array",
       "minItems": 1,
       "items": {
         "$ref": "#/definitions/nonEmptyString"
       }
     },
-    "cgiar-cdh:right_fields": {
-      "description": "Matching columns in the joined resource, paired positionally with cgiar-cdh:left_fields.",
+    "cgiar-cdh:foreign_keys": {
+      "description": "Keys from this asset's columns to another dataset, after Frictionless Table Schema foreignKeys. fields and reference.fields pair positionally.",
       "type": "array",
       "minItems": 1,
       "items": {
-        "$ref": "#/definitions/nonEmptyString"
+        "type": "object",
+        "required": ["fields", "reference"],
+        "properties": {
+          "fields": {
+            "description": "Key columns in this asset.",
+            "$ref": "#/definitions/columnList"
+          },
+          "reference": {
+            "type": "object",
+            "required": ["href", "fields"],
+            "properties": {
+              "href": {
+                "description": "URL of the referenced dataset.",
+                "type": "string",
+                "format": "uri"
+              },
+              "asset": {
+                "description": "Key of the referenced dataset's asset that holds reference.fields.",
+                "$ref": "#/definitions/nonEmptyString"
+              },
+              "fields": {
+                "description": "Matching columns in the referenced asset.",
+                "$ref": "#/definitions/columnList"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
       }
     },
     "fields": {
@@ -315,8 +322,14 @@
         "cgiar-cdh:access_note": {
           "$ref": "#/definitions/cgiar-cdh:access_note"
         },
+        "cgiar-cdh:attribution": {
+          "$ref": "#/definitions/cgiar-cdh:attribution"
+        },
         "cgiar-cdh:note": {
           "$ref": "#/definitions/cgiar-cdh:note"
+        },
+        "cgiar-cdh:update_frequency": {
+          "$ref": "#/definitions/cgiar-cdh:update_frequency"
         },
         "cgiar-cdh:mip_era": {
           "$ref": "#/definitions/cgiar-cdh:mip_era"
@@ -335,9 +348,6 @@
         },
         "cgiar-cdh:models": {
           "$ref": "#/definitions/cgiar-cdh:models"
-        },
-        "cgiar-cdh:spatial_resolution": {
-          "$ref": "#/definitions/cgiar-cdh:spatial_resolution"
         },
         "cgiar-cdh:funding": {
           "$ref": "#/definitions/cgiar-cdh:funding"
@@ -363,11 +373,8 @@
         "cgiar-cdh:code_version": {
           "$ref": "#/definitions/cgiar-cdh:code_version"
         },
-        "cgiar-cdh:left_fields": {
-          "$ref": "#/definitions/cgiar-cdh:left_fields"
-        },
-        "cgiar-cdh:right_fields": {
-          "$ref": "#/definitions/cgiar-cdh:right_fields"
+        "cgiar-cdh:source_version": {
+          "$ref": "#/definitions/cgiar-cdh:source_version"
         }
       },
       "patternProperties": {
@@ -402,9 +409,6 @@
           "items": {
             "$ref": "#/definitions/nonEmptyString"
           }
-        },
-        "cgiar-cdh:spatial_resolution": {
-          "type": ["array", "object"]
         }
       },
       "patternProperties": {
@@ -454,8 +458,14 @@
         "cgiar-cdh:access_note": {
           "$ref": "#/definitions/cgiar-cdh:access_note"
         },
+        "cgiar-cdh:attribution": {
+          "$ref": "#/definitions/cgiar-cdh:attribution"
+        },
         "cgiar-cdh:note": {
           "$ref": "#/definitions/cgiar-cdh:note"
+        },
+        "cgiar-cdh:update_frequency": {
+          "$ref": "#/definitions/cgiar-cdh:update_frequency"
         },
         "cgiar-cdh:mip_era": {
           "$ref": "#/definitions/cgiar-cdh:mip_era"
@@ -474,9 +484,6 @@
         },
         "cgiar-cdh:models": {
           "$ref": "#/definitions/cgiar-cdh:models"
-        },
-        "cgiar-cdh:spatial_resolution": {
-          "$ref": "#/definitions/cgiar-cdh:spatial_resolution"
         },
         "cgiar-cdh:funding": {
           "$ref": "#/definitions/cgiar-cdh:funding"
@@ -499,11 +506,14 @@
       "additionalProperties": false
     },
     "assetFields": {
-      "$comment": "An asset describes one file, so the only cgiar-cdh field it carries is that file's exact position. Per-asset provenance uses the Processing extension.",
+      "$comment": "An asset describes one file: its exact position and its keys. Per-asset provenance uses the Processing extension.",
       "type": "object",
       "properties": {
         "cgiar-cdh:partition": {
           "$ref": "#/definitions/partitionScalar"
+        },
+        "cgiar-cdh:foreign_keys": {
+          "$ref": "#/definitions/cgiar-cdh:foreign_keys"
         }
       },
       "patternProperties": {
@@ -517,7 +527,10 @@
       "$comment": "A Collection asset is the un-templated whole - 5.2 expands templated entries into Items - so it holds no partition. item_assets is a template shared by every Item, where one exact value cannot apply either.",
       "type": "object",
       "properties": {
-        "cgiar-cdh:partition": false
+        "cgiar-cdh:partition": false,
+        "cgiar-cdh:foreign_keys": {
+          "$ref": "#/definitions/cgiar-cdh:foreign_keys"
+        }
       },
       "patternProperties": {
         "^(?!cgiar-cdh:)": {

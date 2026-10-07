@@ -1,0 +1,23 @@
+# An asset holds each variable in one structure; flooded is in both structures listed here.
+structures:
+  - name: monthly
+    dimensions:
+      - {
+          name: time,
+          type: temporal,
+          description: Month.,
+          extent: ["2018-01", "2025-12"],
+          step: P1M,
+        }
+    variables:
+      - { name: flooded, description: Flood occurrence. }
+  - name: seasonal
+    dimensions:
+      - { name: season, type: season, description: Rainy season., values: [MAM, OND] }
+    variables:
+      - { name: flooded, description: Flood occurrence. }
+data:
+  - name: primary
+    structures: [monthly, seasonal]
+    locations:
+      - url: https://example.org/data.tif

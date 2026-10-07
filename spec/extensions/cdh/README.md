@@ -8,14 +8,11 @@ CGIAR Climate Data Hub governance: domain classification and use guidance.
 ## `cdh.domain[]`
 
 - **Requirement:** Required.
-- **Definition:** CDH domain(s) used for filtering, grouping, and STAC sub-catalog placement.
+- **Definition:** CDH domain(s) used for filtering and grouping.
 - **Expected value:** List of one or more domain ids from `vocab/domain.json`. **Multi-valued and
-  ordered**: the first entry is the **primary** domain (drives sub-catalog placement); subsequent
-  entries are secondary and enable cross-cutting search.
+  ordered**: the first entry is the **primary** domain; subsequent entries are secondary and enable
+  cross-cutting search.
 - **Vocabulary:** `vocab/domain.json`.
-- **Encoding:**
-  - Encoded as `cgiar-cdh:domain` (STAC) / `properties["cgiar-cdh:domain"]` (OGC Records).
-  - Also expanded into `themes` under the CDH domain scheme.
 
 ## `cdh.usage`
 
@@ -23,9 +20,6 @@ CGIAR Climate Data Hub governance: domain classification and use guidance.
 - **Definition:** Use guidance: what the resource was produced for, and what to avoid.
 - **Expected value:** Object with `intended_uses` and/or `not_recommended_for`. Omit `usage`
   entirely when there is nothing to say; an empty object is rejected.
-- **Encoding:** The two members encode as flat `cgiar-cdh:intended_uses` and
-  `cgiar-cdh:not_recommended_for`. The nesting is an authoring convenience - STAC and OGC Records
-  property namespaces are flat, so the encoder does not re-nest, the same way `spatial.*` flattens.
 
 ### `cdh.usage.intended_uses[]`
 
@@ -38,8 +32,10 @@ CGIAR Climate Data Hub governance: domain classification and use guidance.
     not listed is judged from `description`, `variables`, coverage, and resolution.
   - Not a filter facet: `cdh.domain` is the field catalog browse and filtering use. Faceting on
     `intended_uses` would turn an illustrative list into a closed one.
-  - State what the producers built the resource for, not what it could conceivably support. Vague
+  - State the use the producers built the resource for, not what it could conceivably support. Vague
     entries (`research`, `decision-making`) carry no information and should be omitted.
+  - Name the use, not a product that uses the resource: gridded climate risk analysis, not panel B
+    of a climate mapping tool.
   - Limitations belong in `usage.not_recommended_for`, which carries the reason and, where one
     exists, the alternative.
 
@@ -52,7 +48,7 @@ CGIAR Climate Data Hub governance: domain classification and use guidance.
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.0/extensions/cdh/schema.json
 cdh:
   domain: [agricultural-production] # primary first; rest are secondary
   usage:

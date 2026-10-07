@@ -1,0 +1,12 @@
+# A category value has one meaning; A is both Active and Archived here.
+structures:
+  - name: main
+    variables:
+      - name: status
+        description: Record status.
+        data_type: string
+        categories:
+          - value: A
+            label: Active
+          - value: A
+            label: Archived

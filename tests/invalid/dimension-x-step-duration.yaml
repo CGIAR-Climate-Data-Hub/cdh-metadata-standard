@@ -1,0 +1,7 @@
+# A horizontal axis takes a numeric step in its unit; a duration belongs to a temporal axis.
+structures:
+  - name: main
+    dimensions:
+      - { name: cell, type: xy, description: Grid cells., step: P1D, unit: degree }
+    variables:
+      - { name: tmax, description: Maximum temperature. }

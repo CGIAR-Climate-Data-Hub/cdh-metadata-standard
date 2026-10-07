@@ -9,10 +9,6 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const files = await findSchemaFiles();
-if (files.length === 0) {
-  console.log("No schemas found under spec/schemas or spec/extensions.");
-  process.exit(0);
-}
 
 const { version } = JSON.parse(await readFile(resolve(ROOT, "package.json"), "utf-8"));
 const ID_BASE = `https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v${version}/`;

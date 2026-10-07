@@ -1,0 +1,7 @@
+# A derived_from entry names a Hub record by id or another source by url, not both.
+processing:
+  - id: source
+    description: Example.
+    derived_from:
+      - id: example-precipitation
+        url: https://example.org/precipitation/

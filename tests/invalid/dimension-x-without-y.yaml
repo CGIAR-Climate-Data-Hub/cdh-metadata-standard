@@ -1,0 +1,7 @@
+# Coordinate columns come as a pair; x without y is rejected.
+structures:
+  - name: main
+    dimensions:
+      - { name: lon, type: x, description: Longitude., unit: degree }
+    variables:
+      - { name: soc, description: Soil organic carbon. }

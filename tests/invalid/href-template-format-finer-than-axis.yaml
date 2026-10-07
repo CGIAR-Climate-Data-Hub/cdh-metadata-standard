@@ -1,0 +1,17 @@
+# %m on a year axis invents a month.
+data:
+  - name: primary
+    locations:
+      - url: https://example.org/data/
+    href_template: "ptot_{year:%Y%m}.tif"
+structures:
+  - name: main
+    dimensions:
+      - name: year
+        type: temporal
+        description: Year.
+        step: P1Y
+        extent: ["1981", "2025"]
+    variables:
+      - name: value
+        description: Placeholder.

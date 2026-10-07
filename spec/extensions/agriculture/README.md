@@ -11,13 +11,12 @@ Agricultural commodities described by the record.
   datasets.
 - **Vocabulary:** `vocab/commodity.json`; values resolve to AGROVOC URIs.
 - **Expected value:** List of friendly names (e.g., `banana`, `cassava`, `arabica-coffee`).
-- **Encoding:** Expanded into `themes` under the CDH commodity scheme.
 
 ## Example
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/agriculture/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.0/extensions/agriculture/schema.json
 commodities:
   - maize
   - rice

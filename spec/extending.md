@@ -30,7 +30,7 @@ Publish it at a stable, version-pinned URL and set `$id` to that URL.
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.0/extensions/cdh/schema.json
   - https://<you>.github.io/<repo>/v1.0.0/soil/schema.json
 soil:
   depth: 0-30cm
@@ -51,7 +51,7 @@ schema is enough:
   "$id": "https://<you>.github.io/<repo>/v1.0.0/profiles/mine.schema.json",
   "allOf": [
     {
-      "$ref": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/schemas/core.schema.json"
+      "$ref": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.0/schemas/core.schema.json"
     },
     { "$ref": "https://<you>.github.io/<repo>/v1.0.0/soil/schema.json" }
   ],
@@ -59,12 +59,10 @@ schema is enough:
 }
 ```
 
-Add `required` / `contains` constraints for your own rules. Declare the profile in records and bind
-it in YAML editors:
+Add `required` / `contains` constraints for your own rules. Bind the profile in YAML editors:
 
 ```yaml
 # yaml-language-server: $schema=https://<you>.github.io/<repo>/v1.0.0/profiles/mine.schema.json
-"$schema": https://<you>.github.io/<repo>/v1.0.0/profiles/mine.schema.json
 ```
 
 ## 4. Validate
@@ -73,14 +71,14 @@ Any JSON Schema 2020-12 validator works. For CDH records, use the bundled profil
 
 ```sh
 check-jsonschema \
-  --schemafile https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.3.0/schemas/profiles/cdh.schema.bundled.json \
+  --schemafile https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.0/schemas/profiles/cdh.schema.bundled.json \
   record.yaml
 ```
 
 For your own profile, publish the referenced schemas or create a single-file bundle with
 `scripts/bundle-profile.js`.
 
-This repo's validator adds per-record extension checks, template draft mode, and cross-field rules:
+This repo's validator adds per-record extension checks and cross-field rules:
 
 ```sh
 # mechanism only: core + whatever extensions each record declares
@@ -95,7 +93,7 @@ In CI:
 ```yaml
 jobs:
   validate:
-    uses: CGIAR-Climate-Data-Hub/metadata/.github/workflows/validate-records.yaml@main
+    uses: CGIAR-Climate-Data-Hub/cdh-metadata-standard/.github/workflows/validate-records.yaml@<tag>
     with:
       path: ./my-records
       extra-schemas: ./my-extensions

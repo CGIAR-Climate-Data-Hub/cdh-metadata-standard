@@ -1,0 +1,9 @@
+# xy is the equal-spacing shorthand; it never sits beside x or y.
+structures:
+  - name: main
+    dimensions:
+      - { name: cell, type: xy, description: Grid cells., step: 0.05, unit: degree }
+      - { name: lon, type: x, description: Longitude., unit: degree }
+      - { name: lat, type: y, description: Latitude., unit: degree }
+    variables:
+      - { name: tmax, description: Maximum temperature. }
