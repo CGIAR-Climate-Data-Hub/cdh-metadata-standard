@@ -58,7 +58,7 @@
                       "minLength": 1
                     },
                     "url": {
-                      "description": "Absolute URL. In additional_assets[] it may instead be a path relative to the record file.",
+                      "description": "Absolute URL. In additional_assets[] and a cdh-inventory file_index[] it may instead be a path relative to the record file.",
                       "minLength": 1,
                       "type": "string"
                     }
@@ -383,7 +383,7 @@
                           "minLength": 1
                         },
                         "url": {
-                          "description": "Absolute URL. In additional_assets[] it may instead be a path relative to the record file.",
+                          "description": "Absolute URL. In additional_assets[] and a cdh-inventory file_index[] it may instead be a path relative to the record file.",
                           "minLength": 1,
                           "type": "string"
                         }
@@ -464,34 +464,23 @@
                       ]
                     },
                     "locations": {
-                      "description": "Access paths to the same content; the first is canonical. URLs are always absolute and machine-actionable: a data file, a store or directory prefix, or a service endpoint - never a landing page or DOI (those go in citation.url, doi, or additional_links).",
+                      "description": "Copies of the index file; the first is canonical. Absolute URLs; a cdh-inventory may instead use a path relative to the record file when committed beside it.",
                       "items": {
-                        "allOf": [
-                          {
-                            "additionalProperties": false,
-                            "properties": {
-                              "title": {
-                                "type": "string",
-                                "description": "Optional access label, e.g. HTTPS or S3.",
-                                "minLength": 1
-                              },
-                              "url": {
-                                "description": "Absolute URL. In additional_assets[] it may instead be a path relative to the record file.",
-                                "minLength": 1,
-                                "type": "string"
-                              }
-                            },
-                            "required": ["url"],
-                            "type": "object"
+                        "additionalProperties": false,
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "description": "Optional access label, e.g. HTTPS or S3.",
+                            "minLength": 1
                           },
-                          {
-                            "properties": {
-                              "url": {
-                                "format": "uri"
-                              }
-                            }
+                          "url": {
+                            "description": "Absolute URL. In additional_assets[] and a cdh-inventory file_index[] it may instead be a path relative to the record file.",
+                            "minLength": 1,
+                            "type": "string"
                           }
-                        ]
+                        },
+                        "required": ["url"],
+                        "type": "object"
                       },
                       "minItems": 1,
                       "type": "array"
@@ -505,6 +494,26 @@
                       "description": "IANA media type of the index file itself, when it has one. Optional; useful for gti (GeoPackage, FlatGeobuf, or Parquet).",
                       "minLength": 1,
                       "type": "string"
+                    }
+                  },
+                  "if": {
+                    "properties": {
+                      "format": {
+                        "const": "cdh-inventory"
+                      }
+                    }
+                  },
+                  "else": {
+                    "properties": {
+                      "locations": {
+                        "items": {
+                          "properties": {
+                            "url": {
+                              "format": "uri"
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }

@@ -364,7 +364,9 @@ the coordinates. When either is false, or there are thousands of files, point at
   URL, plus one column per declared dimension giving that file's coordinate, and `variable` when
   each file holds a single variable. An optional `checksum` column (`md5:<hex>`, `sha256:<hex>`)
   carries file digests. Use it when you have a spreadsheet and nothing else. Full URLs keep the CSV
-  usable on its own; a mirror gets its own CSV as a second entry.
+  usable on its own; a mirror gets its own CSV as a second entry. A small inventory can be committed
+  beside the record and given a relative `url` such as `files.csv`, like a README in
+  `additional_assets`. Only `cdh-inventory` allows this; other formats need absolute URLs.
 
 Any one index is enough. List the one people should open first.
 

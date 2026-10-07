@@ -169,7 +169,12 @@
                 "enum": ["stac-geoparquet", "gti", "vrt", "kerchunk", "icechunk", "cdh-inventory"]
               },
               "locations": {
-                "$ref": "#/$defs/locations"
+                "description": "Copies of the index file; the first is canonical. Absolute URLs; a cdh-inventory may instead use a path relative to the record file when committed beside it.",
+                "items": {
+                  "$ref": "#/$defs/location"
+                },
+                "minItems": 1,
+                "type": "array"
               },
               "title": {
                 "description": "Optional label, e.g. which scheme the index's internal paths use.",
@@ -178,6 +183,26 @@
               "media_type": {
                 "description": "IANA media type of the index file itself, when it has one. Optional; useful for gti (GeoPackage, FlatGeobuf, or Parquet).",
                 "$ref": "#/$defs/nonEmptyString"
+              }
+            },
+            "if": {
+              "properties": {
+                "format": {
+                  "const": "cdh-inventory"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "locations": {
+                  "items": {
+                    "properties": {
+                      "url": {
+                        "format": "uri"
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -414,7 +439,7 @@
         },
         "url": {
           "$ref": "#/$defs/nonEmptyString",
-          "description": "Absolute URL. In additional_assets[] it may instead be a path relative to the record file."
+          "description": "Absolute URL. In additional_assets[] and a cdh-inventory file_index[] it may instead be a path relative to the record file."
         }
       },
       "required": ["url"],

@@ -813,7 +813,9 @@ Each entry names one index file and the specification it follows. Its `locations
 copies of that file; an index whose internal paths differ, such as S3 instead of HTTPS, is a
 separate entry. No format is required and any one is a complete index. CDH does not open index
 files; each is trusted to its own specification. An index may live anywhere; the entry's
-`locations[]` describe the files, not the index.
+`locations[]` describe the files, not the index. A `cdh-inventory` location `url` MAY be a path
+relative to the record file, as in `additional_assets[]`, when the CSV is committed beside the
+record; the file MUST exist at that path. Other formats use absolute URLs.
 
 Paths inside an index follow its format's specification. A `cdh-inventory` holds absolute URLs, so
 it works on its own. Other formats should use absolute URLs too. If an index uses paths relative to

@@ -241,22 +241,27 @@ function validateFile(file, doc) {
   };
 }
 
-// A relative additional_assets[] url names a file committed beside the record
-// (standard.md 5.6). Only this script can see the filesystem, so the check
-// lives here rather than in cross-field.js.
+// A relative additional_assets[] or cdh-inventory file_index[] url names a
+// file committed beside the record (standard.md 5.6). Only this script can see
+// the filesystem, so the check lives here rather than in cross-field.js.
 function missingRelativeAssets(file, doc) {
   const out = [];
-  list(doc?.additional_assets).forEach((asset, i) => {
-    list(asset?.locations).forEach((loc, j) => {
+  const check = (locations, path) =>
+    list(locations).forEach((loc, j) => {
       const url = loc?.url;
       if (typeof url !== "string" || /^[a-z][a-z0-9+.-]*:/i.test(url)) return;
       if (!existsSync(resolve(dirname(file), url))) {
-        out.push(
-          `/additional_assets/${i}/locations/${j}/url: relative path "${url}" not found beside the record`,
-        );
+        out.push(`${path}/${j}/url: relative path "${url}" not found beside the record`);
       }
     });
-  });
+  list(doc?.additional_assets).forEach((asset, i) =>
+    check(asset?.locations, `/additional_assets/${i}/locations`),
+  );
+  list(doc?.data).forEach((asset, i) =>
+    list(asset?.file_index).forEach((index, k) =>
+      check(index?.locations, `/data/${i}/file_index/${k}/locations`),
+    ),
+  );
   return out;
 }
 
