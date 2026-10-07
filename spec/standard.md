@@ -754,7 +754,9 @@ extension fields, not in `keywords` (see section 4.4).
   `text/x-r`).
 - **`description` (optional):** What this entry holds and how it differs from the record's other
   entries: which part of the dataset it covers (e.g., one table, region, or period), or which layout
-  of the same data it is (e.g., time-optimized vs space-optimized chunks) and when to use it.
+  of the same data it is (e.g., time-optimized vs space-optimized chunks) and when to use it. When a
+  multi-band file's band descriptions do not say what each band holds, say it here (e.g., bands 1-12
+  are January to December).
 - **`locations[]`:** Access location(s) for the asset. Required, unless the entry has a
   `file_index`, which carries the file locations itself; then Recommended when the files share a
   prefix, since a prefix is listable and is what a bucket policy or mirror points at. Omit it only
@@ -917,9 +919,6 @@ measurement variables, bands, or columns, and any dataset whose meaning depends 
       station code. It is a key, not an axis of space.
     - Anything else names a domain axis after what it varies (`crop`, `technology`, `scenario`).
       Lowercase, digits, `-` and `_`.
-  - **Bands are not a dimension.** There is no band dimension type; a multi-band file's bands are
-    `variables[]`. `bands` is still an accepted axis name if a resource genuinely varies along
-    something it calls a band, but it gets no special treatment.
   - **`spatial` and `geometry` are rejected.** The horizontal lat/lon grid comes from the top-level
     `spatial` field and is never declared here. Use `z` for a vertical axis and `location` for a
     place key.

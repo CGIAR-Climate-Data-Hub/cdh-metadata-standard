@@ -347,8 +347,7 @@ Rules:
   is the size of a single file, not the set - omit it where slices differ materially in size rather
   than averaging them.
 
-Only the file-partitioning dimensions go in the template. Dimensions stored inside each file (e.g.
-bands of a multi-band COG) stay out of it.
+Only the dimensions that split files go in the template; dimensions inside each file stay out of it.
 
 #### Irregular or very large file sets with `file_index`
 
@@ -620,7 +619,7 @@ For each variable:
 
 Use `dimensions` when variables depend on additional axes such as scenario, model, crop, or
 technology. Declare a time axis as a `type: temporal` dimension; the top-level `temporal` field
-holds only the coverage dates. Bands are variables, not a dimension.
+holds only the coverage dates.
 
 Define coded values. If a code is not obvious, explain it in the dimension description, point to a
 controlled vocabulary, or link a sidecar code list as an [additional asset](#additional-assets).

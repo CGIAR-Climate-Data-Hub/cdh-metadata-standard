@@ -64,6 +64,8 @@ occur between minor versions.
 
 ### Changed
 
+- Removed the rule that bands are variables. Bands are how a file stores its values, not part of the
+  data model; when band descriptions do not say what each band holds, `data[].description` does.
 - **Breaking:** the data dictionary is core. `dimensions[]`, `variables[]`, `structures[]`, and
   `foreign_keys[]` keep their rules but need no extension declaration; remove the data-dictionary
   URL from `extensions[]`. Core already depended on them through `href_template` and
