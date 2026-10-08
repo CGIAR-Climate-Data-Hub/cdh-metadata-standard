@@ -950,8 +950,10 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
     datacube. On a temporal axis it requires `step` and excludes `values`, and both strings are
     written at one precision (`1981`, `1981-01`, `1981-01-01`, or a date-time), no coarser than the
     step, start before end. The values are `first, first + step, …` while `<= last`, at that same
-    precision: `extent: ["1981", "2025"]` with `step: P1Y` is `1981, 1982, ... 2025`. On a
-    horizontal axis it is a numeric `[min, max]` in `unit`. Valid on no other type.
+    precision: `extent: ["1981", "2025"]` with `step: P1Y` is `1981, 1982, ... 2025`. On an
+    open-ended series (`temporal.end_date: null`), `last` is the latest value present as of
+    `updated`; it may lag the data but must never run ahead of it. On a horizontal axis it is a
+    numeric `[min, max]` in `unit`. Valid on no other type.
   - `values` lists the allowed values along the dimension. Omit it for a high-cardinality key column
     (you would not enumerate every household id or admin code).
   - `reference_system` is the vocabulary the values are coded against; prefer a resolvable URI when

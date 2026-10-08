@@ -368,7 +368,9 @@ Rules:
   labels, not formats: declare them as a domain axis with the labels in `values`.
 - Every token dimension must list `values`, or for a regular temporal axis give `extent` and `step`
   (`extent: ["1981", "2025"]`, `step: P1Y`) instead of writing out every year.
-- Every path the template renders must exist.
+- Every path the template renders must exist. On an open-ended series, set the `extent` end to the
+  latest file present as of `updated` and move it when you refresh the record; it may lag the data
+  but must never run ahead of it.
 - A coarser format splits an axis into files: on a daily axis, `{date:%Y}.parquet` is one file per
   year holding that year's days. Do not declare a separate `year` axis for this.
 - A templated entry shares one `description`, `media_type`, and `file_size` across every file; split
