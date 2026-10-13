@@ -47,6 +47,13 @@
       "uri": "http://aims.fao.org/aos/agrovoc/c_3731"
     },
     {
+      "id": "land",
+      "label": "Land",
+      "description": "Biophysical land characteristics: soils, land cover and land use, terrain and elevation, and related surface properties.",
+      "code": "c_4179",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_4179"
+    },
+    {
       "id": "mitigation",
       "label": "Mitigation",
       "description": "Climate-change mitigation: emissions, carbon stocks, sequestration, and mitigation pathways.",
