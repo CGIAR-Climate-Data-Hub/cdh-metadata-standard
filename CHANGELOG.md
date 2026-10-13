@@ -28,6 +28,9 @@ occur between minor versions.
 
 ### Added
 
+- Added `array` to `data_type`, the Frictionless name for a column whose cells hold a list of
+  values, such as a Parquet `list<string>`. The element type goes in `description`. `other` now
+  means maps, structs, and nested lists.
 - Added `land` to the domain vocabulary (AGROVOC "land resources") for soils, land cover and land
   use, terrain and elevation, and related biophysical surface layers.
 

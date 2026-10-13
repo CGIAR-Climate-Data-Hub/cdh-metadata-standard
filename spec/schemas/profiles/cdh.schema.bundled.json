@@ -2040,6 +2040,7 @@
                         "date",
                         "time",
                         "datetime",
+                        "array",
                         "other"
                       ]
                     },
@@ -2357,6 +2358,7 @@
                         "date",
                         "time",
                         "datetime",
+                        "array",
                         "other"
                       ]
                     },
