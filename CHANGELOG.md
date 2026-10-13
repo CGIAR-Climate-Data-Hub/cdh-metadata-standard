@@ -10,6 +10,16 @@ occur between minor versions.
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking:** the commodity vocabulary is now generated from the FAO Indicative Crop
+  Classification 1.1 and the WCA 2030 Classification of livestock, with `crops` and `livestock` as
+  roots and `parents` for roll-up, the same shape as the geography vocabulary. Ids follow the
+  official labels, so some change: `potato` is `potatoes`, `pearl-millet` and `millets` are
+  `millet`, `buffalo` is `buffaloes`, `swine` is `swine-pigs`, `common-bean` is `beans`;
+  `arabica-coffee` and `robusta-coffee` fold into `coffee`. Records tag the level the dataset is
+  about rather than every crop a dimension holds.
+
 ### Added
 
 - Added `land` to the domain vocabulary (AGROVOC "land resources") for soils, land cover and land
