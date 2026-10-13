@@ -153,11 +153,18 @@ async function main() {
         "Classification of livestock; each concept carries its source code, ancestor " +
         "ids for roll-up under `crops` or `livestock`, and an AGROVOC URI where one " +
         "corresponds.",
-      source_scheme: {
-        id: "fao-icc-1-1",
-        uri: "https://stats.fao.org/classifications/ICC/v1.1/scheme",
-        title: "FAO Indicative Crop Classification (ICC) 1.1",
-      },
+      source_schemes: [
+        {
+          id: "fao-icc-1-1",
+          uri: "https://stats.fao.org/classifications/ICC/v1.1/scheme",
+          title: "FAO Indicative Crop Classification (ICC) 1.1",
+        },
+        {
+          id: "fao-wca2030-livestock",
+          uri: "https://www.fao.org/world-census-agriculture/wca-round/round-2030-(2026-2035)/en",
+          title: "WCA 2030 Classification of livestock (Annex 8)",
+        },
+      ],
     },
     concepts,
   };
