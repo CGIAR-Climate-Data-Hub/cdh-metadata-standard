@@ -103,7 +103,58 @@
             "$ref": "../../schemas/vocab/climate_scenario.schema.json"
           }
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mip_era": {
+                "const": "CMIP5"
+              }
+            },
+            "required": ["mip_era"]
+          },
+          "then": {
+            "properties": {
+              "models": {
+                "items": {
+                  "$ref": "../../schemas/vocab/climate_model.schema.json#/$defs/CMIP5"
+                }
+              },
+              "scenarios": {
+                "items": {
+                  "$ref": "../../schemas/vocab/climate_scenario.schema.json#/$defs/CMIP5"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mip_era": {
+                "const": "CMIP6"
+              }
+            },
+            "required": ["mip_era"]
+          },
+          "then": {
+            "properties": {
+              "models": {
+                "items": {
+                  "$ref": "../../schemas/vocab/climate_model.schema.json#/$defs/CMIP6"
+                }
+              },
+              "scenarios": {
+                "items": {
+                  "$ref": "../../schemas/vocab/climate_scenario.schema.json#/$defs/CMIP6"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "$comment": "With mip_era set, models and scenarios must come from that era's subset."
     }
   }
 }
