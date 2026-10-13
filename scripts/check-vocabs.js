@@ -14,7 +14,12 @@ const META_PATH = resolve(ROOT, "spec/schemas/vocab/vocabulary.schema.json");
 const VOCAB_DIR = resolve(ROOT, "vocab");
 
 // Built by scripts/build-*-vocab.js, which self-check their output.
-const GENERATED = new Set(["geography.json", "commodity.json"]);
+const GENERATED = new Set([
+  "geography.json",
+  "commodity.json",
+  "climate_model.json",
+  "climate_scenario.json",
+]);
 
 const ajv = newAjv();
 const validate = ajv.compile(JSON.parse(await readFile(META_PATH, "utf-8")));

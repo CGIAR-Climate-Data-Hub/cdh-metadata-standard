@@ -9,6 +9,7 @@
     "check": "npm run check-schemas && npm run check-vocabs && npm run compile-schemas && node scripts/bundle-profile.js --check && npm run check-profile-bundle && npm run check-examples && npm run check-yaml && npm run check-invalid",
     "build-geography": "node scripts/build-geography-vocab.js",
     "build-commodity": "node scripts/build-commodity-vocab.js",
+    "build-climate": "node scripts/build-climate-vocabs.js",
     "gen-schemas": "node scripts/generate-vocab-schemas.js",
     "check-schemas": "node scripts/generate-vocab-schemas.js --check",
     "check-vocabs": "node scripts/check-vocabs.js",

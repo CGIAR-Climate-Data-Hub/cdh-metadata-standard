@@ -12,6 +12,11 @@ occur between minor versions.
 
 ### Changed
 
+- **Breaking:** `climate.models` and `climate.scenarios` are closed vocabularies generated from the
+  WCRP CMIP6 controlled vocabularies and the CMIP5 facets of the ESGF search index
+  (`vocab/climate_model.json`, `vocab/climate_scenario.json`). Ids keep the CMIP spelling, so
+  `MPI-ESM1-2-HR` and `ssp245` validate as before; made-up or misspelt ids no longer do. `ensemble`
+  stays for multi-model products.
 - **Breaking:** the commodity vocabulary is now generated from the FAO Indicative Crop
   Classification 1.1 and the WCA 2030 Classification of livestock, with `crops` and `livestock` as
   roots and `parents` for roll-up, the same shape as the geography vocabulary. Ids follow the

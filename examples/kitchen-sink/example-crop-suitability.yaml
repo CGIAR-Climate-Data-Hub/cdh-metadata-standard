@@ -226,8 +226,8 @@ climate:
     resolution: 0.05 degree
   mip_era: CMIP6
   models:
-    - EXAMPLE-ESM1
-    - EXAMPLE-ESM2
+    - MPI-ESM1-2-HR
+    - UKESM1-0-LL
   scenarios:
     - ssp245
     - ssp585

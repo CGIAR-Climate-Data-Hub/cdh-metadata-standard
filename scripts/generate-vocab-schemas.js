@@ -39,6 +39,16 @@ const VOCABS = {
     target: resolve(ROOT, "spec/schemas/vocab/geography.schema.json"),
     title: "CDH Geography Vocabulary",
   },
+  climate_model: {
+    source: resolve(ROOT, "vocab/climate_model.json"),
+    target: resolve(ROOT, "spec/schemas/vocab/climate_model.schema.json"),
+    title: "CDH Climate Model Vocabulary",
+  },
+  climate_scenario: {
+    source: resolve(ROOT, "vocab/climate_scenario.json"),
+    target: resolve(ROOT, "spec/schemas/vocab/climate_scenario.schema.json"),
+    title: "CDH Climate Scenario Vocabulary",
+  },
 };
 
 async function conceptIds(path) {

@@ -100,7 +100,7 @@ cdh:
 climate:
   mip_era: CMIP6
   models:
-    - EXAMPLE-ESM1
+    - MPI-ESM1-2-HR
   scenarios:
     - ssp245
 
