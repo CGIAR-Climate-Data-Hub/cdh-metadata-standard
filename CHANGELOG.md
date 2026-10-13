@@ -8,6 +8,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While the project is pre-1.0, the schema should be considered unstable and breaking changes may
 occur between minor versions.
 
+## [Unreleased]
+
+### Changed
+
+- On an open-ended series, a dimension `extent` end is the latest value present as of `updated`. It
+  may lag the data but must never run ahead of it, since every path an `href_template` renders must
+  exist.
+- An `href_template` renders once per structure the entry holds, over that structure's variables and
+  dimension values; the entry's files are the union.
+
 ## [0.4.1] - 2026-10-07
 
 ### Added
@@ -492,6 +502,7 @@ occur between minor versions.
 - Initial prototype of the core metadata specification, controlled vocabularies, and supporting
   build scripts.
 
+[Unreleased]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.4.1...HEAD
 [0.4.1]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.2.0...v0.3.0
