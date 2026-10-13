@@ -765,18 +765,19 @@ extension fields, not in `keywords` (see section 4.4).
   path with the template appended. Each `{token}` must match a `dimensions[].name`, or be the
   reserved `{variable}` token for files split per variable (`variable` is therefore not allowed as a
   dimension name). `{variable}` expands over the variables the entry holds, and each other token
-  must be a dimension of every structure the entry holds. The entry describes one file per distinct
-  path the template renders. Values are substituted verbatim; every rendered path MUST exist; when
-  some do not, list the files in a `file_index` instead. A token on a `type: temporal` dimension may
-  carry a strftime format, `{date:%Y.%m.%d}`, when the file name spells the date differently from
-  the ISO 8601 value. Only `%Y` (four-digit year), `%m`, and `%d` (two-digit month and day) are
-  allowed; a token may repeat with different formats (`year={date:%Y}/{date:%Y%m%d}.tif`). A format
-  may not be finer than the axis values are written (a year axis takes only `%Y`). A coarser format
-  splits an axis into files: on a daily axis, `{date:%Y}.parquet` is one file per year, holding that
-  year's days. Names the directives cannot spell use `file_index`. Omit it for a single file. On a
-  templated entry, `file_size` describes **one file**, not the set; where slices differ materially
-  in size, omit it rather than averaging. See the
-  [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
+  must be a dimension of every structure the entry holds. The template renders once per structure,
+  over that structure's variables and dimension values; the entry's files are the union. The entry
+  describes one file per distinct path the template renders. Values are substituted verbatim; every
+  rendered path MUST exist; when some do not, list the files in a `file_index` instead. A token on a
+  `type: temporal` dimension may carry a strftime format, `{date:%Y.%m.%d}`, when the file name
+  spells the date differently from the ISO 8601 value. Only `%Y` (four-digit year), `%m`, and `%d`
+  (two-digit month and day) are allowed; a token may repeat with different formats
+  (`year={date:%Y}/{date:%Y%m%d}.tif`). A format may not be finer than the axis values are written
+  (a year axis takes only `%Y`). A coarser format splits an axis into files: on a daily axis,
+  `{date:%Y}.parquet` is one file per year, holding that year's days. Names the directives cannot
+  spell use `file_index`. Omit it for a single file. On a templated entry, `file_size` describes
+  **one file**, not the set; where slices differ materially in size, omit it rather than averaging.
+  See the [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
 - **`file_index` (optional):** Use instead of `href_template` when the files do not follow a regular
   pattern, or when there are too many to open one by one. A list of
   `{ format, locations, title, media_type }` indexes that list or open this entry's files as one
