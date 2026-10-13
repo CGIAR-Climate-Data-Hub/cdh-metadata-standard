@@ -497,7 +497,7 @@
       "type": "string"
     },
     "dataType": {
-      "description": "Storage type of a column, band, or array. Numeric names follow STAC raster:data_type; the rest cover table columns. integer and number are for text formats (CSV, fixed-width, JSON) where width and signedness are not stored. other is for nested types (list, map, struct).",
+      "description": "Storage type of a column, band, or array. Numeric names follow STAC raster:data_type; text-column names follow Frictionless Table Schema; decimal and binary are CDH additions for binary stores. integer and number are for text formats (CSV, fixed-width, JSON) where width and signedness are not stored. other is for nested types (list, map, struct).",
       "enum": [
         "int8",
         "int16",
