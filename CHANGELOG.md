@@ -10,10 +10,6 @@ occur between minor versions.
 
 ## [Unreleased]
 
-### Added
-
-## [Unreleased]
-
 ### Changed
 
 - `spatial.crs` prefers an authority code (`EPSG:4326`, `ESRI:54052`) or an OGC CRS URI. A PROJ or
@@ -23,6 +19,11 @@ occur between minor versions.
 - A service with a URI scheme of its own, such as `ee://<asset id>` for Google Earth Engine, puts
   that URI first in `locations[]`; an HTTPS endpoint may follow. The STAC mapping emits it as the
   asset `href` with no `type`.
+- On an open-ended series, a dimension `extent` end is the latest value present as of `updated`. It
+  may lag the data but must never run ahead of it, since every path an `href_template` renders must
+  exist.
+- An `href_template` renders once per structure the entry holds, over that structure's variables and
+  dimension values; the entry's files are the union.
 
 ## [0.4.1] - 2026-10-07
 
