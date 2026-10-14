@@ -877,7 +877,8 @@ version-specific inventory URL for a release.
 #### `additional_links[]`
 
 - **Requirement:** Optional
-- **Expected value per entry:** `{ title, rel, url, description }`; `rel` and `url` are required.
+- **Expected value per entry:** `{ title, rel, url, id, description }`; `rel` is required, with
+  either `url` or `id`, not both. `id` names another Hub record, as in `derived_from[]`.
 - **Vocabulary for `rel`:** See section 6.
 
 ### 5.8 Data dictionary

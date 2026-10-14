@@ -8,6 +8,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While the project is pre-1.0, the schema should be considered unstable and breaking changes may
 occur between minor versions.
 
+## [Unreleased]
+
+### Added
+
+- `additional_links[]` entries may carry `id` instead of `url` to link another Hub record, as
+  `derived_from[]` already does. One of the two is required, not both.
+
 ## [0.4.1] - 2026-10-07
 
 ### Added

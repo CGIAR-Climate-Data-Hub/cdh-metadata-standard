@@ -1,0 +1,4 @@
+# An additional_links entry needs a url or an id.
+additional_links:
+  - rel: related
+    title: Nowhere
