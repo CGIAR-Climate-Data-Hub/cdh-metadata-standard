@@ -115,13 +115,30 @@
           "type": "array"
         },
         "additional_links": {
-          "description": "Related links: citation targets, services, or related resources.",
+          "description": "Related links: citation targets, services, or related resources. Each entry has an id (a Hub record) or a url (anything else), not both.",
           "items": {
             "additionalProperties": false,
+            "anyOf": [
+              {
+                "required": ["id"]
+              },
+              {
+                "required": ["url"]
+              }
+            ],
+            "not": {
+              "required": ["id", "url"]
+            },
             "properties": {
               "description": {
                 "type": "string",
                 "minLength": 1
+              },
+              "id": {
+                "description": "id of the Hub record linked. Must resolve to exactly one catalog record.",
+                "pattern": "^[a-z0-9][a-z0-9-]*$",
+                "type": "string",
+                "examples": ["example-crop-suitability", "spam2020"]
               },
               "rel": {
                 "type": "string",
@@ -135,11 +152,12 @@
               },
               "url": {
                 "format": "uri",
+                "description": "URL of a resource outside the Hub.",
                 "minLength": 1,
                 "type": "string"
               }
             },
-            "required": ["rel", "url"],
+            "required": ["rel"],
             "type": "object"
           },
           "type": "array"

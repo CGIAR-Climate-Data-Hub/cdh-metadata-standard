@@ -336,3 +336,7 @@ additional_links:
     rel: version-history
     url: https://example.org/atlas/example-crop-suitability/changelog
     description: Human-readable history of releases for this record.
+  - title: MAPSPAM 2020
+    rel: related
+    id: spam2020
+    description: Crop area and production maps for the same crops, catalogued in the Hub.

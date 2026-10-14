@@ -10,6 +10,11 @@ occur between minor versions.
 
 ## [Unreleased]
 
+### Added
+
+- `additional_links[]` entries may carry `id` instead of `url` to link another Hub record, as
+  `derived_from[]` already does. One of the two is required, not both.
+
 ### Changed
 
 - `spatial.crs` prefers an authority code (`EPSG:4326`, `ESRI:54052`) or an OGC CRS URI. A PROJ or

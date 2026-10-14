@@ -820,7 +820,8 @@ additional_assets:
 
 Use `additional_links` for related web resources rather than downloadable files: for example,
 documentation pages, license terms, request forms, services, or related and source datasets. Each
-link needs a `url` and a `rel` value describing its relationship to the record; `title` labels it.
+link needs a `rel` value describing its relationship to the record and either a `url` or, for
+another Hub record, its `id`; `title` labels it.
 
 Common `rel` values include `describedby` for documentation, `license` for license terms,
 `create-form` for an access-request form, `help` for access instructions, `cite-as` for the
@@ -833,6 +834,9 @@ additional_links:
     rel: create-form
     url: https://example.org/request-access
     description: Form for requesting access to the dataset.
+  - title: Monthly precipitation totals
+    rel: related
+    id: example-precipitation
 ```
 
 ## Where The Record Lives

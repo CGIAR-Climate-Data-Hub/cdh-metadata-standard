@@ -388,10 +388,25 @@
     },
     "link": {
       "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": ["id"]
+        },
+        {
+          "required": ["url"]
+        }
+      ],
+      "not": {
+        "required": ["id", "url"]
+      },
       "properties": {
         "description": {
           "type": "string",
           "minLength": 1
+        },
+        "id": {
+          "$ref": "#/$defs/id",
+          "description": "id of the Hub record linked. Must resolve to exactly one catalog record."
         },
         "rel": {
           "type": "string",
@@ -404,10 +419,11 @@
         },
         "url": {
           "$ref": "#/$defs/nonEmptyString",
-          "format": "uri"
+          "format": "uri",
+          "description": "URL of a resource outside the Hub."
         }
       },
-      "required": ["rel", "url"],
+      "required": ["rel"],
       "type": "object"
     },
     "locations": {
@@ -1302,7 +1318,7 @@
       "type": "array"
     },
     "additional_links": {
-      "description": "Related links: citation targets, services, or related resources.",
+      "description": "Related links: citation targets, services, or related resources. Each entry has an id (a Hub record) or a url (anything else), not both.",
       "items": {
         "$ref": "#/$defs/link"
       },
