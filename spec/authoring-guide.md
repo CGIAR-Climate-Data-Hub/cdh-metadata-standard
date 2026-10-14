@@ -546,7 +546,8 @@ in the dataset fully. If this is not the case, each country should be listed. Th
 repeat coverage with children in a parent region. For example, listing the parent is sufficient, not
 `[eastern-africa, kenya, uganda, ...]`.
 
-`spatial.crs` should be a coordinate reference system (CRS) identifier, such as `EPSG:4326`.
+`spatial.crs` should be a coordinate reference system (CRS) authority code, such as `EPSG:4326` or
+`ESRI:54052`, or an OGC CRS URI. Use a PROJ or WKT string only when no code exists.
 
 Grid spacing is a horizontal axis of the structure, as in STAC datacube. For a regular grid with one
 spacing on both axes, one `xy` dimension with a numeric `step` in its `unit`:
@@ -666,7 +667,8 @@ For each variable:
 - `name` is the column or band name as stored, even when the source's naming is terse or differs
   from other records. Put the readable name in `description`.
 - Use `description` for what the variable measures.
-- It is preferable to have unit as a UCUM or UDUNITS-2 unit.
+- Write `unit` in UDUNITS-2 (`mm d-1`, `degC`, `kg ha-1`). Use UCUM only for what UDUNITS-2 cannot
+  say, such as `{head}/km2` or `[pH]`.
 - Include the normal reading guidance in `description` when direction matters.
 - Use `note` for variable-specific limitations, caveats, or warnings.
 
