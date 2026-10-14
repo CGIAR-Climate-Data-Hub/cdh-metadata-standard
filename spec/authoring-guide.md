@@ -444,7 +444,9 @@ coordinate, e.g. tiles observed on the same date. Add a `variable` column when f
 variable each and the names do not follow a `{variable}` token.
 
 Use either `file_index` or `href_template` on an entry. Inventory rows enumerate the files present,
-so omitted dates do not imply missing rows that a consumer should fill. See the
+so omitted dates do not imply missing rows that a consumer should fill. When the producer ships one
+index file per slice, such as one VRT per map, put the `href_template` on the index entry instead;
+the data entry still describes the tiles. See the
 [file index rules](standard.md#file-indexes-file_index) for the formats and the CSV columns.
 
 #### Data served by an API

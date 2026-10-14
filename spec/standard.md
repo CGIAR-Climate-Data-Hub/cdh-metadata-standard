@@ -781,11 +781,11 @@ extension fields, not in `keywords` (see section 4.4).
   [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
 - **`file_index` (optional):** Use instead of `href_template` when the files do not follow a regular
   pattern, or when there are too many to open one by one. A list of
-  `{ format, locations, title, media_type }` indexes that list or open this entry's files as one
-  dataset. An index opens files this entry already holds; a store that carries its own data is a
-  `data[]` entry, not an index. The index is the one part of a record that may live outside it;
-  every field definition stays in the record. Mutually exclusive with `href_template`. Formats and
-  rules: [File indexes](#file-indexes-file_index).
+  `{ format, locations, href_template, title, media_type }` indexes that list or open this entry's
+  files as one dataset. An index opens files this entry already holds; a store that carries its own
+  data is a `data[]` entry, not an index. The index is the one part of a record that may live
+  outside it; every field definition stays in the record. Mutually exclusive with `href_template`.
+  Formats and rules: [File indexes](#file-indexes-file_index).
 - **`checksum` (optional):** Digest of a single-file entry as `<algorithm>:<hex>` (`md5`, `sha1`,
   `sha256`, `sha512`), the same form as the `cdh-inventory` column. Not allowed with `href_template`
   or `file_index`; list per-file checksums in a `cdh-inventory` instead.
@@ -816,8 +816,11 @@ extension fields, not in `keywords` (see section 4.4).
 
 Each entry names one index file and the specification it follows. Its `locations[]` are identical
 copies of that file; an index whose internal paths differ, such as S3 instead of HTTPS, is a
-separate entry. No format is required and any one is a complete index. CDH does not open index
-files; each is trusted to its own specification. An index may live anywhere; the entry's
+separate entry. No format is required and any one is a complete index. When the producer publishes
+one index file per slice, such as one VRT per map, the entry MAY carry `href_template` instead of
+listing each file. It follows the same token rules as `data[].href_template` and renders against the
+index entry's `locations[]`; the rendered files together are one complete index. CDH does not open
+index files; each is trusted to its own specification. An index may live anywhere; the entry's
 `locations[]` describe the files, not the index. A `cdh-inventory` location `url` MAY be a path
 relative to the record file, as in `additional_assets[]`, when the CSV is committed beside the
 record; the file MUST exist at that path. Other formats use absolute URLs.

@@ -126,7 +126,7 @@ data:
   # v1 COG names followed no single pattern, so no href_template fits. Indexes
   # list the files instead: a cdh-inventory (CSV columns href, time, crop,
   # checksum) of full URLs, a stac-geoparquet index for STAC clients, and
-  # a GDAL VRT that opens the COGs as one raster in GDAL, QGIS, or rasterio.
+  # one GDAL VRT per crop, so that index entry carries an href_template.
   - name: cogs
     description: Cloud Optimized GeoTIFFs of the v1 cube, one per horizon and crop.
     locations:
@@ -142,5 +142,6 @@ data:
         media_type: application/vnd.apache.parquet
       - format: vrt
         locations:
-          - url: https://example.org/data/example-crop-suitability/v1/cogs.vrt
+          - url: https://example.org/data/example-crop-suitability/v1/
+        href_template: "cogs-{crop}.vrt"
     media_type: "image/tiff; application=geotiff; profile=cloud-optimized"

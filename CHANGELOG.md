@@ -12,8 +12,7 @@ occur between minor versions.
 
 ### Added
 
-- `additional_links[]` entries may carry `id` instead of `url` to link another Hub record, as
-  `derived_from[]` already does. One of the two is required, not both.
+## [Unreleased]
 
 ### Changed
 
@@ -509,6 +508,7 @@ occur between minor versions.
 - Initial prototype of the core metadata specification, controlled vocabularies, and supporting
   build scripts.
 
+[Unreleased]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.4.1...HEAD
 [0.4.1]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/CGIAR-Climate-Data-Hub/cdh-metadata-standard/compare/v0.2.0...v0.3.0
