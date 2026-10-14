@@ -769,7 +769,7 @@
         },
         "crs": {
           "$ref": "#/$defs/nonEmptyString",
-          "description": "Coordinate reference system of the data: EPSG code, CRS URI, or PROJ string.",
+          "description": "Coordinate reference system of the data: an authority code such as EPSG:4326 or ESRI:54052, or an OGC CRS URI. A PROJ or WKT string only when no code exists.",
           "examples": ["EPSG:4326"]
         },
         "geography": {

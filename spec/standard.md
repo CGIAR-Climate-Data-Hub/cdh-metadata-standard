@@ -625,7 +625,9 @@ spatial:
 #### `spatial.crs`
 
 - **Requirement:** Conditional. Required for geospatial STAC assets.
-- **Expected value:** EPSG code (e.g., `EPSG:4326`), CRS URI, or PROJ string for custom CRS.
+- **Expected value:** An authority code such as `EPSG:4326` or `ESRI:54052`, or an OGC CRS URI such
+  as `http://www.opengis.net/def/crs/EPSG/0/4326`. A PROJ or WKT string only when no code exists,
+  since a string cannot be named or looked up.
 - **Vocabulary:** [EPSG codes](https://epsg.io/).
 - **Authoring note:** Provide `spatial.crs` when known; otherwise review may add it (see section
   4.6).
