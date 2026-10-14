@@ -21,6 +21,9 @@ occur between minor versions.
   WKT string is for a CRS with no code, not an equal option.
 - `unit` follows UDUNITS-2, with UCUM only for what UDUNITS-2 cannot express (`{head}/km2`, `[pH]`),
   instead of either grammar at the author's choice.
+- A service with a URI scheme of its own, such as `ee://<asset id>` for Google Earth Engine, puts
+  that URI first in `locations[]`; an HTTPS endpoint may follow. The STAC mapping emits it as the
+  asset `href` with no `type`.
 
 ## [0.4.1] - 2026-10-07
 

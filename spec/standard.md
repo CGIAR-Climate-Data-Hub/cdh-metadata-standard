@@ -808,6 +808,9 @@ extension fields, not in `keywords` (see section 4.4).
     `application/geo+json`); omit it when the response is not a file. `file_size` and `checksum` do
     not apply. Link the API's machine-readable description in `additional_links[]` with
     `rel: service-desc`, and its documentation with `rel: service-doc`.
+  - When a service has a URI scheme of its own, the first `locations[]` entry uses it, such as
+    `ee://<asset id>` for a Google Earth Engine asset, which is what xee and the client libraries
+    open. An HTTPS endpoint for the same asset MAY follow as a further location.
 
 #### File indexes (`file_index[]`)
 
