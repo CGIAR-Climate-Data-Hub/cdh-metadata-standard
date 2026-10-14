@@ -4,11 +4,13 @@
     "id": "cdh-domain",
     "title": "Climate Data Hub Domain Vocabulary",
     "description": "Controlled vocabulary of high-level CDH domains used for catalog browse, filter, and group-by. The first concept on a record is treated as the primary domain and drives STAC sub-catalog placement. Subsequent concepts enable cross-cutting search.",
-    "source_scheme": {
-      "id": "agrovoc",
-      "uri": "https://agrovoc.fao.org/",
-      "title": "AGROVOC"
-    }
+    "source_schemes": [
+      {
+        "id": "agrovoc",
+        "uri": "https://agrovoc.fao.org/",
+        "title": "AGROVOC"
+      }
+    ]
   },
   "concepts": [
     {
@@ -45,6 +47,13 @@
       "description": "Hydrology, water resources, irrigation, and water-related hazards.",
       "code": "c_3731",
       "uri": "http://aims.fao.org/aos/agrovoc/c_3731"
+    },
+    {
+      "id": "land",
+      "label": "Land",
+      "description": "Biophysical land characteristics: soils, land cover and land use, terrain and elevation, and related surface properties.",
+      "code": "c_4179",
+      "uri": "http://aims.fao.org/aos/agrovoc/c_4179"
     },
     {
       "id": "mitigation",

@@ -4,11 +4,13 @@
     "id": "cdh-resource-type",
     "title": "Climate Data Hub Resource Type Vocabulary",
     "description": "Controlled vocabulary of broad resource kinds used to describe the primary thing a CDH record is about. These values describe the record-level resource, not individual asset formats. CDH author-facing ids are mapped to schema.org types, which drive the record's schema.org/JSON-LD output.",
-    "source_scheme": {
-      "id": "schema-org",
-      "uri": "https://schema.org/",
-      "title": "Schema.org"
-    }
+    "source_schemes": [
+      {
+        "id": "schema-org",
+        "uri": "https://schema.org/",
+        "title": "Schema.org"
+      }
+    ]
   },
   "concepts": [
     {
