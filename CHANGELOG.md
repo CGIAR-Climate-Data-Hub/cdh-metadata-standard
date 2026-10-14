@@ -26,7 +26,8 @@ occur between minor versions.
   official labels, so some change: `potato` is `potatoes`, `pearl-millet` and `millets` are
   `millet`, `buffalo` is `buffaloes`, `swine` is `swine-pigs`, `common-bean` is `beans`;
   `arabica-coffee` and `robusta-coffee` fold into `coffee`. Records tag the level the dataset is
-  about rather than every crop a dimension holds.
+  about rather than every crop a dimension holds. A group tag is a coverage claim, as in
+  `geography`: tag `cereals` only when the major members are covered, otherwise list the members.
 - On an open-ended series, a dimension `extent` end is the latest value present as of `updated`. It
   may lag the data but must never run ahead of it, since every path an `href_template` renders must
   exist.
