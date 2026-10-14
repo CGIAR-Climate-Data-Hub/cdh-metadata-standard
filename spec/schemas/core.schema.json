@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.1/schemas/core.schema.json",
+  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.5.0/schemas/core.schema.json",
   "$defs": {
     "additionalAsset": {
       "additionalProperties": false,
@@ -146,17 +146,11 @@
           }
         },
         "href_template": {
-          "type": "string",
-          "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name; the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset.",
-          "examples": [
-            "mapspam_{crop}_{technology}_{variable}.tif",
-            "chirps-v2.0.{date:%Y.%m.%d}.tif"
-          ],
-          "$comment": "Braces balance; a token is {name} or {name:format}, and a format holds at least one directive and no other %.",
-          "pattern": "^(?:[^{}]|\\{[^{}:]+(?::(?=[^}]*%)(?:%[Ymd]|[^%{}])+)?\\})+$"
+          "$ref": "#/$defs/hrefTemplate",
+          "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name; the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset."
         },
         "file_index": {
-          "description": "Indexes that list or open this entry's files as one dataset, per the File indexes section of standard.md. Each entry is one index file; its locations[] are the same file at several addresses. format names the specification the file follows. CDH does not open index files. Mutually exclusive with href_template.",
+          "description": "Indexes that list or open this entry's files as one dataset, per the File indexes section of standard.md. Each entry is one index file, or with href_template one per rendered path; its locations[] are the same file at several addresses. format names the specification the file follows. CDH does not open index files. Mutually exclusive with href_template on the entry.",
           "type": "array",
           "minItems": 1,
           "items": {
@@ -183,6 +177,10 @@
               "media_type": {
                 "description": "IANA media type of the index file itself, when it has one. Optional; useful for gti (GeoPackage, FlatGeobuf, or Parquet).",
                 "$ref": "#/$defs/nonEmptyString"
+              },
+              "href_template": {
+                "$ref": "#/$defs/hrefTemplate",
+                "description": "Optional pattern appended to each locations[].url when there is one index file per slice, e.g. one VRT per map. Same tokens and rules as the entry-level href_template; together the rendered files are one complete index."
               }
             },
             "if": {
@@ -388,10 +386,25 @@
     },
     "link": {
       "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": ["id"]
+        },
+        {
+          "required": ["url"]
+        }
+      ],
+      "not": {
+        "required": ["id", "url"]
+      },
       "properties": {
         "description": {
           "type": "string",
           "minLength": 1
+        },
+        "id": {
+          "$ref": "#/$defs/id",
+          "description": "id of the Hub record linked. Must resolve to exactly one catalog record."
         },
         "rel": {
           "type": "string",
@@ -404,10 +417,11 @@
         },
         "url": {
           "$ref": "#/$defs/nonEmptyString",
-          "format": "uri"
+          "format": "uri",
+          "description": "URL of a resource outside the Hub."
         }
       },
-      "required": ["rel", "url"],
+      "required": ["rel"],
       "type": "object"
     },
     "locations": {
@@ -497,7 +511,7 @@
       "type": "string"
     },
     "dataType": {
-      "description": "Storage type of a column, band, or array. Numeric names follow STAC raster:data_type; the rest cover table columns. integer and number are for text formats (CSV, fixed-width, JSON) where width and signedness are not stored. other is for nested types (list, map, struct).",
+      "description": "Storage type of a column, band, or array. Numeric names follow STAC raster:data_type; text-column names follow Frictionless Table Schema; decimal and binary are CDH additions for binary stores. integer and number are for text formats (CSV, fixed-width, JSON) where width and signedness are not stored. array is a column whose cells hold a list of values; say the element type in description. other is for maps, structs, and nested lists.",
       "enum": [
         "int8",
         "int16",
@@ -523,6 +537,7 @@
         "date",
         "time",
         "datetime",
+        "array",
         "other"
       ]
     },
@@ -769,7 +784,7 @@
         },
         "crs": {
           "$ref": "#/$defs/nonEmptyString",
-          "description": "Coordinate reference system of the data: EPSG code, CRS URI, or PROJ string.",
+          "description": "Coordinate reference system of the data: an authority code such as EPSG:4326 or ESRI:54052, or an OGC CRS URI. A PROJ or WKT string only when no code exists.",
           "examples": ["EPSG:4326"]
         },
         "geography": {
@@ -949,7 +964,7 @@
           },
           "unit": {
             "$ref": "#/$defs/nonEmptyString",
-            "description": "Unit of measurement for the values, preferably compliant with UDUNITS-2 or UCUM. Required on x, y, and xy (degree, m, km) and on z (cm, m, hPa); useful on any numeric domain axis. Not a substitute for reference_system.",
+            "description": "Unit of measurement for the values, in UDUNITS-2 (UCUM only for what UDUNITS-2 cannot express). Required on x, y, and xy (degree, m, km) and on z (cm, m, hPa); useful on any numeric domain axis. Not a substitute for reference_system.",
             "examples": ["cm", "m", "hPa"]
           },
           "data_type": {
@@ -1194,7 +1209,7 @@
           },
           "unit": {
             "$ref": "#/$defs/nonEmptyString",
-            "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM. Required for measurements; omit for text or code columns.",
+            "description": "Unit of measurement in UDUNITS-2, as CF requires (mm d-1, degC, kg ha-1). UCUM only for what UDUNITS-2 cannot express, such as {head}/km2 or [pH]; never a UCUM spelling of a UDUNITS-2 unit. Required for measurements; omit for text or code columns.",
             "examples": ["t ha-1", "{head}/km2"]
           },
           "nodata": {
@@ -1276,6 +1291,12 @@
           }
         }
       }
+    },
+    "hrefTemplate": {
+      "type": "string",
+      "examples": ["mapspam_{crop}_{technology}_{variable}.tif", "chirps-v2.0.{date:%Y.%m.%d}.tif"],
+      "$comment": "Braces balance; a token is {name} or {name:format}, and a format holds at least one directive and no other %.",
+      "pattern": "^(?:[^{}]|\\{[^{}:]+(?::(?=[^}]*%)(?:%[Ymd]|[^%{}])+)?\\})+$"
     }
   },
   "description": "JSON Schema for CDH metadata records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
@@ -1302,7 +1323,7 @@
       "type": "array"
     },
     "additional_links": {
-      "description": "Related links: citation targets, services, or related resources.",
+      "description": "Related links: citation targets, services, or related resources. Each entry has an id (a Hub record) or a url (anything else), not both.",
       "items": {
         "$ref": "#/$defs/link"
       },

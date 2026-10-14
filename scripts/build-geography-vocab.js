@@ -133,11 +133,13 @@ async function main() {
         "metadata filtering and catalog browse. Generated from the UN M49 " +
         "standard; each concept carries its M49 code, ISO 3166-1 alpha-3 code " +
         "(countries), ancestor ids for roll-up, and LDC/LLDC/SIDS membership.",
-      source_scheme: {
-        id: "un-m49",
-        uri: "https://unstats.un.org/unsd/methodology/m49/",
-        title: "UN Standard Country or Area Codes for Statistical Use (M49)",
-      },
+      source_schemes: [
+        {
+          id: "un-m49",
+          uri: "https://unstats.un.org/unsd/methodology/m49/",
+          title: "UN Standard Country or Area Codes for Statistical Use (M49)",
+        },
+      ],
     },
     concepts,
   };

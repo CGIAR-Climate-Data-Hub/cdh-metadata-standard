@@ -150,33 +150,35 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
   // Unit a strftime directive spells; a format may not go finer than the axis values.
   const DIRECTIVE_UNIT = { Y: "year", m: "month", d: "day" };
   list(doc?.data).forEach((asset, i) => {
-    const tpl = asset?.href_template;
+    checkTemplate(`/data/${i}/href_template`, asset?.href_template, held[i]);
+    // An index entry's template follows the same rules as the asset's own.
+    list(asset?.file_index).forEach((idx, j) =>
+      checkTemplate(`/data/${i}/file_index/${j}/href_template`, idx?.href_template, held[i]),
+    );
+  });
+  function checkTemplate(path, tpl, structures) {
     if (typeof tpl !== "string" || tpl === "") return;
     // {token} or {token:strftime}; the spec spells a temporal value the way the file name does.
     for (const [, token, spec] of tpl.matchAll(/\{([^}:]+)(?::([^}]*))?\}/g)) {
       // A template assumes every combination exists, so each held structure needs the token.
-      const missing = held[i].filter((s) => !s.dims.has(token));
-      const dim = held[i].find((s) => s.dims.has(token))?.dims.get(token);
+      const missing = structures.filter((s) => !s.dims.has(token));
+      const dim = structures.find((s) => s.dims.has(token))?.dims.get(token);
       // The schema checks token syntax and requires variables for {variable}.
       if (token === "variable") {
         // nothing to resolve
       } else if (!dim) {
-        out.push(`/data/${i}/href_template: token {${token}} has no matching dimensions[].name`);
+        out.push(`${path}: token {${token}} has no matching dimensions[].name`);
       } else if (dim.count === 0) {
-        out.push(
-          `/data/${i}/href_template: dimension "${token}" must list its values, categories, or extent`,
-        );
+        out.push(`${path}: dimension "${token}" must list its values, categories, or extent`);
       } else {
         for (const s of missing) {
-          out.push(
-            `/data/${i}/href_template: token {${token}} is not a dimension of structure "${s.name}"`,
-          );
+          out.push(`${path}: token {${token}} is not a dimension of structure "${s.name}"`);
         }
       }
       if (spec === undefined) continue;
       if (!dim?.temporal) {
         out.push(
-          `/data/${i}/href_template: token {${token}:${spec}} carries a format, which is only allowed on a type: temporal dimension`,
+          `${path}: token {${token}:${spec}} carries a format, which is only allowed on a type: temporal dimension`,
         );
       } else if (dim.unit) {
         const finest = Math.max(
@@ -184,12 +186,12 @@ export default function checkCrossFieldRules(doc, { isSpdx = () => true } = {}) 
         );
         if (finest > UNITS.indexOf(dim.unit)) {
           out.push(
-            `/data/${i}/href_template: token {${token}:${spec}} is finer than the axis values (${dim.unit}); never invent a month, day, or time`,
+            `${path}: token {${token}:${spec}} is finer than the axis values (${dim.unit}); never invent a month, day, or time`,
           );
         }
       }
     }
-  });
+  }
   const { created, updated } = doc;
   if (typeof created === "string" && typeof updated === "string") {
     if (new Date(updated) < new Date(created)) {

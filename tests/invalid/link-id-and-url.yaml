@@ -1,0 +1,5 @@
+# An additional_links entry names a Hub record by id or another resource by url, not both.
+additional_links:
+  - rel: related
+    id: example-precipitation
+    url: https://example.org/precipitation/

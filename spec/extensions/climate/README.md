@@ -17,14 +17,15 @@ with `rel: via` for major upstream products such as NEX-GDDP-CMIP6, CHIRPS, NASA
 
 - **Requirement:** Conditional. Required for projection, scenario, adaptation, or future-climate
   resources.
-- **Vocabulary (informal):** SSP labels (`ssp126`, `ssp245`, `ssp370`, `ssp585`), RCP labels
-  (`rcp26`, `rcp45`, `rcp85`), or `historic`.
+- **Vocabulary:** `vocab/climate_scenario.json`, generated from the CMIP6 controlled vocabulary and
+  the CMIP5 experiments on ESGF. Ids keep the CMIP spelling: `ssp245`, `rcp85`, `historical`.
 
 ## `climate.models[]`
 
 - **Requirement:** Conditional. Required for CMIP-based resources.
-- **Vocabulary (informal):** Canonical CMIP source IDs (e.g., `MPI-ESM1-2-HR`, `MRI-ESM2-0`). Use
-  `ensemble` to indicate a multi-model ensemble.
+- **Vocabulary:** `vocab/climate_model.json`, generated from the CMIP6 controlled vocabulary and the
+  CMIP5 models on ESGF. Ids keep the CMIP spelling (`MPI-ESM1-2-HR`, `HadGEM2-ES`). Use `ensemble`
+  for a multi-model ensemble.
 
 ## `climate.baseline`
 
@@ -46,7 +47,7 @@ with `rel: via` for major upstream products such as NEX-GDDP-CMIP6, CHIRPS, NASA
 
 ```yaml
 extensions:
-  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.1/extensions/climate/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.5.0/extensions/climate/schema.json
 climate:
   mip_era: CMIP6
   scenarios: [ssp245, ssp585]

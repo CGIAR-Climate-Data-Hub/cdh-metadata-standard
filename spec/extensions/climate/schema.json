@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.1/extensions/climate/schema.json",
+  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.5.0/extensions/climate/schema.json",
   "title": "Climate Extension",
   "description": "Climate projection provenance: baseline, bias adjustment, downscaling, scenarios.",
   "type": "object",
@@ -88,24 +88,73 @@
           "enum": ["CMIP5", "CMIP6"]
         },
         "models": {
-          "description": "Climate model source IDs; use 'ensemble' for a multi-model ensemble.",
+          "description": "Climate model source ids from vocab/climate_model.json: CMIP spelling verbatim, or `ensemble` for a multi-model product.",
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string",
-            "minLength": 1
+            "$ref": "../../schemas/vocab/climate_model.schema.json"
           }
         },
         "scenarios": {
-          "description": "Scenario labels, e.g. SSP/RCP or historic.",
+          "description": "Experiment ids from vocab/climate_scenario.json: CMIP spelling verbatim, e.g. ssp245, rcp85, historical.",
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string",
-            "minLength": 1
+            "$ref": "../../schemas/vocab/climate_scenario.schema.json"
           }
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mip_era": {
+                "const": "CMIP5"
+              }
+            },
+            "required": ["mip_era"]
+          },
+          "then": {
+            "properties": {
+              "models": {
+                "items": {
+                  "$ref": "../../schemas/vocab/climate_model.schema.json#/$defs/CMIP5"
+                }
+              },
+              "scenarios": {
+                "items": {
+                  "$ref": "../../schemas/vocab/climate_scenario.schema.json#/$defs/CMIP5"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mip_era": {
+                "const": "CMIP6"
+              }
+            },
+            "required": ["mip_era"]
+          },
+          "then": {
+            "properties": {
+              "models": {
+                "items": {
+                  "$ref": "../../schemas/vocab/climate_model.schema.json#/$defs/CMIP6"
+                }
+              },
+              "scenarios": {
+                "items": {
+                  "$ref": "../../schemas/vocab/climate_scenario.schema.json#/$defs/CMIP6"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "$comment": "With mip_era set, models and scenarios must come from that era's subset."
     }
   }
 }

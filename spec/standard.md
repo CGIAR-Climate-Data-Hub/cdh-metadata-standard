@@ -1,6 +1,6 @@
 # Climate Data Hub Metadata Standard
 
-Status: v0.4.1
+Status: v0.5.0
 
 This document defines the metadata model used by the Climate Data Hub - the field definitions,
 requirement levels, and rules every Hub record conforms to. The model is self-contained and stands
@@ -254,7 +254,7 @@ The fields below are defined by the core schema (`schemas/core.schema.json`) and
   - The version segment of every CDH-hosted schema URL in `extensions[]` must match
     `cdh_schema_version`, so a record references one release throughout. Validators enforce this as
     a cross-field rule.
-- **Example:** `v0.4.1`
+- **Example:** `v0.5.0`
 
 #### `id`
 
@@ -625,7 +625,9 @@ spatial:
 #### `spatial.crs`
 
 - **Requirement:** Conditional. Required for geospatial STAC assets.
-- **Expected value:** EPSG code (e.g., `EPSG:4326`), CRS URI, or PROJ string for custom CRS.
+- **Expected value:** An authority code such as `EPSG:4326` or `ESRI:54052`, or an OGC CRS URI such
+  as `http://www.opengis.net/def/crs/EPSG/0/4326`. A PROJ or WKT string only when no code exists,
+  since a string cannot be named or looked up.
 - **Vocabulary:** [EPSG codes](https://epsg.io/).
 - **Authoring note:** Provide `spatial.crs` when known; otherwise review may add it (see section
   4.6).
@@ -765,25 +767,26 @@ extension fields, not in `keywords` (see section 4.4).
   path with the template appended. Each `{token}` must match a `dimensions[].name`, or be the
   reserved `{variable}` token for files split per variable (`variable` is therefore not allowed as a
   dimension name). `{variable}` expands over the variables the entry holds, and each other token
-  must be a dimension of every structure the entry holds. The entry describes one file per distinct
-  path the template renders. Values are substituted verbatim; every rendered path MUST exist; when
-  some do not, list the files in a `file_index` instead. A token on a `type: temporal` dimension may
-  carry a strftime format, `{date:%Y.%m.%d}`, when the file name spells the date differently from
-  the ISO 8601 value. Only `%Y` (four-digit year), `%m`, and `%d` (two-digit month and day) are
-  allowed; a token may repeat with different formats (`year={date:%Y}/{date:%Y%m%d}.tif`). A format
-  may not be finer than the axis values are written (a year axis takes only `%Y`). A coarser format
-  splits an axis into files: on a daily axis, `{date:%Y}.parquet` is one file per year, holding that
-  year's days. Names the directives cannot spell use `file_index`. Omit it for a single file. On a
-  templated entry, `file_size` describes **one file**, not the set; where slices differ materially
-  in size, omit it rather than averaging. See the
-  [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
+  must be a dimension of every structure the entry holds. The template renders once per structure,
+  over that structure's variables and dimension values; the entry's files are the union. The entry
+  describes one file per distinct path the template renders. Values are substituted verbatim; every
+  rendered path MUST exist; when some do not, list the files in a `file_index` instead. A token on a
+  `type: temporal` dimension may carry a strftime format, `{date:%Y.%m.%d}`, when the file name
+  spells the date differently from the ISO 8601 value. Only `%Y` (four-digit year), `%m`, and `%d`
+  (two-digit month and day) are allowed; a token may repeat with different formats
+  (`year={date:%Y}/{date:%Y%m%d}.tif`). A format may not be finer than the axis values are written
+  (a year axis takes only `%Y`). A coarser format splits an axis into files: on a daily axis,
+  `{date:%Y}.parquet` is one file per year, holding that year's days. Names the directives cannot
+  spell use `file_index`. Omit it for a single file. On a templated entry, `file_size` describes
+  **one file**, not the set; where slices differ materially in size, omit it rather than averaging.
+  See the [authoring guide](./authoring-guide.md#how-to-handle-many-files-with-href_template).
 - **`file_index` (optional):** Use instead of `href_template` when the files do not follow a regular
   pattern, or when there are too many to open one by one. A list of
-  `{ format, locations, title, media_type }` indexes that list or open this entry's files as one
-  dataset. An index opens files this entry already holds; a store that carries its own data is a
-  `data[]` entry, not an index. The index is the one part of a record that may live outside it;
-  every field definition stays in the record. Mutually exclusive with `href_template`. Formats and
-  rules: [File indexes](#file-indexes-file_index).
+  `{ format, locations, href_template, title, media_type }` indexes that list or open this entry's
+  files as one dataset. An index opens files this entry already holds; a store that carries its own
+  data is a `data[]` entry, not an index. The index is the one part of a record that may live
+  outside it; every field definition stays in the record. Mutually exclusive with `href_template`.
+  Formats and rules: [File indexes](#file-indexes-file_index).
 - **`checksum` (optional):** Digest of a single-file entry as `<algorithm>:<hex>` (`md5`, `sha1`,
   `sha256`, `sha512`), the same form as the `cdh-inventory` column. Not allowed with `href_template`
   or `file_index`; list per-file checksums in a `cdh-inventory` instead.
@@ -806,13 +809,19 @@ extension fields, not in `keywords` (see section 4.4).
     `application/geo+json`); omit it when the response is not a file. `file_size` and `checksum` do
     not apply. Link the API's machine-readable description in `additional_links[]` with
     `rel: service-desc`, and its documentation with `rel: service-doc`.
+  - When a service has a URI scheme of its own, the first `locations[]` entry uses it, such as
+    `ee://<asset id>` for a Google Earth Engine asset, which is what xee and the client libraries
+    open. An HTTPS endpoint for the same asset MAY follow as a further location.
 
 #### File indexes (`file_index[]`)
 
 Each entry names one index file and the specification it follows. Its `locations[]` are identical
 copies of that file; an index whose internal paths differ, such as S3 instead of HTTPS, is a
-separate entry. No format is required and any one is a complete index. CDH does not open index
-files; each is trusted to its own specification. An index may live anywhere; the entry's
+separate entry. No format is required and any one is a complete index. When the producer publishes
+one index file per slice, such as one VRT per map, the entry MAY carry `href_template` instead of
+listing each file. It follows the same token rules as `data[].href_template` and renders against the
+index entry's `locations[]`; the rendered files together are one complete index. CDH does not open
+index files; each is trusted to its own specification. An index may live anywhere; the entry's
 `locations[]` describe the files, not the index. A `cdh-inventory` location `url` MAY be a path
 relative to the record file, as in `additional_assets[]`, when the CSV is committed beside the
 record; the file MUST exist at that path. Other formats use absolute URLs.
@@ -877,7 +886,8 @@ version-specific inventory URL for a release.
 #### `additional_links[]`
 
 - **Requirement:** Optional
-- **Expected value per entry:** `{ title, rel, url, description }`; `rel` and `url` are required.
+- **Expected value per entry:** `{ title, rel, url, id, description }`; `rel` is required, with
+  either `url` or `id`, not both. `id` names another Hub record, as in `derived_from[]`.
 - **Vocabulary for `rel`:** See section 6.
 
 ### 5.8 Data dictionary
@@ -923,9 +933,9 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
       Lowercase, digits, `-` and `_`.
   - **`spatial` and `geometry` are rejected** as types. Use `xy` or `x`/`y` for the horizontal axes,
     `z` for a vertical axis, and `location` for a place key.
-  - `unit` is the unit of measurement for the values, preferably UDUNITS-2 or UCUM. Required on the
-    horizontal axes (`degree`, `m`, `km`); give one on a `z` dimension (`cm`, `m`, `hPa`) and on any
-    numeric domain axis whose values are not self-describing. It is not a substitute for
+  - `unit` is the unit of measurement for the values, in UDUNITS-2 (see `variables[]`). Required on
+    the horizontal axes (`degree`, `m`, `km`); give one on a `z` dimension (`cm`, `m`, `hPa`) and on
+    any numeric domain axis whose values are not self-describing. It is not a substitute for
     `reference_system`, which names the vocabulary or vertical CRS the values are coded against - a
     `z` dimension can carry both.
   - **Declare every temporal axis here** as `type: temporal`. The top-level `temporal` field carries
@@ -950,8 +960,10 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
     datacube. On a temporal axis it requires `step` and excludes `values`, and both strings are
     written at one precision (`1981`, `1981-01`, `1981-01-01`, or a date-time), no coarser than the
     step, start before end. The values are `first, first + step, …` while `<= last`, at that same
-    precision: `extent: ["1981", "2025"]` with `step: P1Y` is `1981, 1982, ... 2025`. On a
-    horizontal axis it is a numeric `[min, max]` in `unit`. Valid on no other type.
+    precision: `extent: ["1981", "2025"]` with `step: P1Y` is `1981, 1982, ... 2025`. On an
+    open-ended series (`temporal.end_date: null`), `last` is the latest value present as of
+    `updated`; it may lag the data but must never run ahead of it. On a horizontal axis it is a
+    numeric `[min, max]` in `unit`. Valid on no other type.
   - `values` lists the allowed values along the dimension. Omit it for a high-cardinality key column
     (you would not enumerate every household id or admin code).
   - `reference_system` is the vocabulary the values are coded against; prefer a resolvable URI when
@@ -978,20 +990,25 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
   `{ name, description, data_type, unit, nodata, note, categories }`.
 - **Rules:**
   - Every variable has every dimension of its structure.
-  - `unit` is the unit of measurement, preferably compliant with UDUNITS-2 or UCUM (e.g., `ha`, `t`,
-    `t ha-1`, `K`, `kg m-2 s-1`, `{head}/km2`) rather than strictly validated. Required for
-    measurements. Use `1` for dimensionless quantities; omit for text or code columns.
+  - `unit` follows UDUNITS-2, as CF requires, such as `mm d-1`, `degC`, `kg ha-1`. Where UDUNITS-2
+    has no form, use the UCUM expression instead: a count annotation like `{head}/km2`, or a
+    bracketed special like `[pH]`. Never spell a UDUNITS-2 unit the UCUM way, since `ha` and `d`
+    read differently in the two; readers parse UDUNITS-2 first and UCUM on failure. Not validated.
+    Required for measurements. Use `1` for dimensionless quantities; omit for text or code columns.
   - `name` is the variable, column, or band name as stored in the data, so it matches the files and
     `{variable}` tokens. When a CF standard name applies, give it in `description` (e.g.,
     "Near-surface air temperature (CF: `air_temperature`)").
   - `data_type` is one of a closed list. Numeric types follow STAC `raster:data_type`: `int8`,
     `int16`, `int32`, `int64`, `uint8`, `uint16`, `uint32`, `uint64`, `float16`, `float32`,
-    `float64`, and the complex `cint16`, `cint32`, `cfloat32`, `cfloat64`. Table columns may also be
-    `integer`, `number`, `decimal`, `boolean`, `string`, `binary`, `date`, `time`, or `datetime`.
+    `float64`, and the complex `cint16`, `cint32`, `cfloat32`, `cfloat64`. Table columns may also
+    use the Frictionless Table Schema names `integer`, `number`, `boolean`, `string`, `date`,
+    `time`, and `datetime`, plus two CDH additions, `decimal` and `binary`, for binary stores.
     `integer` and `number` are for text formats such as CSV, fixed-width, and JSON, where width and
     signedness are not stored. `decimal` is fixed-point with a declared precision in a binary store
-    such as Parquet or a database. Use `other` for nested types such as lists or structs. A geometry
-    column is not a variable; name it in `structures[].geometry_column`.
+    such as Parquet or a database. `array` is a column whose cells hold a list of values, such as a
+    Parquet `list<string>`; say the element type in `description`. Use `other` for maps, structs,
+    and nested lists. A geometry column is not a variable; name it in
+    `structures[].geometry_column`.
   - `nodata` is the fill value for missing data, as stored in this variable. State it on every
     variable that has one. A representation that stores a variable with another fill value or type
     (a `float32` Zarr filled with `NaN` beside `int16` GeoTIFFs filled with `-9999`) is another

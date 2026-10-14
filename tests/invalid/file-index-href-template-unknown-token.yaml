@@ -1,0 +1,17 @@
+# An index entry's href_template follows the asset's token rules; depth is not a dimension.
+structures:
+  - name: properties
+    dimensions:
+      - { name: property, type: category, description: Soil property., values: [clay, sand] }
+    variables:
+      - { name: mean, description: Predicted mean. }
+data:
+  - name: tiles
+    media_type: image/tiff; application=geotiff
+    locations:
+      - url: https://example.org/soilgrids/
+    file_index:
+      - format: vrt
+        locations:
+          - url: https://example.org/soilgrids/
+        href_template: "{property}/{property}_{depth}_mean.vrt"

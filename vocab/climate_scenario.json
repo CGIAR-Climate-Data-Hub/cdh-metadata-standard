@@ -1,0 +1,2423 @@
+{
+  "scheme": {
+    "id": "cdh-climate-scenario",
+    "title": "Climate Data Hub Climate Scenario Vocabulary",
+    "description": "Experiment ids for `climate.scenarios`, generated from the WCRP CMIP6 controlled vocabulary and the CMIP5 experiment facet of the ESGF search index. Ids are the CMIP spelling verbatim.",
+    "source_schemes": [
+      {
+        "id": "wcrp-cmip6-cvs",
+        "uri": "https://github.com/WCRP-CMIP/CMIP6_CVs",
+        "title": "WCRP CMIP6 Controlled Vocabularies"
+      },
+      {
+        "id": "esgf-cmip5",
+        "uri": "https://esgf.ceda.ac.uk/esg-search/search?project=CMIP5",
+        "title": "ESGF search index, CMIP5 project facets"
+      }
+    ]
+  },
+  "concepts": [
+    {
+      "id": "1pctCO2",
+      "label": "1pctCO2",
+      "mip_era": ["CMIP5", "CMIP6"],
+      "description": "DECK: 1pctCO2"
+    },
+    {
+      "id": "1pctCO2-4xext",
+      "label": "1pctCO2-4xext",
+      "mip_era": ["CMIP6"],
+      "description": "branched from 1pctCO2 run at year 140 and run with CO2 fixed at 4x pre-industrial concentration"
+    },
+    {
+      "id": "1pctCO2-bgc",
+      "label": "1pctCO2-bgc",
+      "mip_era": ["CMIP6"],
+      "description": "Biogeochemically-coupled specified concentration simulation in which CO2 increases at a rate of 1% per year until quadrupling"
+    },
+    {
+      "id": "1pctCO2-cdr",
+      "label": "1pctCO2-cdr",
+      "mip_era": ["CMIP6"],
+      "description": "1 percent per year decrease in CO2 (immediately after reaching 4xCO2 in the 1pctCO2 simulation); then held constant at pre-industrial level (part of the CDR-reversibility experiment)"
+    },
+    {
+      "id": "1pctCO2-rad",
+      "label": "1pctCO2-rad",
+      "mip_era": ["CMIP6"],
+      "description": "Radiatively-coupled specified concentration simulation in which CO2 increases at a rate of 1% per year until quadrupling"
+    },
+    {
+      "id": "1pctCO2Ndep",
+      "label": "1pctCO2Ndep",
+      "mip_era": ["CMIP6"],
+      "description": "Fully-coupled specified concentration simulation in which CO2 increases at a rate of 1% per year until quadrupling, plus an additional scenario of anthropogenic nitrogen deposition"
+    },
+    {
+      "id": "1pctCO2Ndep-bgc",
+      "label": "1pctCO2Ndep-bgc",
+      "mip_era": ["CMIP6"],
+      "description": "Biogeochemically-coupled specified concentration simulation in which CO2 increases at a rate of 1% per year until quadrupling, plus an additional scenario of anthropogenic nitrogen deposition"
+    },
+    {
+      "id": "1pctCO2to4x-withism",
+      "label": "1pctCO2to4x-withism",
+      "mip_era": ["CMIP6"],
+      "description": "Idealized 1%/yr CO2 increase to 4xC02 over 140yrs and kept constant at 4xCO2 for an additional 200 to 400 yrs simulation that includes interactive ice sheets"
+    },
+    {
+      "id": "a4SST",
+      "label": "a4SST",
+      "mip_era": ["CMIP6"],
+      "description": "As piSST, but with monthly-varying SSTs taken from years 111-140 of each model's own abrupt-4xCO2 experiment instead of from piControl. Sea-ice is unchanged from piSST"
+    },
+    {
+      "id": "a4SSTice",
+      "label": "a4SSTice",
+      "mip_era": ["CMIP6"],
+      "description": "As piSST, but with monthly-varying SSTs and sea-ice taken from years 111-140 of each model's own abrupt-4xCO2 experiment instead of from piControl"
+    },
+    {
+      "id": "a4SSTice-4xCO2",
+      "label": "a4SSTice-4xCO2",
+      "mip_era": ["CMIP6"],
+      "description": "As a4SSTice, but CO2 is quadrupled, and the increase in CO2 is seen by both the radiation scheme and vegetation"
+    },
+    {
+      "id": "abrupt-0p5xCO2",
+      "label": "abrupt-0p5xCO2",
+      "mip_era": ["CMIP6"],
+      "description": "Identical to the DECK abrupt-4xCO2, but at 0.5xCO2"
+    },
+    {
+      "id": "abrupt-2xCO2",
+      "label": "abrupt-2xCO2",
+      "mip_era": ["CMIP6"],
+      "description": "Identical to the DECK abrupt-4xCO2, but at 2xCO2"
+    },
+    {
+      "id": "abrupt-4xCO2",
+      "label": "abrupt-4xCO2",
+      "mip_era": ["CMIP6"],
+      "description": "DECK: abrupt-4xCO2"
+    },
+    {
+      "id": "abrupt-solm4p",
+      "label": "abrupt-solm4p",
+      "mip_era": ["CMIP6"],
+      "description": "Conceptually similar to abrupt 4xCO2 DECK experiment, except that the solar constant rather than CO2 is abruptly reduced by 4%"
+    },
+    {
+      "id": "abrupt-solp4p",
+      "label": "abrupt-solp4p",
+      "mip_era": ["CMIP6"],
+      "description": "Conceptually similar to abrupt 4xCO2 DECK experiment, except that the solar constant rather than CO2 is abruptly increased by 4%"
+    },
+    {
+      "id": "abrupt4xCO2",
+      "label": "abrupt4xCO2",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "amip",
+      "label": "amip",
+      "mip_era": ["CMIP5", "CMIP6"],
+      "description": "DECK: AMIP"
+    },
+    {
+      "id": "amip-4xCO2",
+      "label": "amip-4xCO2",
+      "mip_era": ["CMIP6"],
+      "description": "As CMIP5/CFMIP-2 amip4xCO2 experiment. AMIP experiment where SSTs are held at control values and the CO2 seen by the radiation scheme is quadrupled"
+    },
+    {
+      "id": "amip-a4SST-4xCO2",
+      "label": "amip-a4SST-4xCO2",
+      "mip_era": ["CMIP6"],
+      "description": "Same as amip, but a patterned SST anomaly is applied on top of the monthly-varying amip SSTs. This anomaly is a monthly climatology, taken from each model's own abrupt-4xCO2 run minus piControl (using the mean of years 111-140 of abrupt-4xCO2, and the parallel 30-year section of piControl). CO2 is quadrupled, and the increase in CO2 is seen by both the radiation scheme and vegetation"
+    },
+    {
+      "id": "amip-climSIC",
+      "label": "amip-climSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA5.2: investigate role of transient SST in recent climate change"
+    },
+    {
+      "id": "amip-climSST",
+      "label": "amip-climSST",
+      "mip_era": ["CMIP6"],
+      "description": "PA5.1: investigate role of transient sea ice in recent climate change"
+    },
+    {
+      "id": "amip-future4K",
+      "label": "amip-future4K",
+      "mip_era": ["CMIP6"],
+      "description": "As CMIP5/CFMIP-2 amipFuture experiment. AMIP experiment where SSTs are subject to a composite SST warming pattern derived from coupled models, scaled to an ice-free ocean mean of 4K"
+    },
+    {
+      "id": "amip-hist",
+      "label": "amip-hist",
+      "mip_era": ["CMIP6"],
+      "description": "Extended AMIP run that covers 1870-2014. All natural and anthropogenic historical forcings as used in CMIP6 Historical Simulation will be included. AGCM resolution as CMIP6 Historical Simulation. The HadISST data will be used"
+    },
+    {
+      "id": "amip-hld",
+      "label": "amip-hld",
+      "mip_era": ["CMIP6"],
+      "description": "The topography of the highlands in Africa, N. America and S. America TP is modified by setting surface elevations to a certain height (500m). Same model as DECK"
+    },
+    {
+      "id": "amip-lfmip-pdLC",
+      "label": "amip-lfmip-pdLC",
+      "mip_era": ["CMIP6"],
+      "description": "Scenario forced experiment with prescribed land surface climatology derived from modern conditions from the first historical ensemble member (1980-2014). SST and sea-ice from the first ensemble members of the historical and ssp585 experiments"
+    },
+    {
+      "id": "amip-lfmip-pObs",
+      "label": "amip-lfmip-pObs",
+      "mip_era": ["CMIP6"],
+      "description": "Land-hist land conditions; AMIP SSTs"
+    },
+    {
+      "id": "amip-lfmip-rmLC",
+      "label": "amip-lfmip-rmLC",
+      "mip_era": ["CMIP6"],
+      "description": "Scenario forced experiment with prescribed land surface climatology derived from 30yr running mean from the first ensemble members of the historical and ssp585 experiments. SST and sea-ice from the first ensemble members of the historical and ssp585 experiments"
+    },
+    {
+      "id": "amip-lwoff",
+      "label": "amip-lwoff",
+      "mip_era": ["CMIP6"],
+      "description": "As amip experiment, but with cloud-radiative effects switched off in the LW radiation code"
+    },
+    {
+      "id": "amip-m4K",
+      "label": "amip-m4K",
+      "mip_era": ["CMIP6"],
+      "description": "As amip experiment but SSTs are subject to a uniform cooling of 4K"
+    },
+    {
+      "id": "amip-p4K",
+      "label": "amip-p4K",
+      "mip_era": ["CMIP6"],
+      "description": "As CMIP5/CFMIP-2 amip4K experiment. AMIP experiment where SSTs are subject to a uniform warming of 4K"
+    },
+    {
+      "id": "amip-p4K-lwoff",
+      "label": "amip-p4K-lwoff",
+      "mip_era": ["CMIP6"],
+      "description": "As amip-p4K experiment, but with cloud-radiative effects switched off in the LW radiation code"
+    },
+    {
+      "id": "amip-piForcing",
+      "label": "amip-piForcing",
+      "mip_era": ["CMIP6"],
+      "description": "Identical to standard AMIP experiment but from 1870-present with constant pre-industrial forcing levels (anthropogenic and natural)"
+    },
+    {
+      "id": "amip-TIP",
+      "label": "amip-TIP",
+      "mip_era": ["CMIP6"],
+      "description": "The topography of the TIP is modified by setting surface elevations to 500m; to understand the combined thermal and mechanical forcing of the TIP. Same model as DECK"
+    },
+    {
+      "id": "amip-TIP-nosh",
+      "label": "amip-TIP-nosh",
+      "mip_era": ["CMIP6"],
+      "description": "Surface sensible heat released at the elevation above 500m over the TIP is not allowed to heat the atmosphere. Same model as DECK"
+    },
+    {
+      "id": "amip4K",
+      "label": "amip4K",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "amip4xCO2",
+      "label": "amip4xCO2",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "amipFuture",
+      "label": "amipFuture",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "aqua-4xCO2",
+      "label": "aqua-4xCO2",
+      "mip_era": ["CMIP6"],
+      "description": "Extended version of CMIP5/CFMIP-2 aqua4xCO2 experiment. Aquaplanet experiment where SSTs are held at control values and the CO2 seen by the radiation scheme is quadrupled"
+    },
+    {
+      "id": "aqua-control",
+      "label": "aqua-control",
+      "mip_era": ["CMIP6"],
+      "description": "Extended version of CMIP5/CFMIP-2 aquaControl experiment. Aquaplanet (no land) experiment with no seasonal cycle forced with specified zonally symmetric SSTs"
+    },
+    {
+      "id": "aqua-control-lwoff",
+      "label": "aqua-control-lwoff",
+      "mip_era": ["CMIP6"],
+      "description": "As aqua-control experiment, but with cloud-radiative effects switched off in the LW radiation code"
+    },
+    {
+      "id": "aqua-p4K",
+      "label": "aqua-p4K",
+      "mip_era": ["CMIP6"],
+      "description": "Extended version of CMIP5/CFMIP-2 aqua4K experiment. Aquaplanet experiment where SSTs are subject to a uniform warming of 4K"
+    },
+    {
+      "id": "aqua-p4K-lwoff",
+      "label": "aqua-p4K-lwoff",
+      "mip_era": ["CMIP6"],
+      "description": "As aqua-p4K experiment, but with cloud-radiative effects switched off in the LW radiation code"
+    },
+    {
+      "id": "aqua4K",
+      "label": "aqua4K",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "aqua4xCO2",
+      "label": "aqua4xCO2",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "aquaControl",
+      "label": "aquaControl",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "control-1950",
+      "label": "control-1950",
+      "mip_era": ["CMIP6"],
+      "description": "Coupled integrations with constant 1950\"s forcing"
+    },
+    {
+      "id": "control-slab",
+      "label": "control-slab",
+      "mip_era": ["CMIP6"],
+      "description": "slab control run for volc-pinatubo-slab"
+    },
+    {
+      "id": "dcppA-assim",
+      "label": "dcppA-assim",
+      "mip_era": ["CMIP6"],
+      "description": "A2.3 Assimilation runs used to generate initial conditions for hindcasts"
+    },
+    {
+      "id": "dcppA-hindcast",
+      "label": "dcppA-hindcast",
+      "mip_era": ["CMIP6"],
+      "description": "A1 (and A2.1, A3.1, and A3.2) Decadal hindcasts begun near the end of each year from 1960 to 2019, or every other year at minimum. First full hindcast year follows start year (e.g., for s1960, first full hindcast year is 1961)"
+    },
+    {
+      "id": "dcppA-hindcast-niff",
+      "label": "dcppA-hindcast-niff",
+      "mip_era": ["CMIP6"],
+      "description": "A4.1 Decadal hindcasts begun near the end of each year from 1960 to 2019, or every other year at minimum, but with no information from the future. First full hindcast year follows start year (e.g., for s1960, first full hindcast year is 1961)"
+    },
+    {
+      "id": "dcppA-historical-niff",
+      "label": "dcppA-historical-niff",
+      "mip_era": ["CMIP6"],
+      "description": "A4.2 Hindcasts initialized from historical climate simulations as in DCPP-A2.2, but with no information from the future. First full hindcast year follows start year (e.g., for s1960, first full hindcast year is 1961)"
+    },
+    {
+      "id": "dcppB-forecast",
+      "label": "dcppB-forecast",
+      "mip_era": ["CMIP6"],
+      "description": "B1 (and B2.1, B2.2) Ongoing decadal forecasts. First full forecast year follows start year (e.g., for s2017, first full forecast year is 2018)"
+    },
+    {
+      "id": "dcppC-amv-ExTrop-neg",
+      "label": "dcppC-amv-ExTrop-neg",
+      "mip_era": ["CMIP6"],
+      "description": "C1.7 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-amv-ExTrop-pos",
+      "label": "dcppC-amv-ExTrop-pos",
+      "mip_era": ["CMIP6"],
+      "description": "C1.7Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-amv-neg",
+      "label": "dcppC-amv-neg",
+      "mip_era": ["CMIP6"],
+      "description": "C1.3 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-amv-pos",
+      "label": "dcppC-amv-pos",
+      "mip_era": ["CMIP6"],
+      "description": "C1.2 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-amv-Trop-neg",
+      "label": "dcppC-amv-Trop-neg",
+      "mip_era": ["CMIP6"],
+      "description": "C1.8 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-amv-Trop-pos",
+      "label": "dcppC-amv-Trop-pos",
+      "mip_era": ["CMIP6"],
+      "description": "C1.8 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-atl-control",
+      "label": "dcppC-atl-control",
+      "mip_era": ["CMIP6"],
+      "description": "C1.1 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-atl-pacemaker",
+      "label": "dcppC-atl-pacemaker",
+      "mip_era": ["CMIP6"],
+      "description": "C1.11 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-atl-spg",
+      "label": "dcppC-atl-spg",
+      "mip_era": ["CMIP6"],
+      "description": "C2.1 (and C2.2) Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs. First full hindcast year follows start year (e.g., for s1992, first full hindcast year is 1993)"
+    },
+    {
+      "id": "dcppC-forecast-addAgung",
+      "label": "dcppC-forecast-addAgung",
+      "mip_era": ["CMIP6"],
+      "description": "C3.4 Effects of volcanoes on decadal prediction and predictability of forced and internal variability components. First full hindcast year is 2015"
+    },
+    {
+      "id": "dcppC-forecast-addElChichon",
+      "label": "dcppC-forecast-addElChichon",
+      "mip_era": ["CMIP6"],
+      "description": "C3.5 Effects of volcanoes on decadal prediction and predictability of forced and internal variability components. First full hindcast year is 2015"
+    },
+    {
+      "id": "dcppC-forecast-addPinatubo",
+      "label": "dcppC-forecast-addPinatubo",
+      "mip_era": ["CMIP6"],
+      "description": "C3.6 Effects of volcanoes on decadal prediction and predictability of forced and internal variability components. First full hindcast year is 2015"
+    },
+    {
+      "id": "dcppC-hindcast-noAgung",
+      "label": "dcppC-hindcast-noAgung",
+      "mip_era": ["CMIP6"],
+      "description": "C3.3 Effects of volcanoes on decadal prediction and predictability of forced and internal variability components. First full hindcast year is 1962"
+    },
+    {
+      "id": "dcppC-hindcast-noElChichon",
+      "label": "dcppC-hindcast-noElChichon",
+      "mip_era": ["CMIP6"],
+      "description": "C3.2 Effects of volcanoes on decadal prediction and predictability of forced and internal variability components. First full hindcast year is 1982"
+    },
+    {
+      "id": "dcppC-hindcast-noPinatubo",
+      "label": "dcppC-hindcast-noPinatubo",
+      "mip_era": ["CMIP6"],
+      "description": "C3.1 Effects of volcanoes on decadal prediction and predictability of forced and internal variability components. First full hindcast year is 1991"
+    },
+    {
+      "id": "dcppC-ipv-neg",
+      "label": "dcppC-ipv-neg",
+      "mip_era": ["CMIP6"],
+      "description": "C1.6 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-ipv-NexTrop-neg",
+      "label": "dcppC-ipv-NexTrop-neg",
+      "mip_era": ["CMIP6"],
+      "description": "C1.9 and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-ipv-NexTrop-pos",
+      "label": "dcppC-ipv-NexTrop-pos",
+      "mip_era": ["CMIP6"],
+      "description": "C1.9 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-ipv-pos",
+      "label": "dcppC-ipv-pos",
+      "mip_era": ["CMIP6"],
+      "description": "C1.5 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-pac-control",
+      "label": "dcppC-pac-control",
+      "mip_era": ["CMIP6"],
+      "description": "C1.4 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs"
+    },
+    {
+      "id": "dcppC-pac-pacemaker",
+      "label": "dcppC-pac-pacemaker",
+      "mip_era": ["CMIP6"],
+      "description": "C1.10 Mechanisms and predictability of the hiatus and of similar long timescale variations of both signs. First full hindcast year is 2015"
+    },
+    {
+      "id": "decadal1959",
+      "label": "decadal1959",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1960",
+      "label": "decadal1960",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1961",
+      "label": "decadal1961",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1962",
+      "label": "decadal1962",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1963",
+      "label": "decadal1963",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1964",
+      "label": "decadal1964",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1965",
+      "label": "decadal1965",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1966",
+      "label": "decadal1966",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1967",
+      "label": "decadal1967",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1968",
+      "label": "decadal1968",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1969",
+      "label": "decadal1969",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1970",
+      "label": "decadal1970",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1971",
+      "label": "decadal1971",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1972",
+      "label": "decadal1972",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1973",
+      "label": "decadal1973",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1974",
+      "label": "decadal1974",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1975",
+      "label": "decadal1975",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1976",
+      "label": "decadal1976",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1977",
+      "label": "decadal1977",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1978",
+      "label": "decadal1978",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1979",
+      "label": "decadal1979",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1980",
+      "label": "decadal1980",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1981",
+      "label": "decadal1981",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1982",
+      "label": "decadal1982",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1983",
+      "label": "decadal1983",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1984",
+      "label": "decadal1984",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1985",
+      "label": "decadal1985",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1986",
+      "label": "decadal1986",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1987",
+      "label": "decadal1987",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1988",
+      "label": "decadal1988",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1989",
+      "label": "decadal1989",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1990",
+      "label": "decadal1990",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1991",
+      "label": "decadal1991",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1992",
+      "label": "decadal1992",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1993",
+      "label": "decadal1993",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1994",
+      "label": "decadal1994",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1995",
+      "label": "decadal1995",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1996",
+      "label": "decadal1996",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1997",
+      "label": "decadal1997",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1998",
+      "label": "decadal1998",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal1999",
+      "label": "decadal1999",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2000",
+      "label": "decadal2000",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2001",
+      "label": "decadal2001",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2002",
+      "label": "decadal2002",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2003",
+      "label": "decadal2003",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2004",
+      "label": "decadal2004",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2005",
+      "label": "decadal2005",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2006",
+      "label": "decadal2006",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2007",
+      "label": "decadal2007",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2008",
+      "label": "decadal2008",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2009",
+      "label": "decadal2009",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2010",
+      "label": "decadal2010",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2011",
+      "label": "decadal2011",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "decadal2012",
+      "label": "decadal2012",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "deforest-globe",
+      "label": "deforest-globe",
+      "mip_era": ["CMIP6"],
+      "description": "Idealized deforestation experiment, 20 million km2 forest removed linearly over a period of 50 years, with an additional 30 years with no specified change in forest cover; all other forcings held constant"
+    },
+    {
+      "id": "esm-1pct-brch-1000PgC",
+      "label": "esm-1pct-brch-1000PgC",
+      "mip_era": ["CMIP6"],
+      "description": "A zero-emissions simulation (fully interactive CO2; emissions-driven configuration), initiated from the point in the 1pctCO2 experiment when the cumulative carbon emissions reach 1000 PgC"
+    },
+    {
+      "id": "esm-1pct-brch-2000PgC",
+      "label": "esm-1pct-brch-2000PgC",
+      "mip_era": ["CMIP6"],
+      "description": "A zero-emissions simulation (fully interactive CO2; emissions-driven configuration), initiated from the point in the 1pctCO2 experiment when the cumulative carbon emissions reach 2000 PgC"
+    },
+    {
+      "id": "esm-1pct-brch-750PgC",
+      "label": "esm-1pct-brch-750PgC",
+      "mip_era": ["CMIP6"],
+      "description": "A zero-emissions simulation (fully interactive CO2; emissions-driven configuration), initiated from the point in the 1pctCO2 experiment when the cumulative carbon emissions reach 750 PgC"
+    },
+    {
+      "id": "esm-1pctCO2",
+      "label": "esm-1pctCO2",
+      "mip_era": ["CMIP6"],
+      "description": "An emissions-driven simulation (fully interactive CO2), initiated from the esm-piControl using CO2 emissions diagnosed from the 1pctCO2 experiment so that the emissions-driven run replicates as closely as possible the 1pctCO2 concentration profile"
+    },
+    {
+      "id": "esm-bell-1000PgC",
+      "label": "esm-bell-1000PgC",
+      "mip_era": ["CMIP6"],
+      "description": "An emissions-driven simulation (fully interactive CO2), initiated from esm-piControl using CO2 emissions, amounting to 1000 PgC, following a bell-shape curve for 100 years followed by zero-emissions for 100 years"
+    },
+    {
+      "id": "esm-bell-2000PgC",
+      "label": "esm-bell-2000PgC",
+      "mip_era": ["CMIP6"],
+      "description": "An emissions-driven simulation (fully interactive CO2), initiated from esm-piControl using CO2 emissions, amounting to 2000 PgC, following a bell-shape curve for 100 years followed by zero-emissions for 100 years"
+    },
+    {
+      "id": "esm-bell-750PgC",
+      "label": "esm-bell-750PgC",
+      "mip_era": ["CMIP6"],
+      "description": "An emissions-driven simulation (fully interactive CO2), initiated from esm-piControl using CO2 emissions, amounting to 750 PgC, following a bell-shape curve for 100 years followed by zero-emissions for 100 years"
+    },
+    {
+      "id": "esm-hist",
+      "label": "esm-hist",
+      "mip_era": ["CMIP6"],
+      "description": "CMIP6 historical (CO2 emission-driven)"
+    },
+    {
+      "id": "esm-hist-ext",
+      "label": "esm-hist-ext",
+      "mip_era": ["CMIP6"],
+      "description": "Extension beyond 2014 of the CMIP6 historical (CO2 emission-driven)"
+    },
+    {
+      "id": "esm-past1000",
+      "label": "esm-past1000",
+      "mip_era": ["CMIP6"],
+      "description": "Parallel experiment to past1000, but for model set-ups with interactive carbon cycle. Main forcings: trace gases, volcanoes, solar variability, land-use"
+    },
+    {
+      "id": "esm-pi-cdr-pulse",
+      "label": "esm-pi-cdr-pulse",
+      "mip_era": ["CMIP6"],
+      "description": "100 Gt C instantly removed (negative pulse) from a pre-industrial atmosphere (part of the CDR-pi-pulse experiment)"
+    },
+    {
+      "id": "esm-pi-CO2pulse",
+      "label": "esm-pi-CO2pulse",
+      "mip_era": ["CMIP6"],
+      "description": "100 Gt C instantly added (positive pulse) to a pre-industrial atmosphere (part of the CDR-pi-pulse experiment)"
+    },
+    {
+      "id": "esm-piControl",
+      "label": "esm-piControl",
+      "mip_era": ["CMIP6"],
+      "description": "DECK: control (emission-driven)"
+    },
+    {
+      "id": "esm-piControl-spinup",
+      "label": "esm-piControl-spinup",
+      "mip_era": ["CMIP6"],
+      "description": "DECK: spin-up portion of the control (emission-driven)"
+    },
+    {
+      "id": "esm-ssp534-over",
+      "label": "esm-ssp534-over",
+      "mip_era": ["CMIP6"],
+      "description": "CO2 emissions driven SSP5-3.4 overshoot scenario simulation optionally extending to year 2300 (part of the CDR-overshoot experiment)"
+    },
+    {
+      "id": "esm-ssp585",
+      "label": "esm-ssp585",
+      "mip_era": ["CMIP6"],
+      "description": "Emissions-driven future scenario simulation"
+    },
+    {
+      "id": "esm-ssp585-ocn-alk",
+      "label": "esm-ssp585-ocn-alk",
+      "mip_era": ["CMIP6"],
+      "description": "emission driven SSP5-8.5 scenario with 0.14 Pmol/yr alkalinity added to ice free ocean surface waters from 2020 optionally extended from 2100 to 2300 (part of the CDR-ocean-alk experiment)"
+    },
+    {
+      "id": "esm-ssp585-ocn-alk-stop",
+      "label": "esm-ssp585-ocn-alk-stop",
+      "mip_era": ["CMIP6"],
+      "description": "Simulation of abrupt termination of ocean alkalinsation in 2070 during an emission driven SSP5-8.5 scenario (part of the CDR-ocean-alk experiment)"
+    },
+    {
+      "id": "esm-ssp585-ssp126Lu",
+      "label": "esm-ssp585-ssp126Lu",
+      "mip_era": ["CMIP6"],
+      "description": "Additional land use policy sensitivity simulation for high radiative forcing scenario, keep all forcings the same as in C4MIP esmssp5-8.5 scenario except use SSP1-2.6 land use; emission driven"
+    },
+    {
+      "id": "esm-ssp585-ssp126Lu-ext",
+      "label": "esm-ssp585-ssp126Lu-ext",
+      "mip_era": ["CMIP6"],
+      "description": "Long term extension of CO2 emissions driven SSP5-8.5 with SSP1-2.6 land use forcing (part of the CDR-afforestation experiment)"
+    },
+    {
+      "id": "esm-ssp585ext",
+      "label": "esm-ssp585ext",
+      "mip_era": ["CMIP6"],
+      "description": "Long term extension of CO2 emissions driven SSP5-8.5 scenario (used in the CDR-afforestation and CDR-ocean-alk experiments)"
+    },
+    {
+      "id": "esm-yr2010CO2-cdr-pulse",
+      "label": "esm-yr2010CO2-cdr-pulse",
+      "mip_era": ["CMIP6"],
+      "description": "Upon initialization from end of year 2015 of esm-yr2010CO2-control instantaneously remove 100 Gt C (\"negative pulse\"; part of the CDR-yr2010-pulse experiment"
+    },
+    {
+      "id": "esm-yr2010CO2-CO2pulse",
+      "label": "esm-yr2010CO2-CO2pulse",
+      "mip_era": ["CMIP6"],
+      "description": "Upon initialization from end of year 2015 of esm-yr2010CO2-control instantaneously introduce 100 Gt C (\"positive pulse\"; part of the CDR-yr2010-pulse experiment)"
+    },
+    {
+      "id": "esm-yr2010CO2-control",
+      "label": "esm-yr2010CO2-control",
+      "mip_era": ["CMIP6"],
+      "description": "Forced with CO2 emissions diagnosed from historical and yr2010CO2 simulations and all other forcings the same as in that simulation (part of the CDR-yr2010-pulse experiment)"
+    },
+    {
+      "id": "esm-yr2010CO2-noemit",
+      "label": "esm-yr2010CO2-noemit",
+      "mip_era": ["CMIP6"],
+      "description": "Upon initialization from end of year 2015 of esm-yr2010-control CO2 emissions are fixed at zero; all other forcing fixed at 2010 level (part of the CDR-yr2010-pulse experiment)"
+    },
+    {
+      "id": "esmControl",
+      "label": "esmControl",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "esmFdbk1",
+      "label": "esmFdbk1",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "esmFdbk2",
+      "label": "esmFdbk2",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "esmFixClim1",
+      "label": "esmFixClim1",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "esmFixClim2",
+      "label": "esmFixClim2",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "esmHistorical",
+      "label": "esmHistorical",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "esmrcp85",
+      "label": "esmrcp85",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "faf-all",
+      "label": "faf-all",
+      "mip_era": ["CMIP6"],
+      "description": "1xCO2 experiment, parallel to piControl, forced over the ocean simultaneously by surface windstress (as in the wind experiment), net heat flux (as in the heat experiment) and net freshwater flux (as in the water experiment) anomalies obtained from the CMIP5 ensemble mean of 1pctCO2 experiments at the time of 2xCO2, using a passive tracer to prevent negative climate feedback on the heat flux applied"
+    },
+    {
+      "id": "faf-antwater-stress",
+      "label": "faf-antwater-stress",
+      "mip_era": ["CMIP6"],
+      "description": "1xCO2 experiment, parallel to piControl, forced over the ocean with the momentum flux perturbation field of faf-stress and a surface freshwater flux of 0.1 Sv in total to be applied uniformly around the coast of Antarctica in whatever way is most suitable in the model"
+    },
+    {
+      "id": "faf-heat",
+      "label": "faf-heat",
+      "mip_era": ["CMIP6"],
+      "description": "1xCO2 experiment, parallel to piControl, forced over the ocean by surface net heat flux anomalies obtained from the CMIP5 ensemble mean of 1pctCO2 experiments at the time of 2xCO2, using a passive tracer to prevent negative climate feedback on the heat flux applied"
+    },
+    {
+      "id": "faf-heat-NA0pct",
+      "label": "faf-heat-NA0pct",
+      "mip_era": ["CMIP6"],
+      "description": "1xCO2 experiment, parallel to piControl, forced over the ocean by the same method and with the same surface net heat flux perturbation field as in faf-heat, except that within part of the North Atlantic ocean the perturbation is zero"
+    },
+    {
+      "id": "faf-heat-NA50pct",
+      "label": "faf-heat-NA50pct",
+      "mip_era": ["CMIP6"],
+      "description": "1xCO2 experiment, parallel to piControl, forced over the ocean by the same method and with the same surface net heat flux perturbation field as in faf-heat, except that within part of the North Atlantic ocean the perturbation is multiplied by 0.5"
+    },
+    {
+      "id": "faf-passiveheat",
+      "label": "faf-passiveheat",
+      "mip_era": ["CMIP6"],
+      "description": "1xCO2 experiment, parallel to piControl, with a flux of passive tracer added at the ocean surface at the same rate as the surface net heat flux anomaly applied in the FAFMIP heat experiment"
+    },
+    {
+      "id": "faf-stress",
+      "label": "faf-stress",
+      "mip_era": ["CMIP6"],
+      "description": "1xCO2 experiment, parallel to piControl, forced over the ocean by surface windstress anomalies obtained from the CMIP5 ensemble mean of 1pctCO2 experiments at the time of 2xCO2"
+    },
+    {
+      "id": "faf-water",
+      "label": "faf-water",
+      "mip_era": ["CMIP6"],
+      "description": "1xCO2 experiment, parallel to piControl, forced over the ocean by surface net freshwater flux anomalies obtained from the CMIP5 ensemble mean of 1pctCO2 experiments at the time of 2xCO2"
+    },
+    {
+      "id": "futSST-pdSIC",
+      "label": "futSST-pdSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA1.4: investigate role of SST in polar amplification"
+    },
+    {
+      "id": "futureSST-4xCO2-solar",
+      "label": "futureSST-4xCO2-solar",
+      "mip_era": ["CMIP6"],
+      "description": "Time slice at year 100 of G1ext to examine radiative forcing of abrupt-4xCO2 and G1"
+    },
+    {
+      "id": "G1",
+      "label": "G1",
+      "mip_era": ["CMIP6"],
+      "description": "Beginning from a preindustrial control run, simultaneously quadruple the CO2 concentration and reduce the solar constant such that the TOA radiative flux remains within +/m0.1 W/m2"
+    },
+    {
+      "id": "G6solar",
+      "label": "G6solar",
+      "mip_era": ["CMIP6"],
+      "description": "Using solar irradiance reduction, return the radiative forcing from a background of the ScenarioMIP high forcing to the ScenarioMIP middle forcing"
+    },
+    {
+      "id": "G6SST1",
+      "label": "G6SST1",
+      "mip_era": ["CMIP6"],
+      "description": "Time slice at 2020 (ScenarioMIP Tier 1 high forcing scenario)"
+    },
+    {
+      "id": "G6SST2-solar",
+      "label": "G6SST2-solar",
+      "mip_era": ["CMIP6"],
+      "description": "Time slice at 2100 (G6solar)"
+    },
+    {
+      "id": "G6SST2-sulfur",
+      "label": "G6SST2-sulfur",
+      "mip_era": ["CMIP6"],
+      "description": "Time slice at 2100 (G6sulfur)"
+    },
+    {
+      "id": "G6sulfur",
+      "label": "G6sulfur",
+      "mip_era": ["CMIP6"],
+      "description": "Using equatorial SO2 injection, return the radiative forcing from a background of the ScenarioMIP high forcing to the ScenarioMIP middle forcing"
+    },
+    {
+      "id": "G7cirrus",
+      "label": "G7cirrus",
+      "mip_era": ["CMIP6"],
+      "description": "Against a background of the ScenarioMIP high forcing, reduce cirrus cloud optical depth by a constant amount"
+    },
+    {
+      "id": "G7SST1-cirrus",
+      "label": "G7SST1-cirrus",
+      "mip_era": ["CMIP6"],
+      "description": "Time slice at 2020 (ScenarioMIP Tier 1 high forcing scenario and cirrus thinning according to G7cirrus)"
+    },
+    {
+      "id": "G7SST2-cirrus",
+      "label": "G7SST2-cirrus",
+      "mip_era": ["CMIP6"],
+      "description": "Time slice at 2100 (ScenarioMIP Tier 1 high forcing scenario and cirrus thinning according to G7cirrus)"
+    },
+    {
+      "id": "highres-future",
+      "label": "highres-future",
+      "mip_era": ["CMIP6"],
+      "description": "Coupled integrations with SSP5 forcing (nearest to CMIP5 RCP8.5 (as in highresSST-future)"
+    },
+    {
+      "id": "highresSST-4xCO2",
+      "label": "highresSST-4xCO2",
+      "mip_era": ["CMIP6"],
+      "description": "Similar to CFMIP amip-4xCO2, SSTs are held at highresSST-present values and the CO2 seen by the radiation scheme is quadrupled"
+    },
+    {
+      "id": "highresSST-future",
+      "label": "highresSST-future",
+      "mip_era": ["CMIP6"],
+      "description": "Extend highresSST-present to 2050 with agreed SSP5/RCP8.5 forcings (with option to extend further to 2100)"
+    },
+    {
+      "id": "highresSST-LAI",
+      "label": "highresSST-LAI",
+      "mip_era": ["CMIP6"],
+      "description": "Forced global atmosphere-land simulations as highresSST-present, but using an common LAI dataset across models"
+    },
+    {
+      "id": "highresSST-p4K",
+      "label": "highresSST-p4K",
+      "mip_era": ["CMIP6"],
+      "description": "Similar to CFMIP amip-p4K, add a uniform warming of 4K to highresSST-present SSTs and run the experiment parallel to highresSST-present"
+    },
+    {
+      "id": "highresSST-present",
+      "label": "highresSST-present",
+      "mip_era": ["CMIP6"],
+      "description": "Forced global atmosphere-land simulations using daily 1/4 degree SST and sea-ice forcings, and aerosol optical properties (not emissions) to constrain model spread"
+    },
+    {
+      "id": "highresSST-smoothed",
+      "label": "highresSST-smoothed",
+      "mip_era": ["CMIP6"],
+      "description": "Forced global atmosphere-land simulations as highresSST-present, but using smoothed SST to investigate impact of SST variability"
+    },
+    {
+      "id": "hist-1950",
+      "label": "hist-1950",
+      "mip_era": ["CMIP6"],
+      "description": "Coupled integrations with historic external forcings (as in highresSST-present)"
+    },
+    {
+      "id": "hist-1950HC",
+      "label": "hist-1950HC",
+      "mip_era": ["CMIP6"],
+      "description": "Historical WMGHG concentrations and NTCF emissions, 1950 halocarbon concentrations, start 1950"
+    },
+    {
+      "id": "hist-aer",
+      "label": "hist-aer",
+      "mip_era": ["CMIP6"],
+      "description": "historical anthropogenic aerosols-only run"
+    },
+    {
+      "id": "hist-aer-cmip5",
+      "label": "hist-aer-cmip5",
+      "mip_era": ["CMIP6"],
+      "description": "historical anthropogenic aerosols-only run (CMIP5-era historical [1850-2005] and RCP4.5 [2006-2020] forcing)"
+    },
+    {
+      "id": "hist-all-aer2",
+      "label": "hist-all-aer2",
+      "mip_era": ["CMIP6"],
+      "description": "Historical ALL forcing run with alternate estimates of aerosol concentrations/emissions"
+    },
+    {
+      "id": "hist-all-nat2",
+      "label": "hist-all-nat2",
+      "mip_era": ["CMIP6"],
+      "description": "Historical ALL forcing run with alternates estimate of solar and volcanic forcing"
+    },
+    {
+      "id": "hist-bgc",
+      "label": "hist-bgc",
+      "mip_era": ["CMIP6"],
+      "description": "Concentration-driven historical simulation, biogeochemically-coupled"
+    },
+    {
+      "id": "hist-CO2",
+      "label": "hist-CO2",
+      "mip_era": ["CMIP6"],
+      "description": "Historical CO2-only run"
+    },
+    {
+      "id": "hist-GHG",
+      "label": "hist-GHG",
+      "mip_era": ["CMIP6"],
+      "description": "Historical well-mixed GHG-only run. Models with interactive chemistry schemes should either turn off the chemistry or use a preindustrial climatology of stratospheric and tropospheric ozone in their radiation schemes. This will ensure that ozone is fixed in all these simulations, and simulated responses in models with and without coupled chemistry are comparable"
+    },
+    {
+      "id": "hist-GHG-cmip5",
+      "label": "hist-GHG-cmip5",
+      "mip_era": ["CMIP6"],
+      "description": "historical well-mixed GHG-only run. Models with interactive chemistry schemes should either turn off the chemistry or use a preindustrial climatology of stratospheric and tropospheric ozone in their radiation schemes. This will ensure that ozone is fixed in all these simulations, and simulated responses in models with and without coupled chemistry are comparable (CMIP5-era historical [1850-2005] and RCP4.5 [2006-2020] forcing)"
+    },
+    {
+      "id": "hist-nat",
+      "label": "hist-nat",
+      "mip_era": ["CMIP6"],
+      "description": "Historical natural-only run"
+    },
+    {
+      "id": "hist-nat-cmip5",
+      "label": "hist-nat-cmip5",
+      "mip_era": ["CMIP6"],
+      "description": "historical natural-only run (CMIP5-era historical [1850-2005] and RCP4.5 [2006-2020] forcing)"
+    },
+    {
+      "id": "hist-noLu",
+      "label": "hist-noLu",
+      "mip_era": ["CMIP6"],
+      "description": "Same as CMIP6 historical but with land cover held at 1850, no human activity; concentration driven"
+    },
+    {
+      "id": "hist-piAer",
+      "label": "hist-piAer",
+      "mip_era": ["CMIP6"],
+      "description": "Historical WMGHG, halocarbon concentrations and O3 precursor emissions, 1850 aerosol precursor emissions"
+    },
+    {
+      "id": "hist-piNTCF",
+      "label": "hist-piNTCF",
+      "mip_era": ["CMIP6"],
+      "description": "Historical WMGHG and halocarbons concentrations, 1850 NTCF emissions"
+    },
+    {
+      "id": "hist-resAMO",
+      "label": "hist-resAMO",
+      "mip_era": ["CMIP6"],
+      "description": "Pacemaker 20th century historical run that includes all forcing as used in CMIP6 Historical Simulation, and the observational historical SST is restored in the AMO domain (0deg-70degN, 70degW-0deg)"
+    },
+    {
+      "id": "hist-resIPO",
+      "label": "hist-resIPO",
+      "mip_era": ["CMIP6"],
+      "description": "Pacemaker 20th century historical run that includes all forcing as used in CMIP6 Historical Simulation, and the observational historical SST is restored in the tropical lobe of the IPO domain (20degS-20degN, 175degE-75degW)"
+    },
+    {
+      "id": "hist-sol",
+      "label": "hist-sol",
+      "mip_era": ["CMIP6"],
+      "description": "Historical solar-only transient simulation using settings from CMIP6 historical simulation but fixed GHG and ODS (1850 level)"
+    },
+    {
+      "id": "hist-spAer-aer",
+      "label": "hist-spAer-aer",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed anthropogenic aerosol optical properties. Changes in aerosols only"
+    },
+    {
+      "id": "hist-spAer-all",
+      "label": "hist-spAer-all",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed anthropogenic aerosol optical properties. All forcings"
+    },
+    {
+      "id": "hist-stratO3",
+      "label": "hist-stratO3",
+      "mip_era": ["CMIP6"],
+      "description": "Historical stratospheric ozone-only. In models with coupled chemistry, the chemistry scheme should be turned off, and the simulated ensemble mean monthly mean 3D stratospheric ozone concentrations from the CMIP6 historical simulations should be prescribed. Tropospheric ozone should be fixed at 3D long-term monthly mean piControl values, with a value of 100 ppbv ozone concentration in this piControl climatology used to separate the troposphere from the stratosphere. In models without coupled chemistry the same stratospheric ozone prescribed in the CMIP6 historical simulations should be prescribed. Stratospheric ozone concentrations will be provided by CCMI"
+    },
+    {
+      "id": "hist-totalO3",
+      "label": "hist-totalO3",
+      "mip_era": ["CMIP6"],
+      "description": "Historical total ozone-only. In models with coupled chemistry, the chemistry scheme should be turned off, and the simulated ensemble mean monthly mean 3D ozone concentrations from the CMIP6 historical simulations should be prescribed through the depth of the atmosphere. In models without coupled chemistry the same ozone prescribed in the CMIP6 historical simulations should be prescribed"
+    },
+    {
+      "id": "hist-volc",
+      "label": "hist-volc",
+      "mip_era": ["CMIP6"],
+      "description": "Historical volcanic-only run"
+    },
+    {
+      "id": "historical",
+      "label": "historical",
+      "mip_era": ["CMIP5", "CMIP6"],
+      "description": "CMIP6 historical"
+    },
+    {
+      "id": "historical-cmip5",
+      "label": "historical-cmip5",
+      "mip_era": ["CMIP6"],
+      "description": "CMIP5 historical experiment, using CMIP5-era [1850-2005] forcing"
+    },
+    {
+      "id": "historical-ext",
+      "label": "historical-ext",
+      "mip_era": ["CMIP6"],
+      "description": "Extension beyond 2014 of the CMIP6 historical"
+    },
+    {
+      "id": "historical-withism",
+      "label": "historical-withism",
+      "mip_era": ["CMIP6"],
+      "description": "Historical simulation that includes interactive ice sheets. Set up follows the historical experiment"
+    },
+    {
+      "id": "historicalExt",
+      "label": "historicalExt",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "historicalGHG",
+      "label": "historicalGHG",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "historicalMisc",
+      "label": "historicalMisc",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "historicalNat",
+      "label": "historicalNat",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "histSST",
+      "label": "histSST",
+      "mip_era": ["CMIP6"],
+      "description": "Historical transient with SSTs prescribed from historical"
+    },
+    {
+      "id": "histSST-1950HC",
+      "label": "histSST-1950HC",
+      "mip_era": ["CMIP6"],
+      "description": "Historical WMGHG concentrations and NTCF emissions, 1950 halocarbon concentrations"
+    },
+    {
+      "id": "histSST-noLu",
+      "label": "histSST-noLu",
+      "mip_era": ["CMIP6"],
+      "description": "An uncoupled (atmosphere and land) experiment in which sea surface temperatures (SST) and sea ice concentrations (SICONC) are taken from historical (as in existing histSST experiment). All forcing agents to follow historical except LULCC. LULCC set to 1850 (exactly following hist-noLu prescription)"
+    },
+    {
+      "id": "histSST-piAer",
+      "label": "histSST-piAer",
+      "mip_era": ["CMIP6"],
+      "description": "Historical WMGHG, halocarbon concentrations and tropospheric ozone precursors emissions, 1850 aerosol precursor emissions, prescribed SSTs"
+    },
+    {
+      "id": "histSST-piCH4",
+      "label": "histSST-piCH4",
+      "mip_era": ["CMIP6"],
+      "description": "Historical (non-CH4) WMGHG concentrations and NTCF emissions, 1850 CH4 concentrations"
+    },
+    {
+      "id": "histSST-piN2O",
+      "label": "histSST-piN2O",
+      "mip_era": ["CMIP6"],
+      "description": "Historical (non-N2O) WMGHG concentrations and NTCF emissions, 1850 N2O concentrations"
+    },
+    {
+      "id": "histSST-piNTCF",
+      "label": "histSST-piNTCF",
+      "mip_era": ["CMIP6"],
+      "description": "Historical WMGHG concentrations and halocarbons emissions, 1850 NTCF emissions, prescribed SSTs"
+    },
+    {
+      "id": "histSST-piO3",
+      "label": "histSST-piO3",
+      "mip_era": ["CMIP6"],
+      "description": "Historical WMGHG, halocarbon concentrations and aerosol precursor emissions, 1850 tropospheric ozone precursors emissions, prescribed SSTs"
+    },
+    {
+      "id": "ism-1pctCO2to4x-self",
+      "label": "ism-1pctCO2to4x-self",
+      "mip_era": ["CMIP6"],
+      "description": "Idealized 1%/yr CO2 increase to 4xC02 over 140yrs and kept constant at 4xCO2 for an additional 200 to 400 yrs simulation with ice sheets forced \"offline\" with DECK 1pctCO2 using forcing from its own AOGCM"
+    },
+    {
+      "id": "ism-1pctCO2to4x-std",
+      "label": "ism-1pctCO2to4x-std",
+      "mip_era": ["CMIP6"],
+      "description": "Idealized 1%/yr CO2 increase to 4xC02 over 140yrs and kept constant at 4xCO2 for an additional 200 to 400 yrs simulation with ice sheets forced \"offline\" with DECK 1pctCO2 using a standard forcing"
+    },
+    {
+      "id": "ism-amip-std",
+      "label": "ism-amip-std",
+      "mip_era": ["CMIP6"],
+      "description": "Offline ice sheet evolution for the last few decades forced by amip"
+    },
+    {
+      "id": "ism-asmb-std",
+      "label": "ism-asmb-std",
+      "mip_era": ["CMIP6"],
+      "description": "Offline ice sheet simulation with synthetic atmospheric dataset to explore the uncertainty in sea level due to ice sheet initialization"
+    },
+    {
+      "id": "ism-bsmb-std",
+      "label": "ism-bsmb-std",
+      "mip_era": ["CMIP6"],
+      "description": "Offline ice sheet simulation with synthetic oceanic dataset to explore the uncertainty in sea level due to ice sheet initialization"
+    },
+    {
+      "id": "ism-ctrl-std",
+      "label": "ism-ctrl-std",
+      "mip_era": ["CMIP6"],
+      "description": "Offline ice sheet control run for the initMIP experiment that explores the uncertainty in sea level due to ice sheet initialization"
+    },
+    {
+      "id": "ism-historical-self",
+      "label": "ism-historical-self",
+      "mip_era": ["CMIP6"],
+      "description": "Historical simulation using \"offline\" ice sheet models. Forcing for ice sheet model is from its own AOGCM"
+    },
+    {
+      "id": "ism-historical-std",
+      "label": "ism-historical-std",
+      "mip_era": ["CMIP6"],
+      "description": "Historical simulation using \"offline\" ice sheet models. Forcing for ice sheet model is the standard dataset based on CMIP6 AOGCM historical"
+    },
+    {
+      "id": "ism-lig127k-std",
+      "label": "ism-lig127k-std",
+      "mip_era": ["CMIP6"],
+      "description": "Last interglacial simulation of ice sheet evolution driven by PMIP lig127k"
+    },
+    {
+      "id": "ism-pdControl-std",
+      "label": "ism-pdControl-std",
+      "mip_era": ["CMIP6"],
+      "description": "Present-day control simulation for \"offline\" ice sheets"
+    },
+    {
+      "id": "ism-piControl-self",
+      "label": "ism-piControl-self",
+      "mip_era": ["CMIP6"],
+      "description": "Pre-industrial control simulation for \"offline\" ice sheets"
+    },
+    {
+      "id": "ism-ssp585-self",
+      "label": "ism-ssp585-self",
+      "mip_era": ["CMIP6"],
+      "description": "Future climate ScenarioMIP SSP5-8.5 simulation using \"offline\" ice sheet models. Forcing for ice sheet model is from its own AOGCM"
+    },
+    {
+      "id": "ism-ssp585-std",
+      "label": "ism-ssp585-std",
+      "mip_era": ["CMIP6"],
+      "description": "Future climate ScenarioMIP SSP5-8.5 simulation using \"offline\" ice sheet models. Forcing for ice sheet model is the standard dataset based on ScenarioMIP ssp585"
+    },
+    {
+      "id": "land-cClim",
+      "label": "land-cClim",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist except with climate held constant"
+    },
+    {
+      "id": "land-cCO2",
+      "label": "land-cCO2",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist except with CO2 held constant"
+    },
+    {
+      "id": "land-crop-grass",
+      "label": "land-crop-grass",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist but with all new crop and pastureland treated as unmanaged grassland"
+    },
+    {
+      "id": "land-crop-noFert",
+      "label": "land-crop-noFert",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist but with fertilization rates and area held at 1850 levels/distribution"
+    },
+    {
+      "id": "land-crop-noIrrig",
+      "label": "land-crop-noIrrig",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist but with irrigated area held at 1850 levels"
+    },
+    {
+      "id": "land-crop-noIrrigFert",
+      "label": "land-crop-noIrrigFert",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist except with plants in cropland area utilizing at least some form of crop management (e.g., planting and harvesting) rather than simulating cropland vegetation as a natural grassland. Irrigated area and fertilizer area/use should be held constant"
+    },
+    {
+      "id": "land-hist",
+      "label": "land-hist",
+      "mip_era": ["CMIP6"],
+      "description": "Land only simulations"
+    },
+    {
+      "id": "land-hist-altLu1",
+      "label": "land-hist-altLu1",
+      "mip_era": ["CMIP6"],
+      "description": "Land only simulations"
+    },
+    {
+      "id": "land-hist-altLu2",
+      "label": "land-hist-altLu2",
+      "mip_era": ["CMIP6"],
+      "description": "Land only simulations"
+    },
+    {
+      "id": "land-hist-altStartYear",
+      "label": "land-hist-altStartYear",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist except starting from either 1700 (for models that typically start in 1850) or 1850 (for models that typically start in 1700)"
+    },
+    {
+      "id": "land-hist-cruNcep",
+      "label": "land-hist-cruNcep",
+      "mip_era": ["CMIP6"],
+      "description": "Land only simulations"
+    },
+    {
+      "id": "land-hist-princeton",
+      "label": "land-hist-princeton",
+      "mip_era": ["CMIP6"],
+      "description": "Land only simulations"
+    },
+    {
+      "id": "land-hist-wfdei",
+      "label": "land-hist-wfdei",
+      "mip_era": ["CMIP6"],
+      "description": "Land only simulations"
+    },
+    {
+      "id": "land-noFire",
+      "label": "land-noFire",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist but with anthropogenic ignition and suppression held to 1850 levels"
+    },
+    {
+      "id": "land-noLu",
+      "label": "land-noLu",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist except no land-use change"
+    },
+    {
+      "id": "land-noPasture",
+      "label": "land-noPasture",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist but with grazing and other management on pastureland held at 1850 levels/distribution, i.e. all new pastureland is treated as unmanaged grassland (as in land-crop-grass)"
+    },
+    {
+      "id": "land-noShiftCultivate",
+      "label": "land-noShiftCultivate",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist except shifting cultivation turned off. An additional LUC transitions dataset will be provided as a data layer within LUMIP LUH2 dataset with shifting cultivation deactivated"
+    },
+    {
+      "id": "land-noWoodHarv",
+      "label": "land-noWoodHarv",
+      "mip_era": ["CMIP6"],
+      "description": "Same as land-hist but with wood harvest maintained at 1850 amounts/areas"
+    },
+    {
+      "id": "land-ssp126",
+      "label": "land-ssp126",
+      "mip_era": ["CMIP6"],
+      "description": "land only simulation for ssp1-2.6"
+    },
+    {
+      "id": "land-ssp434",
+      "label": "land-ssp434",
+      "mip_era": ["CMIP6"],
+      "description": "land only simulation for ssp4-3.4"
+    },
+    {
+      "id": "land-ssp585",
+      "label": "land-ssp585",
+      "mip_era": ["CMIP6"],
+      "description": "land only simulation for ssp5-8.5"
+    },
+    {
+      "id": "lfmip-initLC",
+      "label": "lfmip-initLC",
+      "mip_era": ["CMIP6"],
+      "description": "Initialized pseudo-observations land"
+    },
+    {
+      "id": "lfmip-pdLC",
+      "label": "lfmip-pdLC",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed land conditions 1980-2014 climate"
+    },
+    {
+      "id": "lfmip-pdLC-cruNcep",
+      "label": "lfmip-pdLC-cruNcep",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed land conditions 1980-2014 climate with Land-Hist-cruNcep"
+    },
+    {
+      "id": "lfmip-pdLC-princeton",
+      "label": "lfmip-pdLC-princeton",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed land conditions 1980-2014 climate with Land-Hist-princeton"
+    },
+    {
+      "id": "lfmip-pdLC-wfdei",
+      "label": "lfmip-pdLC-wfdei",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed land conditions 1980-2014 climate with Land-Hist-wfdei"
+    },
+    {
+      "id": "lfmip-rmLC",
+      "label": "lfmip-rmLC",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed land conditions 30yr running mean"
+    },
+    {
+      "id": "lfmip-rmLC-cruNcep",
+      "label": "lfmip-rmLC-cruNcep",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed land conditions 30yr running mean with Land-Hist-cruNcep"
+    },
+    {
+      "id": "lfmip-rmLC-princeton",
+      "label": "lfmip-rmLC-princeton",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed land conditions 30yr running mean with Land-Hist-princeton"
+    },
+    {
+      "id": "lfmip-rmLC-wfdei",
+      "label": "lfmip-rmLC-wfdei",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed land conditions 30yr running mean with Land-Hist-wfdei"
+    },
+    {
+      "id": "lgm",
+      "label": "lgm",
+      "mip_era": ["CMIP5", "CMIP6"],
+      "description": "main forcings: ice-sheet; trace gases, astronomical parameters, dust (forcing, or feedback if dust cycle represented in model)"
+    },
+    {
+      "id": "lig127k",
+      "label": "lig127k",
+      "mip_era": ["CMIP6"],
+      "description": "main forcings: astronomical parameters, trace gases, dust (forcing, or feedback if dust cycle represented in model)"
+    },
+    {
+      "id": "midHolocene",
+      "label": "midHolocene",
+      "mip_era": ["CMIP5", "CMIP6"],
+      "description": "main forcings: trace gases, orbital parameters, dust (forcing, or feedback if dust cycle represented in model)"
+    },
+    {
+      "id": "midPliocene-eoi400",
+      "label": "midPliocene-eoi400",
+      "mip_era": ["CMIP6"],
+      "description": "main forcings: trace gases, orography, ice-sheet"
+    },
+    {
+      "id": "modelSST-futArcSIC",
+      "label": "modelSST-futArcSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA4.2: investigate role of background state in response to Arctic sea ice"
+    },
+    {
+      "id": "modelSST-pdSIC",
+      "label": "modelSST-pdSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA4.1: atmosphere only model present day control with coupled model SST"
+    },
+    {
+      "id": "noVolc1960",
+      "label": "noVolc1960",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "noVolc1965",
+      "label": "noVolc1965",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "noVolc1970",
+      "label": "noVolc1970",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "noVolc1975",
+      "label": "noVolc1975",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "noVolc1980",
+      "label": "noVolc1980",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "noVolc1985",
+      "label": "noVolc1985",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "noVolc1990",
+      "label": "noVolc1990",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "noVolc1995",
+      "label": "noVolc1995",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "noVolc2000",
+      "label": "noVolc2000",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "noVolc2005",
+      "label": "noVolc2005",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "omip1",
+      "label": "omip1",
+      "mip_era": ["CMIP6"],
+      "description": "Global ocean - sea-ice coupled experiment forced with the Coordinated Ocean - ice Reference Experiments inter-annually varying atmospheric and river data sets for years 1948-2009. Initial ocean tracer fields are based on observations. Simulation length for at least 5 cycles of the 62-year forcing is required. The 5-cycle length is recommended to facilitate intercomparison within the experiment by using a common simulation length, but a longer simulation length is also accepted. For each simulation, set the beginning of the simulation (e.g., 1700 and 1638 for the 5-cycle and 6-cycle simulation, respectively) as the 'base time' of the time axis. Simulations with different simulation lengths by a single model are treated as members of an ensemble. Thus, different 'realization' indexes (e.g., r1, r2, r3, ...) should be used in a global attribute named 'variant_index' (e.g., r1i1p1f1). It is requested that information relevant to understanding the differences in members of an ensemble of simulations is reported in a global attribute named 'variant_info'. This information should also be recorded in the ES-DOC documentation of each experiment performed by a model and be made available via the 'further_info_url' attribute. All Priority=1 OMIP diagnostics (Omon, Oyr) are requested for all cycles of the 62-year forcing to quantify drift. All OMIP diagnostics (Priority=1,2,3) are requested for the last cycle"
+    },
+    {
+      "id": "omip1-spunup",
+      "label": "omip1-spunup",
+      "mip_era": ["CMIP6"],
+      "description": "Same as the omip1 experiment except that it is not initialized with observed climatologies; rather it is initialized with results from at least a 2000-year spin up of the coupled physical-biogeochemical models. The spin up simulations may be made with the classic online or offline approach, or with tracer-acceleration techniques or fast solvers. If an online approach is used, at the end of the 5th cycle of CORE-II forcing, the model's physical fields should be reinitialized to the values at the start of the 3rd cycle in order to avoid long-term drift in those fields and to assure that they will not diverge greatly from physical fields in the omip1 simulation. The spin up also includes radiocarbon to evaluate deep-ocean circulation"
+    },
+    {
+      "id": "omip2",
+      "label": "omip2",
+      "mip_era": ["CMIP6"],
+      "description": "Global ocean - sea-ice coupled experiment forced with the JRA55-do inter-annually varying atmospheric and river data sets for years 1958-2018. Initial ocean tracer fields are based on observations. Simulation length for at least 6 cycles of the 61-year forcing is required. The 6-cycle length is recommended to facilitate intercomparison within the experiment by using a common simulation length, but a longer simulation length is also accepted. In each simulation, set the beginning of the simulation (e.g., 1653 for the 6-cycle simulation) as the 'base time' of the time axis. Simulations with different simulation lengths by a single model are treated as members of an ensemble. Thus, different 'realization' indexes (e.g., r1, r2, r3, ...) should be used in a global attribute named 'variant_index' (e.g., r1i1p1f1). It is requested that information relevant to understanding the differences in members of an ensemble of simulations is reported in a global attribute named 'variant_info'. This information should also be recorded in the ES-DOC documentation of each experiment performed by a model and be made available via the 'further_info_url' attribute. All Priority=1 OMIP diagnostics (Omon, Oyr) are requested for all cycles of the 61-year forcing to quantify drift. All OMIP diagnostics (Priority=1,2,3) are requested for the last cycle"
+    },
+    {
+      "id": "omip2-spunup",
+      "label": "omip2-spunup",
+      "mip_era": ["CMIP6"],
+      "description": "Same as the omip2 experiment except that it is not initialized with observed climatologies; rather it is initialized with results from at least a 2000-year spin up of the coupled physical-biogeochemical models. The spin up simulations may be made with the classic online or offline approach, or with tracer-acceleration techniques or fast solvers. If an online approach is used, at the end of the 6th cycle of the JRA55-do forcing, the model's physical fields should be reinitialized to the values at the start of the 4th cycle in order to avoid long-term drift in those fields and to assure that they will not diverge greatly from physical fields in the omip2 simulation. The spin up also includes radiocarbon to evaluate deep-ocean circulation"
+    },
+    {
+      "id": "pa-futAntSIC",
+      "label": "pa-futAntSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA2.5: investigate response to Antarctic sea ice in coupled model"
+    },
+    {
+      "id": "pa-futAntSIC-ext",
+      "label": "pa-futAntSIC-ext",
+      "mip_era": ["CMIP6"],
+      "description": "PA6.3: investigate decadal and longer timescale response to Antarctic sea ice"
+    },
+    {
+      "id": "pa-futArcSIC",
+      "label": "pa-futArcSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA2.3: investigate response to Arctic sea ice in coupled model"
+    },
+    {
+      "id": "pa-futArcSIC-ext",
+      "label": "pa-futArcSIC-ext",
+      "mip_era": ["CMIP6"],
+      "description": "PA6.2: investigate decadal and longer timescale response to Arctic sea ice"
+    },
+    {
+      "id": "pa-pdSIC",
+      "label": "pa-pdSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA2.1: coupled model present day control constrained by oberved sea ice"
+    },
+    {
+      "id": "pa-pdSIC-ext",
+      "label": "pa-pdSIC-ext",
+      "mip_era": ["CMIP6"],
+      "description": "PA6.1: centennial coupled model present day control constrained by oberved sea ice"
+    },
+    {
+      "id": "pa-piAntSIC",
+      "label": "pa-piAntSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA2.4: investigate response to Antarctic sea ice in coupled model"
+    },
+    {
+      "id": "pa-piArcSIC",
+      "label": "pa-piArcSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA2.2: investigate response to Arctic sea ice in coupled model"
+    },
+    {
+      "id": "past1000",
+      "label": "past1000",
+      "mip_era": ["CMIP5", "CMIP6"],
+      "description": "main forcings: trace gases, volcanoes, solar variability, land use"
+    },
+    {
+      "id": "past1000-solaronly",
+      "label": "past1000-solaronly",
+      "mip_era": ["CMIP6"],
+      "description": "Parallel experiment to past1000. Instead of the complete forcing set, only solar (TSI, SSI) forcing is considered"
+    },
+    {
+      "id": "past1000-volconly",
+      "label": "past1000-volconly",
+      "mip_era": ["CMIP6"],
+      "description": "Parallel experiment to past1000. Instead of the complete forcing set, only volcanic forcing is considered"
+    },
+    {
+      "id": "past2k",
+      "label": "past2k",
+      "mip_era": ["CMIP6"],
+      "description": "Experiment extending the past1000 simulation back in time to include the first millennium CE. Main forcings: trace gases, volcanoes, solar variability, land-use. past1000 forcings data sets include the first millennium, except for land-use. For the latter, a linear ramp-up to 850CE values is recommended"
+    },
+    {
+      "id": "pdSST-futAntSIC",
+      "label": "pdSST-futAntSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA1.8: investigate response to Antarctic sea ice and its role in polar amplification"
+    },
+    {
+      "id": "pdSST-futArcSIC",
+      "label": "pdSST-futArcSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA1.6: investigate response to Arctic sea ice and its role in polar amplification"
+    },
+    {
+      "id": "pdSST-futArcSICSIT",
+      "label": "pdSST-futArcSICSIT",
+      "mip_era": ["CMIP6"],
+      "description": "PA1.10: investigate role of sea ice thickness in response to Arctic sea ice"
+    },
+    {
+      "id": "pdSST-futBKSeasSIC",
+      "label": "pdSST-futBKSeasSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA3.2: investigate response to sea ice in Barents and Kara Seas"
+    },
+    {
+      "id": "pdSST-futOkhotskSIC",
+      "label": "pdSST-futOkhotskSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA3.1: investigate response to sea ice in Sea of Okhotsk"
+    },
+    {
+      "id": "pdSST-pdSIC",
+      "label": "pdSST-pdSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA1.1: atmosphere only model present day control"
+    },
+    {
+      "id": "pdSST-pdSICSIT",
+      "label": "pdSST-pdSICSIT",
+      "mip_era": ["CMIP6"],
+      "description": "PA1.9: atmosphere only model present day control with sea ice thickness"
+    },
+    {
+      "id": "pdSST-piAntSIC",
+      "label": "pdSST-piAntSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA1.7: investigate response to Antarctic sea ice and its role in polar amplification"
+    },
+    {
+      "id": "pdSST-piArcSIC",
+      "label": "pdSST-piArcSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA1.5: investigate response to Arctic sea ice and its role in polar amplification"
+    },
+    {
+      "id": "piClim-2xDMS",
+      "label": "piClim-2xDMS",
+      "mip_era": ["CMIP6"],
+      "description": "1850 control with doubled emissions of DMS"
+    },
+    {
+      "id": "piClim-2xdust",
+      "label": "piClim-2xdust",
+      "mip_era": ["CMIP6"],
+      "description": "1850 control with doubled dust emissions"
+    },
+    {
+      "id": "piClim-2xfire",
+      "label": "piClim-2xfire",
+      "mip_era": ["CMIP6"],
+      "description": "1850 control with doubled emissions of fires"
+    },
+    {
+      "id": "piClim-2xNOx",
+      "label": "piClim-2xNOx",
+      "mip_era": ["CMIP6"],
+      "description": "1850 control with doubled emissions of lightning NOx"
+    },
+    {
+      "id": "piClim-2xss",
+      "label": "piClim-2xss",
+      "mip_era": ["CMIP6"],
+      "description": "1850 control with doubled sea salt emissions"
+    },
+    {
+      "id": "piClim-2xVOC",
+      "label": "piClim-2xVOC",
+      "mip_era": ["CMIP6"],
+      "description": "1850 control with doubled emissions of biogenic VOCs"
+    },
+    {
+      "id": "piClim-4xCO2",
+      "label": "piClim-4xCO2",
+      "mip_era": ["CMIP6"],
+      "description": "As in piClim-control but with 4xCO2"
+    },
+    {
+      "id": "piClim-aer",
+      "label": "piClim-aer",
+      "mip_era": ["CMIP6"],
+      "description": "As in piClim-control but with with present-day aerosols. Note that this experiment is considered to be tier 1 by RFMIP but tier 2 by AerChemMIP"
+    },
+    {
+      "id": "piClim-anthro",
+      "label": "piClim-anthro",
+      "mip_era": ["CMIP6"],
+      "description": "As in piClim-control but with present-day anthropogenic forcing (greenhouse gases, ozone, aerosols and land-use)"
+    },
+    {
+      "id": "piClim-BC",
+      "label": "piClim-BC",
+      "mip_era": ["CMIP6"],
+      "description": "Perturbation from 1850 control using 2014 BC emissions"
+    },
+    {
+      "id": "piClim-CH4",
+      "label": "piClim-CH4",
+      "mip_era": ["CMIP6"],
+      "description": "Perturbation from 1850 control using 2014 CH4 concentrations"
+    },
+    {
+      "id": "piClim-control",
+      "label": "piClim-control",
+      "mip_era": ["CMIP6"],
+      "description": "30-year atmosphere only integration using preindustrial sea-surface temperature and sea-ice climatology. Interactive vegetation"
+    },
+    {
+      "id": "piClim-ghg",
+      "label": "piClim-ghg",
+      "mip_era": ["CMIP6"],
+      "description": "As in piClim-control but with present-day non-ozone greenhouse gases"
+    },
+    {
+      "id": "piClim-HC",
+      "label": "piClim-HC",
+      "mip_era": ["CMIP6"],
+      "description": "Perturbation from 1850 control using 2014 halocarbon concentrations"
+    },
+    {
+      "id": "piClim-histaer",
+      "label": "piClim-histaer",
+      "mip_era": ["CMIP6"],
+      "description": "Time-varying forcing by aerosols. SST and sea ice fixed at preindustrial control. Interactive vegetation"
+    },
+    {
+      "id": "piClim-histall",
+      "label": "piClim-histall",
+      "mip_era": ["CMIP6"],
+      "description": "Time-varying forcing. SST and sea ice fixed at preindustrial control. Interactive vegetation"
+    },
+    {
+      "id": "piClim-histghg",
+      "label": "piClim-histghg",
+      "mip_era": ["CMIP6"],
+      "description": "Time-varying forcing by non-ozone GHGs. SST and sea ice fixed at preindustrial control. Interactive vegetation"
+    },
+    {
+      "id": "piClim-histnat",
+      "label": "piClim-histnat",
+      "mip_era": ["CMIP6"],
+      "description": "Time-varying forcing from volcanos, solar variability, etc. SST and sea ice fixed at preindustrial control. Interactive vegetation"
+    },
+    {
+      "id": "piClim-lu",
+      "label": "piClim-lu",
+      "mip_era": ["CMIP6"],
+      "description": "As in piClim-control but with present-day land use"
+    },
+    {
+      "id": "piClim-N2O",
+      "label": "piClim-N2O",
+      "mip_era": ["CMIP6"],
+      "description": "Perturbation from 1850 control using 2014 N2O concentrations"
+    },
+    {
+      "id": "piClim-NH3",
+      "label": "piClim-NH3",
+      "mip_era": ["CMIP6"],
+      "description": "Perturbation from 1850 control using 2014 NH3 emissions"
+    },
+    {
+      "id": "piClim-NOx",
+      "label": "piClim-NOx",
+      "mip_era": ["CMIP6"],
+      "description": "Perturbation from 1850 control using 2014 NOx emissions"
+    },
+    {
+      "id": "piClim-NTCF",
+      "label": "piClim-NTCF",
+      "mip_era": ["CMIP6"],
+      "description": "Perturbation from 1850 control using 2014 aerosol and ozone precursor emissions"
+    },
+    {
+      "id": "piClim-O3",
+      "label": "piClim-O3",
+      "mip_era": ["CMIP6"],
+      "description": "Perturbation from 1850 control using 2014 ozone precursor emissions"
+    },
+    {
+      "id": "piClim-OC",
+      "label": "piClim-OC",
+      "mip_era": ["CMIP6"],
+      "description": "Perturbation from 1850 control using 2014 OC emissions"
+    },
+    {
+      "id": "piClim-SO2",
+      "label": "piClim-SO2",
+      "mip_era": ["CMIP6"],
+      "description": "Perturbation from 1850 control using 2014 SO2 emissions"
+    },
+    {
+      "id": "piClim-spAer-aer",
+      "label": "piClim-spAer-aer",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed anthropogenic aerosol optical properties. Aerosol forcings"
+    },
+    {
+      "id": "piClim-spAer-anthro",
+      "label": "piClim-spAer-anthro",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed anthropogenic aerosol optical properties. Anthropogenic forcings"
+    },
+    {
+      "id": "piClim-spAer-histaer",
+      "label": "piClim-spAer-histaer",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed anthropogenic aerosol optical properties. Aerosol forcings"
+    },
+    {
+      "id": "piClim-spAer-histall",
+      "label": "piClim-spAer-histall",
+      "mip_era": ["CMIP6"],
+      "description": "Prescribed anthropogenic aerosol optical properties. All anthropogenic and natural forcings"
+    },
+    {
+      "id": "piClim-VOC",
+      "label": "piClim-VOC",
+      "mip_era": ["CMIP6"],
+      "description": "Perturbation from 1850 control using 2014 CO/VOC emissions"
+    },
+    {
+      "id": "piControl",
+      "label": "piControl",
+      "mip_era": ["CMIP5", "CMIP6"],
+      "description": "DECK: control"
+    },
+    {
+      "id": "piControl-cmip5",
+      "label": "piControl-cmip5",
+      "mip_era": ["CMIP6"],
+      "description": "DECK: control (CMIP5-era pre-industrial forcing)"
+    },
+    {
+      "id": "piControl-spinup",
+      "label": "piControl-spinup",
+      "mip_era": ["CMIP6"],
+      "description": "DECK: spin-up portion of the control"
+    },
+    {
+      "id": "piControl-spinup-cmip5",
+      "label": "piControl-spinup-cmip5",
+      "mip_era": ["CMIP6"],
+      "description": "DECK: spin-up portion of the control (CMIP5-era pre-industrial forcing)"
+    },
+    {
+      "id": "piControl-withism",
+      "label": "piControl-withism",
+      "mip_era": ["CMIP6"],
+      "description": "Pre-industrial control simulation that includes interactive ice sheets"
+    },
+    {
+      "id": "piSST",
+      "label": "piSST",
+      "mip_era": ["CMIP6"],
+      "description": "An AGCM experiment with monthly-varying SSTs, sea-ice, atmospheric constituents and any other necessary boundary conditions (e.g. vegetation if required) taken from each model's own piControl run (using the 30 years of piControl that are parallel to years 111-140 of its abrupt-4xCO2 run). Dynamic vegetation should be turned off in all the piSST set of experiments"
+    },
+    {
+      "id": "piSST-4xCO2",
+      "label": "piSST-4xCO2",
+      "mip_era": ["CMIP6"],
+      "description": "Same as piSST but CO2 is quadrupled. The increase in CO2 is seen by both the radiation scheme and vegetation"
+    },
+    {
+      "id": "piSST-4xCO2-rad",
+      "label": "piSST-4xCO2-rad",
+      "mip_era": ["CMIP6"],
+      "description": "Same as piSST but CO2 as seen by the radiation scheme is quadrupled"
+    },
+    {
+      "id": "piSST-4xCO2-solar",
+      "label": "piSST-4xCO2-solar",
+      "mip_era": ["CMIP6"],
+      "description": "Time slice at 1850 (picontrol) for G1ext to examine radiative forcing of abrupt-4xCO2"
+    },
+    {
+      "id": "piSST-pdSIC",
+      "label": "piSST-pdSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA1.3: investigate role of SST in polar amplification"
+    },
+    {
+      "id": "piSST-piSIC",
+      "label": "piSST-piSIC",
+      "mip_era": ["CMIP6"],
+      "description": "PA1.2: atmosphere only model pre-industrial control"
+    },
+    {
+      "id": "piSST-pxK",
+      "label": "piSST-pxK",
+      "mip_era": ["CMIP6"],
+      "description": "Same as piSST, but with a spatially and temporally uniform SST anomaly applied on top of the monthly-varying piSST SSTs. The magnitude of the uniform increase is taken from each model's global, climatological annual mean SST change between abrupt-4xCO2 minus piControl (using the mean of years 111-140 of abrupt-4xCO2, and the parallel 30-year section of piControl)"
+    },
+    {
+      "id": "rad-irf",
+      "label": "rad-irf",
+      "mip_era": ["CMIP6"],
+      "description": "Offline radiation calculations"
+    },
+    {
+      "id": "rcp26",
+      "label": "rcp26",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "rcp26-cmip5",
+      "label": "rcp26-cmip5",
+      "mip_era": ["CMIP6"],
+      "description": "future scenario with low radiative forcing by the end of century. Following RCP2.6 global forcing pathway. Concentration-driven (CMIP5-era [2006-2100] forcing)"
+    },
+    {
+      "id": "rcp45",
+      "label": "rcp45",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "rcp45-cmip5",
+      "label": "rcp45-cmip5",
+      "mip_era": ["CMIP6"],
+      "description": "future scenario with low-medium radiative forcing by the end of century. Following RCP4.5 global forcing pathway. Concentration-driven (CMIP5-era [2006-2100] forcing)"
+    },
+    {
+      "id": "rcp60",
+      "label": "rcp60",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "rcp60-cmip5",
+      "label": "rcp60-cmip5",
+      "mip_era": ["CMIP6"],
+      "description": "future scenario with medium radiative forcing by the end of century. Following RCP6.0 global forcing pathway. Concentration-driven (CMIP5-era [2006-2100] forcing)"
+    },
+    {
+      "id": "rcp85",
+      "label": "rcp85",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "rcp85-cmip5",
+      "label": "rcp85-cmip5",
+      "mip_era": ["CMIP6"],
+      "description": "future scenario with high radiative forcing by the end of century. Following RCP8.5 global forcing pathway. Concentration-driven (CMIP5-era [2006-2100] forcing)"
+    },
+    {
+      "id": "spinup-1950",
+      "label": "spinup-1950",
+      "mip_era": ["CMIP6"],
+      "description": "Coupled integration from ocean rest state using recommended HighResMIP protocol spinup, starting from 1950 ocean temperature and salinity analysis EN4, using constant 1950s forcing. At least 30 years to satisfy near surface quasi-equilibrium"
+    },
+    {
+      "id": "ssp119",
+      "label": "ssp119",
+      "mip_era": ["CMIP6"],
+      "description": "Future scenario with low radiative forcing throughout reaching about 1.9 W/m2 in 2100 based on SSP1. Concentration-driven"
+    },
+    {
+      "id": "ssp126",
+      "label": "ssp126",
+      "mip_era": ["CMIP6"],
+      "description": "Future scenario with low radiative forcing by the end of century. Following approximately RCP2.6 global forcing pathway but with new forcing based on SSP1. Concentration-driven. As a tier 2 option, this simulation should be extended to year 2300"
+    },
+    {
+      "id": "ssp126-ssp370Lu",
+      "label": "ssp126-ssp370Lu",
+      "mip_era": ["CMIP6"],
+      "description": "Additional land use policy sensitivity simulation for low radiative forcing scenario, keep all forcings the same as ScenarioMIP SSP1-2.6 (afforestation scenario), but replace land use from SSP3-7 (afforestation) scenario; concentration-driven"
+    },
+    {
+      "id": "ssp245",
+      "label": "ssp245",
+      "mip_era": ["CMIP6"],
+      "description": "Future scenario with medium radiative forcing by the end of century. Following approximately RCP4.5 global forcing pathway but with new forcing based on SSP2. Concentration-driven"
+    },
+    {
+      "id": "ssp245-aer",
+      "label": "ssp245-aer",
+      "mip_era": ["CMIP6"],
+      "description": "Extension of aerosol-only run under SSP2-4.5"
+    },
+    {
+      "id": "ssp245-cov-aer",
+      "label": "ssp245-cov-aer",
+      "mip_era": ["CMIP6"],
+      "description": "Detection and attribution experiment: aerosol-only run based on ssp245-covid, with 2-year perturbation to emissions for 2020 and 2021 due to Covid-19 pandemic restrictions. Concentration-driven"
+    },
+    {
+      "id": "ssp245-cov-fossil",
+      "label": "ssp245-cov-fossil",
+      "mip_era": ["CMIP6"],
+      "description": "Future scenario based on ssp245, but following a path of increased emissions due to a fossil-fuel rebound economic recovery from the Covid-19 pandemic restrictions. Concentration-driven"
+    },
+    {
+      "id": "ssp245-cov-GHG",
+      "label": "ssp245-cov-GHG",
+      "mip_era": ["CMIP6"],
+      "description": "Detection and attribution experiment: well-mixed GHG-only run based on ssp245-covid, with 2-year perturbation to emissions for 2020 and 2021 due to Covid-19 pandemic restrictions. Concentration-driven"
+    },
+    {
+      "id": "ssp245-cov-modgreen",
+      "label": "ssp245-cov-modgreen",
+      "mip_era": ["CMIP6"],
+      "description": "Future scenario based on ssp245, but following a path of reduced emissions due to a moderate-green stimulus economic recovery from the Covid-19 pandemic restrictions. Concentration-driven"
+    },
+    {
+      "id": "ssp245-cov-strgreen",
+      "label": "ssp245-cov-strgreen",
+      "mip_era": ["CMIP6"],
+      "description": "Future scenario based on ssp245, but following a path of reduced emissions due to a strong-green stimulus economic recovery from the Covid-19 pandemic restrictions. Concentration-driven"
+    },
+    {
+      "id": "ssp245-covid",
+      "label": "ssp245-covid",
+      "mip_era": ["CMIP6"],
+      "description": "Future scenario based on ssp245, but with 2-year perturbation to emissions for 2020 and 2021 due to Covid-19 pandemic restrictions. Emissions revert to ssp245 after this. Concentration-driven"
+    },
+    {
+      "id": "ssp245-GHG",
+      "label": "ssp245-GHG",
+      "mip_era": ["CMIP6"],
+      "description": "Extension of well-mixed GHG-only run under SSP2-4.5. Models with interactive chemistry schemes should either turn off the chemistry or use a preindustrial climatology of stratospheric and tropospheric ozone in their radiation schemes"
+    },
+    {
+      "id": "ssp245-nat",
+      "label": "ssp245-nat",
+      "mip_era": ["CMIP6"],
+      "description": "Extension of natural-only run under SSP2-4.5"
+    },
+    {
+      "id": "ssp245-stratO3",
+      "label": "ssp245-stratO3",
+      "mip_era": ["CMIP6"],
+      "description": "Extension of stratospheric ozone-only run under SSP2-4.5 (ssp245). In models with coupled chemistry, the chemistry scheme should be turned off, and the simulated ensemble mean monthly mean 3D stratospheric ozone concentrations from the SSP2-4.5 simulations should be prescribed. Tropospheric ozone should be fixed at 3D long-term monthly mean piControl values, with a value of 100 ppbv ozone concentration in this piControl climatology used to separate the troposphere from the stratosphere. In models without coupled chemistry the same stratospheric ozone prescribed in SSP2-4.5 should be prescribed. Stratospheric ozone concentrations will be provided by CCMI"
+    },
+    {
+      "id": "ssp370",
+      "label": "ssp370",
+      "mip_era": ["CMIP6"],
+      "description": "Future scenario with high radiative forcing by the end of century. Reaches about 7.0 W/m2 by 2100; fills gap in RCP forcing pathways between 6.0 and 8.5 W/m2. Concentration-driven"
+    },
+    {
+      "id": "ssp370-lowNTCF",
+      "label": "ssp370-lowNTCF",
+      "mip_era": ["CMIP6"],
+      "description": "Future SSP3-7.0 with reduced NTCF emissions"
+    },
+    {
+      "id": "ssp370-lowNTCFCH4",
+      "label": "ssp370-lowNTCFCH4",
+      "mip_era": ["CMIP6"],
+      "description": "This experiment is identical to ssp370-lowNTCF except that the methane concentrations also follow the \"low\" scenario from SSP3-7.0_lowNTCF"
+    },
+    {
+      "id": "ssp370-ssp126Lu",
+      "label": "ssp370-ssp126Lu",
+      "mip_era": ["CMIP6"],
+      "description": "Additional land use policy sensitivity simulation for high radiative forcing scenario, keep all forcings the same as ScenarioMIP SSP3-7 (deforestation scenario), but replace land use from SSP1-2.6 (afforestation) scenario; concentration-driven"
+    },
+    {
+      "id": "ssp370pdSST",
+      "label": "ssp370pdSST",
+      "mip_era": ["CMIP6"],
+      "description": "Experimental set up as ssp370SST except sea surface temperatures (SST) and sea ice concentrations (SICONC) are from a 2005-2014 climatology. Diagnostics are as ssp370SST"
+    },
+    {
+      "id": "ssp370SST",
+      "label": "ssp370SST",
+      "mip_era": ["CMIP6"],
+      "description": "Future SSP3-7.0, with SSTs prescribed from ssp370"
+    },
+    {
+      "id": "ssp370SST-lowAer",
+      "label": "ssp370SST-lowAer",
+      "mip_era": ["CMIP6"],
+      "description": "Future SSP3-7.0 with reduced aerosol emissions (from ssp370-lowNTCF), prescribed SSTs"
+    },
+    {
+      "id": "ssp370SST-lowBC",
+      "label": "ssp370SST-lowBC",
+      "mip_era": ["CMIP6"],
+      "description": "Future SSP3-7.0 with reduced black carbon emissions, prescribed SSTs"
+    },
+    {
+      "id": "ssp370SST-lowCH4",
+      "label": "ssp370SST-lowCH4",
+      "mip_era": ["CMIP6"],
+      "description": "Future SSP3-7.0 with reduced CH4 concentrations, prescribed SSTs"
+    },
+    {
+      "id": "ssp370SST-lowNTCF",
+      "label": "ssp370SST-lowNTCF",
+      "mip_era": ["CMIP6"],
+      "description": "Future SSP3-7.0 with reduced NTCF emissions, prescribed SSTs"
+    },
+    {
+      "id": "ssp370SST-lowNTCFCH4",
+      "label": "ssp370SST-lowNTCFCH4",
+      "mip_era": ["CMIP6"],
+      "description": "This experiment is identical to ssp370SST-lowNTCF except that the methane concentrations also follow the \"low\" scenario from SSP3-7.0_lowNTCF"
+    },
+    {
+      "id": "ssp370SST-lowO3",
+      "label": "ssp370SST-lowO3",
+      "mip_era": ["CMIP6"],
+      "description": "Future SSP3-7.0 with reduced ozone precursor emissions (from ssp370-lowNTCF), prescribed SSTs"
+    },
+    {
+      "id": "ssp370SST-ssp126Lu",
+      "label": "ssp370SST-ssp126Lu",
+      "mip_era": ["CMIP6"],
+      "description": "Future SSP3-7.0 with low land use change (from ssp126), prescribed SSTs"
+    },
+    {
+      "id": "ssp434",
+      "label": "ssp434",
+      "mip_era": ["CMIP6"],
+      "description": "Future scenario with low radiative forcing by the end of century. Reaches about 3.4 W/m2 by 2100; fills gap in RCP forcing pathways between 4.5 and 2.6 W/m2. Concentration-driven"
+    },
+    {
+      "id": "ssp460",
+      "label": "ssp460",
+      "mip_era": ["CMIP6"],
+      "description": "Future scenario with medium radiative forcing by the end of century. Following approximately RCP6.0 global forcing pathway but with new forcing based on SSP4. Concentration-driven"
+    },
+    {
+      "id": "ssp534-over",
+      "label": "ssp534-over",
+      "mip_era": ["CMIP6"],
+      "description": "21st century overshoot scenario relative to SSP5_34. Branches from SSP5_85 at 2040 with emissions reduced to zero by 2070 and negative thereafter. This simulation should optionally be extended to year 2300"
+    },
+    {
+      "id": "ssp534-over-bgc",
+      "label": "ssp534-over-bgc",
+      "mip_era": ["CMIP6"],
+      "description": "This simulation should optionally be extended to year 2300"
+    },
+    {
+      "id": "ssp585",
+      "label": "ssp585",
+      "mip_era": ["CMIP6"],
+      "description": "Future scenario with high radiative forcing by the end of century. Following approximately RCP8.5 global forcing pathway but with new forcing based on SSP5. Concentration-driven. As a tier 2 option, this simulation should be extended to year 2300"
+    },
+    {
+      "id": "ssp585-bgc",
+      "label": "ssp585-bgc",
+      "mip_era": ["CMIP6"],
+      "description": "Concentration-driven future scenario simulation, biogeochemically-coupled. This simulation should optionally be extended to year 2300"
+    },
+    {
+      "id": "ssp585-withism",
+      "label": "ssp585-withism",
+      "mip_era": ["CMIP6"],
+      "description": "Future climate from ScenarioMIP SSP5-8.5 simulation that includes interactive ice sheets. Set up follows the standard SSP5-8.5 experiment"
+    },
+    {
+      "id": "sst2030",
+      "label": "sst2030",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "sst2090",
+      "label": "sst2090",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "sst2090rcp45",
+      "label": "sst2090rcp45",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "sstClim",
+      "label": "sstClim",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "sstClim4xCO2",
+      "label": "sstClim4xCO2",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "sstClimAerosol",
+      "label": "sstClimAerosol",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "sstClimSulfate",
+      "label": "sstClimSulfate",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "volc-cluster-21C",
+      "label": "volc-cluster-21C",
+      "mip_era": ["CMIP6"],
+      "description": "Parallel experiment to volc-cluster-ctrl, using restart files from the end of the historical simulation instead of from piControl, and boundary conditions from the 21st century SSP2-4.5 scenario experiment of ScenarioMIP"
+    },
+    {
+      "id": "volc-cluster-ctrl",
+      "label": "volc-cluster-ctrl",
+      "mip_era": ["CMIP6"],
+      "description": "Early 19th century cluster of strong tropical volcanic eruptions, including the 1809 event of unknown location, the 1815 Tambora and 1835 Cosigueina eruptions. Experiment initialized from PiControl"
+    },
+    {
+      "id": "volc-cluster-mill",
+      "label": "volc-cluster-mill",
+      "mip_era": ["CMIP6"],
+      "description": "Parallel experiment to volc-cluster-ctrl but with initial conditions taken from last millennium simulation to account for the effects of a more realistic history of past natural forcing. All forcings except volcanic kept constant from year AD 1790 on"
+    },
+    {
+      "id": "volc-long-eq",
+      "label": "volc-long-eq",
+      "mip_era": ["CMIP6"],
+      "description": "Idealized equatorial eruption corresponding to an initial emission of 56.2 Tg of SO2. The eruption magnitude corresponds to recent estimates for the 1815 Tambora eruption (Sigl et al., 2015), the largest historical tropical eruption, which was linked to the so-called \"year without a summer\" in 1816. Experiment initialized from PiControl"
+    },
+    {
+      "id": "volc-long-hlN",
+      "label": "volc-long-hlN",
+      "mip_era": ["CMIP6"],
+      "description": "Idealized Northern Hemisphere high-latitude eruption emitting 28.1 Tg of SO2. Experiment initialized from PiControl"
+    },
+    {
+      "id": "volc-long-hlS",
+      "label": "volc-long-hlS",
+      "mip_era": ["CMIP6"],
+      "description": "Idealized Southern Hemisphere high-latitude eruption emitting 28.1 Tg of SO2. Experiment initialized from PiControl"
+    },
+    {
+      "id": "volc-pinatubo-full",
+      "label": "volc-pinatubo-full",
+      "mip_era": ["CMIP6"],
+      "description": "1991 Pinatubo forcing as used in the CMIP6 historical simulations. Requires special diagnostics of radiative and latent heating rates. A large number of ensemble members is required to address internal atmospheric variability"
+    },
+    {
+      "id": "volc-pinatubo-slab",
+      "label": "volc-pinatubo-slab",
+      "mip_era": ["CMIP6"],
+      "description": "As volc-pinatubo-full, but with a slab ocean"
+    },
+    {
+      "id": "volc-pinatubo-strat",
+      "label": "volc-pinatubo-strat",
+      "mip_era": ["CMIP6"],
+      "description": "As volc-pinatubo-full, but with prescribed perturbation to the total (LW+SW) radiative heating rates"
+    },
+    {
+      "id": "volc-pinatubo-surf",
+      "label": "volc-pinatubo-surf",
+      "mip_era": ["CMIP6"],
+      "description": "As volc-pinatubo-full, but with prescribed perturbation to the shortwave flux to mimic the attenuation of solar radiation by volcanic aerosols"
+    },
+    {
+      "id": "volcIn2010",
+      "label": "volcIn2010",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "yr2010CO2",
+      "label": "yr2010CO2",
+      "mip_era": ["CMIP6"],
+      "description": "Branch from beginning of year 2010 of the historical simulation with CO2 concentration and all other forcing held fixed at 2010 level (part of the CDR-yr2010-pulse experiment to diagnose CO2 emissions)"
+    }
+  ]
+}

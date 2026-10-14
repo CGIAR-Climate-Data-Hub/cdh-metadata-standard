@@ -1,6 +1,6 @@
 # CDH to STAC Mapping
 
-Status: v0.4.1
+Status: v0.5.0
 
 This document describes the mapping of a CDH record as STAC. All field definitions and requirements
 live in `standard.md`, A record is valid or invalid against the schema, never against this mapping.
@@ -92,7 +92,7 @@ Searchable structured facts MUST NOT live only in free text.
 | `deprecated`                | `deprecated` (Version Extension)                                                                                                                                                                                                              |
 | `previous_version`          | `links[rel=predecessor-version]` (Version Extension). The rest of the chain follows from the `previous_version` graph: superseded records get `links[rel=successor-version]` and `links[rel=latest-version]` (see `standard.md` section 4.7). |
 | `temporal.update_frequency` | `cgiar-cdh:update_frequency`                                                                                                                                                                                                                  |
-| `additional_links[]`        | Collection `links[]`: `url` as `href`, `rel` as `rel`, `title` as `title`, and `description` as a `description` extra field (STAC links have none of their own).                                                                              |
+| `additional_links[]`        | Collection `links[]`: `url` as `href` (an `id` resolves to that record's URL), `rel` as `rel`, `title` as `title`, and `description` as a `description` extra field (STAC links have none of their own).                                      |
 | `funding[]`                 | `cgiar-cdh:funding`                                                                                                                                                                                                                           |
 | `series`                    | `cgiar-cdh:series` (`{ name, url }`). `name` is the grouping key for series facets and listings.                                                                                                                                              |
 | `cdh.domain[]`              | `cgiar-cdh:domain` on the Collection; also expanded into Themes Extension `themes[]` under the CDH domain scheme. First entry drives sub-catalog placement.                                                                                   |
@@ -173,7 +173,7 @@ each expanded Item takes the nodata of the variable it holds.
 - `variables[].data_type` maps to the STAC 1.1 `bands[].data_type` common field on rasters and to
   `table:columns[].type` on tables. On tables, dimensions and variables both become columns, each
   with its `description` and, when given, its `data_type` as `type`; `integer`, `number`, `decimal`,
-  `boolean`, `string`, `binary`, `date`, `time`, and `datetime` are table-only.
+  `boolean`, `string`, `binary`, `date`, `time`, `datetime`, and `array` are table-only.
 - Tabular data uses Table Extension `table:columns`; `structures[].geometry_column` maps to
   `table:primary_geometry` on each asset holding the structure. Each `foreign_keys[]` entry,
   top-level or on a structure, maps to `cgiar-cdh:foreign_keys` on every asset that holds its
@@ -268,6 +268,7 @@ the **same content**). Encode as:
   carrying its `href` and optional `title`.
 - The asset's `type` (media type) and `file:size` apply to all locations, since they are the same
   content.
+- A location with a scheme of its own, such as `ee://`, is emitted as-is in `href` with no `type`.
 
 A `data[]` entry with `spatial` and no `href_template` or `file_index` is emitted as its own Item
 holding that one asset, because STAC searches Items by area and assets have no footprint. The
@@ -328,8 +329,10 @@ Multiple roles on one asset are allowed (e.g., `[metadata, describedby]`).
 Every `file_index[]` entry is emitted as a Collection asset with role `file_index`, its `format` (or
 `title`) as the asset title, `locations[0]` as `href` and the rest as Alternate Assets, and
 `media_type` as `type` when present. A `stac-geoparquet` index MAY additionally be linked with
-`rel: items` in place of expanding rows into Items. Only the first `cdh-inventory` entry is expanded
-as below; other inventories (mirrors) and other formats are not read.
+`rel: items` in place of expanding rows into Items. An index entry with `href_template` emits one
+such asset per rendered path, each carrying `cgiar-cdh:partition` with its token values, as in 5.2.
+Only the first `cdh-inventory` entry is expanded as below; other inventories (mirrors) and other
+formats are not read.
 
 Apply the [file index rules](standard.md#file-indexes-file_index) before encoding. An inventory
 entry describes a file family; do not pass its `data[].locations` through the single-asset mapping

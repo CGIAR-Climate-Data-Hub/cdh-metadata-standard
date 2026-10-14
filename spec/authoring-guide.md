@@ -368,7 +368,9 @@ Rules:
   labels, not formats: declare them as a domain axis with the labels in `values`.
 - Every token dimension must list `values`, or for a regular temporal axis give `extent` and `step`
   (`extent: ["1981", "2025"]`, `step: P1Y`) instead of writing out every year.
-- Every path the template renders must exist.
+- Every path the template renders must exist. On an open-ended series, set the `extent` end to the
+  latest file present as of `updated` and move it when you refresh the record; it may lag the data
+  but must never run ahead of it.
 - A coarser format splits an axis into files: on a daily axis, `{date:%Y}.parquet` is one file per
   year holding that year's days. Do not declare a separate `year` axis for this.
 - A templated entry shares one `description`, `media_type`, and `file_size` across every file; split
@@ -444,7 +446,9 @@ coordinate, e.g. tiles observed on the same date. Add a `variable` column when f
 variable each and the names do not follow a `{variable}` token.
 
 Use either `file_index` or `href_template` on an entry. Inventory rows enumerate the files present,
-so omitted dates do not imply missing rows that a consumer should fill. See the
+so omitted dates do not imply missing rows that a consumer should fill. When the producer ships one
+index file per slice, such as one VRT per map, put the `href_template` on the index entry instead;
+the data entry still describes the tiles. See the
 [file index rules](standard.md#file-indexes-file_index) for the formats and the CSV columns.
 
 #### Data served by an API
@@ -546,7 +550,8 @@ in the dataset fully. If this is not the case, each country should be listed. Th
 repeat coverage with children in a parent region. For example, listing the parent is sufficient, not
 `[eastern-africa, kenya, uganda, ...]`.
 
-`spatial.crs` should be a coordinate reference system (CRS) identifier, such as `EPSG:4326`.
+`spatial.crs` should be a coordinate reference system (CRS) authority code, such as `EPSG:4326` or
+`ESRI:54052`, or an OGC CRS URI. Use a PROJ or WKT string only when no code exists.
 
 Grid spacing is a horizontal axis of the structure, as in STAC datacube. For a regular grid with one
 spacing on both axes, one `xy` dimension with a numeric `step` in its `unit`:
@@ -666,7 +671,8 @@ For each variable:
 - `name` is the column or band name as stored, even when the source's naming is terse or differs
   from other records. Put the readable name in `description`.
 - Use `description` for what the variable measures.
-- It is preferable to have unit as a UCUM or UDUNITS-2 unit.
+- Write `unit` in UDUNITS-2 (`mm d-1`, `degC`, `kg ha-1`). Use UCUM only for what UDUNITS-2 cannot
+  say, such as `{head}/km2` or `[pH]`.
 - Include the normal reading guidance in `description` when direction matters.
 - Use `note` for variable-specific limitations, caveats, or warnings.
 
@@ -742,7 +748,11 @@ Possible Fields:
 
 Use `commodities` for agriculture, food-systems, livestock, and crop resources.
 
-Use values from `vocab/commodity.json`.
+Use values from `vocab/commodity.json`. Tag the level the dataset is about, as a person would search
+for it: a maize yield map tags `maize`; a dataset covering most of a group tags the group, such as
+`cereals`, or the root `crops` or `livestock` when it spans the groups. Do not list every crop a
+dimension holds; the dimension values already carry that. Each concept's `parents` let a catalog
+roll a specific tag up to its groups.
 
 ### Additional assets
 
@@ -818,7 +828,8 @@ additional_assets:
 
 Use `additional_links` for related web resources rather than downloadable files: for example,
 documentation pages, license terms, request forms, services, or related and source datasets. Each
-link needs a `url` and a `rel` value describing its relationship to the record; `title` labels it.
+link needs a `rel` value describing its relationship to the record and either a `url` or, for
+another Hub record, its `id`; `title` labels it.
 
 Common `rel` values include `describedby` for documentation, `license` for license terms,
 `create-form` for an access-request form, `help` for access instructions, `cite-as` for the
@@ -831,6 +842,9 @@ additional_links:
     rel: create-form
     url: https://example.org/request-access
     description: Form for requesting access to the dataset.
+  - title: Monthly precipitation totals
+    rel: related
+    id: example-precipitation
 ```
 
 ## Where The Record Lives

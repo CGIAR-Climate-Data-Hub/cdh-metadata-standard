@@ -1,0 +1,971 @@
+{
+  "scheme": {
+    "id": "cdh-climate-model",
+    "title": "Climate Data Hub Climate Model Vocabulary",
+    "description": "Climate model source ids for `climate.models`, generated from the WCRP CMIP6 controlled vocabulary and the CMIP5 model facet of the ESGF search index, plus `ensemble` for multi-model products. Ids are the CMIP spelling verbatim.",
+    "source_schemes": [
+      {
+        "id": "wcrp-cmip6-cvs",
+        "uri": "https://github.com/WCRP-CMIP/CMIP6_CVs",
+        "title": "WCRP CMIP6 Controlled Vocabularies"
+      },
+      {
+        "id": "esgf-cmip5",
+        "uri": "https://esgf.ceda.ac.uk/esg-search/search?project=CMIP5",
+        "title": "ESGF search index, CMIP5 project facets"
+      }
+    ]
+  },
+  "concepts": [
+    {
+      "id": "4AOP-v1-5",
+      "label": "4AOP-v1-5",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "ACCESS-CM2",
+      "label": "ACCESS-CM2",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "ACCESS-ESM1-5",
+      "label": "ACCESS-ESM1.5",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "ACCESS-OM2",
+      "label": "ACCESS-OM2",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "ACCESS-OM2-025",
+      "label": "ACCESS-OM2-025",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "ACCESS1.0",
+      "label": "ACCESS1.0",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "ACCESS1.3",
+      "label": "ACCESS1.3",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "ARTS-2-3",
+      "label": "ARTS 2.3",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "AWI-CM-1-1-HR",
+      "label": "AWI-CM 1.1 HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "AWI-CM-1-1-LR",
+      "label": "AWI-CM 1.1 LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "AWI-CM-1-1-MR",
+      "label": "AWI-CM 1.1 MR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "AWI-ESM-1-1-LR",
+      "label": "AWI-ESM 1.1 LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "AWI-ESM-1-REcoM",
+      "label": "AWI-ESM 1 REcoM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "BCC-CSM1.1",
+      "label": "BCC-CSM1.1",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "BCC-CSM1.1(m)",
+      "label": "BCC-CSM1.1(m)",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "BCC-CSM2-HR",
+      "label": "BCC-CSM 2 HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "BCC-CSM2-MR",
+      "label": "BCC-CSM 2 MR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "BCC-ESM1",
+      "label": "BCC-ESM 1",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "BNU-ESM",
+      "label": "BNU-ESM",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CAM-MPAS-HR",
+      "label": "CAM-MPAS-HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CAM-MPAS-LR",
+      "label": "CAM-MPAS-LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CAMS-CSM1-0",
+      "label": "CAMS-CSM 1.0",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CanAM4",
+      "label": "CanAM4",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CanCM4",
+      "label": "CanCM4",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CanESM2",
+      "label": "CanESM2",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CanESM5",
+      "label": "CanESM5",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CanESM5-1",
+      "label": "CanESM5.1",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CanESM5-CanOE",
+      "label": "CanESM5-CanOE",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CAS-ESM2-0",
+      "label": "CAS-ESM 2.0",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CCSM4",
+      "label": "CCSM4",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CESM1-1-CAM5-CMIP5",
+      "label": "CESM1-1-CAM5-CMIP5",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CESM1-CAM5-SE-HR",
+      "label": "CESM1-CAM5-SE-HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CESM1-CAM5-SE-LR",
+      "label": "CESM1-CAM5-SE-LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CESM1-WACCM-SC",
+      "label": "CESM1-WACCM-SC",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CESM1(BGC)",
+      "label": "CESM1(BGC)",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CESM1(CAM5)",
+      "label": "CESM1(CAM5)",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CESM1(FASTCHEM)",
+      "label": "CESM1(FASTCHEM)",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CESM1(WACCM)",
+      "label": "CESM1(WACCM)",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CESM2",
+      "label": "CESM2",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CESM2-FV2",
+      "label": "CESM2-FV2",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CESM2-WACCM",
+      "label": "CESM2-WACCM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CESM2-WACCM-FV2",
+      "label": "CESM2-WACCM-FV2",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CFSv2-2011",
+      "label": "CFSv2-2011",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CIESM",
+      "label": "CIESM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CMCC-CESM",
+      "label": "CMCC-CESM",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CMCC-CM",
+      "label": "CMCC-CM",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CMCC-CM2-HR4",
+      "label": "CMCC-CM2-HR4",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CMCC-CM2-SR5",
+      "label": "CMCC-CM2-SR5",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CMCC-CM2-VHR4",
+      "label": "CMCC-CM2-VHR4",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CMCC-CMS",
+      "label": "CMCC-CMS",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CMCC-ESM2",
+      "label": "CMCC-ESM2",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CNRM-CM5",
+      "label": "CNRM-CM5",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CNRM-CM5-2",
+      "label": "CNRM-CM5-2",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "CNRM-CM6-1",
+      "label": "CNRM-CM6-1",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CNRM-CM6-1-HR",
+      "label": "CNRM-CM6-1-HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CNRM-ESM2-1",
+      "label": "CNRM-ESM2-1",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "CSIRO-Mk3.6.0",
+      "label": "CSIRO-Mk3.6.0",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "E3SM-1-0",
+      "label": "E3SM 1.0",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "E3SM-1-1",
+      "label": "E3SM 1.1",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "E3SM-1-1-ECA",
+      "label": "E3SM 1.1 ECA",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "E3SM-2-0",
+      "label": "E3SM 2.0",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "E3SM-2-0-NARRM",
+      "label": "E3SM 2.0 NARRM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "E3SM-2-1",
+      "label": "E3SM 2.1",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "EC-EARTH",
+      "label": "EC-EARTH",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "EC-Earth3",
+      "label": "EC-Earth3",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "EC-Earth3-AerChem",
+      "label": "EC-Earth3-AerChem",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "EC-Earth3-CC",
+      "label": "EC-Earth3-CC",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "EC-Earth3-ESM-1",
+      "label": "EC-Earth3-ESM-1",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "EC-Earth3-HR",
+      "label": "EC-Earth3-HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "EC-Earth3-LR",
+      "label": "EC-Earth3-LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "EC-Earth3-Veg",
+      "label": "EC-Earth3-Veg",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "EC-Earth3-Veg-LR",
+      "label": "EC-Earth3-Veg-LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "EC-Earth3P",
+      "label": "EC-Earth3P",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "EC-Earth3P-HR",
+      "label": "EC-Earth3P-HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "EC-Earth3P-VHR",
+      "label": "EC-Earth3P-VHR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "ECMWF-IFS-HR",
+      "label": "ECMWF-IFS-HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "ECMWF-IFS-LR",
+      "label": "ECMWF-IFS-LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "ECMWF-IFS-MR",
+      "label": "ECMWF-IFS-MR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "ensemble",
+      "label": "Multi-model ensemble",
+      "mip_era": ["CMIP5", "CMIP6"]
+    },
+    {
+      "id": "FGOALS-f3-H",
+      "label": "FGOALS-f3-H",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "FGOALS-f3-L",
+      "label": "FGOALS-f3-L",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "FGOALS-g2",
+      "label": "FGOALS-g2",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "FGOALS-g3",
+      "label": "FGOALS-g3",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "FGOALS-gl",
+      "label": "FGOALS-gl",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "FGOALS-s2",
+      "label": "FGOALS-s2",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "FIO-ESM",
+      "label": "FIO-ESM",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "FIO-ESM-2-0",
+      "label": "FIO-ESM 2.0",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GEOS-5",
+      "label": "GEOS-5",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "GFDL-AM4",
+      "label": "GFDL-AM4",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GFDL-CM2.1",
+      "label": "GFDL-CM2.1",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "GFDL-CM3",
+      "label": "GFDL-CM3",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "GFDL-CM4",
+      "label": "GFDL-CM4",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GFDL-CM4C192",
+      "label": "GFDL-CM4C192",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GFDL-ESM2G",
+      "label": "GFDL-ESM2G",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "GFDL-ESM2M",
+      "label": "GFDL-ESM2M",
+      "mip_era": ["CMIP5", "CMIP6"]
+    },
+    {
+      "id": "GFDL-ESM4",
+      "label": "GFDL-ESM4",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GFDL-GRTCODE",
+      "label": "GFDL-GRTCODE",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GFDL-HIRAM-C180",
+      "label": "GFDL-HIRAM-C180",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "GFDL-HIRAM-C360",
+      "label": "GFDL-HIRAM-C360",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "GFDL-OM4p5B",
+      "label": "GFDL-OM4p5B",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GFDL-RFM-DISORT",
+      "label": "GFDL-RFM-DISORT",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GISS-E2-1-G",
+      "label": "GISS-E2.1G",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GISS-E2-1-G-CC",
+      "label": "GISS-E2-1-G-CC",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GISS-E2-1-H",
+      "label": "GISS-E2.1H",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GISS-E2-2-G",
+      "label": "GISS-E2-2-G",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GISS-E2-2-H",
+      "label": "GISS-E2.2H",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "GISS-E2-H",
+      "label": "GISS-E2-H",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "GISS-E2-H-CC",
+      "label": "GISS-E2-H-CC",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "GISS-E2-R",
+      "label": "GISS-E2-R",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "GISS-E2-R-CC",
+      "label": "GISS-E2-R-CC",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "GISS-E3-G",
+      "label": "GISS-E3-G",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "HadCM3",
+      "label": "HadCM3",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "HadGEM2-A",
+      "label": "HadGEM2-A",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "HadGEM2-CC",
+      "label": "HadGEM2-CC",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "HadGEM2-ES",
+      "label": "HadGEM2-ES",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "HadGEM3-GC31-HH",
+      "label": "HadGEM3-GC31-HH",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "HadGEM3-GC31-HM",
+      "label": "HadGEM3-GC31-HM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "HadGEM3-GC31-LL",
+      "label": "HadGEM3-GC31-LL",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "HadGEM3-GC31-LM",
+      "label": "HadGEM3-GC31-LM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "HadGEM3-GC31-MH",
+      "label": "HadGEM3-GC31-MH",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "HadGEM3-GC31-MM",
+      "label": "HadGEM3-GC31-MM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "HiRAM-SIT-HR",
+      "label": "HiRAM-SIT-HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "HiRAM-SIT-LR",
+      "label": "HiRAM-SIT-LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "ICON-ESM-LR",
+      "label": "ICON-ESM-LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "IITM-ESM",
+      "label": "IITM-ESM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "INM-CM4",
+      "label": "INM-CM4",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "INM-CM4-8",
+      "label": "INM-CM4-8",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "INM-CM5-0",
+      "label": "INM-CM5-0",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "INM-CM5-H",
+      "label": "INM-CM5-H",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "IPSL-CM5A-LR",
+      "label": "IPSL-CM5A-LR",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "IPSL-CM5A-MR",
+      "label": "IPSL-CM5A-MR",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "IPSL-CM5A2-INCA",
+      "label": "IPSL-CM5A2-INCA",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "IPSL-CM5B-LR",
+      "label": "IPSL-CM5B-LR",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "IPSL-CM6A-ATM-HR",
+      "label": "IPSL-CM6A-ATM-HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "IPSL-CM6A-ATM-ICO-HR",
+      "label": "IPSL-CM6A-ATM-ICO-HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "IPSL-CM6A-ATM-ICO-LR",
+      "label": "IPSL-CM6A-ATM-ICO-LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "IPSL-CM6A-ATM-ICO-MR",
+      "label": "IPSL-CM6A-ATM-ICO-MR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "IPSL-CM6A-ATM-ICO-VHR",
+      "label": "IPSL-CM6A-ATM-ICO-VHR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "IPSL-CM6A-ATM-LR-REPROBUS",
+      "label": "IPSL-CM6A-ATM-LR-REPROBUS",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "IPSL-CM6A-LR",
+      "label": "IPSL-CM6A-LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "IPSL-CM6A-LR-INCA",
+      "label": "IPSL-CM6A-LR-INCA",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "IPSL-CM6A-MR1",
+      "label": "IPSL-CM6A-MR1",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "KACE-1-0-G",
+      "label": "KACE1.0-G",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "KIOST-ESM",
+      "label": "KIOST-ESM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "LBLRTM-12-8",
+      "label": "LBLRTM 12.8",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MCM-UA-1-0",
+      "label": "MCM-UA-1-0",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MIROC-ES2H",
+      "label": "MIROC-ES2H",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MIROC-ES2H-NB",
+      "label": "MIROC-ES2H-NB",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MIROC-ES2L",
+      "label": "MIROC-ES2L",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MIROC-ESM",
+      "label": "MIROC-ESM",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "MIROC-ESM-CHEM",
+      "label": "MIROC-ESM-CHEM",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "MIROC4h",
+      "label": "MIROC4h",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "MIROC5",
+      "label": "MIROC5",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "MIROC6",
+      "label": "MIROC6",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MPI-ESM-1-2-HAM",
+      "label": "MPI-ESM1.2-HAM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MPI-ESM-LR",
+      "label": "MPI-ESM-LR",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "MPI-ESM-MR",
+      "label": "MPI-ESM-MR",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "MPI-ESM-P",
+      "label": "MPI-ESM-P",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "MPI-ESM1-2-HR",
+      "label": "MPI-ESM1.2-HR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MPI-ESM1-2-LR",
+      "label": "MPI-ESM1.2-LR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MPI-ESM1-2-XR",
+      "label": "MPI-ESM1.2-XR",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MRI-AGCM3-2-H",
+      "label": "MRI-AGCM3-2-H",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MRI-AGCM3-2-S",
+      "label": "MRI-AGCM3-2-S",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "MRI-AGCM3.2H",
+      "label": "MRI-AGCM3.2H",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "MRI-AGCM3.2S",
+      "label": "MRI-AGCM3.2S",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "MRI-CGCM3",
+      "label": "MRI-CGCM3",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "MRI-ESM1",
+      "label": "MRI-ESM1",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "MRI-ESM2-0",
+      "label": "MRI-ESM2.0",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "NESM3",
+      "label": "NESM v3",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "NICAM-09",
+      "label": "NICAM-09",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "NICAM16-7S",
+      "label": "NICAM16-7S",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "NICAM16-8S",
+      "label": "NICAM16-8S",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "NICAM16-9S",
+      "label": "NICAM16-9S",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "NorCPM1",
+      "label": "NorCPM1",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "NorESM1-F",
+      "label": "NorESM1-F",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "NorESM1-M",
+      "label": "NorESM1-M",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "NorESM1-ME",
+      "label": "NorESM1-ME",
+      "mip_era": ["CMIP5"]
+    },
+    {
+      "id": "NorESM2-LM",
+      "label": "NorESM2-LM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "NorESM2-MM",
+      "label": "NorESM2-MM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "PCMDI-test-1-0",
+      "label": "PCMDI-test 1.0",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "RRTMG-LW-4-91",
+      "label": "RRTMG-LW 4.91",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "RRTMG-SW-4-02",
+      "label": "RRTMG-SW 4.02",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "RTE-RRTMGP-181204",
+      "label": "RTE+RRTMGP (2018-12-04 full-resolution)",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "SAM0-UNICON",
+      "label": "SAM0-UNICON",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "TaiESM1",
+      "label": "TaiESM 1.0",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "TaiESM1-TIMCOM",
+      "label": "TaiESM1-TIMCOM",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "TaiESM1-TIMCOM2",
+      "label": "TaiESM1-TIMCOM2",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "UKESM1-0-LL",
+      "label": "UKESM1.0-LL",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "UKESM1-1-LL",
+      "label": "UKESM1.1-LL",
+      "mip_era": ["CMIP6"]
+    },
+    {
+      "id": "UKESM1-ice-LL",
+      "label": "UKESM1.ice-LL",
+      "mip_era": ["CMIP6"]
+    }
+  ]
+}
