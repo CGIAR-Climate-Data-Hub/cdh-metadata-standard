@@ -925,9 +925,9 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
       Lowercase, digits, `-` and `_`.
   - **`spatial` and `geometry` are rejected** as types. Use `xy` or `x`/`y` for the horizontal axes,
     `z` for a vertical axis, and `location` for a place key.
-  - `unit` is the unit of measurement for the values, preferably UDUNITS-2 or UCUM. Required on the
-    horizontal axes (`degree`, `m`, `km`); give one on a `z` dimension (`cm`, `m`, `hPa`) and on any
-    numeric domain axis whose values are not self-describing. It is not a substitute for
+  - `unit` is the unit of measurement for the values, in UDUNITS-2 (see `variables[]`). Required on
+    the horizontal axes (`degree`, `m`, `km`); give one on a `z` dimension (`cm`, `m`, `hPa`) and on
+    any numeric domain axis whose values are not self-describing. It is not a substitute for
     `reference_system`, which names the vocabulary or vertical CRS the values are coded against - a
     `z` dimension can carry both.
   - **Declare every temporal axis here** as `type: temporal`. The top-level `temporal` field carries
@@ -980,9 +980,11 @@ structure. `dimensions[]`, `variables[]`, and `foreign_keys[]` below are the fie
   `{ name, description, data_type, unit, nodata, note, categories }`.
 - **Rules:**
   - Every variable has every dimension of its structure.
-  - `unit` is the unit of measurement, preferably compliant with UDUNITS-2 or UCUM (e.g., `ha`, `t`,
-    `t ha-1`, `K`, `kg m-2 s-1`, `{head}/km2`) rather than strictly validated. Required for
-    measurements. Use `1` for dimensionless quantities; omit for text or code columns.
+  - `unit` follows UDUNITS-2, as CF requires, such as `mm d-1`, `degC`, `kg ha-1`. Where UDUNITS-2
+    has no form, use the UCUM expression instead: a count annotation like `{head}/km2`, or a
+    bracketed special like `[pH]`. Never spell a UDUNITS-2 unit the UCUM way, since `ha` and `d`
+    read differently in the two; readers parse UDUNITS-2 first and UCUM on failure. Not validated.
+    Required for measurements. Use `1` for dimensionless quantities; omit for text or code columns.
   - `name` is the variable, column, or band name as stored in the data, so it matches the files and
     `{variable}` tokens. When a CF standard name applies, give it in `description` (e.g.,
     "Near-surface air temperature (CF: `air_temperature`)").

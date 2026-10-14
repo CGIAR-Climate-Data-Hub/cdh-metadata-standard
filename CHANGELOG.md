@@ -14,6 +14,8 @@ occur between minor versions.
 
 - `spatial.crs` prefers an authority code (`EPSG:4326`, `ESRI:54052`) or an OGC CRS URI. A PROJ or
   WKT string is for a CRS with no code, not an equal option.
+- `unit` follows UDUNITS-2, with UCUM only for what UDUNITS-2 cannot express (`{head}/km2`, `[pH]`),
+  instead of either grammar at the author's choice.
 
 ## [0.4.1] - 2026-10-07
 

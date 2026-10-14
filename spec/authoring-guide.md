@@ -667,7 +667,8 @@ For each variable:
 - `name` is the column or band name as stored, even when the source's naming is terse or differs
   from other records. Put the readable name in `description`.
 - Use `description` for what the variable measures.
-- It is preferable to have unit as a UCUM or UDUNITS-2 unit.
+- Write `unit` in UDUNITS-2 (`mm d-1`, `degC`, `kg ha-1`). Use UCUM only for what UDUNITS-2 cannot
+  say, such as `{head}/km2` or `[pH]`.
 - Include the normal reading guidance in `description` when direction matters.
 - Use `note` for variable-specific limitations, caveats, or warnings.
 

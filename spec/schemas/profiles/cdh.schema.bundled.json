@@ -2010,7 +2010,7 @@
                     "unit": {
                       "minLength": 1,
                       "type": "string",
-                      "description": "Unit of measurement for the values, preferably compliant with UDUNITS-2 or UCUM. Required on x, y, and xy (degree, m, km) and on z (cm, m, hPa); useful on any numeric domain axis. Not a substitute for reference_system.",
+                      "description": "Unit of measurement for the values, in UDUNITS-2 (UCUM only for what UDUNITS-2 cannot express). Required on x, y, and xy (degree, m, km) and on z (cm, m, hPa); useful on any numeric domain axis. Not a substitute for reference_system.",
                       "examples": ["cm", "m", "hPa"]
                     },
                     "data_type": {
@@ -2363,7 +2363,7 @@
                     "unit": {
                       "minLength": 1,
                       "type": "string",
-                      "description": "Unit of measurement, preferably compliant with UDUNITS-2 or UCUM. Required for measurements; omit for text or code columns.",
+                      "description": "Unit of measurement in UDUNITS-2, as CF requires (mm d-1, degC, kg ha-1). UCUM only for what UDUNITS-2 cannot express, such as {head}/km2 or [pH]; never a UCUM spelling of a UDUNITS-2 unit. Required for measurements; omit for text or code columns.",
                       "examples": ["t ha-1", "{head}/km2"]
                     },
                     "nodata": {
