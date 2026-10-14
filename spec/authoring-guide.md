@@ -750,10 +750,10 @@ Use `commodities` for agriculture, food-systems, livestock, and crop resources.
 
 Use values from `vocab/commodity.json`. A group tag is a coverage claim, the same as a region in
 `geography`: tag `cereals` only if the dataset covers the group's major members, otherwise list the
-members it holds, e.g. `[sorghum, millet]` rather than `cereals`. Tag `crops` or `livestock` only when
-the dataset spans the groups. Do not repeat children under a tagged parent, and do not list every
-crop a dimension holds; the dimension values already carry that. Each concept's `parents` let a
-catalog roll a specific tag up to its groups.
+members it holds, e.g. `[sorghum, millet]` rather than `cereals`. Tag `crops` or `livestock` only
+when the dataset spans the groups. Do not repeat children under a tagged parent, and do not list
+every crop a dimension holds; the dimension values already carry that. Each concept's `parents` let
+a catalog roll a specific tag up to its groups.
 
 ### Additional assets
 
