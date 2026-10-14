@@ -1,0 +1,4554 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.5.0/schemas/profiles/cdh.schema.bundled.json",
+  "title": "CDH Profile",
+  "description": "CDH policy schema: the core composed with all CDH-maintained extensions, requiring the cdh extension on every Hub record. Applied as the policy layer (validate-yaml --profile) on top of the per-record mechanism check (core + declared extensions only), and bound by editors via the yaml-language-server modeline for autocomplete. A single-file bundled copy is published alongside as cdh.schema.bundled.json.",
+  "allOf": [
+    {
+      "description": "JSON Schema for CDH metadata records. This validates structure, types, controlled values, and basic input rules; CDH review still handles contextual and curatorial checks.",
+      "properties": {
+        "access": {
+          "description": "Access condition for the resource's data, distinct from license. Omitting it means public. Aligned to the DCAT / EU accessRights vocabulary: public (openly accessible); restricted (discoverable, but obtaining the data requires a request or authentication); non-public (catalogued but not available through public channels).",
+          "default": "public",
+          "enum": ["public", "restricted", "non-public"]
+        },
+        "access_note": {
+          "minLength": 1,
+          "type": "string",
+          "description": "Human-readable access conditions or instructions. Required when access is restricted or non-public; maps to schema.org conditionsOfAccess."
+        },
+        "attribution": {
+          "minLength": 1,
+          "type": "string",
+          "description": "Credit line reusers should reproduce: wording a license or upstream source requires, or the credit the producer asks for. One short statement; do not restate citation. Maps to schema.org creditText.",
+          "examples": [
+            "Contains modified Copernicus Emergency Management Service information [year]"
+          ]
+        },
+        "additional_assets": {
+          "description": "Sidecar or auxiliary assets, e.g. metadata files or thumbnails.",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "file_size": {
+                "description": "File size: whole bytes (31100000) or a number and unit (31.1 MB). Units are B, KB, MB, GB, TB, PB, in powers of 1000 (1 KB = 1000 bytes), rounded up to whole bytes.",
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^\\d+(\\.\\d+)?\\s?(B|KB|MB|GB|TB|PB)$"
+                  }
+                ]
+              },
+              "locations": {
+                "description": "Access paths to the same content; the first is canonical. An absolute URL, or a path relative to the record file for a small metadata file committed beside it (README, agent guide, code list, thumbnail).",
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "Optional access label, e.g. HTTPS or S3.",
+                      "minLength": 1
+                    },
+                    "url": {
+                      "description": "Absolute URL. In additional_assets[] and a cdh-inventory file_index[] it may instead be a path relative to the record file.",
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "required": ["url"],
+                  "type": "object"
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "media_type": {
+                "description": "Media type (IANA), optionally with format parameters such as profile or version.",
+                "pattern": "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+(\\s*;\\s*[^;=]+=[^;]+)*$",
+                "type": "string",
+                "examples": [
+                  "image/tiff; application=geotiff; profile=cloud-optimized",
+                  "image/tiff; application=geotiff",
+                  "application/vnd.zarr; version=3",
+                  "application/x-netcdf",
+                  "application/vnd.apache.parquet",
+                  "application/geopackage+sqlite3",
+                  "application/json",
+                  "text/csv"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Asset name; must be unique across data[] and additional_assets[]."
+              },
+              "roles": {
+                "description": "Asset roles. Suggested values, not a closed set: `metadata`, `validation`, `describedby` (human documentation such as a README), `agents` (a Markdown guide for AI agents: keys and join columns, quirks, CRS consequences, tested queries), `thumbnail`, `overview`, `visual`, `example` (a code file: a runnable usage example, e.g. a notebook or SQL file).",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "examples": [
+                    "metadata",
+                    "validation",
+                    "describedby",
+                    "agents",
+                    "thumbnail",
+                    "overview",
+                    "visual",
+                    "example"
+                  ]
+                },
+                "type": "array",
+                "uniqueItems": true
+              }
+            },
+            "required": ["name", "locations"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "additional_links": {
+          "description": "Related links: citation targets, services, or related resources. Each entry has an id (a Hub record) or a url (anything else), not both.",
+          "items": {
+            "additionalProperties": false,
+            "anyOf": [
+              {
+                "required": ["id"]
+              },
+              {
+                "required": ["url"]
+              }
+            ],
+            "not": {
+              "required": ["id", "url"]
+            },
+            "properties": {
+              "description": {
+                "type": "string",
+                "minLength": 1
+              },
+              "id": {
+                "description": "id of the Hub record linked. Must resolve to exactly one catalog record.",
+                "pattern": "^[a-z0-9][a-z0-9-]*$",
+                "type": "string",
+                "examples": ["example-crop-suitability", "spam2020"]
+              },
+              "rel": {
+                "type": "string",
+                "description": "Link relation type, e.g. cite-as or describedby.",
+                "minLength": 1
+              },
+              "title": {
+                "description": "Human-readable label for the link.",
+                "minLength": 1,
+                "type": "string"
+              },
+              "url": {
+                "format": "uri",
+                "description": "URL of a resource outside the Hub.",
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": ["rel"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "cdh_schema_version": {
+          "type": "string",
+          "description": "CDH standard version this record targets. Matches the release tag: v<MAJOR>.<MINOR>.<PATCH>.",
+          "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "citation": {
+          "additionalProperties": false,
+          "description": "Structured citation for the resource.",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Cite-as title; may differ from the record's top-level title.",
+              "minLength": 1
+            },
+            "authors": {
+              "type": "array",
+              "items": {
+                "description": "A citation author: either a person or an organization.",
+                "oneOf": [
+                  {
+                    "additionalProperties": false,
+                    "required": ["family"],
+                    "properties": {
+                      "family": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "Family name(s). A person with a single name uses this field alone.",
+                        "examples": ["Smith", "Carreño Quiñones", "Suharto"]
+                      },
+                      "given": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "Given name(s) or initials.",
+                        "examples": ["Jane", "J.", "María José"]
+                      },
+                      "orcid": {
+                        "description": "ORCID iD of the person, as its https://orcid.org/ URL.",
+                        "type": "string",
+                        "pattern": "^https://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\d{3}[\\dX]$",
+                        "examples": ["https://orcid.org/0000-0002-1825-0097"]
+                      }
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "required": ["organization"],
+                    "properties": {
+                      "organization": {
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "Full name of an organization credited as an author.",
+                        "examples": ["Food and Agriculture Organization of the United Nations"]
+                      },
+                      "ror": {
+                        "description": "ROR id of the organization, as its https://ror.org/ URL.",
+                        "type": "string",
+                        "pattern": "^https://ror\\.org/0[0-9a-hjkmnp-tv-z]{6}[0-9]{2}$",
+                        "examples": ["https://ror.org/04xsxqp89"]
+                      }
+                    },
+                    "type": "object"
+                  }
+                ]
+              },
+              "description": "Authors in citation order. A person gives family (and usually given); an organization gives organization.",
+              "minItems": 1
+            },
+            "date": {
+              "description": "Publication date or year, e.g. 2024 or 2024-07-15.",
+              "examples": ["2024", "2024-07-15", "2020-06-23", "2020-06-23T00:00:00Z"],
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}$"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ]
+            },
+            "publisher": {
+              "minLength": 1,
+              "type": "string",
+              "description": "Publisher or venue: the data publisher/repository for datasets, or the journal for articles."
+            },
+            "url": {
+              "minLength": 1,
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "required": ["authors", "date"],
+          "type": "object"
+        },
+        "contact": {
+          "description": "People or organizations responsible for the resource. At least one entry must hold the `licensor` role - the party that granted the license.",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "email": {
+                "format": "email",
+                "type": "string",
+                "examples": ["ada.placeholder@example.org"]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "orcid": {
+                "description": "ORCID iD of the named person.",
+                "type": "string",
+                "pattern": "^https://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\d{3}[\\dX]$",
+                "examples": ["https://orcid.org/0000-0002-1825-0097"]
+              },
+              "organization": {
+                "type": "string",
+                "minLength": 1,
+                "examples": [
+                  "Africa Rice Center (AfricaRice)",
+                  "Alliance of Bioversity International and CIAT",
+                  "CIFOR-ICRAF",
+                  "International Center for Agricultural Research in the Dry Areas (ICARDA)",
+                  "International Crops Research Institute for the Semi-Arid Tropics (ICRISAT)",
+                  "International Food Policy Research Institute (IFPRI)",
+                  "International Institute of Tropical Agriculture (IITA)",
+                  "International Livestock Research Institute (ILRI)",
+                  "International Maize and Wheat Improvement Center (CIMMYT)",
+                  "International Potato Center (CIP)",
+                  "International Rice Research Institute (IRRI)",
+                  "International Water Management Institute (IWMI)",
+                  "WorldFish"
+                ]
+              },
+              "ror": {
+                "description": "ROR id of the organization.",
+                "type": "string",
+                "pattern": "^https://ror\\.org/0[0-9a-hjkmnp-tv-z]{6}[0-9]{2}$",
+                "examples": ["https://ror.org/04xsxqp89"]
+              },
+              "roles": {
+                "description": "Roles this contact holds (one or more).",
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "enum": ["licensor", "producer", "processor", "point-of-contact", "maintainer"]
+                },
+                "uniqueItems": true
+              },
+              "url": {
+                "format": "uri",
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": ["roles", "organization"],
+            "type": "object"
+          },
+          "minItems": 1,
+          "contains": {
+            "type": "object",
+            "properties": {
+              "roles": {
+                "contains": {
+                  "const": "licensor"
+                }
+              }
+            },
+            "required": ["roles"]
+          },
+          "type": "array"
+        },
+        "created": {
+          "description": "Date or date-time. Use YYYY-MM-DD (e.g. 2026-06-23) or an RFC 3339 date-time (e.g. 2026-06-23T00:00:00Z).",
+          "examples": ["2026-06-23", "2026-06-23T00:00:00Z"],
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "format": "date-time",
+              "type": "string"
+            }
+          ]
+        },
+        "data": {
+          "description": "Data assets for the resource; at least one entry.",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "description": {
+                "description": "What this entry holds and how it differs from the record's other entries: which part of the dataset it covers (one table, region, or period), or which layout of the same data it is (e.g. time- vs space-optimized chunks) and when to use it.",
+                "type": "string",
+                "minLength": 1
+              },
+              "checksum": {
+                "description": "Digest of the single file this entry names, as <algorithm>:<hex>. Not for templated or indexed entries; a cdh-inventory carries per-file checksums.",
+                "type": "string",
+                "pattern": "^(md5:[0-9a-f]{32}|sha1:[0-9a-f]{40}|sha256:[0-9a-f]{64}|sha512:[0-9a-f]{128})$",
+                "examples": [
+                  "sha256:2c26b46b68ffc68ff99b453c1d30413413422d706483bfa0f98a5e886266e7ae"
+                ]
+              },
+              "file_size": {
+                "description": "File size: whole bytes (31100000) or a number and unit (31.1 MB). Units are B, KB, MB, GB, TB, PB, in powers of 1000 (1 KB = 1000 bytes), rounded up to whole bytes.",
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^\\d+(\\.\\d+)?\\s?(B|KB|MB|GB|TB|PB)$"
+                  }
+                ]
+              },
+              "locations": {
+                "description": "Access paths to the same content; the first is canonical. URLs are always absolute and machine-actionable: a data file, a store or directory prefix, or a service endpoint - never a landing page or DOI (those go in citation.url, doi, or additional_links).",
+                "items": {
+                  "allOf": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "description": "Optional access label, e.g. HTTPS or S3.",
+                          "minLength": 1
+                        },
+                        "url": {
+                          "description": "Absolute URL. In additional_assets[] and a cdh-inventory file_index[] it may instead be a path relative to the record file.",
+                          "minLength": 1,
+                          "type": "string"
+                        }
+                      },
+                      "required": ["url"],
+                      "type": "object"
+                    },
+                    {
+                      "properties": {
+                        "url": {
+                          "format": "uri"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "minItems": 1,
+                "type": "array"
+              },
+              "media_type": {
+                "description": "Media type (IANA), optionally with format parameters such as profile or version.",
+                "pattern": "^[A-Za-z0-9!#$&^_.+-]+/[A-Za-z0-9!#$&^_.+-]+(\\s*;\\s*[^;=]+=[^;]+)*$",
+                "type": "string",
+                "examples": [
+                  "image/tiff; application=geotiff; profile=cloud-optimized",
+                  "image/tiff; application=geotiff",
+                  "application/vnd.zarr; version=3",
+                  "application/x-netcdf",
+                  "application/vnd.apache.parquet",
+                  "application/geopackage+sqlite3",
+                  "application/json",
+                  "text/csv"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Asset name; must be unique across data[] and additional_assets[]."
+              },
+              "structures": {
+                "description": "Names of the structures[] this asset holds. Required when the record has more than one structure; omitted, the asset holds the record's only structure. Structure membership must be verified before publication.",
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "href_template": {
+                "description": "Optional relative file-name pattern appended to each locations[].url. Each {token} must match a dimensions[].name or be the reserved {variable} token, which expands over variables[].name; the entry expands to one item per combination of the tokens' values. A token on a type: temporal dimension may carry a strftime format ({date:%Y.%m.%d}, directives %Y %m %d only) when the file name spells the date differently from the ISO value. When absent, locations[].url are full file URLs and the entry is a single asset.",
+                "type": "string",
+                "examples": [
+                  "mapspam_{crop}_{technology}_{variable}.tif",
+                  "chirps-v2.0.{date:%Y.%m.%d}.tif"
+                ],
+                "$comment": "Braces balance; a token is {name} or {name:format}, and a format holds at least one directive and no other %.",
+                "pattern": "^(?:[^{}]|\\{[^{}:]+(?::(?=[^}]*%)(?:%[Ymd]|[^%{}])+)?\\})+$"
+              },
+              "file_index": {
+                "description": "Indexes that list or open this entry's files as one dataset, per the File indexes section of standard.md. Each entry is one index file, or with href_template one per rendered path; its locations[] are the same file at several addresses. format names the specification the file follows. CDH does not open index files. Mutually exclusive with href_template on the entry.",
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["format", "locations"],
+                  "properties": {
+                    "format": {
+                      "description": "Specification the index file follows: stac-geoparquet (STAC Items as GeoParquet), gti (GDAL Tile Index), vrt (GDAL Virtual Raster), kerchunk (kerchunk reference file), icechunk (Icechunk repository with virtual chunks), or cdh-inventory (CDH CSV file list of absolute URLs).",
+                      "enum": [
+                        "stac-geoparquet",
+                        "gti",
+                        "vrt",
+                        "kerchunk",
+                        "icechunk",
+                        "cdh-inventory"
+                      ]
+                    },
+                    "locations": {
+                      "description": "Copies of the index file; the first is canonical. Absolute URLs; a cdh-inventory may instead use a path relative to the record file when committed beside it.",
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "title": {
+                            "type": "string",
+                            "description": "Optional access label, e.g. HTTPS or S3.",
+                            "minLength": 1
+                          },
+                          "url": {
+                            "description": "Absolute URL. In additional_assets[] and a cdh-inventory file_index[] it may instead be a path relative to the record file.",
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "required": ["url"],
+                        "type": "object"
+                      },
+                      "minItems": 1,
+                      "type": "array"
+                    },
+                    "title": {
+                      "description": "Optional label, e.g. which scheme the index's internal paths use.",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "media_type": {
+                      "description": "IANA media type of the index file itself, when it has one. Optional; useful for gti (GeoPackage, FlatGeobuf, or Parquet).",
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "href_template": {
+                      "description": "Optional pattern appended to each locations[].url when there is one index file per slice, e.g. one VRT per map. Same tokens and rules as the entry-level href_template; together the rendered files are one complete index.",
+                      "type": "string",
+                      "examples": [
+                        "mapspam_{crop}_{technology}_{variable}.tif",
+                        "chirps-v2.0.{date:%Y.%m.%d}.tif"
+                      ],
+                      "$comment": "Braces balance; a token is {name} or {name:format}, and a format holds at least one directive and no other %.",
+                      "pattern": "^(?:[^{}]|\\{[^{}:]+(?::(?=[^}]*%)(?:%[Ymd]|[^%{}])+)?\\})+$"
+                    }
+                  },
+                  "if": {
+                    "properties": {
+                      "format": {
+                        "const": "cdh-inventory"
+                      }
+                    }
+                  },
+                  "else": {
+                    "properties": {
+                      "locations": {
+                        "items": {
+                          "properties": {
+                            "url": {
+                              "format": "uri"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "spatial": {
+                "description": "Coverage of this asset alone, for selecting files by area. Same shapes as the top-level spatial. Omit when unknown; the top-level bbox is not copied down.",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "bbox": {
+                    "description": "Spatial extent. A single bounding box, or a list of boxes for disjoint coverage - each box is a real area covered, in any order; do not include an overall/union box. 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+                    "oneOf": [
+                      {
+                        "description": "A single bounding box: 2D [west, south, east, north], or 3D [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+                        "oneOf": [
+                          {
+                            "title": "2D box",
+                            "type": "array",
+                            "minItems": 4,
+                            "maxItems": 4,
+                            "prefixItems": [
+                              {
+                                "title": "West",
+                                "type": "number",
+                                "minimum": -180,
+                                "maximum": 180
+                              },
+                              {
+                                "title": "South",
+                                "type": "number",
+                                "minimum": -90,
+                                "maximum": 90
+                              },
+                              {
+                                "title": "East",
+                                "type": "number",
+                                "minimum": -180,
+                                "maximum": 180
+                              },
+                              {
+                                "title": "North",
+                                "type": "number",
+                                "minimum": -90,
+                                "maximum": 90
+                              }
+                            ],
+                            "items": false
+                          },
+                          {
+                            "title": "3D box",
+                            "type": "array",
+                            "minItems": 6,
+                            "maxItems": 6,
+                            "prefixItems": [
+                              {
+                                "title": "West",
+                                "type": "number",
+                                "minimum": -180,
+                                "maximum": 180
+                              },
+                              {
+                                "title": "South",
+                                "type": "number",
+                                "minimum": -90,
+                                "maximum": 90
+                              },
+                              {
+                                "title": "Min elevation",
+                                "type": "number"
+                              },
+                              {
+                                "title": "East",
+                                "type": "number",
+                                "minimum": -180,
+                                "maximum": 180
+                              },
+                              {
+                                "title": "North",
+                                "type": "number",
+                                "minimum": -90,
+                                "maximum": 90
+                              },
+                              {
+                                "title": "Max elevation",
+                                "type": "number"
+                              }
+                            ],
+                            "items": false
+                          }
+                        ]
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "description": "A single bounding box: 2D [west, south, east, north], or 3D [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+                          "oneOf": [
+                            {
+                              "title": "2D box",
+                              "type": "array",
+                              "minItems": 4,
+                              "maxItems": 4,
+                              "prefixItems": [
+                                {
+                                  "title": "West",
+                                  "type": "number",
+                                  "minimum": -180,
+                                  "maximum": 180
+                                },
+                                {
+                                  "title": "South",
+                                  "type": "number",
+                                  "minimum": -90,
+                                  "maximum": 90
+                                },
+                                {
+                                  "title": "East",
+                                  "type": "number",
+                                  "minimum": -180,
+                                  "maximum": 180
+                                },
+                                {
+                                  "title": "North",
+                                  "type": "number",
+                                  "minimum": -90,
+                                  "maximum": 90
+                                }
+                              ],
+                              "items": false
+                            },
+                            {
+                              "title": "3D box",
+                              "type": "array",
+                              "minItems": 6,
+                              "maxItems": 6,
+                              "prefixItems": [
+                                {
+                                  "title": "West",
+                                  "type": "number",
+                                  "minimum": -180,
+                                  "maximum": 180
+                                },
+                                {
+                                  "title": "South",
+                                  "type": "number",
+                                  "minimum": -90,
+                                  "maximum": 90
+                                },
+                                {
+                                  "title": "Min elevation",
+                                  "type": "number"
+                                },
+                                {
+                                  "title": "East",
+                                  "type": "number",
+                                  "minimum": -180,
+                                  "maximum": 180
+                                },
+                                {
+                                  "title": "North",
+                                  "type": "number",
+                                  "minimum": -90,
+                                  "maximum": 90
+                                },
+                                {
+                                  "title": "Max elevation",
+                                  "type": "number"
+                                }
+                              ],
+                              "items": false
+                            }
+                          ]
+                        },
+                        "minItems": 1
+                      }
+                    ],
+                    "examples": [[-180, -90, 180, 90], [[-180, -90, 180, 90]]]
+                  },
+                  "geography": {
+                    "description": "Named places for discovery (vocab/geography.json ids, UN M49).",
+                    "items": {
+                      "title": "CDH Geography Vocabulary",
+                      "description": "Generated from vocab/geography.json. Do not edit this file directly; update the JSON vocabulary and regenerate schemas.",
+                      "type": "string",
+                      "enum": [
+                        "afghanistan",
+                        "africa",
+                        "aland-islands",
+                        "albania",
+                        "algeria",
+                        "american-samoa",
+                        "americas",
+                        "andorra",
+                        "angola",
+                        "anguilla",
+                        "antarctica",
+                        "antigua-and-barbuda",
+                        "argentina",
+                        "armenia",
+                        "aruba",
+                        "asia",
+                        "australia",
+                        "australia-and-new-zealand",
+                        "austria",
+                        "azerbaijan",
+                        "bahamas",
+                        "bahrain",
+                        "bangladesh",
+                        "barbados",
+                        "belarus",
+                        "belgium",
+                        "belize",
+                        "benin",
+                        "bermuda",
+                        "bhutan",
+                        "bolivia-plurinational-state-of",
+                        "bonaire-sint-eustatius-and-saba",
+                        "bosnia-and-herzegovina",
+                        "botswana",
+                        "bouvet-island",
+                        "brazil",
+                        "british-indian-ocean-territory",
+                        "british-virgin-islands",
+                        "brunei-darussalam",
+                        "bulgaria",
+                        "burkina-faso",
+                        "burundi",
+                        "cabo-verde",
+                        "cambodia",
+                        "cameroon",
+                        "canada",
+                        "caribbean",
+                        "cayman-islands",
+                        "central-african-republic",
+                        "central-america",
+                        "central-asia",
+                        "chad",
+                        "chile",
+                        "china",
+                        "china-hong-kong-special-administrative-region",
+                        "china-macao-special-administrative-region",
+                        "christmas-island",
+                        "cocos-keeling-islands",
+                        "colombia",
+                        "comoros",
+                        "congo",
+                        "cook-islands",
+                        "costa-rica",
+                        "cote-d-ivoire",
+                        "croatia",
+                        "cuba",
+                        "curacao",
+                        "cyprus",
+                        "czechia",
+                        "democratic-people-s-republic-of-korea",
+                        "democratic-republic-of-the-congo",
+                        "denmark",
+                        "djibouti",
+                        "dominica",
+                        "dominican-republic",
+                        "eastern-africa",
+                        "eastern-asia",
+                        "eastern-europe",
+                        "ecuador",
+                        "egypt",
+                        "el-salvador",
+                        "equatorial-guinea",
+                        "eritrea",
+                        "estonia",
+                        "eswatini",
+                        "ethiopia",
+                        "europe",
+                        "falkland-islands-malvinas",
+                        "faroe-islands",
+                        "fiji",
+                        "finland",
+                        "france",
+                        "french-guiana",
+                        "french-polynesia",
+                        "french-southern-territories",
+                        "gabon",
+                        "gambia",
+                        "georgia",
+                        "germany",
+                        "ghana",
+                        "gibraltar",
+                        "greece",
+                        "greenland",
+                        "grenada",
+                        "guadeloupe",
+                        "guam",
+                        "guatemala",
+                        "guernsey",
+                        "guinea",
+                        "guinea-bissau",
+                        "guyana",
+                        "haiti",
+                        "heard-island-and-mcdonald-islands",
+                        "holy-see",
+                        "honduras",
+                        "hungary",
+                        "iceland",
+                        "india",
+                        "indonesia",
+                        "iran-islamic-republic-of",
+                        "iraq",
+                        "ireland",
+                        "isle-of-man",
+                        "israel",
+                        "italy",
+                        "jamaica",
+                        "japan",
+                        "jersey",
+                        "jordan",
+                        "kazakhstan",
+                        "kenya",
+                        "kiribati",
+                        "kuwait",
+                        "kyrgyzstan",
+                        "lao-people-s-democratic-republic",
+                        "latin-america-and-the-caribbean",
+                        "latvia",
+                        "lebanon",
+                        "lesotho",
+                        "liberia",
+                        "libya",
+                        "liechtenstein",
+                        "lithuania",
+                        "luxembourg",
+                        "madagascar",
+                        "malawi",
+                        "malaysia",
+                        "maldives",
+                        "mali",
+                        "malta",
+                        "marshall-islands",
+                        "martinique",
+                        "mauritania",
+                        "mauritius",
+                        "mayotte",
+                        "melanesia",
+                        "mexico",
+                        "micronesia",
+                        "micronesia-federated-states-of",
+                        "middle-africa",
+                        "monaco",
+                        "mongolia",
+                        "montenegro",
+                        "montserrat",
+                        "morocco",
+                        "mozambique",
+                        "myanmar",
+                        "namibia",
+                        "nauru",
+                        "nepal",
+                        "netherlands-kingdom-of-the",
+                        "new-caledonia",
+                        "new-zealand",
+                        "nicaragua",
+                        "niger",
+                        "nigeria",
+                        "niue",
+                        "norfolk-island",
+                        "north-macedonia",
+                        "northern-africa",
+                        "northern-america",
+                        "northern-europe",
+                        "northern-mariana-islands",
+                        "norway",
+                        "oceania",
+                        "oman",
+                        "pakistan",
+                        "palau",
+                        "panama",
+                        "papua-new-guinea",
+                        "paraguay",
+                        "peru",
+                        "philippines",
+                        "pitcairn",
+                        "poland",
+                        "polynesia",
+                        "portugal",
+                        "puerto-rico",
+                        "qatar",
+                        "republic-of-korea",
+                        "republic-of-moldova",
+                        "reunion",
+                        "romania",
+                        "russian-federation",
+                        "rwanda",
+                        "saint-barthelemy",
+                        "saint-helena",
+                        "saint-kitts-and-nevis",
+                        "saint-lucia",
+                        "saint-martin-french-part",
+                        "saint-pierre-and-miquelon",
+                        "saint-vincent-and-the-grenadines",
+                        "samoa",
+                        "san-marino",
+                        "sao-tome-and-principe",
+                        "saudi-arabia",
+                        "senegal",
+                        "serbia",
+                        "seychelles",
+                        "sierra-leone",
+                        "singapore",
+                        "sint-maarten-dutch-part",
+                        "slovakia",
+                        "slovenia",
+                        "solomon-islands",
+                        "somalia",
+                        "south-africa",
+                        "south-america",
+                        "south-eastern-asia",
+                        "south-georgia-and-the-south-sandwich-islands",
+                        "south-sudan",
+                        "southern-africa",
+                        "southern-asia",
+                        "southern-europe",
+                        "spain",
+                        "sri-lanka",
+                        "state-of-palestine",
+                        "sub-saharan-africa",
+                        "sudan",
+                        "suriname",
+                        "svalbard-and-jan-mayen-islands",
+                        "sweden",
+                        "switzerland",
+                        "syrian-arab-republic",
+                        "tajikistan",
+                        "thailand",
+                        "timor-leste",
+                        "togo",
+                        "tokelau",
+                        "tonga",
+                        "trinidad-and-tobago",
+                        "tunisia",
+                        "turkiye",
+                        "turkmenistan",
+                        "turks-and-caicos-islands",
+                        "tuvalu",
+                        "uganda",
+                        "ukraine",
+                        "united-arab-emirates",
+                        "united-kingdom-of-great-britain-and-northern-ireland",
+                        "united-republic-of-tanzania",
+                        "united-states-minor-outlying-islands",
+                        "united-states-of-america",
+                        "united-states-virgin-islands",
+                        "uruguay",
+                        "uzbekistan",
+                        "vanuatu",
+                        "venezuela-bolivarian-republic-of",
+                        "viet-nam",
+                        "wallis-and-futuna-islands",
+                        "western-africa",
+                        "western-asia",
+                        "western-europe",
+                        "western-sahara",
+                        "world",
+                        "yemen",
+                        "zambia",
+                        "zimbabwe"
+                      ]
+                    },
+                    "type": "array",
+                    "uniqueItems": true
+                  }
+                }
+              },
+              "processing_steps": {
+                "description": "ids of processing[] steps that produced this asset.",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "type": "array",
+                "uniqueItems": true
+              }
+            },
+            "required": ["name"],
+            "$comment": "locations may be omitted when a file_index carries the file locations itself.",
+            "anyOf": [
+              {
+                "required": ["locations"]
+              },
+              {
+                "required": ["file_index"]
+              }
+            ],
+            "not": {
+              "required": ["href_template", "file_index"]
+            },
+            "dependentSchemas": {
+              "checksum": {
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": ["href_template"]
+                    },
+                    {
+                      "required": ["file_index"]
+                    }
+                  ]
+                }
+              }
+            },
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "deprecated": {
+          "type": "boolean",
+          "description": "true when a newer release (same id) supersedes this record."
+        },
+        "description": {
+          "type": "string",
+          "description": "Canonical human- and AI-readable summary of the resource.",
+          "minLength": 1
+        },
+        "doi": {
+          "description": "Bare DOI (not a URL).",
+          "type": "string",
+          "pattern": "^10\\.\\d{2,}(\\.\\d+)*/\\S+$",
+          "examples": ["10.7910/DVN/SWPENT"]
+        },
+        "extensions": {
+          "description": "Pinned URLs of the CDH extension schemas this record uses.",
+          "items": {
+            "format": "uri",
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "funding": {
+          "description": "Funding sources for the resource.",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "url": {
+                "format": "uri",
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": ["name"],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "id": {
+          "description": "Short, stable, URL-safe identifier (lowercase letters, digits, hyphens).",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "type": "string",
+          "examples": ["example-crop-suitability", "spam2020"]
+        },
+        "keywords": {
+          "description": "Free-text search terms. Each item is either a plain string, or an object linking the term to an external vocabulary/ontology (e.g., AGROVOC, GEMET).",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["term"],
+                "properties": {
+                  "term": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "scheme": {
+                    "description": "Resolvable URI of the controlled vocabulary or ontology this term comes from. CDH vocab schemes (.../cdh-metadata-standard/vocab/) belong to cdh.domain / commodities - link an external vocabulary instead.",
+                    "type": "string",
+                    "format": "uri",
+                    "not": {
+                      "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/vocab/"
+                    }
+                  },
+                  "uri": {
+                    "description": "Resolvable URI of the specific concept within `scheme`.",
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            ]
+          },
+          "minItems": 1
+        },
+        "license": {
+          "type": "string",
+          "description": "License of the data as an SPDX license expression. Custom LicenseRef-* expressions must be accompanied by an additional_links[] entry with rel: license.",
+          "examples": ["CC-BY-4.0", "CC-BY-SA-4.0", "CC0-1.0", "CC-BY-4.0 OR CC0-1.0"],
+          "minLength": 1
+        },
+        "note": {
+          "minLength": 1,
+          "type": "string",
+          "description": "Caveats, warnings, or interpretation-critical remarks not captured in description."
+        },
+        "parent": {
+          "description": "Short, stable, URL-safe identifier (lowercase letters, digits, hyphens).",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "type": "string",
+          "examples": ["example-crop-suitability", "spam2020"]
+        },
+        "previous_version": {
+          "description": "version of the predecessor record (same id), when this supersedes an earlier release.",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$"
+        },
+        "processing": {
+          "description": "Ordered processing/provenance steps; at least one must have id: source.",
+          "contains": {
+            "properties": {
+              "id": {
+                "const": "source"
+              }
+            },
+            "required": ["id"],
+            "type": "object"
+          },
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "additionalProperties": false,
+                "description": "Software or code that produced this step's output. Omit when none is published.",
+                "properties": {
+                  "url": {
+                    "minLength": 1,
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Link to the production code or repository."
+                  },
+                  "version": {
+                    "minLength": 1,
+                    "type": "string",
+                    "description": "Version, tag, or commit of the code."
+                  }
+                },
+                "type": "object"
+              },
+              "date": {
+                "description": "Date or date-time. Use YYYY-MM-DD (e.g. 2026-06-23) or an RFC 3339 date-time (e.g. 2026-06-23T00:00:00Z).",
+                "examples": ["2026-06-23", "2026-06-23T00:00:00Z"],
+                "anyOf": [
+                  {
+                    "format": "date",
+                    "type": "string"
+                  },
+                  {
+                    "format": "date-time",
+                    "type": "string"
+                  }
+                ]
+              },
+              "derived_from": {
+                "description": "Upstream sources this step derived from - the data (e.g. a Zenodo/Dataverse landing page), not code. Each entry has an id (a Hub record) or a url (anything else), not both.",
+                "items": {
+                  "additionalProperties": false,
+                  "anyOf": [
+                    {
+                      "required": ["id"]
+                    },
+                    {
+                      "required": ["url"]
+                    }
+                  ],
+                  "not": {
+                    "required": ["id", "url"]
+                  },
+                  "properties": {
+                    "id": {
+                      "description": "id of the Hub record used. Must resolve to exactly one catalog record.",
+                      "pattern": "^[a-z0-9][a-z0-9-]*$",
+                      "type": "string",
+                      "examples": ["example-crop-suitability", "spam2020"]
+                    },
+                    "title": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "url": {
+                      "minLength": 1,
+                      "type": "string",
+                      "format": "uri",
+                      "description": "URL of a source outside the Hub."
+                    },
+                    "version": {
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Version label of the source release that was used, as the source publishes it."
+                    }
+                  },
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "description": {
+                "minLength": 1,
+                "type": "string",
+                "description": "What this step did."
+              },
+              "id": {
+                "minLength": 1,
+                "type": "string",
+                "description": "Step identifier; one step must use id: source for the original generation."
+              }
+            },
+            "required": ["id", "description"],
+            "type": "object"
+          },
+          "minContains": 1,
+          "type": "array"
+        },
+        "related_publications": {
+          "description": "Related works such as papers or reports.",
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "citation": {
+                "additionalProperties": false,
+                "description": "Structured citation for the resource.",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Cite-as title; may differ from the record's top-level title.",
+                    "minLength": 1
+                  },
+                  "authors": {
+                    "type": "array",
+                    "items": {
+                      "description": "A citation author: either a person or an organization.",
+                      "oneOf": [
+                        {
+                          "additionalProperties": false,
+                          "required": ["family"],
+                          "properties": {
+                            "family": {
+                              "minLength": 1,
+                              "type": "string",
+                              "description": "Family name(s). A person with a single name uses this field alone.",
+                              "examples": ["Smith", "Carreño Quiñones", "Suharto"]
+                            },
+                            "given": {
+                              "minLength": 1,
+                              "type": "string",
+                              "description": "Given name(s) or initials.",
+                              "examples": ["Jane", "J.", "María José"]
+                            },
+                            "orcid": {
+                              "description": "ORCID iD of the person, as its https://orcid.org/ URL.",
+                              "type": "string",
+                              "pattern": "^https://orcid\\.org/\\d{4}-\\d{4}-\\d{4}-\\d{3}[\\dX]$",
+                              "examples": ["https://orcid.org/0000-0002-1825-0097"]
+                            }
+                          },
+                          "type": "object"
+                        },
+                        {
+                          "additionalProperties": false,
+                          "required": ["organization"],
+                          "properties": {
+                            "organization": {
+                              "minLength": 1,
+                              "type": "string",
+                              "description": "Full name of an organization credited as an author.",
+                              "examples": [
+                                "Food and Agriculture Organization of the United Nations"
+                              ]
+                            },
+                            "ror": {
+                              "description": "ROR id of the organization, as its https://ror.org/ URL.",
+                              "type": "string",
+                              "pattern": "^https://ror\\.org/0[0-9a-hjkmnp-tv-z]{6}[0-9]{2}$",
+                              "examples": ["https://ror.org/04xsxqp89"]
+                            }
+                          },
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "description": "Authors in citation order. A person gives family (and usually given); an organization gives organization.",
+                    "minItems": 1
+                  },
+                  "date": {
+                    "description": "Publication date or year, e.g. 2024 or 2024-07-15.",
+                    "examples": ["2024", "2024-07-15", "2020-06-23", "2020-06-23T00:00:00Z"],
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^\\d{4}$"
+                      },
+                      {
+                        "type": "string",
+                        "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                      },
+                      {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    ]
+                  },
+                  "publisher": {
+                    "minLength": 1,
+                    "type": "string",
+                    "description": "Publisher or venue: the data publisher/repository for datasets, or the journal for articles."
+                  },
+                  "url": {
+                    "minLength": 1,
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "required": ["authors", "date"],
+                "type": "object"
+              },
+              "doi": {
+                "description": "Bare DOI (not a URL).",
+                "type": "string",
+                "pattern": "^10\\.\\d{2,}(\\.\\d+)*/\\S+$",
+                "examples": ["10.7910/DVN/SWPENT"]
+              }
+            },
+            "anyOf": [
+              {
+                "required": ["doi"]
+              },
+              {
+                "required": ["citation"]
+              }
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "resource_type": {
+          "description": "Kind of resource the record describes (vocab/resource_type.json).",
+          "title": "CDH Resource Type Vocabulary",
+          "type": "string",
+          "enum": ["dataset", "software", "service", "document"]
+        },
+        "series": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "url": {
+              "format": "uri",
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": ["name"],
+          "type": "object",
+          "description": "Program, initiative, or product brand the resource was published under (e.g. Africa Agriculture Adaptation Atlas, MapSPAM, ACASA). Members may span domains, resolutions, and resource types. Not for grouping representations or releases of a single resource. `name` is the grouping key - use the same spelling on every record in the series; `url` is the series landing page."
+        },
+        "spatial": {
+          "additionalProperties": false,
+          "properties": {
+            "bbox": {
+              "description": "Spatial extent. A single bounding box, or a list of boxes for disjoint coverage - each box is a real area covered, in any order; do not include an overall/union box. 2D = [west, south, east, north] = [xmin, ymin, xmax, ymax]; 3D = [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+              "oneOf": [
+                {
+                  "description": "A single bounding box: 2D [west, south, east, north], or 3D [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+                  "oneOf": [
+                    {
+                      "title": "2D box",
+                      "type": "array",
+                      "minItems": 4,
+                      "maxItems": 4,
+                      "prefixItems": [
+                        {
+                          "title": "West",
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        },
+                        {
+                          "title": "South",
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        },
+                        {
+                          "title": "East",
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        },
+                        {
+                          "title": "North",
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        }
+                      ],
+                      "items": false
+                    },
+                    {
+                      "title": "3D box",
+                      "type": "array",
+                      "minItems": 6,
+                      "maxItems": 6,
+                      "prefixItems": [
+                        {
+                          "title": "West",
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        },
+                        {
+                          "title": "South",
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        },
+                        {
+                          "title": "Min elevation",
+                          "type": "number"
+                        },
+                        {
+                          "title": "East",
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        },
+                        {
+                          "title": "North",
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        },
+                        {
+                          "title": "Max elevation",
+                          "type": "number"
+                        }
+                      ],
+                      "items": false
+                    }
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "description": "A single bounding box: 2D [west, south, east, north], or 3D [west, south, min_z, east, north, max_z]. WGS84 (EPSG:4326); elevation in metres.",
+                    "oneOf": [
+                      {
+                        "title": "2D box",
+                        "type": "array",
+                        "minItems": 4,
+                        "maxItems": 4,
+                        "prefixItems": [
+                          {
+                            "title": "West",
+                            "type": "number",
+                            "minimum": -180,
+                            "maximum": 180
+                          },
+                          {
+                            "title": "South",
+                            "type": "number",
+                            "minimum": -90,
+                            "maximum": 90
+                          },
+                          {
+                            "title": "East",
+                            "type": "number",
+                            "minimum": -180,
+                            "maximum": 180
+                          },
+                          {
+                            "title": "North",
+                            "type": "number",
+                            "minimum": -90,
+                            "maximum": 90
+                          }
+                        ],
+                        "items": false
+                      },
+                      {
+                        "title": "3D box",
+                        "type": "array",
+                        "minItems": 6,
+                        "maxItems": 6,
+                        "prefixItems": [
+                          {
+                            "title": "West",
+                            "type": "number",
+                            "minimum": -180,
+                            "maximum": 180
+                          },
+                          {
+                            "title": "South",
+                            "type": "number",
+                            "minimum": -90,
+                            "maximum": 90
+                          },
+                          {
+                            "title": "Min elevation",
+                            "type": "number"
+                          },
+                          {
+                            "title": "East",
+                            "type": "number",
+                            "minimum": -180,
+                            "maximum": 180
+                          },
+                          {
+                            "title": "North",
+                            "type": "number",
+                            "minimum": -90,
+                            "maximum": 90
+                          },
+                          {
+                            "title": "Max elevation",
+                            "type": "number"
+                          }
+                        ],
+                        "items": false
+                      }
+                    ]
+                  },
+                  "minItems": 1
+                }
+              ],
+              "examples": [[-180, -90, 180, 90], [[-180, -90, 180, 90]]]
+            },
+            "crs": {
+              "minLength": 1,
+              "type": "string",
+              "description": "Coordinate reference system of the data: an authority code such as EPSG:4326 or ESRI:54052, or an OGC CRS URI. A PROJ or WKT string only when no code exists.",
+              "examples": ["EPSG:4326"]
+            },
+            "geography": {
+              "description": "Named places for discovery (vocab/geography.json ids, UN M49).",
+              "items": {
+                "title": "CDH Geography Vocabulary",
+                "description": "Generated from vocab/geography.json. Do not edit this file directly; update the JSON vocabulary and regenerate schemas.",
+                "type": "string",
+                "enum": [
+                  "afghanistan",
+                  "africa",
+                  "aland-islands",
+                  "albania",
+                  "algeria",
+                  "american-samoa",
+                  "americas",
+                  "andorra",
+                  "angola",
+                  "anguilla",
+                  "antarctica",
+                  "antigua-and-barbuda",
+                  "argentina",
+                  "armenia",
+                  "aruba",
+                  "asia",
+                  "australia",
+                  "australia-and-new-zealand",
+                  "austria",
+                  "azerbaijan",
+                  "bahamas",
+                  "bahrain",
+                  "bangladesh",
+                  "barbados",
+                  "belarus",
+                  "belgium",
+                  "belize",
+                  "benin",
+                  "bermuda",
+                  "bhutan",
+                  "bolivia-plurinational-state-of",
+                  "bonaire-sint-eustatius-and-saba",
+                  "bosnia-and-herzegovina",
+                  "botswana",
+                  "bouvet-island",
+                  "brazil",
+                  "british-indian-ocean-territory",
+                  "british-virgin-islands",
+                  "brunei-darussalam",
+                  "bulgaria",
+                  "burkina-faso",
+                  "burundi",
+                  "cabo-verde",
+                  "cambodia",
+                  "cameroon",
+                  "canada",
+                  "caribbean",
+                  "cayman-islands",
+                  "central-african-republic",
+                  "central-america",
+                  "central-asia",
+                  "chad",
+                  "chile",
+                  "china",
+                  "china-hong-kong-special-administrative-region",
+                  "china-macao-special-administrative-region",
+                  "christmas-island",
+                  "cocos-keeling-islands",
+                  "colombia",
+                  "comoros",
+                  "congo",
+                  "cook-islands",
+                  "costa-rica",
+                  "cote-d-ivoire",
+                  "croatia",
+                  "cuba",
+                  "curacao",
+                  "cyprus",
+                  "czechia",
+                  "democratic-people-s-republic-of-korea",
+                  "democratic-republic-of-the-congo",
+                  "denmark",
+                  "djibouti",
+                  "dominica",
+                  "dominican-republic",
+                  "eastern-africa",
+                  "eastern-asia",
+                  "eastern-europe",
+                  "ecuador",
+                  "egypt",
+                  "el-salvador",
+                  "equatorial-guinea",
+                  "eritrea",
+                  "estonia",
+                  "eswatini",
+                  "ethiopia",
+                  "europe",
+                  "falkland-islands-malvinas",
+                  "faroe-islands",
+                  "fiji",
+                  "finland",
+                  "france",
+                  "french-guiana",
+                  "french-polynesia",
+                  "french-southern-territories",
+                  "gabon",
+                  "gambia",
+                  "georgia",
+                  "germany",
+                  "ghana",
+                  "gibraltar",
+                  "greece",
+                  "greenland",
+                  "grenada",
+                  "guadeloupe",
+                  "guam",
+                  "guatemala",
+                  "guernsey",
+                  "guinea",
+                  "guinea-bissau",
+                  "guyana",
+                  "haiti",
+                  "heard-island-and-mcdonald-islands",
+                  "holy-see",
+                  "honduras",
+                  "hungary",
+                  "iceland",
+                  "india",
+                  "indonesia",
+                  "iran-islamic-republic-of",
+                  "iraq",
+                  "ireland",
+                  "isle-of-man",
+                  "israel",
+                  "italy",
+                  "jamaica",
+                  "japan",
+                  "jersey",
+                  "jordan",
+                  "kazakhstan",
+                  "kenya",
+                  "kiribati",
+                  "kuwait",
+                  "kyrgyzstan",
+                  "lao-people-s-democratic-republic",
+                  "latin-america-and-the-caribbean",
+                  "latvia",
+                  "lebanon",
+                  "lesotho",
+                  "liberia",
+                  "libya",
+                  "liechtenstein",
+                  "lithuania",
+                  "luxembourg",
+                  "madagascar",
+                  "malawi",
+                  "malaysia",
+                  "maldives",
+                  "mali",
+                  "malta",
+                  "marshall-islands",
+                  "martinique",
+                  "mauritania",
+                  "mauritius",
+                  "mayotte",
+                  "melanesia",
+                  "mexico",
+                  "micronesia",
+                  "micronesia-federated-states-of",
+                  "middle-africa",
+                  "monaco",
+                  "mongolia",
+                  "montenegro",
+                  "montserrat",
+                  "morocco",
+                  "mozambique",
+                  "myanmar",
+                  "namibia",
+                  "nauru",
+                  "nepal",
+                  "netherlands-kingdom-of-the",
+                  "new-caledonia",
+                  "new-zealand",
+                  "nicaragua",
+                  "niger",
+                  "nigeria",
+                  "niue",
+                  "norfolk-island",
+                  "north-macedonia",
+                  "northern-africa",
+                  "northern-america",
+                  "northern-europe",
+                  "northern-mariana-islands",
+                  "norway",
+                  "oceania",
+                  "oman",
+                  "pakistan",
+                  "palau",
+                  "panama",
+                  "papua-new-guinea",
+                  "paraguay",
+                  "peru",
+                  "philippines",
+                  "pitcairn",
+                  "poland",
+                  "polynesia",
+                  "portugal",
+                  "puerto-rico",
+                  "qatar",
+                  "republic-of-korea",
+                  "republic-of-moldova",
+                  "reunion",
+                  "romania",
+                  "russian-federation",
+                  "rwanda",
+                  "saint-barthelemy",
+                  "saint-helena",
+                  "saint-kitts-and-nevis",
+                  "saint-lucia",
+                  "saint-martin-french-part",
+                  "saint-pierre-and-miquelon",
+                  "saint-vincent-and-the-grenadines",
+                  "samoa",
+                  "san-marino",
+                  "sao-tome-and-principe",
+                  "saudi-arabia",
+                  "senegal",
+                  "serbia",
+                  "seychelles",
+                  "sierra-leone",
+                  "singapore",
+                  "sint-maarten-dutch-part",
+                  "slovakia",
+                  "slovenia",
+                  "solomon-islands",
+                  "somalia",
+                  "south-africa",
+                  "south-america",
+                  "south-eastern-asia",
+                  "south-georgia-and-the-south-sandwich-islands",
+                  "south-sudan",
+                  "southern-africa",
+                  "southern-asia",
+                  "southern-europe",
+                  "spain",
+                  "sri-lanka",
+                  "state-of-palestine",
+                  "sub-saharan-africa",
+                  "sudan",
+                  "suriname",
+                  "svalbard-and-jan-mayen-islands",
+                  "sweden",
+                  "switzerland",
+                  "syrian-arab-republic",
+                  "tajikistan",
+                  "thailand",
+                  "timor-leste",
+                  "togo",
+                  "tokelau",
+                  "tonga",
+                  "trinidad-and-tobago",
+                  "tunisia",
+                  "turkiye",
+                  "turkmenistan",
+                  "turks-and-caicos-islands",
+                  "tuvalu",
+                  "uganda",
+                  "ukraine",
+                  "united-arab-emirates",
+                  "united-kingdom-of-great-britain-and-northern-ireland",
+                  "united-republic-of-tanzania",
+                  "united-states-minor-outlying-islands",
+                  "united-states-of-america",
+                  "united-states-virgin-islands",
+                  "uruguay",
+                  "uzbekistan",
+                  "vanuatu",
+                  "venezuela-bolivarian-republic-of",
+                  "viet-nam",
+                  "wallis-and-futuna-islands",
+                  "western-africa",
+                  "western-asia",
+                  "western-europe",
+                  "western-sahara",
+                  "world",
+                  "yemen",
+                  "zambia",
+                  "zimbabwe"
+                ]
+              },
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "type": "object"
+        },
+        "structures": {
+          "description": "The data dictionary, one structure per layout, after Frictionless Data Package resources: each structure is a self-contained set of dimensions, variables, and foreign keys. A record with one layout has one structure. Names are unique within a structure and may repeat across structures, so two tables can each have a column named value. Every data[] entry names the structures it holds.",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "variables"],
+            "properties": {
+              "name": {
+                "minLength": 1,
+                "type": "string",
+                "description": "Structure name, unique within structures[]; data[].structures refers to it."
+              },
+              "dimensions": {
+                "description": "The dimensions every variable in this structure has. Omit it when the variables vary only over the horizontal grid.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "not": {
+                        "const": "variable"
+                      },
+                      "description": "Axis name. Must not be \"variable\": measures are not axes and belong in variables[]; href_template refers to them via the reserved {variable} token."
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "What the dimension is; define coded values here, or via reference_system or a sidecar.",
+                      "minLength": 1
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "Dimension type. Reserved values change how the dimension is read: `temporal` (an axis of ISO 8601 dates or instants; a structure may declare several), `z` (a vertical axis - depth, height, or pressure level - at most one per structure), `x`, `y`, and `xy` (the horizontal axes in spatial.crs, as STAC datacube spatial x/y and CF axis X/Y: with a numeric step and unit they are a regular grid, xy when both axes share one spacing, else x and y as a pair with their own; without step they are a table's coordinate columns), and `location` (a column identifying a place, such as an admin, basin, station, or H3 cell code - a key, not an axis of space). Any other value names a domain axis after what it varies (crop, scenario, season). `spatial` and `geometry` are rejected, as are lat/lon spellings, so a coordinate axis cannot silently become a domain axis. Lowercase; aliases of `temporal` are rejected too.",
+                      "minLength": 1,
+                      "pattern": "^[a-z][a-z0-9_-]*$",
+                      "not": {
+                        "enum": [
+                          "time",
+                          "times",
+                          "date",
+                          "dates",
+                          "datetime",
+                          "timestamp",
+                          "spatial",
+                          "geometry",
+                          "lat",
+                          "latitude",
+                          "lon",
+                          "lng",
+                          "longitude"
+                        ]
+                      },
+                      "examples": ["temporal", "z", "xy", "x", "y", "location", "crop", "scenario"]
+                    },
+                    "reference_system": {
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Vocabulary or spatial index the values are coded against; prefer a resolvable URI when one exists (an AGROVOC concept scheme, a boundary set such as https://gadm.org/, https://h3geo.org/)."
+                    },
+                    "values": {
+                      "description": "Allowed values along the dimension.",
+                      "type": "array",
+                      "minItems": 1,
+                      "uniqueItems": true,
+                      "items": {
+                        "anyOf": [
+                          {
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "boolean"
+                          }
+                        ]
+                      }
+                    },
+                    "step": {
+                      "description": "Spacing between consecutive values, as in STAC datacube: an ISO 8601 duration (P1Y, P3M, PT6H) on a type: temporal dimension, a number in unit on x, y, or xy. Not the length of the period a value represents. On a temporal axis, required with extent and omitted when irregular. On a horizontal axis, present for a regular grid and absent for a table's coordinate columns.",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^P(?=.*[1-9])(\\d+Y)?(\\d+M)?(\\d+W)?(\\d+D)?(T(?!$)(\\d+H)?(\\d+M)?(\\d+S)?)?$"
+                        },
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        }
+                      ],
+                      "examples": ["P3M", "P20Y", 0.05, 1000]
+                    },
+                    "extent": {
+                      "description": "First and last value of a regular axis, in place of listing every value, as in STAC datacube. On a type: temporal dimension, two ISO 8601 strings at one precision (YYYY, YYYY-MM, YYYY-MM-DD, or an RFC 3339 date-time), no coarser than the step, start before end; requires step and excludes values. On x, y, or xy, the native [min, max] of the axis in unit and spatial.crs, optional, for a grid whose edges spatial.bbox does not give exactly, such as a projected CRS.",
+                      "anyOf": [
+                        {
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "description": "ISO 8601 strings, all at one precision: year, month, day, or an RFC 3339 date-time with seconds and offset.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "anyOf": [
+                            {
+                              "items": {
+                                "pattern": "^\\d{4}$"
+                              }
+                            },
+                            {
+                              "items": {
+                                "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                              }
+                            },
+                            {
+                              "items": {
+                                "format": "date"
+                              }
+                            },
+                            {
+                              "items": {
+                                "format": "date-time"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "array",
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "items": {
+                            "type": "number"
+                          }
+                        }
+                      ],
+                      "examples": [
+                        ["1981", "2025"],
+                        [166000, 1053000]
+                      ]
+                    },
+                    "unit": {
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Unit of measurement for the values, in UDUNITS-2 (UCUM only for what UDUNITS-2 cannot express). Required on x, y, and xy (degree, m, km) and on z (cm, m, hPa); useful on any numeric domain axis. Not a substitute for reference_system.",
+                      "examples": ["cm", "m", "hPa"]
+                    },
+                    "data_type": {
+                      "description": "Storage type of the dimension's column or coordinate in the data, distinct from type, which is its role. A temporal dimension's values stay ISO 8601 strings here even when the source stores years as integers.",
+                      "enum": [
+                        "int8",
+                        "int16",
+                        "int32",
+                        "int64",
+                        "uint8",
+                        "uint16",
+                        "uint32",
+                        "uint64",
+                        "float16",
+                        "float32",
+                        "float64",
+                        "cint16",
+                        "cint32",
+                        "cfloat32",
+                        "cfloat64",
+                        "integer",
+                        "number",
+                        "decimal",
+                        "boolean",
+                        "string",
+                        "binary",
+                        "date",
+                        "time",
+                        "datetime",
+                        "array",
+                        "other"
+                      ]
+                    },
+                    "categories": {
+                      "description": "The axis values with labels, in place of values. Not allowed on a type: temporal dimension.",
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["value", "label"],
+                        "properties": {
+                          "value": {
+                            "description": "The coded value as stored in the data.",
+                            "anyOf": [
+                              {
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              {
+                                "type": "integer"
+                              }
+                            ]
+                          },
+                          "label": {
+                            "minLength": 1,
+                            "type": "string",
+                            "description": "Short human-readable name of the category."
+                          },
+                          "description": {
+                            "minLength": 1,
+                            "type": "string",
+                            "description": "What this category means."
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["name", "type", "description"],
+                  "dependentSchemas": {
+                    "categories": {
+                      "properties": {
+                        "type": {
+                          "not": {
+                            "const": "temporal"
+                          }
+                        }
+                      },
+                      "not": {
+                        "required": ["values"]
+                      }
+                    },
+                    "step": {
+                      "anyOf": [
+                        {
+                          "properties": {
+                            "type": {
+                              "const": "temporal"
+                            },
+                            "step": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        {
+                          "properties": {
+                            "type": {
+                              "enum": ["x", "y", "xy"]
+                            },
+                            "step": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    "extent": {
+                      "anyOf": [
+                        {
+                          "properties": {
+                            "type": {
+                              "const": "temporal"
+                            },
+                            "extent": {
+                              "items": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": ["step"],
+                          "not": {
+                            "required": ["values"]
+                          }
+                        },
+                        {
+                          "properties": {
+                            "type": {
+                              "enum": ["x", "y", "xy"]
+                            },
+                            "extent": {
+                              "items": {
+                                "type": "number"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "temporal"
+                      }
+                    },
+                    "required": ["type"]
+                  },
+                  "then": {
+                    "properties": {
+                      "values": {
+                        "description": "On a temporal dimension, every value is an ISO 8601 date or an RFC 3339 date-time with seconds and offset, as a string. A value that labels a window is one date, such as its start; the dimension description gives the window length. A cyclic label axis (DJF/MAM/JJA/SON) is not temporal - name it after what it varies and describe the labels. All values share one precision.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "anyOf": [
+                          {
+                            "items": {
+                              "pattern": "^\\d{4}$"
+                            }
+                          },
+                          {
+                            "items": {
+                              "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                            }
+                          },
+                          {
+                            "items": {
+                              "format": "date"
+                            }
+                          },
+                          {
+                            "items": {
+                              "format": "date-time"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "allOf": [
+                    {
+                      "$comment": "Horizontal axes carry their unit and never enumerate coordinates.",
+                      "if": {
+                        "properties": {
+                          "type": {
+                            "enum": ["x", "y", "xy"]
+                          }
+                        },
+                        "required": ["type"]
+                      },
+                      "then": {
+                        "required": ["unit"],
+                        "not": {
+                          "anyOf": [
+                            {
+                              "required": ["values"]
+                            },
+                            {
+                              "required": ["categories"]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                "contains": {
+                  "properties": {
+                    "type": {
+                      "const": "z"
+                    }
+                  },
+                  "required": ["type"]
+                },
+                "minContains": 0,
+                "maxContains": 1,
+                "allOf": [
+                  {
+                    "$comment": "x and y come as a pair, and never beside xy.",
+                    "if": {
+                      "contains": {
+                        "properties": {
+                          "type": {
+                            "const": "x"
+                          }
+                        },
+                        "required": ["type"]
+                      }
+                    },
+                    "then": {
+                      "contains": {
+                        "properties": {
+                          "type": {
+                            "const": "y"
+                          }
+                        },
+                        "required": ["type"]
+                      }
+                    }
+                  },
+                  {
+                    "if": {
+                      "contains": {
+                        "properties": {
+                          "type": {
+                            "const": "y"
+                          }
+                        },
+                        "required": ["type"]
+                      }
+                    },
+                    "then": {
+                      "contains": {
+                        "properties": {
+                          "type": {
+                            "const": "x"
+                          }
+                        },
+                        "required": ["type"]
+                      }
+                    }
+                  },
+                  {
+                    "if": {
+                      "contains": {
+                        "properties": {
+                          "type": {
+                            "const": "xy"
+                          }
+                        },
+                        "required": ["type"]
+                      }
+                    },
+                    "then": {
+                      "not": {
+                        "anyOf": [
+                          {
+                            "contains": {
+                              "properties": {
+                                "type": {
+                                  "const": "x"
+                                }
+                              },
+                              "required": ["type"]
+                            }
+                          },
+                          {
+                            "contains": {
+                              "properties": {
+                                "type": {
+                                  "const": "y"
+                                }
+                              },
+                              "required": ["type"]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "variables": {
+                "description": "The variables in this structure.",
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Stable definition and reading guidance for the variable.",
+                      "minLength": 1
+                    },
+                    "data_type": {
+                      "description": "Data type of the stored values. Numeric names follow STAC raster:data_type; the rest cover table columns. other is for nested types (list, map, struct).",
+                      "enum": [
+                        "int8",
+                        "int16",
+                        "int32",
+                        "int64",
+                        "uint8",
+                        "uint16",
+                        "uint32",
+                        "uint64",
+                        "float16",
+                        "float32",
+                        "float64",
+                        "cint16",
+                        "cint32",
+                        "cfloat32",
+                        "cfloat64",
+                        "integer",
+                        "number",
+                        "decimal",
+                        "boolean",
+                        "string",
+                        "binary",
+                        "date",
+                        "time",
+                        "datetime",
+                        "array",
+                        "other"
+                      ]
+                    },
+                    "unit": {
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Unit of measurement in UDUNITS-2, as CF requires (mm d-1, degC, kg ha-1). UCUM only for what UDUNITS-2 cannot express, such as {head}/km2 or [pH]; never a UCUM spelling of a UDUNITS-2 unit. Required for measurements; omit for text or code columns.",
+                      "examples": ["t ha-1", "{head}/km2"]
+                    },
+                    "nodata": {
+                      "description": "Fill value for missing data, as stored in this variable. A representation that stores the variable with another fill value or type is another structure.",
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "minLength": 1,
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "note": {
+                      "minLength": 1,
+                      "type": "string",
+                      "description": "Variable-specific caveats, limitations, or warnings."
+                    },
+                    "categories": {
+                      "description": "Codes the variable can contain and what each means. For long lists, link a sidecar with rel=describedby instead.",
+                      "type": "array",
+                      "minItems": 1,
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["value", "label"],
+                        "properties": {
+                          "value": {
+                            "description": "The coded value as stored in the data.",
+                            "anyOf": [
+                              {
+                                "minLength": 1,
+                                "type": "string"
+                              },
+                              {
+                                "type": "integer"
+                              }
+                            ]
+                          },
+                          "label": {
+                            "minLength": 1,
+                            "type": "string",
+                            "description": "Short human-readable name of the category."
+                          },
+                          "description": {
+                            "minLength": 1,
+                            "type": "string",
+                            "description": "What this category means."
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": ["name", "description"]
+                }
+              },
+              "foreign_keys": {
+                "description": "Keys from this structure's columns to other catalogued datasets.",
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["fields", "reference"],
+                  "properties": {
+                    "fields": {
+                      "description": "Key columns in this record; each must be a dimensions[]/variables[] name of the same structure.",
+                      "type": "array",
+                      "minItems": 1,
+                      "uniqueItems": true,
+                      "items": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "reference": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": ["resource", "fields"],
+                      "properties": {
+                        "resource": {
+                          "description": "The dataset referenced (e.g. a boundary/station record): its catalog record id, which must resolve to exactly one catalog record, or an absolute URI for a dataset outside the catalog.",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "pattern": "^[a-z0-9][a-z0-9-]*$"
+                            },
+                            {
+                              "type": "string",
+                              "format": "uri"
+                            }
+                          ],
+                          "examples": [
+                            "gaul-2015-admin2",
+                            "https://example.org/boundaries/gaul-2015-admin2"
+                          ]
+                        },
+                        "asset": {
+                          "description": "The data[].name of the referenced dataset's file that holds reference.fields. Required when that dataset has more than one data[] entry.",
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "fields": {
+                          "description": "Matching columns in the referenced dataset, paired positionally with fields (same length).",
+                          "type": "array",
+                          "minItems": 1,
+                          "uniqueItems": true,
+                          "items": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "geometry_column": {
+                "minLength": 1,
+                "type": "string",
+                "description": "Name of the geometry column, for a table with embedded geometries. A geometry column is not a variable."
+              }
+            }
+          }
+        },
+        "temporal": {
+          "description": "Coverage extent, precision-aware. Use `date` for a single instant or period (date: 2020 = the year 2020), or `start_date` + `end_date` for a span (end_date: null = open-ended). `date` and `start_date`/`end_date` are mutually exclusive. Temporal cadence is not recorded here - declare a type: temporal dimension instead.",
+          "additionalProperties": false,
+          "properties": {
+            "date": {
+              "description": "A single instant or period; its precision sets the granularity (year, month, day, or datetime).",
+              "examples": ["2020", "2020-06", "2020-06-23", "2020-06-23T00:00:00Z"],
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}$"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ]
+            },
+            "start_date": {
+              "description": "Start of a span.",
+              "examples": ["2020", "2020-06", "2020-06-23", "2020-06-23T00:00:00Z"],
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}$"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                },
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ]
+            },
+            "end_date": {
+              "description": "End of a span; null for an open-ended series.",
+              "anyOf": [
+                {
+                  "description": "ISO 8601 date/time; the precision states the granularity - year (2020), month (2020-06), day (2020-06-23), or an instant (2020-06-23T00:00:00Z). As an end, it is inclusive through the end of that period (end: 2010 means through 2010-12-31).",
+                  "examples": ["2020", "2020-06", "2020-06-23", "2020-06-23T00:00:00Z"],
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^\\d{4}$"
+                    },
+                    {
+                      "type": "string",
+                      "pattern": "^\\d{4}-(0[1-9]|1[0-2])$"
+                    },
+                    {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "update_frequency": {
+              "description": "How often this resource gains new data. Recommended while a series is still growing; omit for a finished one.",
+              "enum": [
+                "daily",
+                "weekly",
+                "monthly",
+                "quarterly",
+                "semiannual",
+                "annual",
+                "irregular"
+              ]
+            }
+          },
+          "dependentRequired": {
+            "start_date": ["end_date"],
+            "end_date": ["start_date"]
+          },
+          "dependentSchemas": {
+            "date": {
+              "properties": {
+                "start_date": false,
+                "end_date": false
+              }
+            }
+          },
+          "type": "object"
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable title of the resource.",
+          "minLength": 1
+        },
+        "updated": {
+          "description": "Date or date-time. Use YYYY-MM-DD (e.g. 2026-06-23) or an RFC 3339 date-time (e.g. 2026-06-23T00:00:00Z).",
+          "examples": ["2026-06-23", "2026-06-23T00:00:00Z"],
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "format": "date-time",
+              "type": "string"
+            }
+          ]
+        },
+        "version": {
+          "description": "Version label of this release of the resource. The source's own label when it has one; otherwise a counter from 1. Letters, digits, dots, underscores, and hyphens only, since it becomes part of a superseded release's id. Not compared or sorted - order comes from previous_version.",
+          "examples": ["1", "v2r2", "2.1"],
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$"
+        }
+      },
+      "required": [
+        "cdh_schema_version",
+        "id",
+        "title",
+        "description",
+        "created",
+        "updated",
+        "license",
+        "resource_type",
+        "keywords",
+        "contact",
+        "data"
+      ],
+      "anyOf": [
+        {
+          "required": ["citation"]
+        },
+        {
+          "properties": {
+            "doi": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": ["doi"]
+        }
+      ],
+      "allOf": [
+        {
+          "$comment": "With two or more structures, every data[] entry names the structures it holds. With one, an asset without the field holds it.",
+          "if": {
+            "required": ["structures"],
+            "properties": {
+              "structures": {
+                "minItems": 2
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "data": {
+                "items": {
+                  "required": ["structures"]
+                }
+              }
+            }
+          }
+        },
+        {
+          "$comment": "{variable} expands over variable names. data[].structures already guarantees them when structures exist; this only rejects a template in a record with no structures at all.",
+          "if": {
+            "required": ["data"],
+            "properties": {
+              "data": {
+                "contains": {
+                  "required": ["href_template"],
+                  "properties": {
+                    "href_template": {
+                      "pattern": "\\{variable\\}"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "required": ["structures"]
+          }
+        },
+        {
+          "if": {
+            "required": ["access"],
+            "properties": {
+              "access": {
+                "enum": ["restricted", "non-public"]
+              }
+            }
+          },
+          "then": {
+            "required": ["access_note"]
+          }
+        },
+        {
+          "if": {
+            "required": ["license"],
+            "properties": {
+              "license": {
+                "pattern": "\\bLicenseRef-[A-Za-z0-9.-]+\\b"
+              }
+            }
+          },
+          "then": {
+            "required": ["additional_links"],
+            "properties": {
+              "additional_links": {
+                "contains": {
+                  "properties": {
+                    "rel": {
+                      "const": "license"
+                    }
+                  },
+                  "required": ["rel", "url"]
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": "Climate Data Hub Metadata Input Schema",
+      "type": "object"
+    },
+    {
+      "title": "CDH Extension",
+      "description": "CGIAR Climate Data Hub governance fields.",
+      "type": "object",
+      "properties": {
+        "cdh": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["domain"],
+          "properties": {
+            "domain": {
+              "description": "CDH domain(s); closed vocabulary (vocab/domain.json). Drives catalog browse and filtering.",
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "title": "CDH Domain Vocabulary",
+                "description": "Generated from vocab/domain.json. Do not edit this file directly; update the JSON vocabulary and regenerate schemas.",
+                "type": "string",
+                "enum": [
+                  "adaptation",
+                  "agricultural-production",
+                  "boundaries",
+                  "climate",
+                  "hydrology",
+                  "land",
+                  "mitigation",
+                  "socioeconomic"
+                ]
+              }
+            },
+            "usage": {
+              "description": "Use guidance for the resource: what it was produced for, and what to avoid. Both entries are optional; omit `usage` entirely when there is nothing to say.",
+              "type": "object",
+              "additionalProperties": false,
+              "minProperties": 1,
+              "properties": {
+                "intended_uses": {
+                  "description": "Uses the resource was produced for, as free text. Illustrative and never exhaustive: a use that is absent is not thereby excluded, and a use that is listed is not thereby endorsed for any particular decision. Suitability for anything not listed is judged from description, variables, coverage, and resolution.",
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "examples": [
+                    [
+                      "national and sub-national hotspot mapping",
+                      "targeting of adaptation investment"
+                    ]
+                  ]
+                },
+                "not_recommended_for": {
+                  "description": "Uses to avoid, each with a reason and optional alternative.",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["use", "reason"],
+                    "properties": {
+                      "reason": {
+                        "type": "string",
+                        "description": "Why this use is discouraged.",
+                        "minLength": 1
+                      },
+                      "use": {
+                        "type": "string",
+                        "description": "The use being discouraged.",
+                        "minLength": 1
+                      },
+                      "use_instead": {
+                        "type": "string",
+                        "description": "Recommended alternative, if any.",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Climate Extension",
+      "description": "Climate projection provenance: baseline, bias adjustment, downscaling, scenarios.",
+      "type": "object",
+      "properties": {
+        "climate": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "baseline": {
+              "description": "Reference/baseline period the projections are expressed against.",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "start_date": {
+                  "description": "Date or date-time. Use YYYY-MM-DD (e.g. 2026-06-23) or an RFC 3339 date-time (e.g. 2026-06-23T00:00:00Z).",
+                  "examples": ["2026-06-23", "2026-06-23T00:00:00Z"],
+                  "anyOf": [
+                    {
+                      "format": "date",
+                      "type": "string"
+                    },
+                    {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "end_date": {
+                  "description": "Date or date-time. Use YYYY-MM-DD (e.g. 2026-06-23) or an RFC 3339 date-time (e.g. 2026-06-23T00:00:00Z).",
+                  "examples": ["2026-06-23", "2026-06-23T00:00:00Z"],
+                  "anyOf": [
+                    {
+                      "format": "date",
+                      "type": "string"
+                    },
+                    {
+                      "format": "date-time",
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            "bias_adjustment": {
+              "description": "Bias adjustment applied to the projections.",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "method": {
+                  "description": "Bias-adjustment method.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "reference_dataset": {
+                  "description": "Reference dataset used for bias adjustment.",
+                  "minLength": 1,
+                  "type": "string"
+                }
+              }
+            },
+            "downscaling": {
+              "description": "Downscaling applied to the projections.",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "method": {
+                  "description": "Downscaling method.",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "resolution": {
+                  "description": "Target resolution of the downscaling.",
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  ]
+                }
+              }
+            },
+            "mip_era": {
+              "description": "CMIP era of the source models.",
+              "enum": ["CMIP5", "CMIP6"]
+            },
+            "models": {
+              "description": "Climate model source ids from vocab/climate_model.json: CMIP spelling verbatim, or `ensemble` for a multi-model product.",
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "title": "CDH Climate Model Vocabulary",
+                "description": "Generated from vocab/climate_model.json. Do not edit this file directly; update the JSON vocabulary and regenerate schemas.",
+                "type": "string",
+                "enum": [
+                  "4AOP-v1-5",
+                  "ACCESS-CM2",
+                  "ACCESS-ESM1-5",
+                  "ACCESS-OM2",
+                  "ACCESS-OM2-025",
+                  "ACCESS1.0",
+                  "ACCESS1.3",
+                  "ARTS-2-3",
+                  "AWI-CM-1-1-HR",
+                  "AWI-CM-1-1-LR",
+                  "AWI-CM-1-1-MR",
+                  "AWI-ESM-1-1-LR",
+                  "AWI-ESM-1-REcoM",
+                  "BCC-CSM1.1",
+                  "BCC-CSM1.1(m)",
+                  "BCC-CSM2-HR",
+                  "BCC-CSM2-MR",
+                  "BCC-ESM1",
+                  "BNU-ESM",
+                  "CAM-MPAS-HR",
+                  "CAM-MPAS-LR",
+                  "CAMS-CSM1-0",
+                  "CanAM4",
+                  "CanCM4",
+                  "CanESM2",
+                  "CanESM5",
+                  "CanESM5-1",
+                  "CanESM5-CanOE",
+                  "CAS-ESM2-0",
+                  "CCSM4",
+                  "CESM1-1-CAM5-CMIP5",
+                  "CESM1-CAM5-SE-HR",
+                  "CESM1-CAM5-SE-LR",
+                  "CESM1-WACCM-SC",
+                  "CESM1(BGC)",
+                  "CESM1(CAM5)",
+                  "CESM1(FASTCHEM)",
+                  "CESM1(WACCM)",
+                  "CESM2",
+                  "CESM2-FV2",
+                  "CESM2-WACCM",
+                  "CESM2-WACCM-FV2",
+                  "CFSv2-2011",
+                  "CIESM",
+                  "CMCC-CESM",
+                  "CMCC-CM",
+                  "CMCC-CM2-HR4",
+                  "CMCC-CM2-SR5",
+                  "CMCC-CM2-VHR4",
+                  "CMCC-CMS",
+                  "CMCC-ESM2",
+                  "CNRM-CM5",
+                  "CNRM-CM5-2",
+                  "CNRM-CM6-1",
+                  "CNRM-CM6-1-HR",
+                  "CNRM-ESM2-1",
+                  "CSIRO-Mk3.6.0",
+                  "E3SM-1-0",
+                  "E3SM-1-1",
+                  "E3SM-1-1-ECA",
+                  "E3SM-2-0",
+                  "E3SM-2-0-NARRM",
+                  "E3SM-2-1",
+                  "EC-EARTH",
+                  "EC-Earth3",
+                  "EC-Earth3-AerChem",
+                  "EC-Earth3-CC",
+                  "EC-Earth3-ESM-1",
+                  "EC-Earth3-HR",
+                  "EC-Earth3-LR",
+                  "EC-Earth3-Veg",
+                  "EC-Earth3-Veg-LR",
+                  "EC-Earth3P",
+                  "EC-Earth3P-HR",
+                  "EC-Earth3P-VHR",
+                  "ECMWF-IFS-HR",
+                  "ECMWF-IFS-LR",
+                  "ECMWF-IFS-MR",
+                  "ensemble",
+                  "FGOALS-f3-H",
+                  "FGOALS-f3-L",
+                  "FGOALS-g2",
+                  "FGOALS-g3",
+                  "FGOALS-gl",
+                  "FGOALS-s2",
+                  "FIO-ESM",
+                  "FIO-ESM-2-0",
+                  "GEOS-5",
+                  "GFDL-AM4",
+                  "GFDL-CM2.1",
+                  "GFDL-CM3",
+                  "GFDL-CM4",
+                  "GFDL-CM4C192",
+                  "GFDL-ESM2G",
+                  "GFDL-ESM2M",
+                  "GFDL-ESM4",
+                  "GFDL-GRTCODE",
+                  "GFDL-HIRAM-C180",
+                  "GFDL-HIRAM-C360",
+                  "GFDL-OM4p5B",
+                  "GFDL-RFM-DISORT",
+                  "GISS-E2-1-G",
+                  "GISS-E2-1-G-CC",
+                  "GISS-E2-1-H",
+                  "GISS-E2-2-G",
+                  "GISS-E2-2-H",
+                  "GISS-E2-H",
+                  "GISS-E2-H-CC",
+                  "GISS-E2-R",
+                  "GISS-E2-R-CC",
+                  "GISS-E3-G",
+                  "HadCM3",
+                  "HadGEM2-A",
+                  "HadGEM2-CC",
+                  "HadGEM2-ES",
+                  "HadGEM3-GC31-HH",
+                  "HadGEM3-GC31-HM",
+                  "HadGEM3-GC31-LL",
+                  "HadGEM3-GC31-LM",
+                  "HadGEM3-GC31-MH",
+                  "HadGEM3-GC31-MM",
+                  "HiRAM-SIT-HR",
+                  "HiRAM-SIT-LR",
+                  "ICON-ESM-LR",
+                  "IITM-ESM",
+                  "INM-CM4",
+                  "INM-CM4-8",
+                  "INM-CM5-0",
+                  "INM-CM5-H",
+                  "IPSL-CM5A-LR",
+                  "IPSL-CM5A-MR",
+                  "IPSL-CM5A2-INCA",
+                  "IPSL-CM5B-LR",
+                  "IPSL-CM6A-ATM-HR",
+                  "IPSL-CM6A-ATM-ICO-HR",
+                  "IPSL-CM6A-ATM-ICO-LR",
+                  "IPSL-CM6A-ATM-ICO-MR",
+                  "IPSL-CM6A-ATM-ICO-VHR",
+                  "IPSL-CM6A-ATM-LR-REPROBUS",
+                  "IPSL-CM6A-LR",
+                  "IPSL-CM6A-LR-INCA",
+                  "IPSL-CM6A-MR1",
+                  "KACE-1-0-G",
+                  "KIOST-ESM",
+                  "LBLRTM-12-8",
+                  "MCM-UA-1-0",
+                  "MIROC-ES2H",
+                  "MIROC-ES2H-NB",
+                  "MIROC-ES2L",
+                  "MIROC-ESM",
+                  "MIROC-ESM-CHEM",
+                  "MIROC4h",
+                  "MIROC5",
+                  "MIROC6",
+                  "MPI-ESM-1-2-HAM",
+                  "MPI-ESM-LR",
+                  "MPI-ESM-MR",
+                  "MPI-ESM-P",
+                  "MPI-ESM1-2-HR",
+                  "MPI-ESM1-2-LR",
+                  "MPI-ESM1-2-XR",
+                  "MRI-AGCM3-2-H",
+                  "MRI-AGCM3-2-S",
+                  "MRI-AGCM3.2H",
+                  "MRI-AGCM3.2S",
+                  "MRI-CGCM3",
+                  "MRI-ESM1",
+                  "MRI-ESM2-0",
+                  "NESM3",
+                  "NICAM-09",
+                  "NICAM16-7S",
+                  "NICAM16-8S",
+                  "NICAM16-9S",
+                  "NorCPM1",
+                  "NorESM1-F",
+                  "NorESM1-M",
+                  "NorESM1-ME",
+                  "NorESM2-LM",
+                  "NorESM2-MM",
+                  "PCMDI-test-1-0",
+                  "RRTMG-LW-4-91",
+                  "RRTMG-SW-4-02",
+                  "RTE-RRTMGP-181204",
+                  "SAM0-UNICON",
+                  "TaiESM1",
+                  "TaiESM1-TIMCOM",
+                  "TaiESM1-TIMCOM2",
+                  "UKESM1-0-LL",
+                  "UKESM1-1-LL",
+                  "UKESM1-ice-LL"
+                ]
+              }
+            },
+            "scenarios": {
+              "description": "Experiment ids from vocab/climate_scenario.json: CMIP spelling verbatim, e.g. ssp245, rcp85, historical.",
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "title": "CDH Climate Scenario Vocabulary",
+                "description": "Generated from vocab/climate_scenario.json. Do not edit this file directly; update the JSON vocabulary and regenerate schemas.",
+                "type": "string",
+                "enum": [
+                  "1pctCO2",
+                  "1pctCO2-4xext",
+                  "1pctCO2-bgc",
+                  "1pctCO2-cdr",
+                  "1pctCO2-rad",
+                  "1pctCO2Ndep",
+                  "1pctCO2Ndep-bgc",
+                  "1pctCO2to4x-withism",
+                  "a4SST",
+                  "a4SSTice",
+                  "a4SSTice-4xCO2",
+                  "abrupt-0p5xCO2",
+                  "abrupt-2xCO2",
+                  "abrupt-4xCO2",
+                  "abrupt-solm4p",
+                  "abrupt-solp4p",
+                  "abrupt4xCO2",
+                  "amip",
+                  "amip-4xCO2",
+                  "amip-a4SST-4xCO2",
+                  "amip-climSIC",
+                  "amip-climSST",
+                  "amip-future4K",
+                  "amip-hist",
+                  "amip-hld",
+                  "amip-lfmip-pdLC",
+                  "amip-lfmip-pObs",
+                  "amip-lfmip-rmLC",
+                  "amip-lwoff",
+                  "amip-m4K",
+                  "amip-p4K",
+                  "amip-p4K-lwoff",
+                  "amip-piForcing",
+                  "amip-TIP",
+                  "amip-TIP-nosh",
+                  "amip4K",
+                  "amip4xCO2",
+                  "amipFuture",
+                  "aqua-4xCO2",
+                  "aqua-control",
+                  "aqua-control-lwoff",
+                  "aqua-p4K",
+                  "aqua-p4K-lwoff",
+                  "aqua4K",
+                  "aqua4xCO2",
+                  "aquaControl",
+                  "control-1950",
+                  "control-slab",
+                  "dcppA-assim",
+                  "dcppA-hindcast",
+                  "dcppA-hindcast-niff",
+                  "dcppA-historical-niff",
+                  "dcppB-forecast",
+                  "dcppC-amv-ExTrop-neg",
+                  "dcppC-amv-ExTrop-pos",
+                  "dcppC-amv-neg",
+                  "dcppC-amv-pos",
+                  "dcppC-amv-Trop-neg",
+                  "dcppC-amv-Trop-pos",
+                  "dcppC-atl-control",
+                  "dcppC-atl-pacemaker",
+                  "dcppC-atl-spg",
+                  "dcppC-forecast-addAgung",
+                  "dcppC-forecast-addElChichon",
+                  "dcppC-forecast-addPinatubo",
+                  "dcppC-hindcast-noAgung",
+                  "dcppC-hindcast-noElChichon",
+                  "dcppC-hindcast-noPinatubo",
+                  "dcppC-ipv-neg",
+                  "dcppC-ipv-NexTrop-neg",
+                  "dcppC-ipv-NexTrop-pos",
+                  "dcppC-ipv-pos",
+                  "dcppC-pac-control",
+                  "dcppC-pac-pacemaker",
+                  "decadal1959",
+                  "decadal1960",
+                  "decadal1961",
+                  "decadal1962",
+                  "decadal1963",
+                  "decadal1964",
+                  "decadal1965",
+                  "decadal1966",
+                  "decadal1967",
+                  "decadal1968",
+                  "decadal1969",
+                  "decadal1970",
+                  "decadal1971",
+                  "decadal1972",
+                  "decadal1973",
+                  "decadal1974",
+                  "decadal1975",
+                  "decadal1976",
+                  "decadal1977",
+                  "decadal1978",
+                  "decadal1979",
+                  "decadal1980",
+                  "decadal1981",
+                  "decadal1982",
+                  "decadal1983",
+                  "decadal1984",
+                  "decadal1985",
+                  "decadal1986",
+                  "decadal1987",
+                  "decadal1988",
+                  "decadal1989",
+                  "decadal1990",
+                  "decadal1991",
+                  "decadal1992",
+                  "decadal1993",
+                  "decadal1994",
+                  "decadal1995",
+                  "decadal1996",
+                  "decadal1997",
+                  "decadal1998",
+                  "decadal1999",
+                  "decadal2000",
+                  "decadal2001",
+                  "decadal2002",
+                  "decadal2003",
+                  "decadal2004",
+                  "decadal2005",
+                  "decadal2006",
+                  "decadal2007",
+                  "decadal2008",
+                  "decadal2009",
+                  "decadal2010",
+                  "decadal2011",
+                  "decadal2012",
+                  "deforest-globe",
+                  "esm-1pct-brch-1000PgC",
+                  "esm-1pct-brch-2000PgC",
+                  "esm-1pct-brch-750PgC",
+                  "esm-1pctCO2",
+                  "esm-bell-1000PgC",
+                  "esm-bell-2000PgC",
+                  "esm-bell-750PgC",
+                  "esm-hist",
+                  "esm-hist-ext",
+                  "esm-past1000",
+                  "esm-pi-cdr-pulse",
+                  "esm-pi-CO2pulse",
+                  "esm-piControl",
+                  "esm-piControl-spinup",
+                  "esm-ssp534-over",
+                  "esm-ssp585",
+                  "esm-ssp585-ocn-alk",
+                  "esm-ssp585-ocn-alk-stop",
+                  "esm-ssp585-ssp126Lu",
+                  "esm-ssp585-ssp126Lu-ext",
+                  "esm-ssp585ext",
+                  "esm-yr2010CO2-cdr-pulse",
+                  "esm-yr2010CO2-CO2pulse",
+                  "esm-yr2010CO2-control",
+                  "esm-yr2010CO2-noemit",
+                  "esmControl",
+                  "esmFdbk1",
+                  "esmFdbk2",
+                  "esmFixClim1",
+                  "esmFixClim2",
+                  "esmHistorical",
+                  "esmrcp85",
+                  "faf-all",
+                  "faf-antwater-stress",
+                  "faf-heat",
+                  "faf-heat-NA0pct",
+                  "faf-heat-NA50pct",
+                  "faf-passiveheat",
+                  "faf-stress",
+                  "faf-water",
+                  "futSST-pdSIC",
+                  "futureSST-4xCO2-solar",
+                  "G1",
+                  "G6solar",
+                  "G6SST1",
+                  "G6SST2-solar",
+                  "G6SST2-sulfur",
+                  "G6sulfur",
+                  "G7cirrus",
+                  "G7SST1-cirrus",
+                  "G7SST2-cirrus",
+                  "highres-future",
+                  "highresSST-4xCO2",
+                  "highresSST-future",
+                  "highresSST-LAI",
+                  "highresSST-p4K",
+                  "highresSST-present",
+                  "highresSST-smoothed",
+                  "hist-1950",
+                  "hist-1950HC",
+                  "hist-aer",
+                  "hist-aer-cmip5",
+                  "hist-all-aer2",
+                  "hist-all-nat2",
+                  "hist-bgc",
+                  "hist-CO2",
+                  "hist-GHG",
+                  "hist-GHG-cmip5",
+                  "hist-nat",
+                  "hist-nat-cmip5",
+                  "hist-noLu",
+                  "hist-piAer",
+                  "hist-piNTCF",
+                  "hist-resAMO",
+                  "hist-resIPO",
+                  "hist-sol",
+                  "hist-spAer-aer",
+                  "hist-spAer-all",
+                  "hist-stratO3",
+                  "hist-totalO3",
+                  "hist-volc",
+                  "historical",
+                  "historical-cmip5",
+                  "historical-ext",
+                  "historical-withism",
+                  "historicalExt",
+                  "historicalGHG",
+                  "historicalMisc",
+                  "historicalNat",
+                  "histSST",
+                  "histSST-1950HC",
+                  "histSST-noLu",
+                  "histSST-piAer",
+                  "histSST-piCH4",
+                  "histSST-piN2O",
+                  "histSST-piNTCF",
+                  "histSST-piO3",
+                  "ism-1pctCO2to4x-self",
+                  "ism-1pctCO2to4x-std",
+                  "ism-amip-std",
+                  "ism-asmb-std",
+                  "ism-bsmb-std",
+                  "ism-ctrl-std",
+                  "ism-historical-self",
+                  "ism-historical-std",
+                  "ism-lig127k-std",
+                  "ism-pdControl-std",
+                  "ism-piControl-self",
+                  "ism-ssp585-self",
+                  "ism-ssp585-std",
+                  "land-cClim",
+                  "land-cCO2",
+                  "land-crop-grass",
+                  "land-crop-noFert",
+                  "land-crop-noIrrig",
+                  "land-crop-noIrrigFert",
+                  "land-hist",
+                  "land-hist-altLu1",
+                  "land-hist-altLu2",
+                  "land-hist-altStartYear",
+                  "land-hist-cruNcep",
+                  "land-hist-princeton",
+                  "land-hist-wfdei",
+                  "land-noFire",
+                  "land-noLu",
+                  "land-noPasture",
+                  "land-noShiftCultivate",
+                  "land-noWoodHarv",
+                  "land-ssp126",
+                  "land-ssp434",
+                  "land-ssp585",
+                  "lfmip-initLC",
+                  "lfmip-pdLC",
+                  "lfmip-pdLC-cruNcep",
+                  "lfmip-pdLC-princeton",
+                  "lfmip-pdLC-wfdei",
+                  "lfmip-rmLC",
+                  "lfmip-rmLC-cruNcep",
+                  "lfmip-rmLC-princeton",
+                  "lfmip-rmLC-wfdei",
+                  "lgm",
+                  "lig127k",
+                  "midHolocene",
+                  "midPliocene-eoi400",
+                  "modelSST-futArcSIC",
+                  "modelSST-pdSIC",
+                  "noVolc1960",
+                  "noVolc1965",
+                  "noVolc1970",
+                  "noVolc1975",
+                  "noVolc1980",
+                  "noVolc1985",
+                  "noVolc1990",
+                  "noVolc1995",
+                  "noVolc2000",
+                  "noVolc2005",
+                  "omip1",
+                  "omip1-spunup",
+                  "omip2",
+                  "omip2-spunup",
+                  "pa-futAntSIC",
+                  "pa-futAntSIC-ext",
+                  "pa-futArcSIC",
+                  "pa-futArcSIC-ext",
+                  "pa-pdSIC",
+                  "pa-pdSIC-ext",
+                  "pa-piAntSIC",
+                  "pa-piArcSIC",
+                  "past1000",
+                  "past1000-solaronly",
+                  "past1000-volconly",
+                  "past2k",
+                  "pdSST-futAntSIC",
+                  "pdSST-futArcSIC",
+                  "pdSST-futArcSICSIT",
+                  "pdSST-futBKSeasSIC",
+                  "pdSST-futOkhotskSIC",
+                  "pdSST-pdSIC",
+                  "pdSST-pdSICSIT",
+                  "pdSST-piAntSIC",
+                  "pdSST-piArcSIC",
+                  "piClim-2xDMS",
+                  "piClim-2xdust",
+                  "piClim-2xfire",
+                  "piClim-2xNOx",
+                  "piClim-2xss",
+                  "piClim-2xVOC",
+                  "piClim-4xCO2",
+                  "piClim-aer",
+                  "piClim-anthro",
+                  "piClim-BC",
+                  "piClim-CH4",
+                  "piClim-control",
+                  "piClim-ghg",
+                  "piClim-HC",
+                  "piClim-histaer",
+                  "piClim-histall",
+                  "piClim-histghg",
+                  "piClim-histnat",
+                  "piClim-lu",
+                  "piClim-N2O",
+                  "piClim-NH3",
+                  "piClim-NOx",
+                  "piClim-NTCF",
+                  "piClim-O3",
+                  "piClim-OC",
+                  "piClim-SO2",
+                  "piClim-spAer-aer",
+                  "piClim-spAer-anthro",
+                  "piClim-spAer-histaer",
+                  "piClim-spAer-histall",
+                  "piClim-VOC",
+                  "piControl",
+                  "piControl-cmip5",
+                  "piControl-spinup",
+                  "piControl-spinup-cmip5",
+                  "piControl-withism",
+                  "piSST",
+                  "piSST-4xCO2",
+                  "piSST-4xCO2-rad",
+                  "piSST-4xCO2-solar",
+                  "piSST-pdSIC",
+                  "piSST-piSIC",
+                  "piSST-pxK",
+                  "rad-irf",
+                  "rcp26",
+                  "rcp26-cmip5",
+                  "rcp45",
+                  "rcp45-cmip5",
+                  "rcp60",
+                  "rcp60-cmip5",
+                  "rcp85",
+                  "rcp85-cmip5",
+                  "spinup-1950",
+                  "ssp119",
+                  "ssp126",
+                  "ssp126-ssp370Lu",
+                  "ssp245",
+                  "ssp245-aer",
+                  "ssp245-cov-aer",
+                  "ssp245-cov-fossil",
+                  "ssp245-cov-GHG",
+                  "ssp245-cov-modgreen",
+                  "ssp245-cov-strgreen",
+                  "ssp245-covid",
+                  "ssp245-GHG",
+                  "ssp245-nat",
+                  "ssp245-stratO3",
+                  "ssp370",
+                  "ssp370-lowNTCF",
+                  "ssp370-lowNTCFCH4",
+                  "ssp370-ssp126Lu",
+                  "ssp370pdSST",
+                  "ssp370SST",
+                  "ssp370SST-lowAer",
+                  "ssp370SST-lowBC",
+                  "ssp370SST-lowCH4",
+                  "ssp370SST-lowNTCF",
+                  "ssp370SST-lowNTCFCH4",
+                  "ssp370SST-lowO3",
+                  "ssp370SST-ssp126Lu",
+                  "ssp434",
+                  "ssp460",
+                  "ssp534-over",
+                  "ssp534-over-bgc",
+                  "ssp585",
+                  "ssp585-bgc",
+                  "ssp585-withism",
+                  "sst2030",
+                  "sst2090",
+                  "sst2090rcp45",
+                  "sstClim",
+                  "sstClim4xCO2",
+                  "sstClimAerosol",
+                  "sstClimSulfate",
+                  "volc-cluster-21C",
+                  "volc-cluster-ctrl",
+                  "volc-cluster-mill",
+                  "volc-long-eq",
+                  "volc-long-hlN",
+                  "volc-long-hlS",
+                  "volc-pinatubo-full",
+                  "volc-pinatubo-slab",
+                  "volc-pinatubo-strat",
+                  "volc-pinatubo-surf",
+                  "volcIn2010",
+                  "yr2010CO2"
+                ]
+              }
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "mip_era": {
+                    "const": "CMIP5"
+                  }
+                },
+                "required": ["mip_era"]
+              },
+              "then": {
+                "properties": {
+                  "models": {
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "ACCESS1.0",
+                        "ACCESS1.3",
+                        "BCC-CSM1.1",
+                        "BCC-CSM1.1(m)",
+                        "BNU-ESM",
+                        "CanAM4",
+                        "CanCM4",
+                        "CanESM2",
+                        "CCSM4",
+                        "CESM1(BGC)",
+                        "CESM1(CAM5)",
+                        "CESM1(FASTCHEM)",
+                        "CESM1(WACCM)",
+                        "CFSv2-2011",
+                        "CMCC-CESM",
+                        "CMCC-CM",
+                        "CMCC-CMS",
+                        "CNRM-CM5",
+                        "CNRM-CM5-2",
+                        "CSIRO-Mk3.6.0",
+                        "EC-EARTH",
+                        "ensemble",
+                        "FGOALS-g2",
+                        "FGOALS-gl",
+                        "FGOALS-s2",
+                        "FIO-ESM",
+                        "GEOS-5",
+                        "GFDL-CM2.1",
+                        "GFDL-CM3",
+                        "GFDL-ESM2G",
+                        "GFDL-ESM2M",
+                        "GFDL-HIRAM-C180",
+                        "GFDL-HIRAM-C360",
+                        "GISS-E2-H",
+                        "GISS-E2-H-CC",
+                        "GISS-E2-R",
+                        "GISS-E2-R-CC",
+                        "HadCM3",
+                        "HadGEM2-A",
+                        "HadGEM2-CC",
+                        "HadGEM2-ES",
+                        "INM-CM4",
+                        "IPSL-CM5A-LR",
+                        "IPSL-CM5A-MR",
+                        "IPSL-CM5B-LR",
+                        "MIROC-ESM",
+                        "MIROC-ESM-CHEM",
+                        "MIROC4h",
+                        "MIROC5",
+                        "MPI-ESM-LR",
+                        "MPI-ESM-MR",
+                        "MPI-ESM-P",
+                        "MRI-AGCM3.2H",
+                        "MRI-AGCM3.2S",
+                        "MRI-CGCM3",
+                        "MRI-ESM1",
+                        "NICAM-09",
+                        "NorESM1-M",
+                        "NorESM1-ME"
+                      ]
+                    }
+                  },
+                  "scenarios": {
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "1pctCO2",
+                        "abrupt4xCO2",
+                        "amip",
+                        "amip4K",
+                        "amip4xCO2",
+                        "amipFuture",
+                        "aqua4K",
+                        "aqua4xCO2",
+                        "aquaControl",
+                        "decadal1959",
+                        "decadal1960",
+                        "decadal1961",
+                        "decadal1962",
+                        "decadal1963",
+                        "decadal1964",
+                        "decadal1965",
+                        "decadal1966",
+                        "decadal1967",
+                        "decadal1968",
+                        "decadal1969",
+                        "decadal1970",
+                        "decadal1971",
+                        "decadal1972",
+                        "decadal1973",
+                        "decadal1974",
+                        "decadal1975",
+                        "decadal1976",
+                        "decadal1977",
+                        "decadal1978",
+                        "decadal1979",
+                        "decadal1980",
+                        "decadal1981",
+                        "decadal1982",
+                        "decadal1983",
+                        "decadal1984",
+                        "decadal1985",
+                        "decadal1986",
+                        "decadal1987",
+                        "decadal1988",
+                        "decadal1989",
+                        "decadal1990",
+                        "decadal1991",
+                        "decadal1992",
+                        "decadal1993",
+                        "decadal1994",
+                        "decadal1995",
+                        "decadal1996",
+                        "decadal1997",
+                        "decadal1998",
+                        "decadal1999",
+                        "decadal2000",
+                        "decadal2001",
+                        "decadal2002",
+                        "decadal2003",
+                        "decadal2004",
+                        "decadal2005",
+                        "decadal2006",
+                        "decadal2007",
+                        "decadal2008",
+                        "decadal2009",
+                        "decadal2010",
+                        "decadal2011",
+                        "decadal2012",
+                        "esmControl",
+                        "esmFdbk1",
+                        "esmFdbk2",
+                        "esmFixClim1",
+                        "esmFixClim2",
+                        "esmHistorical",
+                        "esmrcp85",
+                        "historical",
+                        "historicalExt",
+                        "historicalGHG",
+                        "historicalMisc",
+                        "historicalNat",
+                        "lgm",
+                        "midHolocene",
+                        "noVolc1960",
+                        "noVolc1965",
+                        "noVolc1970",
+                        "noVolc1975",
+                        "noVolc1980",
+                        "noVolc1985",
+                        "noVolc1990",
+                        "noVolc1995",
+                        "noVolc2000",
+                        "noVolc2005",
+                        "past1000",
+                        "piControl",
+                        "rcp26",
+                        "rcp45",
+                        "rcp60",
+                        "rcp85",
+                        "sst2030",
+                        "sst2090",
+                        "sst2090rcp45",
+                        "sstClim",
+                        "sstClim4xCO2",
+                        "sstClimAerosol",
+                        "sstClimSulfate",
+                        "volcIn2010"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "mip_era": {
+                    "const": "CMIP6"
+                  }
+                },
+                "required": ["mip_era"]
+              },
+              "then": {
+                "properties": {
+                  "models": {
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "4AOP-v1-5",
+                        "ACCESS-CM2",
+                        "ACCESS-ESM1-5",
+                        "ACCESS-OM2",
+                        "ACCESS-OM2-025",
+                        "ARTS-2-3",
+                        "AWI-CM-1-1-HR",
+                        "AWI-CM-1-1-LR",
+                        "AWI-CM-1-1-MR",
+                        "AWI-ESM-1-1-LR",
+                        "AWI-ESM-1-REcoM",
+                        "BCC-CSM2-HR",
+                        "BCC-CSM2-MR",
+                        "BCC-ESM1",
+                        "CAM-MPAS-HR",
+                        "CAM-MPAS-LR",
+                        "CAMS-CSM1-0",
+                        "CanESM5",
+                        "CanESM5-1",
+                        "CanESM5-CanOE",
+                        "CAS-ESM2-0",
+                        "CESM1-1-CAM5-CMIP5",
+                        "CESM1-CAM5-SE-HR",
+                        "CESM1-CAM5-SE-LR",
+                        "CESM1-WACCM-SC",
+                        "CESM2",
+                        "CESM2-FV2",
+                        "CESM2-WACCM",
+                        "CESM2-WACCM-FV2",
+                        "CIESM",
+                        "CMCC-CM2-HR4",
+                        "CMCC-CM2-SR5",
+                        "CMCC-CM2-VHR4",
+                        "CMCC-ESM2",
+                        "CNRM-CM6-1",
+                        "CNRM-CM6-1-HR",
+                        "CNRM-ESM2-1",
+                        "E3SM-1-0",
+                        "E3SM-1-1",
+                        "E3SM-1-1-ECA",
+                        "E3SM-2-0",
+                        "E3SM-2-0-NARRM",
+                        "E3SM-2-1",
+                        "EC-Earth3",
+                        "EC-Earth3-AerChem",
+                        "EC-Earth3-CC",
+                        "EC-Earth3-ESM-1",
+                        "EC-Earth3-HR",
+                        "EC-Earth3-LR",
+                        "EC-Earth3-Veg",
+                        "EC-Earth3-Veg-LR",
+                        "EC-Earth3P",
+                        "EC-Earth3P-HR",
+                        "EC-Earth3P-VHR",
+                        "ECMWF-IFS-HR",
+                        "ECMWF-IFS-LR",
+                        "ECMWF-IFS-MR",
+                        "ensemble",
+                        "FGOALS-f3-H",
+                        "FGOALS-f3-L",
+                        "FGOALS-g3",
+                        "FIO-ESM-2-0",
+                        "GFDL-AM4",
+                        "GFDL-CM4",
+                        "GFDL-CM4C192",
+                        "GFDL-ESM2M",
+                        "GFDL-ESM4",
+                        "GFDL-GRTCODE",
+                        "GFDL-OM4p5B",
+                        "GFDL-RFM-DISORT",
+                        "GISS-E2-1-G",
+                        "GISS-E2-1-G-CC",
+                        "GISS-E2-1-H",
+                        "GISS-E2-2-G",
+                        "GISS-E2-2-H",
+                        "GISS-E3-G",
+                        "HadGEM3-GC31-HH",
+                        "HadGEM3-GC31-HM",
+                        "HadGEM3-GC31-LL",
+                        "HadGEM3-GC31-LM",
+                        "HadGEM3-GC31-MH",
+                        "HadGEM3-GC31-MM",
+                        "HiRAM-SIT-HR",
+                        "HiRAM-SIT-LR",
+                        "ICON-ESM-LR",
+                        "IITM-ESM",
+                        "INM-CM4-8",
+                        "INM-CM5-0",
+                        "INM-CM5-H",
+                        "IPSL-CM5A2-INCA",
+                        "IPSL-CM6A-ATM-HR",
+                        "IPSL-CM6A-ATM-ICO-HR",
+                        "IPSL-CM6A-ATM-ICO-LR",
+                        "IPSL-CM6A-ATM-ICO-MR",
+                        "IPSL-CM6A-ATM-ICO-VHR",
+                        "IPSL-CM6A-ATM-LR-REPROBUS",
+                        "IPSL-CM6A-LR",
+                        "IPSL-CM6A-LR-INCA",
+                        "IPSL-CM6A-MR1",
+                        "KACE-1-0-G",
+                        "KIOST-ESM",
+                        "LBLRTM-12-8",
+                        "MCM-UA-1-0",
+                        "MIROC-ES2H",
+                        "MIROC-ES2H-NB",
+                        "MIROC-ES2L",
+                        "MIROC6",
+                        "MPI-ESM-1-2-HAM",
+                        "MPI-ESM1-2-HR",
+                        "MPI-ESM1-2-LR",
+                        "MPI-ESM1-2-XR",
+                        "MRI-AGCM3-2-H",
+                        "MRI-AGCM3-2-S",
+                        "MRI-ESM2-0",
+                        "NESM3",
+                        "NICAM16-7S",
+                        "NICAM16-8S",
+                        "NICAM16-9S",
+                        "NorCPM1",
+                        "NorESM1-F",
+                        "NorESM2-LM",
+                        "NorESM2-MM",
+                        "PCMDI-test-1-0",
+                        "RRTMG-LW-4-91",
+                        "RRTMG-SW-4-02",
+                        "RTE-RRTMGP-181204",
+                        "SAM0-UNICON",
+                        "TaiESM1",
+                        "TaiESM1-TIMCOM",
+                        "TaiESM1-TIMCOM2",
+                        "UKESM1-0-LL",
+                        "UKESM1-1-LL",
+                        "UKESM1-ice-LL"
+                      ]
+                    }
+                  },
+                  "scenarios": {
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "1pctCO2",
+                        "1pctCO2-4xext",
+                        "1pctCO2-bgc",
+                        "1pctCO2-cdr",
+                        "1pctCO2-rad",
+                        "1pctCO2Ndep",
+                        "1pctCO2Ndep-bgc",
+                        "1pctCO2to4x-withism",
+                        "a4SST",
+                        "a4SSTice",
+                        "a4SSTice-4xCO2",
+                        "abrupt-0p5xCO2",
+                        "abrupt-2xCO2",
+                        "abrupt-4xCO2",
+                        "abrupt-solm4p",
+                        "abrupt-solp4p",
+                        "amip",
+                        "amip-4xCO2",
+                        "amip-a4SST-4xCO2",
+                        "amip-climSIC",
+                        "amip-climSST",
+                        "amip-future4K",
+                        "amip-hist",
+                        "amip-hld",
+                        "amip-lfmip-pdLC",
+                        "amip-lfmip-pObs",
+                        "amip-lfmip-rmLC",
+                        "amip-lwoff",
+                        "amip-m4K",
+                        "amip-p4K",
+                        "amip-p4K-lwoff",
+                        "amip-piForcing",
+                        "amip-TIP",
+                        "amip-TIP-nosh",
+                        "aqua-4xCO2",
+                        "aqua-control",
+                        "aqua-control-lwoff",
+                        "aqua-p4K",
+                        "aqua-p4K-lwoff",
+                        "control-1950",
+                        "control-slab",
+                        "dcppA-assim",
+                        "dcppA-hindcast",
+                        "dcppA-hindcast-niff",
+                        "dcppA-historical-niff",
+                        "dcppB-forecast",
+                        "dcppC-amv-ExTrop-neg",
+                        "dcppC-amv-ExTrop-pos",
+                        "dcppC-amv-neg",
+                        "dcppC-amv-pos",
+                        "dcppC-amv-Trop-neg",
+                        "dcppC-amv-Trop-pos",
+                        "dcppC-atl-control",
+                        "dcppC-atl-pacemaker",
+                        "dcppC-atl-spg",
+                        "dcppC-forecast-addAgung",
+                        "dcppC-forecast-addElChichon",
+                        "dcppC-forecast-addPinatubo",
+                        "dcppC-hindcast-noAgung",
+                        "dcppC-hindcast-noElChichon",
+                        "dcppC-hindcast-noPinatubo",
+                        "dcppC-ipv-neg",
+                        "dcppC-ipv-NexTrop-neg",
+                        "dcppC-ipv-NexTrop-pos",
+                        "dcppC-ipv-pos",
+                        "dcppC-pac-control",
+                        "dcppC-pac-pacemaker",
+                        "deforest-globe",
+                        "esm-1pct-brch-1000PgC",
+                        "esm-1pct-brch-2000PgC",
+                        "esm-1pct-brch-750PgC",
+                        "esm-1pctCO2",
+                        "esm-bell-1000PgC",
+                        "esm-bell-2000PgC",
+                        "esm-bell-750PgC",
+                        "esm-hist",
+                        "esm-hist-ext",
+                        "esm-past1000",
+                        "esm-pi-cdr-pulse",
+                        "esm-pi-CO2pulse",
+                        "esm-piControl",
+                        "esm-piControl-spinup",
+                        "esm-ssp534-over",
+                        "esm-ssp585",
+                        "esm-ssp585-ocn-alk",
+                        "esm-ssp585-ocn-alk-stop",
+                        "esm-ssp585-ssp126Lu",
+                        "esm-ssp585-ssp126Lu-ext",
+                        "esm-ssp585ext",
+                        "esm-yr2010CO2-cdr-pulse",
+                        "esm-yr2010CO2-CO2pulse",
+                        "esm-yr2010CO2-control",
+                        "esm-yr2010CO2-noemit",
+                        "faf-all",
+                        "faf-antwater-stress",
+                        "faf-heat",
+                        "faf-heat-NA0pct",
+                        "faf-heat-NA50pct",
+                        "faf-passiveheat",
+                        "faf-stress",
+                        "faf-water",
+                        "futSST-pdSIC",
+                        "futureSST-4xCO2-solar",
+                        "G1",
+                        "G6solar",
+                        "G6SST1",
+                        "G6SST2-solar",
+                        "G6SST2-sulfur",
+                        "G6sulfur",
+                        "G7cirrus",
+                        "G7SST1-cirrus",
+                        "G7SST2-cirrus",
+                        "highres-future",
+                        "highresSST-4xCO2",
+                        "highresSST-future",
+                        "highresSST-LAI",
+                        "highresSST-p4K",
+                        "highresSST-present",
+                        "highresSST-smoothed",
+                        "hist-1950",
+                        "hist-1950HC",
+                        "hist-aer",
+                        "hist-aer-cmip5",
+                        "hist-all-aer2",
+                        "hist-all-nat2",
+                        "hist-bgc",
+                        "hist-CO2",
+                        "hist-GHG",
+                        "hist-GHG-cmip5",
+                        "hist-nat",
+                        "hist-nat-cmip5",
+                        "hist-noLu",
+                        "hist-piAer",
+                        "hist-piNTCF",
+                        "hist-resAMO",
+                        "hist-resIPO",
+                        "hist-sol",
+                        "hist-spAer-aer",
+                        "hist-spAer-all",
+                        "hist-stratO3",
+                        "hist-totalO3",
+                        "hist-volc",
+                        "historical",
+                        "historical-cmip5",
+                        "historical-ext",
+                        "historical-withism",
+                        "histSST",
+                        "histSST-1950HC",
+                        "histSST-noLu",
+                        "histSST-piAer",
+                        "histSST-piCH4",
+                        "histSST-piN2O",
+                        "histSST-piNTCF",
+                        "histSST-piO3",
+                        "ism-1pctCO2to4x-self",
+                        "ism-1pctCO2to4x-std",
+                        "ism-amip-std",
+                        "ism-asmb-std",
+                        "ism-bsmb-std",
+                        "ism-ctrl-std",
+                        "ism-historical-self",
+                        "ism-historical-std",
+                        "ism-lig127k-std",
+                        "ism-pdControl-std",
+                        "ism-piControl-self",
+                        "ism-ssp585-self",
+                        "ism-ssp585-std",
+                        "land-cClim",
+                        "land-cCO2",
+                        "land-crop-grass",
+                        "land-crop-noFert",
+                        "land-crop-noIrrig",
+                        "land-crop-noIrrigFert",
+                        "land-hist",
+                        "land-hist-altLu1",
+                        "land-hist-altLu2",
+                        "land-hist-altStartYear",
+                        "land-hist-cruNcep",
+                        "land-hist-princeton",
+                        "land-hist-wfdei",
+                        "land-noFire",
+                        "land-noLu",
+                        "land-noPasture",
+                        "land-noShiftCultivate",
+                        "land-noWoodHarv",
+                        "land-ssp126",
+                        "land-ssp434",
+                        "land-ssp585",
+                        "lfmip-initLC",
+                        "lfmip-pdLC",
+                        "lfmip-pdLC-cruNcep",
+                        "lfmip-pdLC-princeton",
+                        "lfmip-pdLC-wfdei",
+                        "lfmip-rmLC",
+                        "lfmip-rmLC-cruNcep",
+                        "lfmip-rmLC-princeton",
+                        "lfmip-rmLC-wfdei",
+                        "lgm",
+                        "lig127k",
+                        "midHolocene",
+                        "midPliocene-eoi400",
+                        "modelSST-futArcSIC",
+                        "modelSST-pdSIC",
+                        "omip1",
+                        "omip1-spunup",
+                        "omip2",
+                        "omip2-spunup",
+                        "pa-futAntSIC",
+                        "pa-futAntSIC-ext",
+                        "pa-futArcSIC",
+                        "pa-futArcSIC-ext",
+                        "pa-pdSIC",
+                        "pa-pdSIC-ext",
+                        "pa-piAntSIC",
+                        "pa-piArcSIC",
+                        "past1000",
+                        "past1000-solaronly",
+                        "past1000-volconly",
+                        "past2k",
+                        "pdSST-futAntSIC",
+                        "pdSST-futArcSIC",
+                        "pdSST-futArcSICSIT",
+                        "pdSST-futBKSeasSIC",
+                        "pdSST-futOkhotskSIC",
+                        "pdSST-pdSIC",
+                        "pdSST-pdSICSIT",
+                        "pdSST-piAntSIC",
+                        "pdSST-piArcSIC",
+                        "piClim-2xDMS",
+                        "piClim-2xdust",
+                        "piClim-2xfire",
+                        "piClim-2xNOx",
+                        "piClim-2xss",
+                        "piClim-2xVOC",
+                        "piClim-4xCO2",
+                        "piClim-aer",
+                        "piClim-anthro",
+                        "piClim-BC",
+                        "piClim-CH4",
+                        "piClim-control",
+                        "piClim-ghg",
+                        "piClim-HC",
+                        "piClim-histaer",
+                        "piClim-histall",
+                        "piClim-histghg",
+                        "piClim-histnat",
+                        "piClim-lu",
+                        "piClim-N2O",
+                        "piClim-NH3",
+                        "piClim-NOx",
+                        "piClim-NTCF",
+                        "piClim-O3",
+                        "piClim-OC",
+                        "piClim-SO2",
+                        "piClim-spAer-aer",
+                        "piClim-spAer-anthro",
+                        "piClim-spAer-histaer",
+                        "piClim-spAer-histall",
+                        "piClim-VOC",
+                        "piControl",
+                        "piControl-cmip5",
+                        "piControl-spinup",
+                        "piControl-spinup-cmip5",
+                        "piControl-withism",
+                        "piSST",
+                        "piSST-4xCO2",
+                        "piSST-4xCO2-rad",
+                        "piSST-4xCO2-solar",
+                        "piSST-pdSIC",
+                        "piSST-piSIC",
+                        "piSST-pxK",
+                        "rad-irf",
+                        "rcp26-cmip5",
+                        "rcp45-cmip5",
+                        "rcp60-cmip5",
+                        "rcp85-cmip5",
+                        "spinup-1950",
+                        "ssp119",
+                        "ssp126",
+                        "ssp126-ssp370Lu",
+                        "ssp245",
+                        "ssp245-aer",
+                        "ssp245-cov-aer",
+                        "ssp245-cov-fossil",
+                        "ssp245-cov-GHG",
+                        "ssp245-cov-modgreen",
+                        "ssp245-cov-strgreen",
+                        "ssp245-covid",
+                        "ssp245-GHG",
+                        "ssp245-nat",
+                        "ssp245-stratO3",
+                        "ssp370",
+                        "ssp370-lowNTCF",
+                        "ssp370-lowNTCFCH4",
+                        "ssp370-ssp126Lu",
+                        "ssp370pdSST",
+                        "ssp370SST",
+                        "ssp370SST-lowAer",
+                        "ssp370SST-lowBC",
+                        "ssp370SST-lowCH4",
+                        "ssp370SST-lowNTCF",
+                        "ssp370SST-lowNTCFCH4",
+                        "ssp370SST-lowO3",
+                        "ssp370SST-ssp126Lu",
+                        "ssp434",
+                        "ssp460",
+                        "ssp534-over",
+                        "ssp534-over-bgc",
+                        "ssp585",
+                        "ssp585-bgc",
+                        "ssp585-withism",
+                        "volc-cluster-21C",
+                        "volc-cluster-ctrl",
+                        "volc-cluster-mill",
+                        "volc-long-eq",
+                        "volc-long-hlN",
+                        "volc-long-hlS",
+                        "volc-pinatubo-full",
+                        "volc-pinatubo-slab",
+                        "volc-pinatubo-strat",
+                        "volc-pinatubo-surf",
+                        "yr2010CO2"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "$comment": "With mip_era set, models and scenarios must come from that era's subset."
+        }
+      }
+    },
+    {
+      "title": "Agriculture Extension",
+      "description": "Agricultural commodities described by the record.",
+      "type": "object",
+      "properties": {
+        "commodities": {
+          "description": "Agricultural commodities described by the record; CDH vocabulary (vocab/commodity.json).",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "title": "CDH Commodity Vocabulary",
+            "description": "Generated from vocab/commodity.json. Do not edit this file directly; update the JSON vocabulary and regenerate schemas.",
+            "type": "string",
+            "enum": [
+              "almonds",
+              "anise-badian-and-fennel",
+              "apples",
+              "apricots",
+              "areca-nuts",
+              "artichokes",
+              "asparagus",
+              "asses",
+              "avocados",
+              "bactrian-camel",
+              "bambara-beans",
+              "bananas",
+              "barley",
+              "basil",
+              "beans",
+              "bees",
+              "berries",
+              "blueberries",
+              "bovine-animals",
+              "brazil-nuts",
+              "broad-beans",
+              "buckwheat",
+              "buffaloes",
+              "cabbages",
+              "camels-and-camelids",
+              "canary-seed",
+              "cantaloupes-and-other-melons",
+              "carrots",
+              "cashew-nuts",
+              "cassava",
+              "castor-bean",
+              "cattle",
+              "cauliflower-and-broccoli",
+              "cereals",
+              "cherries-and-sour-cherries",
+              "chestnuts",
+              "chickens",
+              "chickpeas",
+              "chicory",
+              "chicory-roots",
+              "chillies-and-peppers",
+              "cinnamon",
+              "citrus-fruits",
+              "cloves",
+              "coca",
+              "cocoa",
+              "coconuts",
+              "coffee",
+              "cola-nuts",
+              "cotton",
+              "cowpeas",
+              "cranberries",
+              "crops",
+              "cucumbers",
+              "currants",
+              "dates",
+              "deer-elk-reindeer-and-other-ruminants",
+              "dogs-and-cats",
+              "dromedary",
+              "ducks",
+              "eggplants",
+              "equines",
+              "fibre-crops",
+              "figs",
+              "flax",
+              "flower-crops",
+              "fonio",
+              "fruit-and-nuts",
+              "fruit-bearing-vegetables",
+              "fur-bearing-animals-such-as-foxes-and-minks",
+              "garlic",
+              "geese",
+              "ginger",
+              "ginseng",
+              "goats",
+              "gooseberries",
+              "grapefruit-and-pomelo",
+              "grapes",
+              "grasses-and-other-fodder-crops",
+              "groundnuts",
+              "guarana",
+              "guinea-fowls",
+              "hazelnuts",
+              "hemp",
+              "hops",
+              "horses",
+              "insects-and-worms",
+              "jojoba",
+              "jute-kenaf-and-other-similar-crops",
+              "kava",
+              "kiwi-fruit",
+              "leafy-or-stem-vegetables",
+              "leeks-and-other-alliaceous-vegetables",
+              "leguminous-crops",
+              "leguminous-crops-n-e-c",
+              "lemons-and-limes",
+              "lentils",
+              "lettuce",
+              "linseed",
+              "livestock",
+              "llamas-and-alpacas",
+              "lupins",
+              "maize",
+              "mangoes-guavas-and-mangosteens",
+              "mate",
+              "medicinal-pesticidal-or-similar-crops",
+              "melons",
+              "millet",
+              "mint",
+              "mixed-cereals",
+              "mules-and-hinnies",
+              "mushrooms-and-truffles",
+              "mustard",
+              "niger-seed",
+              "nutmeg-mace-cardamoms",
+              "nuts",
+              "oats",
+              "oil-palms",
+              "oilseed-crops-and-oleaginous-fruits",
+              "okra",
+              "olives",
+              "onions",
+              "oranges",
+              "ostriches-and-emus",
+              "other-animals",
+              "other-animals-e-g-primates-elephants-reptiles-zebras",
+              "other-berries-n-e-c",
+              "other-birds",
+              "other-bovine-animals",
+              "other-camelids",
+              "other-cereals-n-e-c",
+              "other-citrus-fruits-n-e-c",
+              "other-crops",
+              "other-crops-n-e-c",
+              "other-crops-n-e-c-permanent",
+              "other-crops-n-e-c-temporary",
+              "other-fruit-bearing-vegetables-n-e-c",
+              "other-fruits-n-e-c",
+              "other-insects-and-worms",
+              "other-leafy-or-stem-vegetables-n-e-c",
+              "other-nuts-n-e-c",
+              "other-oleaginous-fruits-n-e-c",
+              "other-permanent-fibre-crops-n-e-c",
+              "other-permanent-medicinal-pesticidal-or-similar-crops",
+              "other-permanent-spice-and-aromatic-crops-n-e-c",
+              "other-pome-fruits-and-stone-fruits-n-e-c",
+              "other-root-bulb-or-tuberous-vegetables-n-e-c",
+              "other-roots-and-tubers-n-e-c",
+              "other-stimulant-crops-n-e-c",
+              "other-sugar-crops-n-e-c",
+              "other-temporary-fibre-crops-n-e-c",
+              "other-temporary-medicinal-pesticidal-or-similar-crops",
+              "other-temporary-oilseed-crops",
+              "other-temporary-oilseed-crops-n-e-c",
+              "other-temporary-spice-crops-n-e-c",
+              "other-tropical-and-subtropical-fruits-n-e-c",
+              "other-vegetables-n-e-c",
+              "papayas",
+              "peaches-and-nectarines",
+              "pears-and-quinces",
+              "peas",
+              "pepper",
+              "permanent-fibre-crops",
+              "permanent-flower-crops",
+              "permanent-grass-and-fodder-crops",
+              "permanent-medicinal-pesticidal-or-similar-crops",
+              "permanent-oilseed-crops",
+              "permanent-spice-and-aromatic-crops",
+              "pigeon-peas",
+              "pineapples",
+              "pistachios",
+              "plantains",
+              "plums-and-sloes",
+              "pome-fruits-and-stone-fruits",
+              "poppy",
+              "potatoes",
+              "poultry",
+              "pumpkin-squash-and-gourds",
+              "quinoa",
+              "rabbits-and-hares",
+              "ramie",
+              "rapeseed",
+              "raspberries",
+              "rice",
+              "root-bulb-or-tuberous-vegetables",
+              "root-tuber-crops-with-high-starch-or-inulin-content",
+              "rubber",
+              "rye",
+              "safflower",
+              "sesame",
+              "shea-tree",
+              "sheep",
+              "sheep-and-goats",
+              "silkworms",
+              "sisal",
+              "sorghum",
+              "soya-beans",
+              "spice-and-aromatic-crops",
+              "spinach",
+              "stimulant-crops",
+              "stimulant-spice-and-aromatic-crops",
+              "strawberries",
+              "sugar-beet",
+              "sugar-cane",
+              "sugar-crops",
+              "sunflower",
+              "sweet-potatoes",
+              "sweet-sorghum",
+              "swine-pigs",
+              "tallow-tree",
+              "tangerines-mandarins-clementines",
+              "taro",
+              "tea",
+              "temporary-fibre-crops",
+              "temporary-flower-crops",
+              "temporary-grass-and-fodder-crops",
+              "temporary-medicinal-pesticidal-or-similar-crops",
+              "temporary-spice-and-aromatic-crops",
+              "tobacco",
+              "tomatoes",
+              "triticale",
+              "tropical-and-subtropical-fruits",
+              "tung-tree",
+              "turkeys",
+              "turnips",
+              "vanilla",
+              "vegetables-and-melons",
+              "vetches",
+              "walnuts",
+              "watermelons",
+              "wheat",
+              "yams",
+              "yautia"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["climate"]
+      },
+      "then": {
+        "required": ["extensions"],
+        "properties": {
+          "extensions": {
+            "contains": {
+              "type": "string",
+              "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/climate/schema\\.json$"
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["commodities"]
+      },
+      "then": {
+        "required": ["extensions"],
+        "properties": {
+          "extensions": {
+            "contains": {
+              "type": "string",
+              "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/agriculture/schema\\.json$"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "required": ["cdh", "extensions", "version"],
+  "properties": {
+    "extensions": {
+      "contains": {
+        "type": "string",
+        "pattern": "^https://cgiar-climate-data-hub\\.github\\.io/cdh-metadata-standard/v[0-9]+\\.[0-9]+\\.[0-9]+/extensions/cdh/schema\\.json$"
+      }
+    },
+    "contact": {
+      "description": "Every Hub record names at least one maintainer.",
+      "contains": {
+        "required": ["roles"],
+        "properties": {
+          "roles": {
+            "contains": {
+              "const": "maintainer"
+            }
+          }
+        }
+      }
+    }
+  },
+  "unevaluatedProperties": false
+}
