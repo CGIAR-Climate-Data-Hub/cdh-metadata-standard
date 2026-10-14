@@ -219,52 +219,8 @@ cdh:
         reason: the grid is too coarse for field-scale operational decisions.
         use_instead: local survey or administrative production data.
 
+# Covers every crop group, so it tags the root; the crop dimension lists the 46 codes.
 commodities:
-  - wheat
-  - rice
-  - maize
-  - barley
-  - millets
-  - pearl-millet
-  - sorghum
-  - cereals
-  - potato
-  - sweet-potatoes
-  - yams
-  - cassava
-  - root-vegetables
-  - common-bean
-  - chickpeas
-  - cowpeas
-  - pigeon-pea
-  - lentils
-  - pulses
-  - soybeans
-  - groundnuts
-  - coconuts
-  - oil-palms
-  - sunflower
-  - rapeseed
-  - sesame
-  - oil-crops
-  - sugarcane
-  - sugarbeet
-  - cotton
-  - fibre-crops
-  - coffee
-  - robusta-coffee
-  - cocoa
-  - tea
-  - tobacco
-  - banana
-  - plantains
-  - citrus
-  - tropical-fruits
-  - temperate-fruit
-  - tomatoes
-  - onions
-  - vegetables
-  - rubber
   - crops
 
 processing:

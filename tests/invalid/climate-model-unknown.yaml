@@ -1,0 +1,8 @@
+# climate.models is a closed vocabulary of CMIP source ids.
+extensions:
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.1/extensions/cdh/schema.json
+  - https://cgiar-climate-data-hub.github.io/cdh-metadata-standard/v0.4.1/extensions/climate/schema.json
+climate:
+  mip_era: CMIP6
+  models: [EXAMPLE-ESM1]
+  scenarios: [ssp245]

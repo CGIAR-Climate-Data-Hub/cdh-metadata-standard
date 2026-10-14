@@ -12,18 +12,45 @@ occur between minor versions.
 
 ### Changed
 
-- `spatial.crs` prefers an authority code (`EPSG:4326`, `ESRI:54052`) or an OGC CRS URI. A PROJ or
-  WKT string is for a CRS with no code, not an equal option.
-- `unit` follows UDUNITS-2, with UCUM only for what UDUNITS-2 cannot express (`{head}/km2`, `[pH]`),
-  instead of either grammar at the author's choice.
-- A service with a URI scheme of its own, such as `ee://<asset id>` for Google Earth Engine, puts
-  that URI first in `locations[]`; an HTTPS endpoint may follow. The STAC mapping emits it as the
-  asset `href` with no `type`.
+- **Breaking:** `climate.models` and `climate.scenarios` are closed vocabularies generated from the
+  WCRP CMIP6 controlled vocabularies and the CMIP5 facets of the ESGF search index
+  (`vocab/climate_model.json`, `vocab/climate_scenario.json`). Ids keep the CMIP spelling, so
+  `MPI-ESM1-2-HR` and `ssp245` validate as before; made-up or misspelt ids no longer do. With
+  `mip_era` set, both lists must come from that era's subset. `ensemble` stays for multi-model
+  products.
+- **Breaking:** the commodity vocabulary is now generated from the FAO Indicative Crop
+  Classification 1.1 and the WCA 2030 Classification of livestock, with `crops` and `livestock` as
+  roots and `parents` for roll-up, the same shape as the geography vocabulary. Ids follow the
+  official labels, so some change: `potato` is `potatoes`, `pearl-millet` and `millets` are
+  `millet`, `buffalo` is `buffaloes`, `swine` is `swine-pigs`, `common-bean` is `beans`;
+  `arabica-coffee` and `robusta-coffee` fold into `coffee`. Records tag the level the dataset is
+  about rather than every crop a dimension holds.
 - On an open-ended series, a dimension `extent` end is the latest value present as of `updated`. It
   may lag the data but must never run ahead of it, since every path an `href_template` renders must
   exist.
 - An `href_template` renders once per structure the entry holds, over that structure's variables and
   dimension values; the entry's files are the union.
+- A service with a URI scheme of its own, such as `ee://<asset id>` for Google Earth Engine, puts
+  that URI first in `locations[]`; an HTTPS endpoint may follow. The STAC mapping emits it as the
+  asset `href` with no `type`.
+- `spatial.crs` prefers an authority code (`EPSG:4326`, `ESRI:54052`) or an OGC CRS URI. A PROJ or
+  WKT string is for a CRS with no code, not an equal option.
+- `unit` follows UDUNITS-2, with UCUM only for what UDUNITS-2 cannot express (`{head}/km2`, `[pH]`),
+  instead of either grammar at the author's choice.
+
+### Added
+
+- `file_index[]` entries accept `href_template`, for producers that publish one index file per slice
+  (one VRT per map, as SoilGrids does). The data entry keeps describing the tiles and their media
+  type; the templated index is one entry instead of hundreds, and the index stays an index rather
+  than a typeless data file.
+- `additional_links[]` entries may carry `id` instead of `url` to link another Hub record, as
+  `derived_from[]` already does. One of the two is required, not both.
+- Added `array` to `data_type`, the Frictionless name for a column whose cells hold a list of
+  values, such as a Parquet `list<string>`. The element type goes in `description`. `other` now
+  means maps, structs, and nested lists.
+- Added `land` to the domain vocabulary (AGROVOC "land resources") for soils, land cover and land
+  use, terrain and elevation, and related biophysical surface layers.
 
 ## [0.4.1] - 2026-10-07
 

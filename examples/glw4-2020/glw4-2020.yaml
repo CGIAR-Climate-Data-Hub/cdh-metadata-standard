@@ -161,7 +161,7 @@ cdh:
         reason: values are spatially modeled estimates derived from census and other data
         use_instead: official livestock census counts where available
 
-commodities: [buffalo, cattle, chickens, goats, swine, sheep]
+commodities: [buffaloes, cattle, chickens, goats, swine-pigs, sheep]
 
 processing:
   - id: source

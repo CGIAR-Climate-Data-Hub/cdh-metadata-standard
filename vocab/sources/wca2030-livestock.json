@@ -1,0 +1,68 @@
+{
+  "source": {
+    "title": "Classification of livestock",
+    "publication": "World Programme for the Census of Agriculture 2030, Annex 8, page 192",
+    "publisher": "Food and Agriculture Organization of the United Nations (FAO)",
+    "url": "https://www.fao.org/media/docs/statisticslibraries/wca/wca-round-2030/wca_2030_full_13thdraft_05-03-2025.pdf",
+    "version": "13th draft, 5 March 2025; endorsed by the UN Statistical Commission, March 2026",
+    "transcribed": "2026-10-13",
+    "license": "FAO states that the statistical classifications it disseminates are in the public domain and that no specific license applies (Caliper FAQ, https://www.fao.org/statistics/caliper/resources/faq/en). FAO web content otherwise falls under the FAO Terms and Conditions, https://www.fao.org/contact-us/terms/en/.",
+    "notes": [
+      "Transcribed by hand from the PDF table; the classification has no machine-readable release.",
+      "cpc3 is the 'Link to CPC Ver. 3.0' column verbatim. A trailing * marks a partial link: several census classes map to one CPC code.",
+      "agrovoc is the AGROVOC concept id where one was already in use in vocab/commodity.json; the rest are left for the build to fill."
+    ]
+  },
+  "concepts": [
+    { "code": "1", "broader": "", "label": "Bovine animals", "cpc3": "0211" },
+    { "code": "11", "broader": "1", "label": "Cattle", "cpc3": "02111", "agrovoc": "c_1391" },
+    { "code": "12", "broader": "1", "label": "Buffaloes", "cpc3": "02112", "agrovoc": "c_8313" },
+    { "code": "19", "broader": "1", "label": "Other bovine animals", "cpc3": "02119" },
+    { "code": "2", "broader": "", "label": "Sheep and goats", "cpc3": "02122-02123" },
+    { "code": "21", "broader": "2", "label": "Sheep", "cpc3": "02122", "agrovoc": "c_7030" },
+    { "code": "22", "broader": "2", "label": "Goats", "cpc3": "02123", "agrovoc": "c_3324" },
+    { "code": "3", "broader": "", "label": "Swine/ pigs", "cpc3": "02140", "agrovoc": "c_7555" },
+    { "code": "4", "broader": "", "label": "Equines", "cpc3": "02131-02133" },
+    { "code": "41", "broader": "4", "label": "Horses", "cpc3": "02131", "agrovoc": "c_3668" },
+    { "code": "42", "broader": "4", "label": "Asses", "cpc3": "02132" },
+    { "code": "43", "broader": "4", "label": "Mules and hinnies", "cpc3": "02133" },
+    { "code": "5", "broader": "", "label": "Camels and camelids", "cpc3": "02121" },
+    { "code": "51", "broader": "5", "label": "Dromedary", "cpc3": "02121*" },
+    { "code": "52", "broader": "5", "label": "Bactrian camel", "cpc3": "02121*" },
+    { "code": "53", "broader": "5", "label": "Llamas and alpacas", "cpc3": "02121*" },
+    { "code": "59", "broader": "5", "label": "Other camelids", "cpc3": "02121*" },
+    { "code": "6", "broader": "", "label": "Poultry", "cpc3": "0215" },
+    { "code": "61", "broader": "6", "label": "Chickens", "cpc3": "02151", "agrovoc": "c_1540" },
+    { "code": "62", "broader": "6", "label": "Turkeys", "cpc3": "02152" },
+    { "code": "63", "broader": "6", "label": "Geese", "cpc3": "02153" },
+    { "code": "64", "broader": "6", "label": "Ducks", "cpc3": "02154", "agrovoc": "c_2406" },
+    { "code": "65", "broader": "6", "label": "Guinea fowls", "cpc3": "02155" },
+    { "code": "7", "broader": "", "label": "Other animals", "cpc3": "02129, 02191-02195, 02199*" },
+    {
+      "code": "71",
+      "broader": "7",
+      "label": "Deer, elk, reindeer and other ruminants",
+      "cpc3": "02129"
+    },
+    { "code": "72", "broader": "7", "label": "Rabbits and hares", "cpc3": "02191" },
+    {
+      "code": "73",
+      "broader": "7",
+      "label": "Fur-bearing animals such as foxes and minks",
+      "cpc3": "02192*"
+    },
+    { "code": "74", "broader": "7", "label": "Dogs and cats", "cpc3": "02192*" },
+    { "code": "75", "broader": "7", "label": "Ostriches and emus", "cpc3": "02193" },
+    { "code": "76", "broader": "7", "label": "Other birds (e.g pigeons)", "cpc3": "02194" },
+    {
+      "code": "79",
+      "broader": "7",
+      "label": "Other animals (e.g. primates, elephants, reptiles, zebras)",
+      "cpc3": "02192*, 02195, 02199*"
+    },
+    { "code": "8", "broader": "", "label": "Insects and worms", "cpc3": "02196, 02199*" },
+    { "code": "81", "broader": "8", "label": "Bees", "cpc3": "02196" },
+    { "code": "82", "broader": "8", "label": "Silkworms", "cpc3": "02199*" },
+    { "code": "89", "broader": "8", "label": "Other insects and worms", "cpc3": "02199*" }
+  ]
+}

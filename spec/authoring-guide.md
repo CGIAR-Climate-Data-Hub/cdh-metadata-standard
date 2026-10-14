@@ -748,7 +748,11 @@ Possible Fields:
 
 Use `commodities` for agriculture, food-systems, livestock, and crop resources.
 
-Use values from `vocab/commodity.json`.
+Use values from `vocab/commodity.json`. Tag the level the dataset is about, as a person would search
+for it: a maize yield map tags `maize`; a dataset covering most of a group tags the group, such as
+`cereals`, or the root `crops` or `livestock` when it spans the groups. Do not list every crop a
+dimension holds; the dimension values already carry that. Each concept's `parents` let a catalog
+roll a specific tag up to its groups.
 
 ### Additional assets
 
