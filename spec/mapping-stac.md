@@ -268,6 +268,7 @@ the **same content**). Encode as:
   carrying its `href` and optional `title`.
 - The asset's `type` (media type) and `file:size` apply to all locations, since they are the same
   content.
+- A location with a scheme of its own, such as `ee://`, is emitted as-is in `href` with no `type`.
 
 A `data[]` entry with `spatial` and no `href_template` or `file_index` is emitted as its own Item
 holding that one asset, because STAC searches Items by area and assets have no footprint. The

@@ -8,6 +8,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While the project is pre-1.0, the schema should be considered unstable and breaking changes may
 occur between minor versions.
 
+## [Unreleased]
+
+### Changed
+
+- A service with a URI scheme of its own, such as `ee://<asset id>` for Google Earth Engine, puts
+  that URI first in `locations[]`; an HTTPS endpoint may follow. The STAC mapping emits it as the
+  asset `href` with no `type`.
+
 ## [0.4.1] - 2026-10-07
 
 ### Added
